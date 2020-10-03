@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "ModuleCamera3D.h"
 
-ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
+ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module("Camera3D",start_enabled)
 {
 	CalculateViewMatrix();
 
@@ -35,7 +35,7 @@ bool ModuleCamera3D::CleanUp()
 }
 
 // -----------------------------------------------------------------
-update_status ModuleCamera3D::Update(float dt)
+UPDATE_STATUS ModuleCamera3D::Update(float dt)
 {
 	// Implement a debug camera with keys and mouse
 	// Now we can make this movememnt frame rate independant!
@@ -95,7 +95,7 @@ update_status ModuleCamera3D::Update(float dt)
 		Position = Reference + Z * length(Position);
 	}
 
-	return UPDATE_CONTINUE;
+	return UPDATE_STATUS::CONTINUE;
 }
 
 // -----------------------------------------------------------------

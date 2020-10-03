@@ -4,7 +4,7 @@
 
 #define MAX_KEYS 300
 
-ModuleInput::ModuleInput(bool start_enabled) : Module(start_enabled)
+ModuleInput::ModuleInput(bool start_enabled) : Module("Input",start_enabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
@@ -33,7 +33,7 @@ bool ModuleInput::Init()
 }
 
 // Called every draw update
-update_status ModuleInput::PreUpdate(float dt)
+UPDATE_STATUS ModuleInput::PreUpdate(float dt)
 {
 	SDL_PumpEvents();
 
@@ -113,13 +113,13 @@ update_status ModuleInput::PreUpdate(float dt)
 		}
 	}
 
-	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
-		return UPDATE_STOP;
+	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)							// Exiting application upon pressing ESC here.
+		return UPDATE_STATUS::STOP;
 
-	return UPDATE_CONTINUE;
+	return UPDATE_STATUS::CONTINUE;
 }
 
-update_status ModuleInput::Update(float dt)
+UPDATE_STATUS ModuleInput::Update(float dt)
 {
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		App->debug = !App->debug;
@@ -127,7 +127,7 @@ update_status ModuleInput::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 		App->renderPrimitives = !App->renderPrimitives;
 
-	return UPDATE_CONTINUE;
+	return UPDATE_STATUS::CONTINUE;
 }
 
 // Called before quitting

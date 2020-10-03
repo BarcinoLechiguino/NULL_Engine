@@ -39,15 +39,6 @@
     <ClInclude Include="ModuleWindow.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="p2DynArray.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="p2List.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="p2Point.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="glmath.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
@@ -115,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="ModuleSceneIntro.cpp">
       <Filter>Sources\Modules\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Module.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

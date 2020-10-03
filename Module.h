@@ -1,44 +1,40 @@
-#pragma once
+// ----------------------------------------------------
+// Module.h
+// Interface for all engine modules.
+// ----------------------------------------------------
+
+#ifndef __MODULE_H__
+#define __MODULE_H__
+
+#include <vector>
+#include <string>
+
+#include "Globals.h"
+
+#define MAX_MODULE_NAME_LENGTH 25
 
 class Module
 {
-private :
-	bool enabled;
+public:
+	Module(const char* name, bool is_active = true);
+	virtual ~Module();
+
+	virtual bool Init();
+	virtual bool Start();
+	virtual UPDATE_STATUS PreUpdate(float dt);
+	virtual UPDATE_STATUS Update(float dt);
+	virtual UPDATE_STATUS PostUpdate(float dt);
+	virtual bool CleanUp();
 
 public:
-	Module(bool start_enabled = true) : enabled(start_enabled)
-	{}
+	bool GetModuleState() const;							// Will return the current state of the module.
+	bool SetModuleState(bool is_active);					// Will modify the state of the module. Will call Start() or CleanUp() depending on whether it has been activated or deactivated.
 
-	virtual ~Module()
-	{}
+	const char* GetName() const;							// Will return the name of the module.
 
-	virtual bool Init() 
-	{
-		return true; 
-	}
-
-	virtual bool Start()
-	{
-		return true;
-	}
-
-	virtual update_status PreUpdate(float dt)
-	{
-		return UPDATE_CONTINUE;
-	}
-
-	virtual update_status Update(float dt)
-	{
-		return UPDATE_CONTINUE;
-	}
-
-	virtual update_status PostUpdate(float dt)
-	{
-		return UPDATE_CONTINUE;
-	}
-
-	virtual bool CleanUp() 
-	{ 
-		return true; 
-	}
+private:
+	bool is_active;											// State in which the module is currently in. If it is active the module will be looped each frame.
+	char name[MAX_MODULE_NAME_LENGTH];						// The module name string will be mainly used for debug/LOG purposes.
 };
+
+#endif //  !__MODULE_H__

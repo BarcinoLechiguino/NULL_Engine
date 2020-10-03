@@ -27,8 +27,8 @@ public:
 
 private:
 
-	Mix_Music*			music;
-	p2List<Mix_Chunk*>	fx;
+	Mix_Music*				music;
+	std::vector<Mix_Chunk*>	fx;
 };
 
 #endif // __ModuleAudio_H__

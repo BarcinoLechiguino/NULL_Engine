@@ -3,7 +3,7 @@
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
 
-ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled)
+ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module("SceneManager", start_enabled)
 {
 
 }
@@ -36,7 +36,7 @@ bool ModuleSceneIntro::Start()
 	for (int n = 0; n < SnakeLength; n++)
 	{
 		Sphere* s = new Sphere(Size);
-		primitives.PushBack(s);
+		primitives.push_back(s);
 		s->SetPos(XPos, 10.f, 2.5f);
 
 		previousSphere = s;					//The new sphere is set in the buffer.
@@ -61,7 +61,7 @@ bool ModuleSceneIntro::Start()
 	for (int n = 0; n < SnakeLength; n++)
 	{
 		Sphere* hinge_S = new Sphere(size);
-		primitives.PushBack(hinge_S);
+		primitives.push_back(hinge_S);
 		hinge_S->SetPos(xPos, 10.f, 10.0f);
 
 		previousHinge = hinge_S;					//The new sphere is set in the buffer.
@@ -101,7 +101,7 @@ void ModuleSceneIntro::HandleDebugInput()
 
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
 	{
-		for (uint n = 0; n < primitives.Count(); n++)
+		for (uint n = 0; n < primitives.size(); n++)
 		{
 			primitives[n]->SetPos((float)(std::rand() % 40 - 20), 10.f, (float)(std::rand() % 40 - 20));
 		}
@@ -124,12 +124,12 @@ void ModuleSceneIntro::HandleDebugInput()
 
 void ModuleSceneIntro::DebugSpawnPrimitive(Primitive * p)
 {
-	primitives.PushBack(p);
+	primitives.push_back(p);
 	p->SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
 }
 
 // Update
-update_status ModuleSceneIntro::Update(float dt)
+UPDATE_STATUS ModuleSceneIntro::Update(float dt)
 {
 	Plane p(vec3(0, 1, 0));
 	p.axis = true;
@@ -138,18 +138,18 @@ update_status ModuleSceneIntro::Update(float dt)
 	if (App->debug == true)
 		HandleDebugInput();
 
-	for (uint n = 0; n < primitives.Count(); n++)
+	for (uint n = 0; n < primitives.size(); n++)
 		primitives[n]->Update();
 
-	return UPDATE_CONTINUE;
+	return UPDATE_STATUS::CONTINUE;
 }
 
-update_status ModuleSceneIntro::PostUpdate(float dt)
+UPDATE_STATUS ModuleSceneIntro::PostUpdate(float dt)
 {
-	for (uint n = 0; n < primitives.Count(); n++)
+	for (uint n = 0; n < primitives.size(); n++)
 	{
 		primitives[n]->Render();
 	}
 
-	return UPDATE_CONTINUE;
+	return UPDATE_STATUS::CONTINUE;
 }

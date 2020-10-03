@@ -8,7 +8,7 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), context()
+ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module("Renderer3D", start_enabled), context()
 {
 }
 
@@ -21,7 +21,7 @@ bool ModuleRenderer3D::Init()
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
-	
+
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
 	if(context == NULL)
@@ -103,7 +103,7 @@ bool ModuleRenderer3D::Init()
 }
 
 // PreUpdate: clear buffer
-update_status ModuleRenderer3D::PreUpdate(float dt)
+UPDATE_STATUS ModuleRenderer3D::PreUpdate(float dt)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
@@ -118,14 +118,14 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
-	return UPDATE_CONTINUE;
+	return UPDATE_STATUS::CONTINUE;
 }
 
 // PostUpdate present buffer to screen
-update_status ModuleRenderer3D::PostUpdate(float dt)
+UPDATE_STATUS ModuleRenderer3D::PostUpdate(float dt)
 {
 	SDL_GL_SwapWindow(App->window->window);
-	return UPDATE_CONTINUE;
+	return UPDATE_STATUS::CONTINUE;
 }
 
 // Called before quitting

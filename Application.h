@@ -1,6 +1,6 @@
-#pragma once
+#ifndef __APPLICATION_H__
+#define __APPLICATION_H_
 
-#include "p2List.h"
 #include "Globals.h"
 #include "Timer.h"
 #include "Module.h"
@@ -17,36 +17,41 @@
 class Application
 {
 public:
-	ModuleWindow* window;
-	ModuleInput* input;
-	ModuleAudio* audio;
-	ModuleSceneIntro* scene_intro;
-	ModuleRenderer3D* renderer3D;
-	ModuleCamera3D* camera;
-
-	bool debug;
-	bool renderPrimitives;
-private:
-
-	Timer	ms_timer;
-	float	dt;
-	p2List<Module*> list_modules;
-
-public:
-
 	Application();
 	~Application();
 
 	bool Init();
-	update_status Update();
+	UPDATE_STATUS Update();
 	bool CleanUp();
 
 private:
-
-	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
 
-	std::vector<Module*> modules;			//Module array.
-	std::shared_ptr<Module> ModulePtr2;		//Shared_ptr
+	UPDATE_STATUS PreUpdate();
+	UPDATE_STATUS DoUpdate();
+	UPDATE_STATUS PostUpdate();
+
+	void AddModule(Module* module);
+
+public:
+	// Modules
+	ModuleWindow*			window;
+	ModuleInput*			input;
+	ModuleAudio*			audio;
+	ModuleSceneIntro*		scene_intro;
+	ModuleRenderer3D*		renderer3D;
+	ModuleCamera3D*			camera;
+
+	bool					debug;
+	bool					renderPrimitives;
+private:
+
+	Timer					ms_timer;
+	float					dt;
+	std::vector<Module*>	modules;
 };
+
+extern Application* App;						// Allows to access the Application module from anywhere in the project.
+
+#endif // !__APPLICATION_H__

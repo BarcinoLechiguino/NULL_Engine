@@ -4,7 +4,7 @@
 
 #pragma comment( lib, "SDL_mixer/libx86/SDL2_mixer.lib" )
 
-ModuleAudio::ModuleAudio(bool start_enabled) : Module(start_enabled), music(NULL)
+ModuleAudio::ModuleAudio(bool start_enabled) : Module("Audio", start_enabled), music(NULL)
 {}
 
 // Destructor
@@ -54,11 +54,11 @@ bool ModuleAudio::CleanUp()
 		Mix_FreeMusic(music);
 	}
 
-	p2List_item<Mix_Chunk*>* item;
+	std::vector<Mix_Chunk*>::iterator item = fx.begin();
 
-	for(item = fx.getFirst(); item != NULL; item = item->next)
+	while (item != fx.end())
 	{
-		Mix_FreeChunk(item->data);
+		Mix_FreeChunk((*item));
 	}
 
 	fx.clear();
@@ -132,8 +132,8 @@ unsigned int ModuleAudio::LoadFx(const char* path)
 	}
 	else
 	{
-		fx.add(chunk);
-		ret = fx.count();
+		fx.push_back(chunk);
+		ret = fx.size();
 	}
 
 	return ret;
@@ -144,12 +144,15 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 {
 	bool ret = false;
 
-	Mix_Chunk* chunk = NULL;
-	
-	if(fx.at(id-1, chunk) == true)
+	if (id > 0 && id < fx.size())							// Makes sure the id is within the fx vector bounds.
 	{
-		Mix_PlayChannel(-1, chunk, repeat);
-		ret = true;
+		Mix_Chunk* chunk = fx.at(id - 1);					// Gets a pointer/reference to the chunk in the specified position.
+
+		if (chunk != nullptr)
+		{
+			Mix_PlayChannel(-1, chunk, repeat);				// The FX will be played in the specified channel.
+			ret = true;
+		}
 	}
 
 	return ret;

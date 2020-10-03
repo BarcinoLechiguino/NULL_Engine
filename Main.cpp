@@ -6,13 +6,13 @@
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
 
-enum main_states
+enum class MAIN_STATUS
 {
-	MAIN_CREATION,
-	MAIN_START,
-	MAIN_UPDATE,
-	MAIN_FINISH,
-	MAIN_EXIT
+	CREATION,
+	START,
+	UPDATE,
+	FINISH,
+	EXIT
 };
 
 int main(int argc, char ** argv)
@@ -20,52 +20,54 @@ int main(int argc, char ** argv)
 	LOG("Starting game '%s'...", TITLE);
 
 	int main_return = EXIT_FAILURE;
-	main_states state = MAIN_CREATION;
+	MAIN_STATUS state = MAIN_STATUS::CREATION;
 	Application* App = NULL;
 
-	while (state != MAIN_EXIT)
+	while (state != MAIN_STATUS::EXIT)
 	{
 		switch (state)
 		{
-		case MAIN_CREATION:
+		case MAIN_STATUS::CREATION:
 
 			LOG("-------------- Application Creation --------------");
 			App = new Application();
-			state = MAIN_START;
+			state = MAIN_STATUS::START;
 			break;
 
-		case MAIN_START:
+		case MAIN_STATUS::START:
 
 			LOG("-------------- Application Init --------------");
 			if (App->Init() == false)
 			{
 				LOG("Application Init exits with ERROR");
-				state = MAIN_EXIT;
+				state = MAIN_STATUS::EXIT;
 			}
 			else
 			{
-				state = MAIN_UPDATE;
+				state = MAIN_STATUS::UPDATE;
 				LOG("-------------- Application Update --------------");
 			}
 
 			break;
 
-		case MAIN_UPDATE:
+		case MAIN_STATUS::UPDATE:
 		{
-			int update_return = App->Update();
+			UPDATE_STATUS update_return = App->Update();							// THIS HERE
 
-			if (update_return == UPDATE_ERROR)
+			if (update_return == UPDATE_STATUS::THROW_ERROR)
 			{
 				LOG("Application Update exits with ERROR");
-				state = MAIN_EXIT;
+				state = MAIN_STATUS::EXIT;
 			}
 
-			if (update_return == UPDATE_STOP)
-				state = MAIN_FINISH;
+			if (update_return == UPDATE_STATUS::STOP)
+			{
+				state = MAIN_STATUS::FINISH;
+			}
 		}
 			break;
 
-		case MAIN_FINISH:
+		case MAIN_STATUS::FINISH:
 
 			LOG("-------------- Application CleanUp --------------");
 			if (App->CleanUp() == false)
@@ -73,9 +75,11 @@ int main(int argc, char ** argv)
 				LOG("Application CleanUp exits with ERROR");
 			}
 			else
+			{
 				main_return = EXIT_SUCCESS;
+			}
 
-			state = MAIN_EXIT;
+			state = MAIN_STATUS::EXIT;
 
 			break;
 
