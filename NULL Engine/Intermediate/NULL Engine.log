@@ -1,2 +1,3 @@
-﻿  ModuleRenderer3D.cpp
-  NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe
+﻿  Generating code
+LINK : fatal error C1354: error accessing previous object file .\Build\NULL Engine.iobj (corrupted symbol table)
+LINK : fatal error LNK1257: code generation failed

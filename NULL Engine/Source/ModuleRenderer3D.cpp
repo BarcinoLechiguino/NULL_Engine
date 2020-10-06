@@ -203,14 +203,21 @@ UPDATE_STATUS ModuleRenderer3D::PostUpdate(float dt)
 	{
 		ImGui::Begin("Hello world!");								// Will create a window with "Hello World!" as the title. Until ImGui::End() all elements will be appended to this window.
 
-		if (ImGui::Button("QUIT THIS TOMFOOLERY!"))
+		if (ImGui::Button("STOP IT, GET SOME HELP"))
 		{
 			return UPDATE_STATUS::STOP;
 		}
-		
-		ImGui::Text("This text has been brought to you by ImGui.");	// Will create a label. Can also use format strings.
-		ImGui::Checkbox("Demo Window", &show_demo_window);			// Checkbox that will modify the bool that it gets passed as argument.
-		ImGui::Checkbox("Another Window", &show_another_window);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("YEETUS THIS WINDOW"))
+		{
+			return UPDATE_STATUS::STOP;
+		}
+
+		ImGui::Text("This text has been brought to you by Euro Shave Club.");	// Will create a label. Can also use format strings.
+		ImGui::Checkbox("ImGui Demo Window", &show_demo_window);			// Checkbox that will modify the bool that it gets passed as argument.
+		ImGui::Checkbox("Sneaky Window", &show_another_window);
 
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);				// Will create a slider that will be able to edit 1 variable from 0.0f to 1.0f.
 		ImGui::ColorEdit3("clear color", (float*)&clear_color);		// Will create 3 sliders in a row that will represent a colour (RGB).
@@ -219,6 +226,8 @@ UPDATE_STATUS ModuleRenderer3D::PostUpdate(float dt)
 		{
 			++counter;
 		}
+
+		//ImGui::PlotHistogram();
 
 		ImGui::SameLine();											// Specifies that the next element to be created will be created in the same row as the previous one.
 		ImGui::Text("counter = %d", counter);
@@ -229,8 +238,8 @@ UPDATE_STATUS ModuleRenderer3D::PostUpdate(float dt)
 
 	if (show_another_window)
 	{
-		ImGui::Begin("Another Window", &show_another_window);
-		ImGui::Text("Hello from another window!");
+		ImGui::Begin("Sneaky Window", &show_another_window);
+		ImGui::Text("Hello from sneaky window!");
 
 		if (ImGui::Button("Close me"))
 		{
@@ -245,7 +254,7 @@ UPDATE_STATUS ModuleRenderer3D::PostUpdate(float dt)
 	ImGui::Render();
 	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	// Updating and rendering additional platform windows
