@@ -1,5 +1,15 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (3D Physics - class4 Handout.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Application.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
-C:\Users\angot\Documents\GitHub\NULL_Engine\SDL\include\SDL_stdinc.h(436): message : see previous definition of 'M_PI'
+  Light.cpp
+  Main.cpp
+  Module.cpp
+  ModuleCamera3D.cpp
+  ModuleInput.cpp
+  ModuleRenderer3D.cpp
+  ModuleSceneIntro.cpp
+  ModuleWindow.cpp
+  Primitive.cpp
+  Timer.cpp
+  log.cpp
+  Generating Code...
   3D Physics.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\Debug\NULL Engine.exe
