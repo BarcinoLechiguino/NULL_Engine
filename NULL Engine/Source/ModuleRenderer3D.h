@@ -26,12 +26,4 @@ public:
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ProjectionMatrix;
-
-	ImGuiIO io;
-	bool show_demo_window;
-	bool show_another_window;
-	ImVec4 clear_color;
-
-	float f;
-	int counter;
 };

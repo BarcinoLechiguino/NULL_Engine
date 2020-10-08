@@ -7,6 +7,7 @@
 #include "ModuleInput.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleRenderer3D.h"
+#include "M_Editor.h"
 #include "ModuleCamera3D.h"
 
 #include "Application.h"
@@ -34,6 +35,7 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.0f)
 	window			= new ModuleWindow();
 	input			= new ModuleInput();
 	scene_intro		= new ModuleSceneIntro();
+	editor			= new M_Editor();
 	renderer3D		= new ModuleRenderer3D();
 	camera			= new ModuleCamera3D();
 
@@ -48,6 +50,8 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.0f)
 	
 	// Scenes
 	AddModule(scene_intro);
+
+	AddModule(editor);
 
 	// Renderer last!
 	AddModule(renderer3D);

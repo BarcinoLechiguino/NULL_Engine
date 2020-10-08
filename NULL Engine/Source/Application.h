@@ -13,6 +13,7 @@ class ModuleWindow;
 class ModuleInput;
 class ModuleSceneIntro;
 class ModuleRenderer3D;
+class M_Editor;
 class ModuleCamera3D;
 
 class Application
@@ -52,6 +53,7 @@ public:
 	ModuleInput*			input;
 	ModuleSceneIntro*		scene_intro;
 	ModuleRenderer3D*		renderer3D;
+	M_Editor*				editor;
 	ModuleCamera3D*			camera;
 
 	bool					debug;
