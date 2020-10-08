@@ -3,3 +3,10 @@
 *.db-shm
 *.db-wal
 *.opendb
+*.ipch
+*.ilk
+*.pdb
+*.obj
+*.pdb
+NULL Engine/Resources/memleaks.log
+NULL Engine/Resources/memory.log

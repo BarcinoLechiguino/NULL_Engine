@@ -1,3 +1,4 @@
-﻿  Generating code
-LINK : fatal error C1354: error accessing previous object file .\Build\NULL Engine.iobj (corrupted symbol table)
-LINK : fatal error LNK1257: code generation failed
+﻿  Application.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\SDL\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
+  NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

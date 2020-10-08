@@ -67,15 +67,18 @@
     <Filter Include="Dependencies\ImGuizmo">
       <UniqueIdentifier>{2364ac94-5c0e-4e27-8df1-d9663f4cc702}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\parson">
+      <UniqueIdentifier>{291f8e74-890d-48b6-aefd-69e00471d087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\Tools\Timers">
+      <UniqueIdentifier>{8383af2d-812c-46ce-988c-4cfcc424cdba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
       <Filter>SourceCode\Containers</Filter>
     </ClCompile>
     <ClCompile Include="Source\log.cpp">
-      <Filter>SourceCode\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Timer.cpp">
       <Filter>SourceCode\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Source\Application.cpp">
@@ -225,16 +228,25 @@
     <ClCompile Include="Source\Dependencies\ImGui\imgui_impl_sdl.cpp">
       <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Editor.cpp">
+    <ClCompile Include="Source\Dependencies\parson\parson.c">
+      <Filter>Dependencies\parson</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\M_Editor.cpp">
       <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Configuration.cpp">
+      <Filter>SourceCode\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PerfectTimer.cpp">
+      <Filter>SourceCode\Tools\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Timer.cpp">
+      <Filter>SourceCode\Tools\Timers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
       <Filter>SourceCode\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Timer.h">
-      <Filter>SourceCode\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\Application.h">
       <Filter>SourceCode\Core</Filter>
@@ -491,11 +503,23 @@
     <ClInclude Include="Source\Dependencies\ImGui\imgui_impl_sdl.h">
       <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Dependencies\parson\parson.h">
+      <Filter>Dependencies\parson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_Editor.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Configuration.h">
+      <Filter>SourceCode\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PerfectTimer.h">
+      <Filter>SourceCode\Tools\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Timer.h">
+      <Filter>SourceCode\Tools\Timers</Filter>
+    </ClInclude>
     <ClInclude Include="Source\ImGui.h">
       <Filter>SourceCode\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Editor.h">
-      <Filter>SourceCode\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

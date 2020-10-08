@@ -40,6 +40,16 @@ bool Module::CleanUp()
 	return true;
 }
 
+bool Module::LoadConfiguration(/*Configuration& file*/)
+{
+	return true;
+}
+
+bool Module::SaveConfiguration(/*Configuration& file*/) const
+{
+	return true;
+}
+
 bool Module::GetModuleState() const
 {
 	return is_active;
@@ -59,6 +69,11 @@ bool Module::SetModuleState(bool is_active)
 	}
 
 	return this->is_active;
+}
+
+bool Module::IsActive() const
+{
+	return is_active;
 }
 
 const char* Module::GetName() const

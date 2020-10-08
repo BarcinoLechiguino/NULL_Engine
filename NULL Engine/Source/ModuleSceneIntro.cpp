@@ -1,7 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleSceneIntro.h"
+#include "ModuleWindow.h"
+#include "ModuleCamera3D.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleInput.h"
 #include "Primitive.h"
+
+#include "ModuleSceneIntro.h"
 
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module("SceneManager", start_enabled)
 {

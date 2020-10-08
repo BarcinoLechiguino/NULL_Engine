@@ -1,12 +1,36 @@
-#include "Application.h"
-
 #include <functional>			//function pointers
-#include <vector>				//Vector 
 #include <algorithm>			//for_each()
 #include <memory>				//Smart pointers
 
-Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
+#include "Module.h"
+#include "ModuleWindow.h"
+#include "ModuleInput.h"
+#include "ModuleSceneIntro.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleCamera3D.h"
+
+#include "Application.h"
+
+Application::Application() : debug(false), renderPrimitives(true), dt(0.0f)
 {
+	PERF_TIMER_START(perf_timer);
+	
+	want_to_load			= false;
+	want_to_save			= false;
+	user_has_saved			= false;
+
+	frame_cap				= 0;
+	seconds_since_startup	= 0.0f;
+	frames_are_capped		= true;
+	vsync_is_active			= true;
+	frame_count				= 0;
+	frames_last_second		= 0;
+	prev_sec_frame_count	= 0;
+	dt						= 0.0f;
+	display_framerate_data	= false;
+
+	pause = false;
+	
 	window			= new ModuleWindow();
 	input			= new ModuleInput();
 	scene_intro		= new ModuleSceneIntro();
@@ -27,6 +51,8 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.16f)
 
 	// Renderer last!
 	AddModule(renderer3D);
+
+	PERF_TIMER_PEEK(perf_timer);
 }
 
 Application::~Application()
@@ -35,40 +61,74 @@ Application::~Application()
 	
 	while (item != modules.rend())
 	{
+		//RELEASE((*item));
+		
 		delete (*item);
 		++item;
 	}
 }
 
-bool AFunction(int a, int b) { return true; }
-
 bool Application::Init()
 {
+	PERF_TIMER_START(perf_timer);
+	
+	LOG("Application Init --------------");
+
 	bool ret = true;
+	
+	if (ret)																// Check if the configuration is empty and load the default configuration for the engine.
+	{
+		title				= ("NULL Engine");
+		organization		= ("UPC");
+		frame_cap			= 60;
+		frames_are_capped	= true;
+	}
 
-	App = this;
-
-	// Call Init() in all modules
 	std::vector<Module*>::iterator item = modules.begin();
 
-	while(item != modules.end() && ret)
+	while (item != modules.end() && ret)
 	{
-		ret = (*item)->Init();
+		ret = (*item)->Init(/*Load configuration for the module*/);		// Use init as Awake()?
+		++item;
+	}
+	
+	LOG("Application Start --------------");
+
+	item = modules.begin();
+
+	while (item != modules.end() && ret)								// Move to start()?
+	{
+		if ((*item)->IsActive())
+		{
+			ret = (*item)->Start();
+		}
+
 		++item;
 	}
 
+	startup_timer.Start();
+
+	PERF_TIMER_PEEK(perf_timer);
+
+	//ms_timer.Start();
+	return ret;
+}
+
+bool Application::Start()												// IS IT NEEDED?
+{
 	// After all Init calls we call Start() in all modules
 	LOG("Application Start --------------");
-	
-	item = modules.begin();
 
-	while(item != modules.end() && ret)
+	bool ret = true;
+
+	std::vector<Module*>::iterator item = modules.begin();
+
+	while (item != modules.end() && ret)
 	{
 		ret = (*item)->Start();
 		++item;
 	}
 	
-	ms_timer.Start();
 	return ret;
 }
 
@@ -76,6 +136,7 @@ bool Application::Init()
 UPDATE_STATUS Application::Update()
 {
 	UPDATE_STATUS ret = UPDATE_STATUS::CONTINUE;
+	
 	PrepareUpdate();
 
 	if (ret == UPDATE_STATUS::CONTINUE)
@@ -101,6 +162,7 @@ UPDATE_STATUS Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
+
 	std::vector<Module*>::reverse_iterator item = modules.rbegin();
 
 	while(item != modules.rend() && ret)
@@ -114,8 +176,11 @@ bool Application::CleanUp()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	dt = (float)ms_timer.Read() / 1000.0f;
-	ms_timer.Start();
+	++frame_count;
+	++frames_last_second;
+
+	dt = frame_timer.ReadSec();
+	frame_timer.Start();
 }
 
 UPDATE_STATUS Application::PreUpdate()
@@ -126,7 +191,11 @@ UPDATE_STATUS Application::PreUpdate()
 
 	while (item != modules.end() && ret == UPDATE_STATUS::CONTINUE)
 	{
-		ret = (*item)->PreUpdate(dt);
+		if ((*item)->IsActive())
+		{
+			ret = (*item)->PreUpdate(dt);
+		}
+
 		++item;
 	}
 
@@ -148,7 +217,18 @@ UPDATE_STATUS Application::DoUpdate()
 
 	while (item != modules.end() && ret == UPDATE_STATUS::CONTINUE)
 	{
-		ret = (*item)->Update(dt);
+		if ((*item)->IsActive())
+		{
+			if (!pause)
+			{
+				ret = (*item)->Update(dt);
+			}
+			else
+			{
+				ret = (*item)->Update(0.0f);
+			}
+		}
+
 		++item;
 	}
 
@@ -170,7 +250,11 @@ UPDATE_STATUS Application::PostUpdate()
 
 	while (item != modules.end() && ret == UPDATE_STATUS::CONTINUE)
 	{
-		ret = (*item)->PostUpdate(dt);
+		if ((*item)->IsActive())
+		{
+			ret = (*item)->PostUpdate(dt);
+		}
+		
 		++item;
 	}
 
@@ -184,7 +268,65 @@ UPDATE_STATUS Application::PostUpdate()
 
 void Application::FinishUpdate()
 {
+	if (want_to_load)
+	{
+		LoadConfigurationNow(load_config_file.c_str());
+	}
 
+	if (want_to_save)
+	{
+		SaveConfigurationNow(save_config_file.c_str());
+	}
+
+	// ------------ Framerate Calculations ------------
+	// Frames in the last second.
+	if (last_second_timer.ReadMs() > 1000)								// This here, initialize before this? Add another condition?
+	{
+		last_second_timer.Start();
+		prev_sec_frame_count = frames_last_second;
+		frames_last_second = 0;
+
+		LOG("%d frames last second", prev_sec_frame_count);
+	}
+	
+	// Frame cap and delay.
+	uint frame_cap_ms		= 1000 / frame_cap;
+	uint current_frame_ms	= frame_timer.Read();
+
+	if (frames_are_capped)
+	{
+		if (current_frame_ms < frame_cap_ms)
+		{
+			precise_delay_timer.Start();
+
+			uint required_delay = frame_cap_ms - current_frame_ms;
+
+			SDL_Delay(required_delay);
+
+			//LOG("Application waited for %d milliseconds and got back in %f", required_delay, precise_delay_timer.ReadMs());
+		}
+	}
+
+	// Other frame calculations
+	float avg_fps					= frame_count / startup_timer.ReadSec();
+	uint32 last_frame_ms			= frame_timer.Read();
+	uint32 frames_on_last_update	= prev_sec_frame_count;
+	seconds_since_startup			= startup_timer.ReadSec();
+
+	
+	if (display_framerate_data)
+	{
+		static char title[256];
+
+		sprintf_s(title, 256, "Av.FPS: %.2f / Last Frame Ms: %02u / Last sec frames: %i / Last dt: %.3f / Time since startup: %.3f / Frame Count: %llu",
+			avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
+
+		App->window->SetTitle(title);
+	}
+	else
+	{
+		App->window->SetTitle(title.c_str());
+	}
 }
 // ---------------------------------------------
 
@@ -193,7 +335,52 @@ void Application::AddModule(Module* module)
 	modules.push_back(module);
 }
 
-Application* App = nullptr;
+float Application::GetDt() const
+{
+	if (!pause)
+	{
+		return dt;
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
+float Application::GetUnpausableDt() const
+{
+	return dt;
+}
+
+void Application::LoadConfiguration(const char* file)
+{
+	want_to_load = true;
+
+	if (user_has_saved)
+	{
+		load_config_file = ("Configuration.json");
+	}
+	else
+	{
+		load_config_file = ("DefaultConfiguration.json");
+	}
+}
+
+void Application::SaveConfiguration(const char* file)
+{
+	want_to_save = true;
+	save_config_file = ("Configuration.json");
+}
+
+void Application::LoadConfigurationNow(const char* file)
+{
+
+}
+
+void Application::SaveConfigurationNow(const char* file)
+{
+
+}
 
 //for (Module* it : modules)
 //{

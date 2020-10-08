@@ -1,5 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleInput.h"
+
 #include "ModuleCamera3D.h"
 
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module("Camera3D",start_enabled)

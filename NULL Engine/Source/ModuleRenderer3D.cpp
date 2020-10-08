@@ -1,9 +1,11 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleRenderer3D.h"
+#include "ModuleWindow.h"
+#include "ModuleCamera3D.h"
 #include "OpenGL.h"
-
 #include "ImGui.h"
+
+#include "ModuleRenderer3D.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
@@ -203,9 +205,11 @@ UPDATE_STATUS ModuleRenderer3D::PostUpdate(float dt)
 	{
 		ImGui::Begin("Hello world!");								// Will create a window with "Hello World!" as the title. Until ImGui::End() all elements will be appended to this window.
 
-		if (ImGui::Button("STOP IT, GET SOME HELP"))
+		if (ImGui::Button("SHOW ME THE DATA"))
 		{
-			return UPDATE_STATUS::STOP;
+			//return UPDATE_STATUS::STOP;
+
+			App->display_framerate_data = !App->display_framerate_data;
 		}
 
 		ImGui::SameLine();

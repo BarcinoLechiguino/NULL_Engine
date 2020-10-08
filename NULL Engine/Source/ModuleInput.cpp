@@ -1,5 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleRenderer3D.h"
+
 #include "ModuleInput.h"
 
 #define MAX_KEYS 300

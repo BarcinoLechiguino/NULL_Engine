@@ -9,11 +9,14 @@
 enum class MAIN_STATUS
 {
 	CREATION,
+	AWAKE,
 	START,
 	UPDATE,
 	FINISH,
 	EXIT
 };
+
+Application* App = NULL;
 
 int main(int argc, char ** argv)
 {
@@ -21,7 +24,6 @@ int main(int argc, char ** argv)
 
 	int main_return = EXIT_FAILURE;
 	MAIN_STATUS state = MAIN_STATUS::CREATION;
-	Application* App = NULL;
 
 	while (state != MAIN_STATUS::EXIT)
 	{

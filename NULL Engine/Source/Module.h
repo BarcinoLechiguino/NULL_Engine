@@ -6,6 +6,8 @@
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
+#include "SDL/include/SDL.h"
+
 #include <vector>
 #include <string>
 
@@ -26,9 +28,14 @@ public:
 	virtual UPDATE_STATUS PostUpdate(float dt);
 	virtual bool CleanUp();
 
+	virtual bool LoadConfiguration(/*Configuration& file*/);					// Will load the configuration of the calling module from a JSON file.
+	virtual bool SaveConfiguration(/*Configuration& file*/) const;				// Will save the current configuration of the calling module in a JSON file.
+
 public:
 	bool GetModuleState() const;							// Will return the current state of the module.
 	bool SetModuleState(bool is_active);					// Will modify the state of the module. Will call Start() or CleanUp() depending on whether it has been activated or deactivated.
+
+	bool IsActive() const;
 
 	const char* GetName() const;							// Will return the name of the module.
 
