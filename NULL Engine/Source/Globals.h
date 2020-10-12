@@ -37,14 +37,22 @@ void log(const char file[], int line, const char* format, ...);
 // Math Definitions
 #define DEGTORAD	0.0174532925199432957f
 #define RADTODEG	57.295779513082320876f
-#define HAVE_M_PI	3.141592653589f
+#define PI			3.14159265358979323846f
+#define TWO_PI		6.28318530717958647692f
+#define HALF_PI		1.57079632679489661923f
+#define QUARTER_PI	0.78539816339744830961f
+#define INV_PI		0.31830988618379067154f
+#define INV_TWO_PI	0.15915494309189533576f
+#define HAVE_M_PI
+
+// Physics Definitions
 #define GRAVITY		9.80665f					// Change later to 3D vector.
 
 // String Size Definitions
-#define SHORT_STRING 32
-#define MEDIUM_STRING 512
-#define LARGE_STRING 2048
-#define HUGE_STRING 10240
+#define SHORT_STRING	32
+#define MEDIUM_STRING	512
+#define LARGE_STRING	2048
+#define HUGE_STRING		10240
 
 // Type Definitions
 typedef unsigned char uchar;
@@ -60,18 +68,32 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 	THROW_ERROR
 };
 
-// Configuration -----------
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
-#define SCREEN_SIZE 1
-#define WIN_MAXIMIZED false
-#define WIN_FULLSCREEN false
-#define WIN_RESIZABLE true
-#define WIN_BORDERLESS false
-#define WIN_FULLSCREEN_DESKTOP false
-#define VSYNC true
-#define TITLE "NULL Engine"
-#define ORGANIZATION "UPC"
+// Configuration ------------------------------------
+#define SCREEN_WIDTH			1024
+#define SCREEN_HEIGHT			768
+#define SCREEN_SIZE				1
+
+#define WIN_MAXIMIZED			false
+#define WIN_FULLSCREEN			false
+#define WIN_RESIZABLE			true
+#define WIN_BORDERLESS			false
+#define WIN_FULLSCREEN_DESKTOP	false
+#define VSYNC					true
+
+#define TITLE					"NULL Engine"
+#define ORGANIZATION			"UPC - CITM - TTC"
+
+// File Directories ---------------------------------					// Necessary as a global definition?
+#define LIBRARY_PATH			"Library/"
+#define ANIMATIONS_PATH			"Library/Animations/"
+#define BONES_PATH				"Library/Bones/"
+#define FOLDERS_PATH			"Library/Folders/"
+#define MATERIALS_PATH			"Library/Materials/"
+#define MESHES_PATH				"Library/Meshes/"
+#define MODELS_PATH				"Library/Models/"
+#define PARTICLES_PATH			"Library/Particles/"
+#define SCENES_PATH				"Library/Scenes/"
+#define SHADERS_PATH			"Library/Shaders/"
 
 // Deletes a buffer
 #define RELEASE( x )			\

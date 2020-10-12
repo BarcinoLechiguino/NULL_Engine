@@ -73,6 +73,9 @@
     <Filter Include="SourceCode\Tools\Timers">
       <UniqueIdentifier>{8383af2d-812c-46ce-988c-4cfcc424cdba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\PhysFS">
+      <UniqueIdentifier>{5cc0d5d5-b067-4d25-862c-e0dd34bc6fa5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
@@ -92,24 +95,6 @@
     </ClCompile>
     <ClCompile Include="Source\glmath.cpp">
       <Filter>SourceCode\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Module.cpp">
-      <Filter>SourceCode\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ModuleCamera3D.cpp">
-      <Filter>SourceCode\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ModuleInput.cpp">
-      <Filter>SourceCode\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ModuleRenderer3D.cpp">
-      <Filter>SourceCode\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ModuleSceneIntro.cpp">
-      <Filter>SourceCode\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ModuleWindow.cpp">
-      <Filter>SourceCode\Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\Primitive.cpp">
       <Filter>SourceCode\GameObjects</Filter>
@@ -243,6 +228,30 @@
     <ClCompile Include="Source\Timer.cpp">
       <Filter>SourceCode\Tools\Timers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\M_Input.cpp">
+      <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\M_Renderer3D.cpp">
+      <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\M_SceneIntro.cpp">
+      <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\M_Window.cpp">
+      <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module.cpp">
+      <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\M_FileSystem.cpp">
+      <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\M_Camera3D.cpp">
+      <Filter>SourceCode\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PathNode.cpp">
+      <Filter>SourceCode\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -259,24 +268,6 @@
     </ClInclude>
     <ClInclude Include="Source\glmath.h">
       <Filter>SourceCode\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Module.h">
-      <Filter>SourceCode\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ModuleCamera3D.h">
-      <Filter>SourceCode\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ModuleInput.h">
-      <Filter>SourceCode\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ModuleRenderer3D.h">
-      <Filter>SourceCode\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ModuleSceneIntro.h">
-      <Filter>SourceCode\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ModuleWindow.h">
-      <Filter>SourceCode\Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\Primitive.h">
       <Filter>SourceCode\GameObjects</Filter>
@@ -520,6 +511,33 @@
     </ClInclude>
     <ClInclude Include="Source\ImGui.h">
       <Filter>SourceCode\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\PhysFS\include\physfs.h">
+      <Filter>Dependencies\PhysFS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_Input.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_Renderer3D.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_SceneIntro.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_Window.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_FileSystem.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_Camera3D.h">
+      <Filter>SourceCode\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PathNode.h">
+      <Filter>SourceCode\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

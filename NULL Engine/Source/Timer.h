@@ -3,6 +3,20 @@
 
 #include "Globals.h"
 
+struct Clock
+{
+	Clock();
+	Clock(uint hours = 0, uchar minutes = 0, float seconds = 0.0f);
+	
+	void AddTime(bool timer_is_active);
+
+	uint	hours;
+	uchar	minutes;
+	float	seconds;
+
+	uint previous_ticks;
+};
+
 class Timer
 {
 public:
@@ -13,6 +27,12 @@ public:
 
 	uint32 Read() const;					// Will return the registered time in milliseconds.
 	float ReadSec() const;					// Will return the registered time in seconds.
+
+	bool IsActive() const;
+	void AddTimeToClock();
+
+public:
+	Clock	clock;
 
 private:
 	bool	running;						// Will keep track of whether or not the timer is still active.

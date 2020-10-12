@@ -1,14 +1,16 @@
 #include "Application.h"
-#include "ModuleWindow.h"
-#include "ModuleRenderer3D.h"
+#include "M_Window.h"
+#include "M_Renderer3D.h"
 #include "OpenGL.h"
 #include "ImGui.h"
+
+#include "ImGui/imgui_internal.h"
 
 #include "M_Editor.h"
 
 #pragma comment (lib, "Source/Dependencies/glew/libx86/glew32.lib")
 
-M_Editor::M_Editor() : Module("Editor", true)
+M_Editor::M_Editor(bool is_active) : Module("Editor", is_active)
 {
 
 }
@@ -18,10 +20,10 @@ M_Editor::~M_Editor()
 
 }
 
-bool M_Editor::Init()
+bool M_Editor::Init(Configuration& config)
 {
 	bool ret = true;
-	
+
 	return ret;
 }
 
@@ -53,7 +55,7 @@ bool M_Editor::Start()
 	}
 
 	// Setting up Platfor/Renderer bindings
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init(0);
 
 	// Initializing some variables
@@ -61,8 +63,10 @@ bool M_Editor::Start()
 	show_another_window = false;
 	clear_color = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
 
+	current_style = (int)IMGUI_STYLE::DARK;
+
 	f = 0.0f;
-	counter = 0;
+	counter = 0; 
 	// ----------------------------------------------------
 	
 	return ret;
@@ -71,7 +75,7 @@ bool M_Editor::Start()
 UPDATE_STATUS M_Editor::PreUpdate(float dt)
 {
 	UPDATE_STATUS ret = UPDATE_STATUS::CONTINUE;
-	
+
 	return ret;
 }
 
@@ -137,6 +141,22 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 		ImGui::Text("This text has been brought to you by Euro Shave Club.");	// Will create a label. Can also use format strings.
 		ImGui::Checkbox("ImGui Demo Window", &show_demo_window);			// Checkbox that will modify the bool that it gets passed as argument.
 		ImGui::Checkbox("Sneaky Window", &show_another_window);
+
+		const char* styles[] = { "Classic", "Light", "Dark", "TBD" };
+		ImGui::Combo("ImGui Style", &current_style, styles, IM_ARRAYSIZE(styles));
+
+		if (current_style == (int)IMGUI_STYLE::CLASSIC)
+		{
+			ImGui::StyleColorsClassic();
+		}
+		else if (current_style == (int)IMGUI_STYLE::LIGHT)
+		{
+			ImGui::StyleColorsLight();
+		}
+		else if (current_style == (int)IMGUI_STYLE::DARK)
+		{
+			ImGui::StyleColorsDark();
+		}
 
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);				// Will create a slider that will be able to edit 1 variable from 0.0f to 1.0f.
 		ImGui::ColorEdit3("clear color", (float*)&clear_color);		// Will create 3 sliders in a row that will represent a colour (RGB).

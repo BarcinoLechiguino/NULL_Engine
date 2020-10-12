@@ -4,24 +4,37 @@
 #include "ImGui/imgui.h"
 #include "Module.h"
 
+class Configuration;
+
+enum class IMGUI_STYLE
+{
+	CLASSIC,
+	LIGHT,
+	DARK,
+	OTHER
+};
+
 class M_Editor : public Module
 {
 public:
-	M_Editor();
+	M_Editor(bool is_active = true);
 	~M_Editor();
 
-	bool Init();
-	bool Start();
-	UPDATE_STATUS PreUpdate(float dt);
-	UPDATE_STATUS Update(float dt);
-	UPDATE_STATUS PostUpdate(float dt);
-	bool CleanUp();
+	bool Init(Configuration& config) override;
+	bool Start() override;
+	UPDATE_STATUS PreUpdate(float dt) override;
+	UPDATE_STATUS Update(float dt) override;
+	UPDATE_STATUS PostUpdate(float dt) override;
+	bool CleanUp() override;
 
 public:
 	ImGuiIO io;
 	bool show_demo_window;
 	bool show_another_window;
 	ImVec4 clear_color;
+
+	int current_style;
+	const char* styles;
 
 	float f;
 	int counter;

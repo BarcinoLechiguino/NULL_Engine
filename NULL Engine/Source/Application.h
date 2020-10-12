@@ -7,14 +7,16 @@
 #include "Globals.h"
 #include "Timer.h"
 #include "PerfectTimer.h"
+#include "Configuration.h"
 
-class Module;
-class ModuleWindow;
-class ModuleInput;
-class ModuleSceneIntro;
-class ModuleRenderer3D;
+class Module;												// Modules are forward declared in call order.
+class M_Window;
+class M_Input;
+class M_SceneIntro;
+class M_Renderer3D;
 class M_Editor;
-class ModuleCamera3D;
+class M_Camera3D;
+class M_FileSystem;
 
 class Application
 {
@@ -49,12 +51,13 @@ private:
 
 public:
 	// Modules
-	ModuleWindow*			window;
-	ModuleInput*			input;
-	ModuleSceneIntro*		scene_intro;
-	ModuleRenderer3D*		renderer3D;
+	M_Window*				window;
+	M_Input*				input;
+	M_SceneIntro*			scene_intro;
+	M_Renderer3D*			renderer;
 	M_Editor*				editor;
-	ModuleCamera3D*			camera;
+	M_Camera3D*				camera;
+	M_FileSystem*			file_system;
 
 	bool					debug;
 	bool					renderPrimitives;
@@ -73,10 +76,12 @@ public:
 private:
 	std::vector<Module*>	modules;						// Vector that will contain all the modules. Will be iterated to go through each state of each module.
 
-	std::string				title;							// Window title string. In this case the name of the Game Engine.
+	std::string				engine_name;							// Window title string. In this case the name of the Game Engine.
 	std::string				organization;
 
 	// Load & Save Config
+	Configuration			config;							// Interface class that will be used to modify .json files with the parson library.
+	
 	bool					want_to_load;					// Will keep track of whether or not the user wants to load a configuration.
 	bool					want_to_save;					// Will keep track of whether or not the user wants to save a configuration.
 	std::string				load_config_file;				// Will store the name string of the configuration file to be loaded.

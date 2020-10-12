@@ -3,12 +3,13 @@
 #include <memory>				//Smart pointers
 
 #include "Module.h"
-#include "ModuleWindow.h"
-#include "ModuleInput.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleRenderer3D.h"
+#include "M_Window.h"
+#include "M_Input.h"
+#include "M_SceneIntro.h"
+#include "M_Renderer3D.h"
 #include "M_Editor.h"
-#include "ModuleCamera3D.h"
+#include "M_Camera3D.h"
+#include "M_FileSystem.h"
 
 #include "Application.h"
 
@@ -16,10 +17,40 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.0f)
 {
 	PERF_TIMER_START(perf_timer);
 	
+	// Modules -----------------------------------
+	window			= new M_Window();
+	input			= new M_Input();
+	scene_intro		= new M_SceneIntro();
+	editor			= new M_Editor();
+	renderer		= new M_Renderer3D();
+	camera			= new M_Camera3D();
+	file_system		= new M_FileSystem();
+
+	// The order of calls is very important!
+	// Modules will Init() Start() and Update in this order
+	// They will CleanUp() in reverse order
+
+	// Main Modules
+	AddModule(window);
+	AddModule(camera);
+	AddModule(input);
+	AddModule(file_system);
+
+	// Scenes
+	AddModule(scene_intro);
+
+	AddModule(editor);
+
+	// Renderer last!
+	AddModule(renderer);
+	// -------------------------------------------
+
+	// Save/Load variables
 	want_to_load			= false;
 	want_to_save			= false;
 	user_has_saved			= false;
 
+	// Framerate variables
 	frame_cap				= 0;
 	seconds_since_startup	= 0.0f;
 	frames_are_capped		= true;
@@ -30,31 +61,7 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.0f)
 	dt						= 0.0f;
 	display_framerate_data	= false;
 
-	pause = false;
-	
-	window			= new ModuleWindow();
-	input			= new ModuleInput();
-	scene_intro		= new ModuleSceneIntro();
-	editor			= new M_Editor();
-	renderer3D		= new ModuleRenderer3D();
-	camera			= new ModuleCamera3D();
-
-	// The order of calls is very important!
-	// Modules will Init() Start() and Update in this order
-	// They will CleanUp() in reverse order
-
-	// Main Modules
-	AddModule(window);
-	AddModule(camera);
-	AddModule(input);
-	
-	// Scenes
-	AddModule(scene_intro);
-
-	AddModule(editor);
-
-	// Renderer last!
-	AddModule(renderer3D);
+	pause					= false;
 
 	PERF_TIMER_PEEK(perf_timer);
 }
@@ -82,8 +89,11 @@ bool Application::Init()
 	
 	if (ret)																// Check if the configuration is empty and load the default configuration for the engine.
 	{
-		title				= ("NULL Engine");
-		organization		= ("UPC");
+		//const char* buffer = "Configuration";
+		//config = Configuration(buffer);
+		
+		engine_name			= TITLE;
+		organization		= ORGANIZATION;
 		frame_cap			= 60;
 		frames_are_capped	= true;
 	}
@@ -92,7 +102,7 @@ bool Application::Init()
 
 	while (item != modules.end() && ret)
 	{
-		ret = (*item)->Init(/*Load configuration for the module*/);		// Use init as Awake()?
+		ret = (*item)->Init(config);		// Use init as Awake()?
 		++item;
 	}
 	
@@ -290,7 +300,7 @@ void Application::FinishUpdate()
 		prev_sec_frame_count = frames_last_second;
 		frames_last_second = 0;
 
-		LOG("%d frames last second", prev_sec_frame_count);
+		//LOG("%d frames last second", prev_sec_frame_count);
 	}
 	
 	// Frame cap and delay.
@@ -315,21 +325,21 @@ void Application::FinishUpdate()
 	float avg_fps					= frame_count / startup_timer.ReadSec();
 	uint32 last_frame_ms			= frame_timer.Read();
 	uint32 frames_on_last_update	= prev_sec_frame_count;
-	seconds_since_startup			= startup_timer.ReadSec();
-
+	//seconds_since_startup			= startup_timer.ReadSec();
+	startup_timer.AddTimeToClock();
 	
 	if (display_framerate_data)
 	{
-		static char title[256];
+		static char framerate_data[256];
 
-		sprintf_s(title, 256, "Av.FPS: %.2f / Last Frame Ms: %02u / Last sec frames: %i / Last dt: %.3f / Time since startup: %.3f / Frame Count: %llu",
-			avg_fps, last_frame_ms, frames_on_last_update, dt, seconds_since_startup, frame_count);
+		sprintf_s(framerate_data, 256, "Av.FPS: %.2f / Last Frame Ms: %02u / Last sec frames: %i / Last dt: %.3f / Time since startup: %dh %dm %.3fs / Frame Count: %llu",
+			avg_fps, last_frame_ms, frames_on_last_update, dt, startup_timer.clock.hours, startup_timer.clock.minutes, startup_timer.clock.seconds/*seconds_since_startup*/, frame_count);
 
-		App->window->SetTitle(title);
+		App->window->SetTitle(framerate_data);
 	}
 	else
 	{
-		App->window->SetTitle(title.c_str());
+		App->window->SetTitle(engine_name.c_str());
 	}
 }
 // ---------------------------------------------
