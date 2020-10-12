@@ -366,6 +366,16 @@ float Application::GetUnpausableDt() const
 	return dt;
 }
 
+const char* Application::GetEngineName() const
+{
+	return engine_name.c_str();
+}
+
+const char* Application::GetOrganizationName() const
+{
+	return organization.c_str();
+}
+
 void Application::LoadConfiguration(const char* file)
 {
 	want_to_load = true;

@@ -30,7 +30,7 @@ public:
 	void CreateLibraryDirectories();														// Will call CreateDir() to create all the required directories in the same method.
 	bool CreateDir(const char* directory);													// Will create a directory. This directory will be used by PhysFS.
 	bool IsDirectory(const char* file) const;												// Will check whether or not the given directory is a PhysFS directory already (See above).
-	const char* GetWriteDirectory() const;													// Will return a path where PhysFS will allow file writting. Gets the current write directory.
+	const char* GetWriteDirectory() const;													// Will return a path where PhysFS will allow file writing. Gets the current write directory.
 	void GetRealDirectory(const char* path, std::string& output) const;						// Will return the real directory path of the given path as the output.
 	std::string GetPathRelativeToAssets(const char* original_path) const;					// Will get the path relative to the assets from the given path.
 
@@ -49,7 +49,7 @@ public:
 	uint Load(const char* path, const char* file, char** buffer) const;						// Adds the file string to the path string and calls the below Load method.
 	uint Load(const char* file, char** buffer) const;										// Will open the given file for reading and will store the read data in the given buffer.
 	
-	uint Save(const char* file, const void* buffer, uint size, bool append = false) const;	// Will open the given file for writting and will write in it the data stored in the given buffer.
+	uint Save(const char* file, const void* buffer, uint size, bool append = false) const;	// Will open the given file for writing and will write in it the data stored in the given buffer.
 
 	bool DuplicateFile(const char* file, const char* destination_folder, std::string& relative_path);	// Will get the dst file string to which duplicate the file and call the method below.
 	bool DuplicateFile(const char* source_file, const char* destination_file);							// Reads all the data inside the source file and writes it in the destination file.

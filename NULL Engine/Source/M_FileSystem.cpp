@@ -3,6 +3,7 @@
 
 #include "PhysFS/include/physfs.h"
 
+#include "Application.h"
 #include "Globals.h"
 #include "PathNode.h"
 
@@ -12,17 +13,44 @@
 
 M_FileSystem::M_FileSystem(bool is_active) : Module("File_System", is_active)
 {
+	// Needs to be created before Init() so other modules are able to use it.
+	char* base_path = SDL_GetBasePath();													// SDL_GetBasePath() returns the path where the application resides (Dir where it was run from).
+	PHYSFS_init(nullptr);																	// Method that initializes the PhysFS library. Must be called before any other PhysFS method.
+	SDL_free(base_path);																	// Frees the base path.
 
+	// Setting the working directory as the writing directory.
+	PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_setWriteDir(".");							// Method that tells where PhysFS can write files. Sets a new write dir with the given one.
+	if (result == PHYSFS_RESULT::FAILURE)
+	{
+		LOG("[error] File System error while creating write dir: %s\n", PHYSFS_getLastError());
+	}
+
+	AddPath(".");																			// Adding the ProjectFolder path (working directory path).
+	AddPath("Assets");																		// Adding the Assets Folder path.
+	CreateLibraryDirectories();																// Creates all the library directories.
 }
 
 M_FileSystem::~M_FileSystem()
 {
-
+	PHYSFS_deinit();																		// Deinitializes the PhysFS library. Cleans everything related to the library.
 }
 
 bool M_FileSystem::Init(Configuration& config)
 {
+	LOG("Loading File System")
+	
 	bool ret = true;
+
+	char* write_path = SDL_GetPrefPath(App->GetOrganizationName(), App->GetEngineName());	// SDL_GetPrefPath() returns the user-and-app-specific path where files can be written.
+
+	// Turn this on while in game mode
+	/*PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_setWriteDir(write_path);
+	if (result == PHYSFS_RESULT::FAILURE)
+	{
+		LOG("[error] File System error while creating write dir: %s\n", PHYSFS_getLastError());
+	}*/
+
+	SDL_free(write_path);
 	
 	return ret;
 }
@@ -101,7 +129,7 @@ bool M_FileSystem::IsDirectory(const char* file) const
 
 const char* M_FileSystem::GetWriteDirectory() const
 {
-	return PHYSFS_getWriteDir();															// Method that returns a path where PhysFS will allow file writting. Returns NULL by default.
+	return PHYSFS_getWriteDir();															// Method that returns a path where PhysFS will allow file writing. Returns NULL by default.
 }
 
 void M_FileSystem::GetRealDirectory(const char* path, std::string& output) const
@@ -393,7 +421,7 @@ uint M_FileSystem::Save(const char* file, const void* buffer, uint size, bool ap
 	}
 	else
 	{
-		fs_file = PHYSFS_openWrite(file);													// Method that opens the given file for writting.
+		fs_file = PHYSFS_openWrite(file);													// Method that opens the given file for writing.
 	}
 
 	if (fs_file != nullptr)
@@ -403,7 +431,7 @@ uint M_FileSystem::Save(const char* file, const void* buffer, uint size, bool ap
 
 		if (written != size)																// Checks whether or not all the data has been written.
 		{
-			LOG("[error] File System error while writting to file %s: %s", file, PHYSFS_getLastError());
+			LOG("[error] File System error while writing to file %s: %s", file, PHYSFS_getLastError());
 		}
 		else
 		{

@@ -35,6 +35,9 @@ public:
 	float GetDt() const;
 	float GetUnpausableDt() const;
 
+	const char* GetEngineName() const;
+	const char* GetOrganizationName() const;
+
 	void LoadConfiguration(const char* file);
 	void SaveConfiguration(const char* file);
 

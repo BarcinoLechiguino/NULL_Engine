@@ -1,6 +1,27 @@
 ﻿  Application.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
 C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\SDL\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
+  M_Camera3D.cpp
+  M_Editor.cpp
   M_FileSystem.cpp
+  The contents of <filesystem> are available only with C++17 or later.
+  M_Input.cpp
+  M_Renderer3D.cpp
+  M_SceneIntro.cpp
+  M_Window.cpp
+  Main.cpp
+  Module.cpp
+  Primitive.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(218,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(219,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(219,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(228,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(229,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(229,36): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(237,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(239,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(239,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(240,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(240,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
   Generating Code...
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe
