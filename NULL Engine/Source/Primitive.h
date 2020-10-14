@@ -1,5 +1,6 @@
+#ifndef __PRIMITIVE_H__
+#define __PRIMITIVE_H__
 
-#pragma once
 #include "glmath.h"
 #include "Color.h"
 
@@ -21,10 +22,10 @@ public:
 	void Update();
 	virtual void	Render() const;
 	void			SetPos(float x, float y, float z);
+	vec3			GetPos() const;
 	void			SetRotation(float angle, const vec3 &u);
 	void			Scale(float x, float y, float z);
 	PrimitiveTypes	GetType() const;
-
 
 	Color color;
 	mat4x4 transform;
@@ -42,10 +43,25 @@ public :
 	Cube(const vec3& size = vec3(1.f,1.f,1.f), float mass = 1.f);
 
 	vec3 GetSize() const;
+
+public:
+	void DirectRender() const;
+	void ArrayRender();
+	void IndicesRender();
+
+	void ApplyTransform(float* coordinates, int array_size);
+	void ApplySize(float* coordinates, int array_size);
+
 protected:
-	void InnerRender() const;
+	//void DirectRender() const;
+	//void ArrayRender();
+	//void IndicesRender();
+
 private:
 	vec3 size;
+
+	bool loaded_in_array;
+	bool loaded_in_indices;
 };
 
 // ============================================
@@ -105,3 +121,30 @@ protected:
 private:
 	vec3 normal;
 };
+
+// ============================================
+class PrimitiveDrawExamples : public Primitive
+{
+public:
+	PrimitiveDrawExamples();
+	PrimitiveDrawExamples(float size, vec3 origin);
+
+	void GL_PointsExample			(int index = 0);
+	void GL_LinesExample			(int index = 1);
+	void GL_LineStripExample		(int index = 2);
+	void GL_LineLoopExample			(int index = 3);
+	void GL_PolygonExample			(int index = 4);
+	void GL_TrianglesExample		(int index = 5);
+	void GL_TriangleStripExample	(int index = 6);
+	void GL_TriangleFanExample		(int index = 7);
+	void GL_QuadsExample			(int index = 8);
+	void GL_QuadStripExample		(int index = 9);
+
+	void DrawAllExamples();								// All examples are drawn in Direct Mode.
+
+public:
+	vec3 origin;
+	float size;											//Just used to scale everything uniformly.
+};
+
+#endif // !__PRIMITIVE_H__

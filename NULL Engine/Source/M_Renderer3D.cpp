@@ -2,7 +2,10 @@
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Camera3D.h"
+#include "Primitive.h"
 #include "OpenGL.h"
+
+#include "M_Input.h"
 
 #include "M_Renderer3D.h"
 
@@ -133,7 +136,43 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 
 // PostUpdate present buffer to screen
 UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
-{
+{	
+	//OGL_draw_examples.DrawAllExamples();
+
+	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+	//cube_direct.DirectRender();
+
+	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+	//cube_array.ArrayRender();
+
+	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+	
+	vec3 position = cube_indices.GetPos();
+
+	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_DOWN)
+	{	
+		position += vec3(0.0f, 1.0f, 0.0f);
+
+		cube_indices.SetPos(position.x, position.y, position.z);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
+	{
+		cube_indices.SetPos(position.x - 1.0f, position.y, position.z);
+	}
+	else if(App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
+	{
+		cube_indices.SetPos(position.x, position.y - 1.0f, position.z);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN)
+	{
+		cube_indices.SetPos(position.x + 1.0f, position.y, position.z);
+	}
+
+	cube_indices.IndicesRender();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_STATUS::CONTINUE;
 }

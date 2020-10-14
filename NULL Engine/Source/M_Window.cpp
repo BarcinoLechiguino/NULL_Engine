@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
+
 #include "M_Window.h"
 
 M_Window::M_Window(bool is_active) : Module("Window", is_active)

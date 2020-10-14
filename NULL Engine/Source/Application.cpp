@@ -86,11 +86,20 @@ bool Application::Init()
 	LOG("Application Init --------------");
 
 	bool ret = true;
+
+	char* buffer = nullptr;
+
+	uint size = file_system->Load("Configuration/configuration.JSON", &buffer);
 	
-	if (ret)																// Check if the configuration is empty and load the default configuration for the engine.
+	if (size <= 0)																	// Check if the configuration is empty and load the default configuration for the engine.
 	{
-		//const char* buffer = "Configuration";
-		//config = Configuration(buffer);
+		uint default_size = file_system->Load("Configuration/default_configuration.JSON", &buffer);
+
+		if (default_size <= 0)
+		{
+			LOG("[error] Failed to load project settings.");
+			return false;
+		}
 		
 		engine_name			= TITLE;
 		organization		= ORGANIZATION;
@@ -98,11 +107,14 @@ bool Application::Init()
 		frames_are_capped	= true;
 	}
 
+	Configuration config(buffer);
+	Configuration node = config.GetNode("EditorState");
+
 	std::vector<Module*>::iterator item = modules.begin();
 
 	while (item != modules.end() && ret)
 	{
-		ret = (*item)->Init(config);		// Use init as Awake()?
+		ret = (*item)->Init(node.GetNode((*item)->GetName()));		// Constructs and gives every module a handle for their own configuration node. M_Input -> "Input".
 		++item;
 	}
 	

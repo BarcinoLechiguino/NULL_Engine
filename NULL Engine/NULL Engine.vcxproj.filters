@@ -76,6 +76,12 @@
     <Filter Include="Dependencies\PhysFS">
       <UniqueIdentifier>{5cc0d5d5-b067-4d25-862c-e0dd34bc6fa5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SourceCode\ConfigurationFiles">
+      <UniqueIdentifier>{a1d95bfc-501e-4e7e-8565-32b3471c7ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\Assimp">
+      <UniqueIdentifier>{6aa303e1-6694-4757-8209-ffed78b5ee7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
@@ -251,6 +257,9 @@
     </ClCompile>
     <ClCompile Include="Source\PathNode.cpp">
       <Filter>SourceCode\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Importer.cpp">
+      <Filter>SourceCode\Importers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -539,6 +548,18 @@
     <ClInclude Include="Source\PathNode.h">
       <Filter>SourceCode\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Importer.h">
+      <Filter>SourceCode\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\Assimp\include\cimport.h">
+      <Filter>Dependencies\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\Assimp\include\postprocess.h">
+      <Filter>Dependencies\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\Assimp\include\scene.h">
+      <Filter>Dependencies\Assimp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Dependencies\MathGeoLib\src\Geometry\KDTree.inl">
@@ -558,6 +579,12 @@
     </None>
     <None Include="Source\Dependencies\MathGeoLib\src\Math\Matrix.inl">
       <Filter>Dependencies\MathGeoLib\Math</Filter>
+    </None>
+    <None Include="Resources\Configuration\configuration.JSON">
+      <Filter>SourceCode\ConfigurationFiles</Filter>
+    </None>
+    <None Include="Resources\Configuration\default_configuration.JSON">
+      <Filter>SourceCode\ConfigurationFiles</Filter>
     </None>
   </ItemGroup>
 </Project>

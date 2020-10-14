@@ -11,7 +11,7 @@
 
 #pragma comment (lib, "Source/Dependencies/PhysFS/libx86/physfs.lib")
 
-M_FileSystem::M_FileSystem(bool is_active) : Module("File_System", is_active)
+M_FileSystem::M_FileSystem(bool is_active) : Module("FileSystem", is_active)
 {
 	// Needs to be created before Init() so other modules are able to use it.
 	char* base_path = SDL_GetBasePath();													// SDL_GetBasePath() returns the path where the application resides (Dir where it was run from).
@@ -25,7 +25,7 @@ M_FileSystem::M_FileSystem(bool is_active) : Module("File_System", is_active)
 		LOG("[error] File System error while creating write dir: %s\n", PHYSFS_getLastError());
 	}
 
-	AddPath(".");																			// Adding the ProjectFolder path (working directory path).
+	AddPath(".");																			// Adding the ProjectFolder path (working directory path). 
 	AddPath("Assets");																		// Adding the Assets Folder path.
 	CreateLibraryDirectories();																// Creates all the library directories.
 }

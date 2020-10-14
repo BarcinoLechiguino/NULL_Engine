@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Importer.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Configuration.cpp" />
@@ -71,9 +72,13 @@
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Importer.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Configuration.h" />
+    <ClInclude Include="Source\Dependencies\Assimp\include\cimport.h" />
+    <ClInclude Include="Source\Dependencies\Assimp\include\postprocess.h" />
+    <ClInclude Include="Source\Dependencies\Assimp\include\scene.h" />
     <ClInclude Include="Source\Dependencies\glew\include\eglew.h" />
     <ClInclude Include="Source\Dependencies\glew\include\glew.h" />
     <ClInclude Include="Source\Dependencies\glew\include\glxew.h" />
@@ -168,6 +173,8 @@
     <ClInclude Include="Source\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Configuration\configuration.JSON" />
+    <None Include="Resources\Configuration\default_configuration.JSON" />
     <None Include="Source\Dependencies\MathGeoLib\src\Geometry\KDTree.inl" />
     <None Include="Source\Dependencies\MathGeoLib\src\Geometry\QuadTree.inl" />
     <None Include="Source\Dependencies\MathGeoLib\src\Geometry\TriangleMesh_IntersectRay_AVX.inl" />

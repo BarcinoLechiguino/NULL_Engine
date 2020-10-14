@@ -1,8 +1,12 @@
-#pragma once
+#ifndef __M_RENDERER_3D_H__
+#define __M_RENDERER_3D_H__
+
 #include "Module.h"
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
+
+#include "Primitive.h"														// REMOVE LATER
 
 #include "ImGui/imgui.h"
 
@@ -29,4 +33,11 @@ public:
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ProjectionMatrix;
+
+	PrimitiveDrawExamples OGL_draw_examples;								// REMOVE LATER
+	Cube cube_direct;
+	Cube cube_array;
+	Cube cube_indices;
 };
+
+#endif // !__M_RENDERER_3D_H__
