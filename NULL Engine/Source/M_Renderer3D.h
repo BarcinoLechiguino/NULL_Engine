@@ -28,6 +28,8 @@ public:
 public:
 	void OnResize(int width, int height);
 
+	void PrimitiveExamples();												// REMOVE LATER
+
 public:
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
@@ -38,6 +40,8 @@ public:
 	Cube cube_direct;
 	Cube cube_array;
 	Cube cube_indices;
+	Sphere sphere;															
+	Pyramid pyramid;														// ------------
 };
 
 #endif // !__M_RENDERER_3D_H__

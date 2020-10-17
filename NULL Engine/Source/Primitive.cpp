@@ -7,15 +7,14 @@
 #include "OpenGL.h"
 #include "Globals.h"
 #include "Primitive.h"
-#include "Globals.h"
 #include "Application.h"
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
+Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::P_POINT)
 {}
 
 // ------------------------------------------------------------
-PrimitiveTypes Primitive::GetType() const
+PRIMITIVE_TYPES Primitive::GetType() const
 {
 	return type;
 }
@@ -120,7 +119,7 @@ void Primitive::Scale(float x, float y, float z)
 
 Cube::Cube(const vec3& _size, float mass) : Primitive(), size(_size), loaded_in_array(false), loaded_in_indices(false)
 {
-	type = PrimitiveTypes::Primitive_Cube;
+	type = PRIMITIVE_TYPES::CUBE;
 }
 
 vec3 Cube::GetSize() const
@@ -269,7 +268,6 @@ void Cube::ArrayRender()
 		glBindBuffer(GL_ARRAY_BUFFER, my_id);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, cube_vertex_coords, GL_STATIC_DRAW);
 
-		/*if (my_id > 0) {}*/
 		loaded_in_array = true;
 	}
 
@@ -277,47 +275,17 @@ void Cube::ArrayRender()
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	
-	if (!loaded_in_indices)
-	{
-		//glBindBuffer(GL_ARRAY_BUFFER, my_id);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void Cube::IndicesRender()
 {	
-	//uint my_id = 0;
-
-	//const uint array_size = 24;						// 8 vertex by 3 coordinates per vertex.
-
-	//float cube_vertex_coords[array_size] =			// Being ABCDEFGH all the vertex in a Cube. Starting at the front bottom left and ending at the back top right.
-	//{
-	//	// --- (0.0f, 0.0f, 0.0f) AS THE CENTER
-	//	-1.0f, -1.0f,  1.0f,						// A --- i = 0
-	//	 1.0f, -1.0f,  1.0f,						// B --- i = 1
-	//	-1.0f,  1.0f,  1.0f,						// C --- i = 2
-	//	 1.0f,  1.0f,  1.0f,						// D --- i = 3
-	//	-1.0f, -1.0f, -1.0f,						// E --- i = 4
-	//	 1.0f, -1.0f, -1.0f,						// F --- i = 5
-	//	-1.0f,  1.0f, -1.0f,						// G --- i = 6
-	//	 1.0f,  1.0f, -1.0f							// H --- i = 7
-	//};
-
-	//ApplyTransform(cube_vertex_coords, array_size);
-	//ApplySize(cube_vertex_coords, array_size);
-
-	//glGenBuffers(1, (GLuint*)&my_id);
-	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, cube_vertex_coords, GL_STATIC_DRAW);
-
 	if (!loaded_in_indices)
 	{
-		uint my_id = 0;
-
 		const uint array_size = 24;						// 8 vertex by 3 coordinates per vertex.
-
+		
 		float cube_vertex_coords[array_size] =			// Being ABCDEFGH all the vertex in a Cube. Starting at the front bottom left and ending at the back top right.
 		{
 			// --- (0.0f, 0.0f, 0.0f) AS THE CENTER
@@ -333,8 +301,6 @@ void Cube::IndicesRender()
 
 		ApplyTransform(cube_vertex_coords, array_size);
 		ApplySize(cube_vertex_coords, array_size);
-		
-		uint my_indices = 0;
 
 		uint indices[36] =
 		{
@@ -354,13 +320,16 @@ void Cube::IndicesRender()
 			1, 0, 5,				//BAF
 			
 			2, 3, 6,				//CDG
-			3, 7, 6					//DHG
+			3, 7, 6,				//DHG
 		};
+
+		uint my_id = 0;
+		uint my_indices = 0;
 
 		glGenBuffers(1, (GLuint*)&my_id);
 		glBindBuffer(GL_ARRAY_BUFFER, my_id);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, cube_vertex_coords, GL_STATIC_DRAW);
-		
+
 		glGenBuffers(1, (GLuint*)&my_indices);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, indices, GL_STATIC_DRAW);
@@ -368,69 +337,55 @@ void Cube::IndicesRender()
 		loaded_in_indices = true;
 	}
 
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
+	//glRotatef(angle, x, y, z);
+	//glScalef(x, y, z);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
 }
 
 void Cube::ApplyTransform(float* coordinates, int array_size)
 {
 	vec3 position = GetPos();
-	
-	int j = 0;
+
 	for (int i = 0; i < array_size; ++i)
 	{
-		if (j == 0)
-		{
-			coordinates[i] += position.x;
-			++j;
-		}
-		else if (j == 1)
-		{
-			coordinates[i] += position.y;
-			++j;
-		}
-		else
-		{
-			coordinates[i] += position.z;
-			j = 0;
-		}
+		coordinates[i]		+= position.x;
+		coordinates[++i]	+= position.y;
+		coordinates[++i]	+= position.z;
 	}
 }
 
 void Cube::ApplySize(float* coordinates, int array_size)
 {
-	int j = 0;
 	for (uint i = 0; i < array_size; ++i)					// Resizing the cube according to the size parameter.
 	{
-		if (j == 0)
-		{
-			coordinates[i] *= size.x * 0.5f;
-			j++;
-		}
-		else if (j == 1)
-		{
-			coordinates[i] *= size.y * 0.5f;
-			j++;
-		}
-		else
-		{
-			coordinates[i] *= size.z * 0.5f;
-			j = 0;
-		}
+		coordinates[i]		*= size.x * 0.5f;
+		coordinates[++i]	*= size.y * 0.5f;
+		coordinates[++i]	*= size.z * 0.5f;
 	}
 }
 
 // SPHERE ============================================
 
-Sphere::Sphere(float _radius, float mass) : Primitive(), radius(_radius)
+/*Sphere::Sphere(float _radius, float mass) : Primitive(), radius(_radius), rings(1), sectors(1), loaded_buffers(false)
 {
-	type = PrimitiveTypes::Primitive_Sphere;
+	type = PRIMITIVE_TYPES::SPHERE;
+}*/
+
+Sphere::Sphere(float radius, uint rings, uint sectors) : Primitive(), radius(radius), rings(rings), sectors(sectors), loaded_buffers(false)
+{
+	type = PRIMITIVE_TYPES::SPHERE;
 }
 
 float Sphere::GetRadius() const
@@ -438,16 +393,123 @@ float Sphere::GetRadius() const
 	return radius;
 }
 
+uint Sphere::GetRings() const
+{
+	return rings;
+}
+
+uint Sphere::GetSectors() const
+{
+	return sectors;
+}
+
+void Sphere::SetRings(uint rings)
+{
+	this->rings = rings;
+
+	loaded_buffers = false;
+}
+
+void Sphere::SetSectors(uint sectors)
+{
+	this->sectors = sectors;
+
+	loaded_buffers = false;
+}
+
+void Sphere::IndiceRender()
+{	
+	if (!loaded_buffers)
+	{
+		float const ring_constant = 1.0f / (float)(rings - 1);
+		float const sector_constant = 1.0f / (float)(sectors - 1);
+
+		const uint vertices_size	= rings * sectors * 3;											// rings per sectors per ring per 3 coordinates per vertex. Total: rings * sectors * 3;
+		const uint normals_size		= rings * sectors * 3;
+		const uint tex_coords_size	= rings * sectors * 2;
+		const uint indices_size		= rings * sectors * 4;
+
+		vertices.resize(vertices_size);
+		normals.resize(normals_size);
+		tex_coords.resize(tex_coords_size);
+		indices.resize(indices_size);
+
+		std::vector<float>::iterator vert = vertices.begin();
+		std::vector<float>::iterator norm = normals.begin();
+		std::vector<float>::iterator texc = tex_coords.begin();
+		
+		int v = 0;
+		for (int ring = 0; ring < rings; ++ring)
+		{
+			for (int sector = 0; sector < sectors; ++sector)
+			{
+				float const x = cos(2 * PI * sector * sector_constant) * sin(PI * ring * ring_constant);
+				float const y = sin(-HALF_PI + PI * ring * ring_constant);
+				float const z = sin(2 * PI * sector * sector_constant) * sin(PI * ring * ring_constant);
+
+				*vert++ = x * radius;																// Calculating the position coordinates of each vertex
+				*vert++ = y * radius;																// according to the axis, the ring and sector consts
+				*vert++ = z * radius;																// and the radius.
+
+				*norm++ = x;																		// Calculating the normal vector coordinates of each vertex
+				*norm++ = y;																		//
+				*norm++ = z;																		//
+
+				*texc++ = sector * sector_constant;													//
+				*texc++ = ring * ring_constant;														//
+			}
+		}
+
+		std::vector<uint>::iterator ind = indices.begin();
+		for (int ring = 0; ring < rings; ++ring)
+		{
+			for (int sector = 0; sector < sectors; ++sector)
+			{
+				*ind++ = ring * sectors + sector;
+				*ind++ = ring * sectors + (sector + 1);
+				*ind++ = (ring + 1) * sectors + (sector + 1);
+				*ind++ = (ring + 1) * sectors + sector;
+			}
+		}
+
+		uint my_vertices = 0;
+		uint my_indices = 0;
+		
+		glGenBuffers(1, (GLuint*)&my_vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, (GLuint*)&my_indices);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
+		loaded_buffers = true;
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
+}
+
 void Sphere::InnerRender() const
 {
 	//glutSolidSphere(radius, 25, 25);
 }
 
-
 // CYLINDER ============================================
 Cylinder::Cylinder(float radius, float height, float mass) : Primitive(), radius(radius), height(height)
 {
-	type = PrimitiveTypes::Primitive_Cylinder;
+	type = PRIMITIVE_TYPES::CYLINDER;
 }
 
 float Cylinder::GetRadius() const
@@ -503,15 +565,83 @@ void Cylinder::InnerRender() const
 	glPopMatrix();
 }
 
+// PYRAMID ============================================
+Pyramid::Pyramid(vec3 size) : Primitive(), size(size), loaded_in_buffers(false)
+{
+	type = PRIMITIVE_TYPES::PYRAMID;
+}
+
+void Pyramid::IndiceRender()
+{
+	if (!loaded_in_buffers)
+	{
+		/*vertices.resize(15);
+		indices.resize(18);
+
+		// VERTICES ----------------
+		vertices.add();
+		// -------------------------
+
+		// INDICES ----------------
+
+		// ------------------------*/
+
+		float vertices_ex[15] =
+		{
+			 0.0f,  1.015f,  0.0f,		// A --- i = 0		// Height of a given equilateral pyramid: (sqrt(6) / 3) * a; where a is the length of the sides of the base.
+			-1.0f, -0.615f,  1.0f,		// B --- i = 1
+			 1.0f, -0.615f,  1.0f,		// C --- i = 2
+			-1.0f, -0.615f, -1.0f,		// D --- i = 3
+			 1.0f, -0.615f, -1.0f		// E --- i = 4
+		};
+
+		uint indices_ex[18] =
+		{
+			0, 1, 2,					// ABC --- FRONT
+			0, 2, 4,					// ACE --- RIGHT
+			0, 4, 3,					// AED --- BACK
+			0, 3, 1,					// ADB --- LEFT
+
+			1, 3, 4,					// BDE --- BASE
+			1, 4, 2						// BEC ---  -
+		};
+
+		uint my_vertices = 0;
+		uint my_indices = 0;
+
+		glGenBuffers(1, (GLuint*)&my_vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 15, vertices_ex, GL_STATIC_DRAW);
+
+		glGenBuffers(1, (GLuint*)&my_indices);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, indices_ex, GL_STATIC_DRAW);
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
+}
+
 // LINE ==================================================
 Line::Line() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
 {
-	type = PrimitiveTypes::Primitive_Line;
+	type = PRIMITIVE_TYPES::LINE;
 }
 
 Line::Line(const vec3& A, const vec3& B) : Primitive(), origin(A), destination(B)
 {
-	type = PrimitiveTypes::Primitive_Line;
+	type = PRIMITIVE_TYPES::LINE;
 }
 
 vec3 Line::GetOrigin() const
@@ -541,7 +671,7 @@ void Line::InnerRender() const
 // PLANE ==================================================
 Plane::Plane(const vec3& _normal) : Primitive(), normal(_normal)
 {
-	type = PrimitiveTypes::Primitive_Plane;
+	type = PRIMITIVE_TYPES::PLANE;
 }
 
 vec3 Plane::GetNormal() const
@@ -576,6 +706,20 @@ PrimitiveDrawExamples::PrimitiveDrawExamples() : Primitive(), size(1.0f), origin
 PrimitiveDrawExamples::PrimitiveDrawExamples(float size, vec3 origin) : Primitive(), size(size), origin(origin)
 {	
 	transform.translate(origin.x, origin.y, origin.z);
+}
+
+void PrimitiveDrawExamples::DrawAllExamples()
+{
+	GL_PointsExample();
+	GL_LinesExample();
+	GL_LineStripExample();
+	GL_LineLoopExample();
+	GL_PolygonExample();
+	GL_TrianglesExample();
+	GL_TriangleStripExample();
+	GL_TriangleFanExample();
+	GL_QuadsExample();
+	GL_QuadStripExample();
 }
 
 void PrimitiveDrawExamples::GL_PointsExample(int index)
@@ -808,119 +952,3 @@ void PrimitiveDrawExamples::GL_QuadStripExample(int index)
 
 	glLineWidth(1.0f);
 }
-
-void PrimitiveDrawExamples::DrawAllExamples()
-{
-	GL_PointsExample();
-	GL_LinesExample();
-	GL_LineStripExample();
-	GL_LineLoopExample();
-	GL_PolygonExample();
-	GL_TrianglesExample();
-	GL_TriangleStripExample();
-	GL_TriangleFanExample();
-	GL_QuadsExample();
-	GL_QuadStripExample();
-}
-
-// Cube vertex coords
-// --- ORIGIN AT (0.0f, 0.0f, 0.0f)
-	//0.0f, 0.0f, 0.0f,		//ABD
-	//1.0f, 0.0f, 0.0f,
-	//1.0f, 1.0f, 0.0f,
-	
-	//0.0f, 0.0f, 0.0f,		//ADC
-	//1.0f, 1.0f, 0.0f,
-	//0.0f, 1.0f, 0.0f,
-	
-	//1.0f, 0.0f, 0.0f,		//BFH
-	//1.0f, 0.0f, -1.0f,
-	//1.0f, 1.0f, -1.0f,
-	
-	//1.0f, 0.0f, 0.0f,		//BHD
-	//1.0f, 1.0f, -1.0f,
-	//1.0f, 1.0f, 0.0f,
-	
-	//0.0f, 1.0f, 0.0f,		//CDH
-	//1.0f, 1.0f, 0.0f,
-	//1.0f, 1.0f, -1.0f,
-	
-	//0.0f, 1.0f, 0.0f,		//CHG
-	//1.0f, 1.0f, -1.0f,
-	//0.0f, 1.0f, -1.0f,
-	
-	//0.0f, 1.0f, 0.0f,		//CGE
-	//0.0f, 1.0f, -1.0f,
-	//0.0f, 0.0f, -1.0f,
-	
-	//0.0f, 1.0f, 0.0f,		//CEA
-	//0.0f, 0.0f, -1.0f,
-	//0.0f, 0.0f, 0.0f,
-	
-	//1.0f, 0.0f, 0.0f,		//BAE
-	//0.0f, 0.0f, 0.0f,
-	//0.0f, 0.0f, -1.0f,
-	
-	//1.0f, 0.0f, 0.0f,		//BEF
-	//0.0f, 0.0f, -1.0f,
-	//1.0f, 0.0f, -1.0f,
-	
-	//1.0f, 0.0f, -1.0f,		//FEG
-	//0.0f, 0.0f, -1.0f,
-	//0.0f, 1.0f, -1.0f,
-	
-	//1.0f, 0.0f, -1.0f,		//FGH
-	//0.0f, 1.0f, -1.0f,
-	//1.0f, 1.0f, -1.0f
-	// ------------------------------------
-	
-	
-	//// --- (0.0f, 0.0f, 0.0f) AS THE CENTER
-	//-1.0f, -1.0f, 1.0f,		//ABD
-	//1.0f, -1.0f, 1.0f,
-	//1.0f, 1.0f, 1.0f,
-	
-	//-1.0f, -1.0f, 1.0f,		//ADC
-	//1.0f, 1.0f, 1.0f,
-	//-1.0f, 1.0f, 1.0f,
-	
-	//1.0f, -1.0f, 1.0f,		//BFH
-	//1.0f, -1.0f, -1.0f,
-	//1.0f, 1.0f, -1.0f,
-	
-	//1.0f, -1.0f, 1.0f,		//BHD
-	//1.0f, 1.0f, -1.0f,
-	//1.0f, 1.0f, 1.0f,
-	
-	//-1.0f, 1.0f, 1.0f,		//CDH
-	//1.0f, 1.0f, 1.0f,
-	//1.0f, 1.0f, -1.0f,
-	
-	//-1.0f, 1.0f, 1.0f,		//CHG
-	//1.0f, 1.0f, -1.0f,
-	//-1.0f, 1.0f, -1.0f,
-	
-	//-1.0f, 1.0f, 1.0f,		//CGE
-	//-1.0f, 1.0f, -1.0f,
-	//-1.0f, -1.0f, -1.0f,
-	
-	//-1.0f, 1.0f, 1.0f,		//CEA
-	//-1.0f, -1.0f, -1.0f,
-	//-1.0f, -1.0f, 1.0f,
-	
-	//1.0f, -1.0f, 1.0f,		//BAE
-	//-1.0f, -1.0f, 1.0f,
-	//-1.0f, -1.0f, -1.0f,
-	
-	//1.0f, -1.0f, 1.0f,		//BEF
-	//-1.0f, -1.0f, -1.0f,
-	//1.0f, -1.0f, -1.0f,
-	
-	//1.0f, -1.0f, -1.0f,		//FEG
-	//-1.0f, -1.0f, -1.0f,
-	//-1.0f, 1.0f, -1.0f,
-	
-	//1.0f, -1.0f, -1.0f,		//FGH
-	//-1.0f, 1.0f, -1.0f,
-	//1.0f, 1.0f, -1.0f
-	//// ------------------------------------

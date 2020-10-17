@@ -1,17 +1,21 @@
 #ifndef __PRIMITIVE_H__
 #define __PRIMITIVE_H__
 
+#include <vector>
+#include <cmath>
+
 #include "glmath.h"
 #include "Color.h"
 
-enum PrimitiveTypes
+enum PRIMITIVE_TYPES
 {
-	Primitive_Point,
-	Primitive_Line,
-	Primitive_Plane,
-	Primitive_Cube,
-	Primitive_Sphere,
-	Primitive_Cylinder
+	P_POINT,
+	LINE,
+	PLANE,
+	CUBE,
+	SPHERE,
+	CYLINDER,
+	PYRAMID
 };
 
 class Primitive
@@ -25,7 +29,7 @@ public:
 	vec3			GetPos() const;
 	void			SetRotation(float angle, const vec3 &u);
 	void			Scale(float x, float y, float z);
-	PrimitiveTypes	GetType() const;
+	PRIMITIVE_TYPES	GetType() const;
 
 	Color color;
 	mat4x4 transform;
@@ -33,7 +37,7 @@ public:
 
 protected:
 	virtual void InnerRender() const;
-	PrimitiveTypes type;
+	PRIMITIVE_TYPES type;
 };
 
 // ============================================
@@ -68,13 +72,35 @@ private:
 class Sphere : public Primitive
 {
 public:
-	Sphere(float radius = 1.f, float mass = 1.f);
+	//Sphere(float radius = 1.f, float mass = 1.f);
+	Sphere(float radius = 1.f, uint rings = 12, uint sectors = 24);
 
+public:
 	float GetRadius() const;
+	uint GetRings() const;
+	uint GetSectors() const;
+
+	void SetRings(uint rings);
+	void SetSectors(uint sectors);
+
+	void IndiceRender();
+	//void IndiceRender(float radius, const uint rings, const uint sectors);
+
 protected:
 	void InnerRender() const;
+
+protected:
+	std::vector<float> vertices;
+	std::vector<float> normals;
+	std::vector<float> tex_coords;
+	std::vector<uint> indices;
+
+	bool loaded_buffers;
+
 private:
 	float radius;
+	uint rings;
+	uint sectors;
 };
 
 // ============================================
@@ -85,11 +111,32 @@ public:
 
 	float GetRadius() const;
 	float GetHeight() const;
+
+	void IndicesRender();
+
 protected:
 	void InnerRender() const;
 private:
 	float radius;
 	float height;
+};
+
+// ============================================
+class Pyramid : public Primitive
+{
+public:
+	Pyramid(vec3 size = vec3(1.0f, 1.0f, 1.0f));
+
+	void IndiceRender();
+
+protected:
+	std::vector<float> vertices;
+	std::vector<uint> indices;
+
+private:
+	vec3 size;
+
+	bool loaded_in_buffers;
 };
 
 // ============================================
@@ -129,6 +176,9 @@ public:
 	PrimitiveDrawExamples();
 	PrimitiveDrawExamples(float size, vec3 origin);
 
+	void DrawAllExamples();								// Will draw all the examples. All examples are drawn in Direct Mode.
+
+public:
 	void GL_PointsExample			(int index = 0);
 	void GL_LinesExample			(int index = 1);
 	void GL_LineStripExample		(int index = 2);
@@ -139,8 +189,6 @@ public:
 	void GL_TriangleFanExample		(int index = 7);
 	void GL_QuadsExample			(int index = 8);
 	void GL_QuadStripExample		(int index = 9);
-
-	void DrawAllExamples();								// All examples are drawn in Direct Mode.
 
 public:
 	vec3 origin;

@@ -47,7 +47,7 @@ void M_SceneIntro::HandleDebugInput()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		DebugSpawnPrimitive(new Sphere());
+		DebugSpawnPrimitive(new Sphere(1.0f, 1.0f));
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)

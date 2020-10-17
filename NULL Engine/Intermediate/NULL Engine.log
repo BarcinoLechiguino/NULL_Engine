@@ -1,17 +1,13 @@
-﻿  Primitive.cpp
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(409,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(477,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(478,54): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(478,37): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(487,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(488,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(488,36): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(496,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(498,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(498,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(499,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(499,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(757,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(760,56): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(760,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+﻿  M_Renderer3D.cpp
+  Primitive.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(371,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(442,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(444,32): warning C4018: '<': signed/unsigned mismatch
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(464,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(466,32): warning C4018: '<': signed/unsigned mismatch
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(539,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(549,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(558,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Primitive.cpp(901,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe
