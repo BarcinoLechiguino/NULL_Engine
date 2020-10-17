@@ -10,3 +10,4 @@
 *.pdb
 NULL Engine/Resources/memleaks.log
 NULL Engine/Resources/memory.log
+*.pdb

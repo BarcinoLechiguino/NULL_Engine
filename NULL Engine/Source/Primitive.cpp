@@ -616,6 +616,8 @@ void Pyramid::IndiceRender()
 		glGenBuffers(1, (GLuint*)&my_indices);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, indices_ex, GL_STATIC_DRAW);
+
+		loaded_in_buffers = true;
 	}
 
 	glMatrixMode(GL_MODELVIEW);
