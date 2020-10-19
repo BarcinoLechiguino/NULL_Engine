@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Importer.cpp" />
+    <ClCompile Include="I_Meshes.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Configuration.cpp" />
@@ -72,7 +72,7 @@
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Importer.h" />
+    <ClInclude Include="I_Meshes.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Configuration.h" />

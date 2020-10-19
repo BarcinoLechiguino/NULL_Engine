@@ -10,8 +10,16 @@
 #include "Application.h"
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::P_POINT)
-{}
+Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::NONE)
+{
+	VAO = 0;
+	
+	for (uint i = 0; i < (uint)BUFFER_TYPE::MAX_BUFFER_TYPES; ++i)				// Initializing the primitive's buffers (vertices, indices...).
+	{
+		buffers[i]		= 0;
+		bufferSize[i]	= 0;
+	}
+}
 
 // ------------------------------------------------------------
 PRIMITIVE_TYPES Primitive::GetType() const
@@ -70,6 +78,28 @@ void Primitive::Render() const
 	InnerRender();
 
 	glPopMatrix();
+}
+
+// ------------------------------------------------------------
+void Primitive::LoadBuffersOnMemory()
+{
+	glGenVertexArrays(1, (GLuint*)&VAO);											// Generating a vertex array object that will store all buffer objects.
+	glBindVertexArray(VAO);															// --------
+
+	glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::VERTICES]);				// Generating a vertex buffer that will store the vertex positions of the primitives.
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::VERTICES]);			// --------
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * bufferSize[(uint)BUFFER_TYPE::VERTICES] * 3, &vertices[0], GL_STATIC_DRAW);	// --------
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);	// -------- 
+
+	glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::INDICES]);					// Generating an index buffer that will store the indices of each of the primitives.
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::INDICES]);		// --------
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * bufferSize[(uint)BUFFER_TYPE::INDICES] * 3, &indices[0], GL_STATIC_DRAW);	// --------
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);	// --------
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	//glBindVertexArray(0);
 }
 
 // ------------------------------------------------------------
@@ -472,7 +502,9 @@ void Sphere::IndiceRender()
 			}
 		}
 
-		uint my_vertices = 0;
+		LoadBuffersOnMemory();
+		
+		/*uint my_vertices = 0;
 		uint my_indices = 0;
 		
 		glGenBuffers(1, (GLuint*)&my_vertices);
@@ -481,7 +513,7 @@ void Sphere::IndiceRender()
 
 		glGenBuffers(1, (GLuint*)&my_indices);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);*/
 
 		loaded_buffers = true;
 	}
@@ -580,8 +612,10 @@ void Cylinder::IndicesRender()
 
 		ConstructIndices(base_center_index, top_center_index);
 
-		uint my_vert = 0;
-		uint my_indices = 0;
+		LoadBuffersOnMemory();
+
+		/*uint my_vert = 0;
+		uint my_indices = 1;
 
 		glGenBuffers(1, (GLuint*)&my_vert);
 		glBindBuffer(GL_ARRAY_BUFFER, my_vert);
@@ -589,7 +623,15 @@ void Cylinder::IndicesRender()
 
 		glGenBuffers(1, (GLuint*)&my_indices);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);*/
+
+		/*glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::VERTICES]);				// Generating a vertex buffer that will store the vertex positions of the primitives.
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::VERTICES]);			// --------
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);	// --------
+
+		glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::INDICES]);					// Generating an index buffer that will store the indices of each of the primitives.
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::INDICES]);		// --------
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);	// --------*/
 
 		loaded_in_buffers = true;
 	}
@@ -799,7 +841,7 @@ Pyramid::Pyramid(vec3 size) : Primitive(), size(size), loaded_in_buffers(false)
 	type = PRIMITIVE_TYPES::PYRAMID;
 }
 
-void Pyramid::IndiceRender()
+void Pyramid::IndicesRender()
 {
 	if (!loaded_in_buffers)
 	{
@@ -834,8 +876,8 @@ void Pyramid::IndiceRender()
 			1, 4, 2						// BEC ---  -
 		};
 
-		uint my_vertices = 0;
-		uint my_indices = 0;
+		/*uint my_vertices	= 0;
+		uint my_indices		= 1;
 
 		glGenBuffers(1, (GLuint*)&my_vertices);
 		glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
@@ -843,7 +885,15 @@ void Pyramid::IndiceRender()
 
 		glGenBuffers(1, (GLuint*)&my_indices);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, indices_ex, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, indices_ex, GL_STATIC_DRAW);*/
+
+		glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::VERTICES]);				// Generating a vertex buffer that will store the vertex positions of the primitives.
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::VERTICES]);			// --------
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 15, vertices_ex, GL_STATIC_DRAW);	// --------
+
+		glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::INDICES]);					// Generating an index buffer that will store the indices of each of the primitives.
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::INDICES]);		// --------
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 18, indices_ex, GL_STATIC_DRAW);	// --------*/
 
 		loaded_in_buffers = true;
 	}
@@ -856,6 +906,7 @@ void Pyramid::IndiceRender()
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 2);
 	glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);

@@ -7,7 +7,7 @@
 #include "glmath.h"
 #include "Color.h"
 
-enum PRIMITIVE_TYPES
+enum class PRIMITIVE_TYPES
 {
 	P_POINT,
 	LINE,
@@ -15,7 +15,17 @@ enum PRIMITIVE_TYPES
 	CUBE,
 	SPHERE,
 	CYLINDER,
-	PYRAMID
+	PYRAMID,
+	NONE
+};
+
+enum class BUFFER_TYPE
+{
+	VERTICES,
+	NORMALS,
+	UVS,
+	INDICES,
+	MAX_BUFFER_TYPES
 };
 
 class Primitive
@@ -24,20 +34,36 @@ public:
 	Primitive();
 
 	void Update();
+
 	virtual void	Render() const;
 	//virtual void	IndicesRender();
+	void			LoadBuffersOnMemory();
+
+public:
 	void			SetPos(float x, float y, float z);
 	vec3			GetPos() const;
 	void			SetRotation(float angle, const vec3 &u);
 	void			Scale(float x, float y, float z);
 	PRIMITIVE_TYPES	GetType() const;
 
+public:
 	Color color;
 	mat4x4 transform;
-	bool axis,wire;
+	bool axis, wire;
+
+	uint VAO;																// Defines the Vertex Array Object that will hold all buffer objects of a primitive.
+	uint buffers[(uint)BUFFER_TYPE::MAX_BUFFER_TYPES];						// Will hold all the possible buffers that a given primitive might use.
+	uint bufferSize[(uint)BUFFER_TYPE::MAX_BUFFER_TYPES];					// Will be used to define the size in bytes of a given buffer.
+
+	std::vector<float>	vertices;
+	std::vector<float>	normals;
+	std::vector<float>	uvs;
+	std::vector<uint>	indices;
 
 protected:
 	virtual void InnerRender() const;
+
+protected:
 	PRIMITIVE_TYPES type;
 };
 
@@ -91,11 +117,6 @@ protected:
 	void InnerRender() const;
 
 protected:
-	std::vector<float> vertices;
-	std::vector<float> normals;
-	std::vector<float> uvs;
-	std::vector<uint> indices;
-
 	bool loaded_buffers;
 
 private:
@@ -113,8 +134,10 @@ public:
 	float GetRadius() const;
 	float GetHeight() const;
 	uint GetSectors() const;
-
 	void SetSectors(uint sectors);
+
+	vec3 GetPosition() const;
+	void SetPosition(vec3 position);
 
 	void InnerRender() const;
 	
@@ -127,12 +150,6 @@ public:
 
 protected:
 	//void InnerRender() const;
-
-protected:
-	std::vector<float> vertices;
-	std::vector<float> normals;
-	std::vector<float> uvs;
-	std::vector<uint> indices;
 
 private:
 	float radius;
@@ -148,7 +165,7 @@ class Pyramid : public Primitive
 public:
 	Pyramid(vec3 size = vec3(1.0f, 1.0f, 1.0f));
 
-	void IndiceRender();
+	void IndicesRender();
 
 protected:
 	std::vector<float> vertices;

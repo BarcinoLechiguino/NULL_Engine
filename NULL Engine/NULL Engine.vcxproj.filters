@@ -258,7 +258,7 @@
     <ClCompile Include="Source\PathNode.cpp">
       <Filter>SourceCode\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="Importer.cpp">
+    <ClCompile Include="I_Meshes.cpp">
       <Filter>SourceCode\Importers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -548,9 +548,6 @@
     <ClInclude Include="Source\PathNode.h">
       <Filter>SourceCode\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Importer.h">
-      <Filter>SourceCode\Importers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Dependencies\Assimp\include\cimport.h">
       <Filter>Dependencies\Assimp</Filter>
     </ClInclude>
@@ -559,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\Assimp\include\scene.h">
       <Filter>Dependencies\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="I_Meshes.h">
+      <Filter>SourceCode\Importers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

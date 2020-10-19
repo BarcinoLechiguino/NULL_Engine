@@ -242,7 +242,7 @@ void M_Renderer3D::PrimitiveExamples()
 	//sphere.IndiceRender();
 
 	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-	//pyramid.IndiceRender();
+	//pyramid.IndicesRender();
 
 	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 	//cylinder.InnerRender();
