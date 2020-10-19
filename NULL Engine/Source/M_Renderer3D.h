@@ -41,7 +41,8 @@ public:
 	Cube cube_array;
 	Cube cube_indices;
 	Sphere sphere;															
-	Pyramid pyramid;														// ------------
+	Pyramid pyramid;														
+	Cylinder cylinder;														// ------------
 };
 
 #endif // !__M_RENDERER_3D_H__

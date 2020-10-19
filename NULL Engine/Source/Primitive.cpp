@@ -431,12 +431,12 @@ void Sphere::IndiceRender()
 
 		vertices.resize(vertices_size);
 		normals.resize(normals_size);
-		tex_coords.resize(tex_coords_size);
+		uvs.resize(tex_coords_size);
 		indices.resize(indices_size);
 
 		std::vector<float>::iterator vert = vertices.begin();
 		std::vector<float>::iterator norm = normals.begin();
-		std::vector<float>::iterator texc = tex_coords.begin();
+		std::vector<float>::iterator texc = uvs.begin();
 		
 		int v = 0;
 		for (int ring = 0; ring < rings; ++ring)
@@ -507,7 +507,7 @@ void Sphere::InnerRender() const
 }
 
 // CYLINDER ============================================
-Cylinder::Cylinder(float radius, float height, float mass) : Primitive(), radius(radius), height(height)
+Cylinder::Cylinder(float radius, float height, uint sectors, float mass) : Primitive(), radius(radius), height(height), sectors(sectors), loaded_in_buffers(false)
 {
 	type = PRIMITIVE_TYPES::CYLINDER;
 }
@@ -520,6 +520,230 @@ float Cylinder::GetRadius() const
 float Cylinder::GetHeight() const
 {
 	return height;
+}
+
+uint Cylinder::GetSectors() const
+{
+	return sectors;
+}
+
+void Cylinder::SetSectors(uint sectors)
+{
+	this->sectors = sectors;
+	loaded_in_buffers = false;
+}
+
+std::vector<float> Cylinder::GetCircularVertices()
+{
+	float sector_step = 2 * PI / sectors;			// The angle between cylinder sectors is: a = 2*PI * (current_sector / total_sectors). To get the step: (2 * PI) / total_sectors.
+	float sector_angle;
+
+	float x;										// To improve readability.
+	float y;
+	float z;
+
+	std::vector<float> vertices;
+
+	for (int i = 0; i < sectors; ++i)
+	{
+		sector_angle = i * sector_step;				// Getting the angle for the current sector.
+
+		x = sin(sector_angle);
+		y = 0.0f;
+		z = cos(sector_angle);
+
+		vertices.push_back(x);
+		vertices.push_back(y);
+		vertices.push_back(z);
+	}
+
+	return vertices;
+}
+
+void Cylinder::IndicesRender()
+{
+	if (!loaded_in_buffers)
+	{
+		vertices.clear();
+		normals.clear();
+		uvs.clear();
+		indices.clear();
+
+		std::vector<float> circular_vertices = GetCircularVertices();
+
+		ConstructCoverVertices(circular_vertices);
+
+		uint base_center_index = (int)vertices.size() / 3;						// Gets the index of the vertex at the center of the cylinder's base.
+		uint top_center_index = base_center_index + sectors + 1;				// Gets the index of the vertex at the center of the cylinder's top.
+
+		ConstructBaseAndTopVertices(circular_vertices);
+
+		ConstructIndices(base_center_index, top_center_index);
+
+		uint my_vert = 0;
+		uint my_indices = 0;
+
+		glGenBuffers(1, (GLuint*)&my_vert);
+		glBindBuffer(GL_ARRAY_BUFFER, my_vert);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+
+		glGenBuffers(1, (GLuint*)&my_indices);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
+		loaded_in_buffers = true;
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glPopMatrix();
+}
+
+void Cylinder::ConstructCoverVertices(std::vector<float> circular_vertices)
+{
+	// CONSTRUCTING COVER VERTICES
+	for (int ring = 0; ring < 2; ++ring)													// Goes from -h/2 to h/2. Maybe change it so it goes from 0 to 2 directly.
+	{
+		float h = -height * 0.5f + ring * height;											// As i progresses, the height will go from -h/2 to h/2;
+		float t = 1.0f - ring;																// Vertical UV Coords. Goes from 1 to 0.
+
+		for (int sector = 0, i = 0; sector < sectors; ++sector, i += 3)						// Goes through all the sector vertices in a single ring of the cylinder.
+		{
+			float const x = circular_vertices[i];											// X coordinate. 
+			float const y = circular_vertices[i + 1];										// Y coordinate. As the index is increased, it accesses the next element in the vertices vector. (y)
+			float const z = circular_vertices[i + 2];										// Z coordinate. As the index is increased, it accesses the next element in the vertices vector. (z)
+
+			// --- POSITION VECTOR
+			vertices.push_back(x * radius);													// vx
+			vertices.push_back(h);															// vy
+			vertices.push_back(z * radius);													// vz
+
+			// --- NORMAL VECTOR
+			normals.push_back(x);															// nx
+			normals.push_back(y);															// ny
+			normals.push_back(z);															// nz
+
+			// --- TEXTURE COORDS
+			uvs.push_back((float)sector / sectors);											// s
+			uvs.push_back(t);																// t
+		}
+	}
+}
+
+void Cylinder::ConstructBaseAndTopVertices(std::vector<float> circular_vertices)
+{
+	// CONSTRUCTING BASE AND TOP VERTICES
+	for (int ring = 0; ring < 2; ++ring)
+	{
+		float const h = -height * 0.5f + ring * height;										// -h/2 to h/2
+		float const ny = -1.0f + ring * 2.0f;												// Vertical Normal Coords. Goes from -1 to 1;
+
+		vertices.push_back(0.0f);															// Constructing a new center point.
+		vertices.push_back(h);																// 
+		vertices.push_back(0.0f);															// 
+																							// 
+		normals.push_back(0.0f);															// 
+		normals.push_back(ny);																// 
+		normals.push_back(0.0f);															// 
+																							// 
+		uvs.push_back(0.5f);																// 
+		uvs.push_back(0.5f);																// --------------------------------
+
+		for (int sector = 0, i = 0; sector < sectors; ++sector, i += 3)
+		{
+			float const x = circular_vertices[i];
+			float const y = circular_vertices[i + 1];
+			float const z = circular_vertices[i + 2];
+
+			vertices.push_back(x * radius);													// vx
+			vertices.push_back(h);															// vy
+			vertices.push_back(z * radius);													// vz
+
+			normals.push_back(0.0f);														// nx
+			normals.push_back(ny);															// ny
+			normals.push_back(0.0f);														// nz
+
+			uvs.push_back(-x * 0.5f + 0.5f);												// s
+			uvs.push_back(-y * 0.5f + 0.5f);												// t
+		}
+	}
+}
+
+void Cylinder::ConstructIndices(uint base_center_index, uint top_center_index)
+{
+	uint base_index = 0;														// First vertex index at base.
+	uint top_index = sectors /*+ 1*/;											// First vertex index at top.
+
+	// COVER INDICES
+	for (int sector = 0; sector < sectors; ++sector, ++base_index, ++top_index)
+	{	
+		// 2 triangles per sector
+
+		if (top_index < (sectors * 2) - 1)										// If the current triangles are not the last ones.
+		{
+			indices.push_back(base_index);										// b_i => b_i + 1 => t_i  ==  ABC
+			indices.push_back(base_index + 1);									// The triangles must be constructed in counter-clockwise order.
+			indices.push_back(top_index);										// Otherwise the constructed triangles will be culled by the backface culling.
+			
+			indices.push_back(top_index);										// t_i => b_i + 1 => t_i + 1  ==  CBD
+			indices.push_back(base_index + 1);									// 
+			indices.push_back(top_index + 1);									// ---------------------------------- 
+		}
+		else
+		{
+			indices.push_back(base_index);										// As index (sectors * 2) corresponds to the center vertex of the base,
+			indices.push_back(0);												// when top_index == (sectors * 2) - 1 it means that its the
+			indices.push_back(top_index);										// last 2 triangles and we need the indices from the beginning.
+			
+			indices.push_back(top_index);
+			indices.push_back(0);
+			indices.push_back(base_index + 1);
+		}
+	}
+
+	// BASE INDICES
+	for (int sector = 0, circle_index = base_center_index + 1; sector < sectors; ++sector, ++circle_index)
+	{
+		if (sector < sectors - 1)
+		{
+			indices.push_back(base_center_index);							// Constructing the base triangles indices.
+			indices.push_back(circle_index + 1);							// The first index of the triangle will always
+			indices.push_back(circle_index);								// be the one at the center of the base.
+		}
+		else
+		{
+			indices.push_back(base_center_index);							// Constructing the last triangle indices of the base.
+			indices.push_back(base_center_index + 1);						//
+			indices.push_back(circle_index);								// ---------------------------------------------------
+		}
+	}
+
+	// TOP INDICES
+	for (int sector = 0, circle_index = top_center_index + 1; sector < sectors; ++sector, ++circle_index)
+	{
+		if (sector < sectors - 1)
+		{
+			indices.push_back(top_center_index);							// The circle index refers to the indexes that are at the borders
+			indices.push_back(circle_index);								// of the base or the top. In this case it refers to the ones at the top.
+			indices.push_back(circle_index + 1);							//
+		}
+		else
+		{
+			indices.push_back(top_center_index);							// 
+			indices.push_back(circle_index);								// 
+			indices.push_back(top_center_index + 1);						// ---------------------------------------------------------------------- 
+		}
+	}
 }
 
 void Cylinder::InnerRender() const
@@ -538,6 +762,7 @@ void Cylinder::InnerRender() const
 	{
 		float a = i * M_PI / 180; // degrees to radians
 		glVertex3f(-height * 0.5f, radius * cos(a), radius * sin(a));
+		//glVertex3f(radius * sin(a), -height * 0.5f, radius * cos(a));
 	}
 	glEnd();
 
@@ -548,6 +773,7 @@ void Cylinder::InnerRender() const
 	{
 		float a = i * M_PI / 180; // degrees to radians
 		glVertex3f(height * 0.5f, radius * cos(a), radius * sin(a));
+		//glVertex3f(radius * sin(a), height * 0.5f, radius * cos(a));
 	}
 	glEnd();
 
@@ -559,6 +785,8 @@ void Cylinder::InnerRender() const
 
 		glVertex3f(height*0.5f,  radius * cos(a), radius * sin(a) );
 		glVertex3f(-height*0.5f, radius * cos(a), radius * sin(a) );
+		//glVertex3f(radius * sin(a), height * 0.5f, radius * cos(a));
+		//glVertex3f(radius * sin(a), -height * 0.5f, radius * cos(a));
 	}
 	glEnd();
 

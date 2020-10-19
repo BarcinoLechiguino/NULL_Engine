@@ -201,9 +201,9 @@ void M_Renderer3D::PrimitiveExamples()
 	else if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN)
 	{
 		cube_indices.SetPos(position.x + 1.0f, position.y, position.z);
-	}*/
+	}
 
-	//cube_indices.IndicesRender();
+	cube_indices.IndicesRender();*/
 
 	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
 	//sphere.IndiceRender(1, 12, 24);
@@ -237,12 +237,17 @@ void M_Renderer3D::PrimitiveExamples()
 		{
 			sphere.SetSectors(sectors - 1);
 		}
-	}
+	}*/
 	
-	sphere.IndiceRender();*/
+	//sphere.IndiceRender();
 
 	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-	pyramid.IndiceRender();
+	//pyramid.IndiceRender();
+
+	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+	//cylinder.InnerRender();
+
+	cylinder.IndicesRender();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }

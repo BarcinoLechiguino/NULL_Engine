@@ -25,6 +25,7 @@ public:
 
 	void Update();
 	virtual void	Render() const;
+	//virtual void	IndicesRender();
 	void			SetPos(float x, float y, float z);
 	vec3			GetPos() const;
 	void			SetRotation(float angle, const vec3 &u);
@@ -44,7 +45,7 @@ protected:
 class Cube : public Primitive
 {
 public :
-	Cube(const vec3& size = vec3(1.f,1.f,1.f), float mass = 1.f);
+	Cube(const vec3& size = vec3(1.f, 1.f, 1.f), float mass = 1.f);
 
 	vec3 GetSize() const;
 
@@ -92,7 +93,7 @@ protected:
 protected:
 	std::vector<float> vertices;
 	std::vector<float> normals;
-	std::vector<float> tex_coords;
+	std::vector<float> uvs;
 	std::vector<uint> indices;
 
 	bool loaded_buffers;
@@ -107,18 +108,38 @@ private:
 class Cylinder : public Primitive
 {
 public:
-	Cylinder(float radius = 1.f, float height = 2.f, float mass = 1.f);
+	Cylinder(float radius = 1.f, float height = 2.f, uint sectors = 6, float mass = 1.f);
 
 	float GetRadius() const;
 	float GetHeight() const;
+	uint GetSectors() const;
 
+	void SetSectors(uint sectors);
+
+	void InnerRender() const;
+	
+	std::vector<float> GetCircularVertices();
 	void IndicesRender();
 
+	void ConstructCoverVertices(std::vector<float> circular_vertices);
+	void ConstructBaseAndTopVertices(std::vector<float> circular_vertices);
+	void ConstructIndices(uint base_center_index, uint top_center_index);
+
 protected:
-	void InnerRender() const;
+	//void InnerRender() const;
+
+protected:
+	std::vector<float> vertices;
+	std::vector<float> normals;
+	std::vector<float> uvs;
+	std::vector<uint> indices;
+
 private:
 	float radius;
 	float height;
+	uint sectors;
+
+	bool loaded_in_buffers;
 };
 
 // ============================================
