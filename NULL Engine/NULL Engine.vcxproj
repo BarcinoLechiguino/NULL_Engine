@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="I_Meshes.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Configuration.cpp" />
@@ -54,6 +53,7 @@
     <ClCompile Include="Source\Dependencies\MathGeoLib\src\Time\Clock.cpp" />
     <ClCompile Include="Source\Dependencies\mmgr\mmgr.cpp" />
     <ClCompile Include="Source\Dependencies\parson\parson.c" />
+    <ClCompile Include="Source\I_Meshes.cpp" />
     <ClCompile Include="Source\M_Editor.cpp" />
     <ClCompile Include="Source\glmath.cpp" />
     <ClCompile Include="Source\Light.cpp" />
@@ -69,10 +69,11 @@
     <ClCompile Include="Source\PathNode.cpp" />
     <ClCompile Include="Source\PerfectTimer.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
+    <ClCompile Include="Source\Resource.cpp" />
+    <ClCompile Include="Source\R_Mesh.cpp" />
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="I_Meshes.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Configuration.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Source\Dependencies\mmgr\nommgr.h" />
     <ClInclude Include="Source\Dependencies\parson\parson.h" />
     <ClInclude Include="Source\Dependencies\PhysFS\include\physfs.h" />
+    <ClInclude Include="Source\I_Meshes.h" />
     <ClInclude Include="Source\M_Editor.h" />
     <ClInclude Include="Source\glmath.h" />
     <ClInclude Include="Source\Globals.h" />
@@ -170,6 +172,8 @@
     <ClInclude Include="Source\PathNode.h" />
     <ClInclude Include="Source\PerfectTimer.h" />
     <ClInclude Include="Source\Primitive.h" />
+    <ClInclude Include="Source\Resource.h" />
+    <ClInclude Include="Source\R_Mesh.h" />
     <ClInclude Include="Source\Timer.h" />
   </ItemGroup>
   <ItemGroup>

@@ -239,14 +239,15 @@ void M_Renderer3D::PrimitiveExamples()
 		}
 	}*/
 	
-	//sphere.IndiceRender();
+	sphere.IndiceRender();
 
 	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+	//pyramid.SetPos(5.0f, 0.0f, 0.0f);
 	//pyramid.IndicesRender();
 
 	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 	//cylinder.InnerRender();
-
+	cylinder.SetPos(2.5f, 0.0f, 0.0f);
 	cylinder.IndicesRender();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);

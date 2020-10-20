@@ -95,11 +95,11 @@ void Primitive::LoadBuffersOnMemory()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::INDICES]);		// --------
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * bufferSize[(uint)BUFFER_TYPE::INDICES] * 3, &indices[0], GL_STATIC_DRAW);	// --------
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);	// --------
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-	//glBindVertexArray(0);
+	glBindVertexArray(0);
 }
 
 // ------------------------------------------------------------
@@ -522,13 +522,17 @@ void Sphere::IndiceRender()
 	glPushMatrix();
 	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
+	/*glEnableClientState(GL_VERTEX_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
 	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, NULL);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);*/
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 
 	glPopMatrix();
 }
@@ -640,13 +644,17 @@ void Cylinder::IndicesRender()
 	glPushMatrix();
 	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
+	/*glEnableClientState(GL_VERTEX_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);*/
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 
 	glPopMatrix();
 }
