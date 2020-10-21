@@ -8,7 +8,7 @@
 
 class Configuration;
 
-enum KEY_STATE
+enum class KEY_STATE
 {
 	KEY_IDLE = 0,
 	KEY_DOWN,
@@ -23,49 +23,30 @@ public:
 	M_Input(bool is_active = true);
 	~M_Input();
 
-	bool Init(Configuration& config) override;
-	UPDATE_STATUS PreUpdate(float dt) override;
-	UPDATE_STATUS Update(float dt) override;
-	bool CleanUp() override;
+	bool			Init(Configuration& config) override;
+	UPDATE_STATUS	PreUpdate(float dt) override;
+	UPDATE_STATUS	Update(float dt) override;
+	bool			CleanUp() override;
 
-	KEY_STATE GetKey(int id) const
-	{
-		return keyboard[id];
-	}
+	bool LoadConfiguration(Configuration& root) override;
+	bool SaveConfiguration(Configuration& root) const override;
 
-	KEY_STATE GetMouseButton(int id) const
-	{
-		return mouse_buttons[id];
-	}
+public:
+	KEY_STATE GetKey(int id) const;
+	KEY_STATE GetMouseButton(int id) const;
 
-	int GetMouseX() const
-	{
-		return mouse_x;
-	}
+	int GetMouseX() const;
+	int GetMouseY() const;
+	int GetMouseZ() const;
+	int GetMouseXMotion() const;
+	int GetMouseYMotion() const;
 
-	int GetMouseY() const
-	{
-		return mouse_y;
-	}
-
-	int GetMouseZ() const
-	{
-		return mouse_z;
-	}
-
-	int GetMouseXMotion() const
-	{
-		return mouse_x_motion;
-	}
-
-	int GetMouseYMotion() const
-	{
-		return mouse_y_motion;
-	}
+	const char* GetDroppedFilePath() const;
 
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouse_buttons[MAX_MOUSE_BUTTONS];
+
 	int mouse_x;
 	int mouse_y;
 	int mouse_z;
@@ -73,7 +54,7 @@ private:
 	int mouse_y_motion;
 	//int mouse_z_motion;
 
-	char* dropped_file_path = nullptr;
+	const char* dropped_file_path;
 };
 
 #endif // !__M_INPUT_H__

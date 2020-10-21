@@ -1,18 +1,24 @@
+#include "ImGui.h"
+#include "OpenGL.h"
+#include "ImGui/imgui_internal.h"
+
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Renderer3D.h"
-#include "OpenGL.h"
-#include "ImGui.h"
 
-#include "ImGui/imgui_internal.h"
+#include "E_Panel.h"
+#include "E_Test.h"
 
 #include "M_Editor.h"
 
 #pragma comment (lib, "Source/Dependencies/glew/libx86/glew32.lib")
 
-M_Editor::M_Editor(bool is_active) : Module("Editor", is_active)
+M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),
+test(nullptr)
 {
+	test = new E_Test();
 
+	AddGuiPanel(test);
 }
 
 M_Editor::~M_Editor()
@@ -33,9 +39,12 @@ bool M_Editor::Start()
 
 	// ImGui ----------------------------------------------
 	// Setting up Dear ImGui's context
+	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	io = ImGui::GetIO();
+
+	ImGuiIO& io = ImGui::GetIO();								// Needs to be called multiple times during a frame to update IO correctly.
 	(void)io;
+
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;		// Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
@@ -54,19 +63,14 @@ bool M_Editor::Start()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
+	
+
 	// Setting up Platfor/Renderer bindings
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
 	ImGui_ImplOpenGL3_Init(0);
 
 	// Initializing some variables
-	show_demo_window = true;
-	show_another_window = false;
-	clear_color = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-
-	current_style = (int)IMGUI_STYLE::DARK;
-
-	f = 0.0f;
-	counter = 0; 
+	clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); 
 	// ----------------------------------------------------
 	
 	return ret;
@@ -90,106 +94,77 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 {
 	UPDATE_STATUS ret = UPDATE_STATUS::CONTINUE;
 	
+	ImGuiIO& io = ImGui::GetIO();
+
 	// ImGui -----------------------------------------------
-	SDL_Event event;
+	bool draw = true;
+	for (int i = 0; i < gui_panels.size(); ++i)
+	{	
+		if (gui_panels[i]->IsActive())
+		{	
+			draw = gui_panels[i]->Draw(io);
 
-	// Poll and handle events (input, window resize...)
-	while (SDL_PollEvent(&event))
-	{
-		ImGui_ImplSDL2_ProcessEvent(&event);
-
-		if (event.type == SDL_QUIT)
-		{
-			return UPDATE_STATUS::STOP;
-		}
-
-		if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->window))
-		{
-			return UPDATE_STATUS::STOP;
+			if (!draw)
+			{
+				ret = UPDATE_STATUS::STOP;
+				LOG("[EDITOR] Exited through %s Panel", gui_panels[i]->GetName());
+				break;
+			}
 		}
 	}
 
-	//Start Dear ImGui's frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(App->window->window);
-	ImGui::NewFrame();
+	// -----------------------------------------------------
+	
+	return ret;
+}
 
-	// Showing ImGui's predetermined demo window
-	if (show_demo_window)
+bool M_Editor::CleanUp()
+{
+	for (int i = 0; i < gui_panels.size(); ++i)
 	{
-		ImGui::ShowDemoWindow();
+		gui_panels[i]->CleanUp();
 	}
 
-	// Creating a simple window
-	{
-		ImGui::Begin("Hello world!");								// Will create a window with "Hello World!" as the title. Until ImGui::End() all elements will be appended to this window.
+	gui_panels.clear();
+	
+	// ImGui CleanUp()
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+	
+	return true;
+}
 
-		if (ImGui::Button("SHOW ME THE DATA"))
-		{
-			//return UPDATE_STATUS::STOP;
+bool M_Editor::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
 
-			App->display_framerate_data = !App->display_framerate_data;
-		}
+	return ret;
+}
 
-		ImGui::SameLine();
+bool M_Editor::SaveConfiguration(Configuration& root) const
+{
+	bool ret = true;
 
-		if (ImGui::Button("YEETUS THIS WINDOW"))
-		{
-			return UPDATE_STATUS::STOP;
-		}
+	return ret;
+}
 
-		ImGui::Text("This text has been brought to you by Euro Shave Club.");	// Will create a label. Can also use format strings.
-		ImGui::Checkbox("ImGui Demo Window", &show_demo_window);			// Checkbox that will modify the bool that it gets passed as argument.
-		ImGui::Checkbox("Sneaky Window", &show_another_window);
+// -------------- EDITOR METHODS --------------
+bool M_Editor::GetEvent(SDL_Event* event) const
+{
+	return ImGui_ImplSDL2_ProcessEvent(event);											
+}
 
-		const char* styles[] = { "Classic", "Light", "Dark", "TBD" };
-		ImGui::Combo("ImGui Style", &current_style, styles, IM_ARRAYSIZE(styles));
+void M_Editor::AddGuiPanel(E_Panel* panel)
+{
+	gui_panels.push_back(panel);
+}
 
-		if (current_style == (int)IMGUI_STYLE::CLASSIC)
-		{
-			ImGui::StyleColorsClassic();
-		}
-		else if (current_style == (int)IMGUI_STYLE::LIGHT)
-		{
-			ImGui::StyleColorsLight();
-		}
-		else if (current_style == (int)IMGUI_STYLE::DARK)
-		{
-			ImGui::StyleColorsDark();
-		}
-
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);				// Will create a slider that will be able to edit 1 variable from 0.0f to 1.0f.
-		ImGui::ColorEdit3("clear color", (float*)&clear_color);		// Will create 3 sliders in a row that will represent a colour (RGB).
-
-		if (ImGui::Button("Button"))
-		{
-			++counter;
-		}
-
-		//ImGui::PlotHistogram();
-
-		ImGui::SameLine();											// Specifies that the next element to be created will be created in the same row as the previous one.
-		ImGui::Text("counter = %d", counter);
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End();
-	}
-
-	if (show_another_window)
-	{
-		ImGui::Begin("Sneaky Window", &show_another_window);
-		ImGui::Text("Hello from sneaky window!");
-
-		if (ImGui::Button("Close me"))
-		{
-			show_another_window = false;
-		}
-
-		ImGui::End();
-	}
-
-
+bool M_Editor::RenderGuiPanels() const
+{
 	// Rendering all ImGui elements
+	ImGuiIO& io = ImGui::GetIO();
+	
 	ImGui::Render();
 	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
@@ -208,31 +183,5 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 	}
 
-	// -----------------------------------------------------
-	
-	return ret;
-}
-
-bool M_Editor::CleanUp()
-{
-	// ImGui CleanUp()
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
-	
 	return true;
-}
-
-bool M_Editor::LoadConfiguration(Configuration& root)
-{
-	bool ret = true;
-
-	return ret;
-}
-
-bool M_Editor::SaveConfiguration(Configuration& root)
-{
-	bool ret = true;
-
-	return ret;
 }

@@ -24,12 +24,12 @@ public:
 	Module(const char* name, bool is_active = true);
 	virtual ~Module();
 
-	virtual bool Init(Configuration& config);
-	virtual bool Start();
-	virtual UPDATE_STATUS PreUpdate(float dt);
-	virtual UPDATE_STATUS Update(float dt);
-	virtual UPDATE_STATUS PostUpdate(float dt);
-	virtual bool CleanUp();
+	virtual bool			Init(Configuration& config);						// Called immediately after the constructor.
+	virtual bool			Start();											// Called before the first frame.
+	virtual UPDATE_STATUS	PreUpdate(float dt);								// Called every frame.
+	virtual UPDATE_STATUS	Update(float dt);									// Called every frame.
+	virtual UPDATE_STATUS	PostUpdate(float dt);								// Called every frame.
+	virtual bool			CleanUp();											// Called after the last frame.
 
 	virtual bool SaveConfiguration(Configuration& root) const;					// Will save the current configuration of the calling module in a JSON file.
 	virtual bool LoadConfiguration(Configuration& root);						// Will load the configuration of the calling module from a JSON file.

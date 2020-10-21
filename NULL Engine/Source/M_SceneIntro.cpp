@@ -43,24 +43,39 @@ bool M_SceneIntro::CleanUp()
 	return true;
 }
 
+bool M_SceneIntro::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool M_SceneIntro::SaveConfiguration(Configuration& root) const
+{
+	bool ret = true;
+
+	return ret;
+}
+
+// -------------- SCENE METHODS --------------
 void M_SceneIntro::HandleDebugInput()
 {
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_STATE::KEY_DOWN)
 	{	
 		DebugSpawnPrimitive(new Sphere(1.0f, 1.0f));
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_STATE::KEY_DOWN)
 	{
 		DebugSpawnPrimitive(new Cube());
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_STATE::KEY_DOWN)
 	{
 		DebugSpawnPrimitive(new Cylinder());
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_STATE::KEY_DOWN)
 	{
 		for (uint n = 0; n < primitives.size(); n++)
 		{
@@ -68,7 +83,7 @@ void M_SceneIntro::HandleDebugInput()
 		}
 	}
 
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_DOWN)
 	{
 		//Get a vector indicating the direction from the camera viewpoint to the "mouse"
 		float mouse_x_position = ((float)App->input->GetMouseX() / (float)App->window->Width()) * 2.f - 1.f;
@@ -106,7 +121,7 @@ UPDATE_STATUS M_SceneIntro::Update(float dt)
 		primitives[n]->Update();
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_STATE::KEY_DOWN)
 	{	
 		App->SaveConfiguration("Resources/Configuration/configuration.JSON");
 

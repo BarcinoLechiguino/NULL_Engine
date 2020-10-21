@@ -89,6 +89,21 @@ bool M_Window::CleanUp()
 	return true;
 }
 
+bool M_Window::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool M_Window::SaveConfiguration(Configuration& root) const
+{
+	bool ret = true;
+
+	return ret;
+}
+
+// -------- WINDOW METHODS --------
 int M_Window::Width() const
 {
 	int w, h;

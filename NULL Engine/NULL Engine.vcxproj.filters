@@ -273,6 +273,27 @@
     <ClCompile Include="Source\R_Model.cpp">
       <Filter>SourceCode\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\E_Panel.cpp">
+      <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Test.cpp">
+      <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Inspector.cpp">
+      <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_About.cpp">
+      <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Console.cpp">
+      <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Toolbar.cpp">
+      <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_EngineConfiguration.cpp">
+      <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -604,6 +625,30 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\DevIL\include\ilut_config.h">
       <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Panel.h">
+      <Filter>SourceCode\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Test.h">
+      <Filter>SourceCode\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assimp.h">
+      <Filter>SourceCode\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Inspector.h">
+      <Filter>SourceCode\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_About.h">
+      <Filter>SourceCode\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Console.h">
+      <Filter>SourceCode\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Toolbar.h">
+      <Filter>SourceCode\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_EngineConfiguration.h">
+      <Filter>SourceCode\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

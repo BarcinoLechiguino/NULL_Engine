@@ -12,11 +12,14 @@ public:
 	M_SceneIntro(bool is_active = true);
 	~M_SceneIntro();
 
-	bool Init(Configuration& config) override;
-	bool Start() override;
-	UPDATE_STATUS Update(float dt) override;
-	UPDATE_STATUS PostUpdate(float dt) override;
-	bool CleanUp() override;
+	bool			Init(Configuration& config) override;
+	bool			Start() override;
+	UPDATE_STATUS	Update(float dt) override;
+	UPDATE_STATUS	PostUpdate(float dt) override;
+	bool			CleanUp() override;
+
+	bool LoadConfiguration(Configuration& root) override;
+	bool SaveConfiguration(Configuration& root) const override;
 
 private:
 	void HandleDebugInput();

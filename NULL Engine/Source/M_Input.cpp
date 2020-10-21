@@ -1,6 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
+#include "M_Window.h"
 #include "M_Renderer3D.h"
+#include "M_Editor.h"
 
 #include "M_Input.h"
 
@@ -9,7 +11,16 @@
 M_Input::M_Input(bool is_active) : Module("Input", is_active)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
-	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
+	memset(keyboard, 0, sizeof(KEY_STATE) * MAX_KEYS);
+
+	mouse_x	= 0;
+	mouse_y	= 0;
+	mouse_z	= 0;
+	
+	mouse_x_motion = 0;
+	mouse_y_motion = 0;
+
+	dropped_file_path = nullptr;
 }
 
 // Destructor
@@ -45,17 +56,25 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 	{
 		if(keys[i] == 1)
 		{
-			if(keyboard[i] == KEY_IDLE)
-				keyboard[i] = KEY_DOWN;
+			if (keyboard[i] == KEY_STATE::KEY_IDLE)
+			{
+				keyboard[i] = KEY_STATE::KEY_DOWN;
+			}
 			else
-				keyboard[i] = KEY_REPEAT;
+			{
+				keyboard[i] = KEY_STATE::KEY_REPEAT;
+			}
 		}
 		else
 		{
-			if(keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN)
-				keyboard[i] = KEY_UP;
+			if (keyboard[i] == KEY_STATE::KEY_REPEAT || keyboard[i] == KEY_STATE::KEY_DOWN)
+			{
+				keyboard[i] = KEY_STATE::KEY_UP;
+			}
 			else
-				keyboard[i] = KEY_IDLE;
+			{
+				keyboard[i] = KEY_STATE::KEY_IDLE;
+			}
 		}
 	}
 
@@ -69,71 +88,87 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 	{
 		if(buttons & SDL_BUTTON(i))
 		{
-			if(mouse_buttons[i] == KEY_IDLE)
-				mouse_buttons[i] = KEY_DOWN;
+			if (mouse_buttons[i] == KEY_STATE::KEY_IDLE)
+			{
+				mouse_buttons[i] = KEY_STATE::KEY_DOWN;
+			}
 			else
-				mouse_buttons[i] = KEY_REPEAT;
+			{
+				mouse_buttons[i] = KEY_STATE::KEY_REPEAT;
+			}
 		}
 		else
 		{
-			if(mouse_buttons[i] == KEY_REPEAT || mouse_buttons[i] == KEY_DOWN)
-				mouse_buttons[i] = KEY_UP;
+			if(mouse_buttons[i] == KEY_STATE::KEY_REPEAT || mouse_buttons[i] == KEY_STATE::KEY_DOWN)
+			{
+				mouse_buttons[i] = KEY_STATE::KEY_UP;
+			}
 			else
-				mouse_buttons[i] = KEY_IDLE;
+			{
+				mouse_buttons[i] = KEY_STATE::KEY_IDLE;
+			}
 		}
 	}
 
 	mouse_x_motion = mouse_y_motion = 0;
 
 	bool quit = false;
-	SDL_Event e;
-	while(SDL_PollEvent(&e))
+	SDL_Event event;
+	while(SDL_PollEvent(&event))
 	{
-		switch(e.type)
+		App->editor->GetEvent(&event);
+		
+		switch(event.type)
 		{
 			case SDL_MOUSEWHEEL:
-			mouse_z = e.wheel.y;
+				mouse_z = event.wheel.y;
 			break;
 
 			case SDL_MOUSEMOTION:
-			mouse_x = e.motion.x / SCREEN_SIZE;
-			mouse_y = e.motion.y / SCREEN_SIZE;
+				mouse_x = event.motion.x / SCREEN_SIZE;
+				mouse_y = event.motion.y / SCREEN_SIZE;
 
-			mouse_x_motion = e.motion.xrel / SCREEN_SIZE;
-			mouse_y_motion = e.motion.yrel / SCREEN_SIZE;
+				mouse_x_motion = event.motion.xrel / SCREEN_SIZE;
+				mouse_y_motion = event.motion.yrel / SCREEN_SIZE;
 			break;
 
 			case SDL_QUIT:
-			quit = true;
+				quit = true;
 			break;
 
 			case SDL_WINDOWEVENT:
-				if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+				if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 				{
-					App->renderer->OnResize(e.window.data1, e.window.data2);
+					App->renderer->OnResize(event.window.data1, event.window.data2);
 				}
-				break;
+
+				if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->window))
+				{
+					return UPDATE_STATUS::STOP;
+				}
+			break;
 
 			case SDL_DROPFILE:
-				dropped_file_path = e.drop.file;
+				dropped_file_path = event.drop.file;
 				App->renderer->LoadModel(dropped_file_path);							// TMP. Use M_FileSystem later.
-				dropped_file_path = nullptr;
-				break;
+			break;
 		}
 	}
 
-	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)							// Exiting application upon pressing ESC here.
+	if (quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_STATE::KEY_UP)							// Exiting application upon pressing ESC here.
+	{
 		return UPDATE_STATUS::STOP;
+	}
 
 	return UPDATE_STATUS::CONTINUE;
 }
 
 UPDATE_STATUS M_Input::Update(float dt)
 {
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_STATE::KEY_DOWN)
 		App->debug = !App->debug;
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_STATE::KEY_DOWN)
 		App->renderPrimitives = !App->renderPrimitives;
 
 	return UPDATE_STATUS::CONTINUE;
@@ -145,4 +180,59 @@ bool M_Input::CleanUp()
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+bool M_Input::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool M_Input::SaveConfiguration(Configuration& root) const
+{
+	bool ret = true;
+
+	return ret;
+}
+
+// --------- INPUT METHODS ---------
+KEY_STATE M_Input::GetKey(int id) const
+{
+	return keyboard[id];
+}
+
+KEY_STATE M_Input::GetMouseButton(int id) const
+{
+	return mouse_buttons[id];
+}
+
+int M_Input::GetMouseX() const
+{
+	return mouse_x;
+}
+
+int M_Input::GetMouseY() const
+{
+	return mouse_y;
+}
+
+int M_Input::GetMouseZ() const
+{
+	return mouse_z;
+}
+
+int M_Input::GetMouseXMotion() const
+{
+	return mouse_x_motion;
+}
+
+int M_Input::GetMouseYMotion() const
+{
+	return mouse_y_motion;
+}
+
+const char* M_Input::GetDroppedFilePath() const
+{
+	return dropped_file_path;
 }

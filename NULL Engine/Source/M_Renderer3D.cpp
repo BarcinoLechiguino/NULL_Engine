@@ -1,14 +1,14 @@
-#include "Assimp/include/cimport.h"
-#include "Assimp/include/scene.h"
-#include "Assimp/include/postprocess.h"
+
+#include "Assimp.h"
+#include "OpenGL.h"
 
 #include "Globals.h"
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Camera3D.h"
 #include "M_FileSystem.h"
+#include "M_Editor.h"
 #include "Primitive.h"
-#include "OpenGL.h"
 
 #include "R_Model.h"
 #include "R_Mesh.h"
@@ -165,6 +165,8 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 		models[i]->Draw();
 	}
 
+	App->editor->RenderGuiPanels();
+
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_STATUS::CONTINUE;
@@ -182,7 +184,21 @@ bool M_Renderer3D::CleanUp()
 	return true;
 }
 
+bool M_Renderer3D::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
 
+	return ret;
+}
+
+bool M_Renderer3D::SaveConfiguration(Configuration& root) const
+{
+	bool ret = true;
+
+	return ret;
+}
+
+// ----------- RENDERER METHODS -----------
 void M_Renderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -203,9 +219,9 @@ void M_Renderer3D::LoadModel(const char* file_path)
 	//const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 	char* buffer = nullptr;
-
+	
 	uint file_size = App->file_system->Load(file_path, &buffer);
-
+	
 	const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
 	//aiImportFileFromMemory()

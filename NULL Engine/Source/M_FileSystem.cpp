@@ -62,6 +62,20 @@ bool M_FileSystem::CleanUp()
 	return ret;
 }
 
+bool M_FileSystem::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
+
+	return true;
+}
+
+bool M_FileSystem::SaveConfiguration(Configuration& root) const
+{
+	bool ret = true;
+
+	return true;
+}
+
 // ---------------- UTILITY METHODS ----------------
 bool M_FileSystem::AddPath(const char* path_or_zip)
 {

@@ -14,7 +14,17 @@
 
 #include "Application.h"
 
-Application::Application() : debug(false), renderPrimitives(true), dt(0.0f)
+Application::Application() : 
+debug(false), 
+renderPrimitives(true), 
+dt(0.0f),
+window(nullptr),
+input(nullptr),
+scene_intro(nullptr),
+editor(nullptr),
+renderer(nullptr),
+camera(nullptr),
+file_system(nullptr)
 {
 	PERF_TIMER_START(perf_timer);
 	
@@ -39,7 +49,6 @@ Application::Application() : debug(false), renderPrimitives(true), dt(0.0f)
 
 	// Scenes
 	AddModule(scene_intro);
-
 	AddModule(editor);
 
 	// Renderer last!
@@ -107,6 +116,11 @@ bool Application::Init()
 		frame_cap			= 60;
 		frames_are_capped	= true;
 	}
+
+	engine_name = TITLE;														// Change Later?
+	organization = ORGANIZATION;
+	frame_cap = 60;
+	frames_are_capped = true;
 
 	Configuration config(buffer);
 	Configuration node = config.GetNode("EditorState");
@@ -440,43 +454,3 @@ void Application::SaveConfigurationNow(const char* file)
 
 	RELEASE_ARRAY(buffer);
 }
-
-//for (Module* it : modules)
-//{
-//	it->Init();
-//}
-
-//std::for_each(modules.begin(), modules.end(),			//for_each() method. Inits all modules from begin to end.
-//	[](Module* m) 
-//{
-//	m->Init();
-//});
-
-////Lambda [](){}
-////[](Module* m) {ANumber += 1; m->Init(); };			//[this/&...]
-//[this](Module* m) {this->CleanUp(); m->Init(); };		//[this/&...] what it is capturing (variables that it will store), () Arguments of the function, {} Function method.
-//
-//std::vector<Module*>::iterator it = modules.begin();	//Iterator call
-//modules.rbegin;											//Last element.
-//modules.begin;											//First element.
-//
-//auto ANumber = 1u;										//Auto is set to unsigned integer.
-//auto BNumber = 1.f;										//Auto is set to float.
-//auto CNumber = 1.0;										//Auto is set to double.
-//
-//while(it != modules.end() && ret == true)				//Iterating the modules in a vector.
-//{
-//	(*it)->Init();										//
-//	it++;												//Iterator->next
-//}
-
-//std::function<bool(int, int)> FunctionPtr = AFunction;				//<function type/what it returns (arguments)> Name
-//FunctionPtr(1, 2);													//Accesses AFunction.
-
-//std::function<UPDATE_STATUS()> UpdatePtr = [this]() { return this->Update(); }; //Set as the pointer to the Update() function of Application.
-
-
-//std::shared_ptr<Module> ModulePtr = std::make_shared<Module>();		//A share_pointer automatically deletes and keeps an object alive. Module will have a counter of how many shared_pointer points to it.
-//std::weak_ptr<Module> WeakPtr = ModulePtr;							//Weak pointer allows to create a pointer towards an object that can be destroyed while this smart pointer points to it.
-
-//ModulePtr2 = ModulePtr;												//Second smart_pointer.

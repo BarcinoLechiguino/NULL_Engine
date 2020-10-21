@@ -51,9 +51,9 @@ bool M_Camera3D::LoadConfiguration(Configuration& root)
 {
 	bool ret = true;
 
-	Position.x = root.GetNumber("X");
-	Position.y = root.GetNumber("Y");
-	Position.z = root.GetNumber("Z");
+	//Position.x = root.GetNumber("X");
+	//Position.y = root.GetNumber("Y");
+	//Position.z = root.GetNumber("Z");
 
 	return ret;
 }
@@ -61,10 +61,10 @@ bool M_Camera3D::LoadConfiguration(Configuration& root)
 bool M_Camera3D::SaveConfiguration(Configuration& root) const
 {
 	bool ret = true;
-	
-	root.SetNumber("X", Position.x);
-	root.SetNumber("Y", Position.y);
-	root.SetNumber("Z", Position.z);
+
+	//root.SetNumber("X", Position.x);
+	//root.SetNumber("Y", Position.y);
+	//root.SetNumber("Z", Position.z);
 
 	LOG("SAVED CAMERA INFO");
 
@@ -77,27 +77,48 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 	// Implement a debug camera with keys and mouse
 	// Now we can make this movememnt frame rate independant!
 
-	vec3 newPos(0,0,0);
+	vec3 new_position(0,0,0);
 	float speed = 3.0f * dt;
-	if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-		speed = 8.0f * dt;
 
-	if(App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
-	if(App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_STATE::KEY_REPEAT)
+	{
+		speed = 12.0f * dt;
+	}
 
-	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position.y += speed;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position.y -= speed;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position -= Z * speed;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position += Z * speed;
+	}
 
 
-	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
-	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position -= X * speed;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position += X * speed;
+	}
 
-	Position += newPos;
-	Reference += newPos;
+	Position += new_position;
+	Reference += new_position;
 
 	// Mouse motion ----------------
 
-	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_STATE::KEY_REPEAT)
 	{
 		int dx = -App->input->GetMouseXMotion();
 		int dy = -App->input->GetMouseYMotion();

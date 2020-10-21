@@ -7,7 +7,7 @@
 class Configuration;
 struct PathNode;
 
-enum class PHYSFS_RESULT																// Every PhysFS method that returns 1 or 0 upon success/failure will be cast to this type.
+enum class PHYSFS_RESULT																	// Every PhysFS method that returns 1 or 0 upon success/failure will be cast to this type.
 {
 	FAILURE,
 	SUCCESS
@@ -21,6 +21,9 @@ public:
 
 	bool Init(Configuration& config) override;
 	bool CleanUp() override;
+
+	bool SaveConfiguration(Configuration& root) const override;								// Necessary?
+	bool LoadConfiguration(Configuration& root) override;									// ----------
 
 public:
 	// Utility functions

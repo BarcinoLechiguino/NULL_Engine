@@ -22,11 +22,14 @@ public:
 	M_Renderer3D(bool is_active = true);
 	~M_Renderer3D();
 
-	bool Init(Configuration& config) override;
-	UPDATE_STATUS PreUpdate(float dt) override;
-	UPDATE_STATUS PostUpdate(float dt) override;
-	bool CleanUp() override;
+	bool			Init(Configuration& config) override;
+	UPDATE_STATUS	PreUpdate(float dt) override;
+	UPDATE_STATUS	PostUpdate(float dt) override;
+	bool			CleanUp() override;
 	
+	bool LoadConfiguration(Configuration& root) override;
+	bool SaveConfiguration(Configuration& root) const override;
+
 public:
 	void OnResize(int width, int height);
 

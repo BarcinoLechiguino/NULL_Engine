@@ -1,10 +1,6 @@
-﻿  M_Camera3D.cpp
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Camera3D.cpp(54,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Camera3D.cpp(55,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Camera3D.cpp(56,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  Generating code
-  7 of 3010 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    69 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
+﻿  E_Console.cpp
+  M_Editor.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Editor.cpp(101,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Editor.cpp(123,20): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

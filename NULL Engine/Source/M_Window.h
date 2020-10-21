@@ -16,6 +16,9 @@ public:
 
 	bool Init(Configuration& config) override;
 	bool CleanUp() override;
+
+	bool LoadConfiguration(Configuration& root) override;
+	bool SaveConfiguration(Configuration& root) const override;
 	
 public:
 	int Width() const;

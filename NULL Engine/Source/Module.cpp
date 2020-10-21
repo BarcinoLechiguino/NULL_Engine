@@ -52,6 +52,7 @@ bool Module::SaveConfiguration(Configuration& file) const
 	return true;
 }
 
+// ------------ MODULE METHODS ------------
 bool Module::IsActive() const
 {
 	return is_active;

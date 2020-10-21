@@ -6,6 +6,9 @@
 
 class Configuration;
 
+class E_Panel;
+class E_Test;
+
 enum class IMGUI_STYLE
 {
 	CLASSIC,
@@ -20,27 +23,30 @@ public:
 	M_Editor(bool is_active = true);
 	~M_Editor();
 
-	bool Init(Configuration& config) override;
-	bool Start() override;
-	UPDATE_STATUS PreUpdate(float dt) override;
-	UPDATE_STATUS Update(float dt) override;
-	UPDATE_STATUS PostUpdate(float dt) override;
-	bool CleanUp() override;
+	bool			Init(Configuration& config) override;
+	bool			Start() override;
+	UPDATE_STATUS	PreUpdate(float dt) override;
+	UPDATE_STATUS	Update(float dt) override;
+	UPDATE_STATUS	PostUpdate(float dt) override;
+	bool			CleanUp() override;
 
-	bool LoadConfiguration(Configuration& root);
-	bool SaveConfiguration(Configuration& root);
+	bool LoadConfiguration(Configuration& root) override;
+	bool SaveConfiguration(Configuration& root) const override;
 
 public:
-	ImGuiIO io;
-	bool show_demo_window;
-	bool show_another_window;
-	ImVec4 clear_color;
+	bool GetEvent(SDL_Event* event) const;											// Will return false if there was no event to read.
 
-	int current_style;
-	const char* styles;
+	void AddGuiPanel(E_Panel* panel);												//
+	bool RenderGuiPanels() const;													//
 
-	float f;
-	int counter;
+public:
+	std::vector<E_Panel*>	gui_panels;												//
+
+	E_Test*					test;													//
+
+public:
+	//ImGuiIO					io;														//
+	ImVec4					clear_color;											//
 
 private:
 	int b;
