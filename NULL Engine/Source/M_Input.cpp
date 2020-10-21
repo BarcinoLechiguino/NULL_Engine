@@ -108,10 +108,17 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_WINDOWEVENT:
-			{
-				if(e.window.event == SDL_WINDOWEVENT_RESIZED)
+				if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+				{
 					App->renderer->OnResize(e.window.data1, e.window.data2);
-			}
+				}
+				break;
+
+			case SDL_DROPFILE:
+				dropped_file_path = e.drop.file;
+				App->renderer->LoadModel(dropped_file_path);							// TMP. Use M_FileSystem later.
+				dropped_file_path = nullptr;
+				break;
 		}
 	}
 

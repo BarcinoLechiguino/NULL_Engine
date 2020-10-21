@@ -13,6 +13,8 @@
 #define MAX_LIGHTS 8
 
 class Configuration;
+class R_Mesh;
+class R_Model;
 
 class M_Renderer3D : public Module
 {
@@ -28,6 +30,8 @@ public:
 public:
 	void OnResize(int width, int height);
 
+	void LoadModel(const char* file_path);
+
 	void PrimitiveExamples();												// REMOVE LATER
 
 public:
@@ -36,13 +40,16 @@ public:
 	mat3x3 NormalMatrix;
 	mat4x4 ProjectionMatrix;
 
+	//std::vector<R_Mesh*> meshes;
+	std::vector<R_Model*> models;
+
 	PrimitiveDrawExamples OGL_draw_examples;								// REMOVE LATER
 	Cube cube_direct;
 	Cube cube_array;
 	Cube cube_indices;
-	Sphere sphere;															
+	//Sphere sphere;															
 	Pyramid pyramid;														
-	Cylinder cylinder;														// ------------
+	//Cylinder cylinder;														// ------------
 };
 
 #endif // !__M_RENDERER_3D_H__

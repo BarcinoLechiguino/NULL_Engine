@@ -1,16 +1,27 @@
+#include "Assimp/include/cimport.h"
+#include "Assimp/include/scene.h"
+#include "Assimp/include/postprocess.h"
+
 #include "Globals.h"
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Camera3D.h"
+#include "M_FileSystem.h"
 #include "Primitive.h"
 #include "OpenGL.h"
 
-#include "M_Input.h"
+#include "R_Model.h"
+#include "R_Mesh.h"
+#include "I_Meshes.h"
+#include "M_Input.h"																	//TMP
 
 #include "M_Renderer3D.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+
+#pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
+
 
 M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), context()
 {
@@ -112,6 +123,9 @@ bool M_Renderer3D::Init(Configuration& config)
 		LOG("GLEW could not initialize! SDL_Error: %s\n", SDL_GetError());
 	}
 
+	LoadModel("Assets/Models/warrior/warrior.FBX");
+	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
+
 	return ret;
 }
 
@@ -141,6 +155,16 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 {	
 	PrimitiveExamples();
 
+	/*for (int i = 0; i < meshes.size(); ++i)
+	{
+		meshes[i]->Draw();
+	}*/
+
+	for (int i = 0; i < models.size(); ++i)
+	{
+		models[i]->Draw();
+	}
+
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_STATUS::CONTINUE;
@@ -150,6 +174,8 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 bool M_Renderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
+
+	models.clear();
 
 	SDL_GL_DeleteContext(context);
 
@@ -168,6 +194,30 @@ void M_Renderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+void M_Renderer3D::LoadModel(const char* file_path)
+{
+	R_Model* model = new R_Model();
+
+	//const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+
+	char* buffer = nullptr;
+
+	uint file_size = App->file_system->Load(file_path, &buffer);
+
+	const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+
+	//aiImportFileFromMemory()
+
+	if (scene != nullptr)
+	{
+		model->ProcessScene(scene);
+
+		aiReleaseImport(scene);
+	}
+
+	models.push_back(model);
 }
 
 void M_Renderer3D::PrimitiveExamples()
@@ -239,7 +289,7 @@ void M_Renderer3D::PrimitiveExamples()
 		}
 	}*/
 	
-	sphere.IndiceRender();
+	//sphere.IndiceRender();
 
 	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 	//pyramid.SetPos(5.0f, 0.0f, 0.0f);
@@ -247,8 +297,8 @@ void M_Renderer3D::PrimitiveExamples()
 
 	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 	//cylinder.InnerRender();
-	cylinder.SetPos(2.5f, 0.0f, 0.0f);
-	cylinder.IndicesRender();
+	//cylinder.SetPos(2.5f, 0.0f, 0.0f);
+	//cylinder.IndicesRender();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }

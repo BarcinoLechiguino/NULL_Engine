@@ -46,7 +46,7 @@ bool M_SceneIntro::CleanUp()
 void M_SceneIntro::HandleDebugInput()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
+	{	
 		DebugSpawnPrimitive(new Sphere(1.0f, 1.0f));
 	}
 
@@ -104,6 +104,13 @@ UPDATE_STATUS M_SceneIntro::Update(float dt)
 	for (uint n = 0; n < primitives.size(); n++)
 	{
 		primitives[n]->Update();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	{	
+		App->SaveConfiguration("Resources/Configuration/configuration.JSON");
+
+		//DebugSpawnPrimitive(new Sphere(1.0f, 1.0f));
 	}
 
 	return UPDATE_STATUS::CONTINUE;

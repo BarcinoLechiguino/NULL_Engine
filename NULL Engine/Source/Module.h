@@ -14,9 +14,9 @@
 
 #include "Globals.h"
 
-#define MAX_MODULE_NAME_LENGTH 25
-
 class Configuration;
+
+#define MAX_MODULE_NAME_LENGTH 25
 
 class Module
 {
@@ -31,8 +31,8 @@ public:
 	virtual UPDATE_STATUS PostUpdate(float dt);
 	virtual bool CleanUp();
 
-	virtual bool SaveConfiguration(/*Configuration& root*/) const;				// Will save the current configuration of the calling module in a JSON file.
-	virtual bool LoadConfiguration(/*Configuration& root*/);					// Will load the configuration of the calling module from a JSON file.
+	virtual bool SaveConfiguration(Configuration& root) const;					// Will save the current configuration of the calling module in a JSON file.
+	virtual bool LoadConfiguration(Configuration& root);						// Will load the configuration of the calling module from a JSON file.
 
 public:
 	bool IsActive() const;

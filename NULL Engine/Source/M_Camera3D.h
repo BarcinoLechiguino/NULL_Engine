@@ -13,11 +13,15 @@ public:
 	M_Camera3D(bool is_active = true);
 	~M_Camera3D();
 
-	bool Init(Configuration& config) override;
+	bool Init(Configuration& root) override;
 	bool Start() override;
 	UPDATE_STATUS Update(float dt) override;
 	bool CleanUp() override;
 
+	bool SaveConfiguration(Configuration& root) const override;
+	bool LoadConfiguration(Configuration& root) override;
+
+public:
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);

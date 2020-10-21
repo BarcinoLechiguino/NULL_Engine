@@ -222,3 +222,17 @@ bool M_Editor::CleanUp()
 	
 	return true;
 }
+
+bool M_Editor::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool M_Editor::SaveConfiguration(Configuration& root)
+{
+	bool ret = true;
+
+	return ret;
+}

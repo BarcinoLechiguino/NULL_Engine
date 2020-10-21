@@ -20,8 +20,12 @@ M_Camera3D::~M_Camera3D()
 {}
 
 // -----------------------------------------------------------------
-bool M_Camera3D::Init(Configuration& config)
+bool M_Camera3D::Init(Configuration& root)
 {
+	//Position.x = root.GetNumber("X");
+	//Position.y = root.GetNumber("Y");
+	//Position.z = root.GetNumber("Z");
+	
 	return true;
 }
 
@@ -40,6 +44,31 @@ bool M_Camera3D::CleanUp()
 	LOG("Cleaning camera");
 
 	return true;
+}
+
+// -----------------------------------------------------------------
+bool M_Camera3D::LoadConfiguration(Configuration& root)
+{
+	bool ret = true;
+
+	Position.x = root.GetNumber("X");
+	Position.y = root.GetNumber("Y");
+	Position.z = root.GetNumber("Z");
+
+	return ret;
+}
+
+bool M_Camera3D::SaveConfiguration(Configuration& root) const
+{
+	bool ret = true;
+	
+	root.SetNumber("X", Position.x);
+	root.SetNumber("Y", Position.y);
+	root.SetNumber("Z", Position.z);
+
+	LOG("SAVED CAMERA INFO");
+
+	return ret;
 }
 
 // -----------------------------------------------------------------

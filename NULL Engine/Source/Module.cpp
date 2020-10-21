@@ -1,3 +1,5 @@
+#include "Configuration.h"
+
 #include "Module.h"
 
 Module::Module(const char* name, bool is_active) : is_active(is_active)
@@ -40,12 +42,12 @@ bool Module::CleanUp()
 	return true;
 }
 
-bool Module::LoadConfiguration(/*Configuration& file*/)
+bool Module::LoadConfiguration(Configuration& file)
 {
 	return true;
 }
 
-bool Module::SaveConfiguration(/*Configuration& file*/) const
+bool Module::SaveConfiguration(Configuration& file) const
 {
 	return true;
 }

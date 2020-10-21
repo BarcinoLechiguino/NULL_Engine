@@ -82,6 +82,9 @@
     <Filter Include="Dependencies\Assimp">
       <UniqueIdentifier>{6aa303e1-6694-4757-8209-ffed78b5ee7b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\DevIL">
+      <UniqueIdentifier>{b9a2a167-7134-4d0d-a130-8e15faad988f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
@@ -265,6 +268,9 @@
       <Filter>SourceCode\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Resource.cpp">
+      <Filter>SourceCode\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\R_Model.cpp">
       <Filter>SourceCode\Resources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -571,6 +577,33 @@
     </ClInclude>
     <ClInclude Include="Source\Resource.h">
       <Filter>SourceCode\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\R_Model.h">
+      <Filter>SourceCode\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\config.h">
+      <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\devil_internal_exports.h">
+      <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\il.h">
+      <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\il_wrap.h">
+      <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\ilu.h">
+      <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\ilu_region.h">
+      <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\ilut.h">
+      <Filter>Dependencies\DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\DevIL\include\ilut_config.h">
+      <Filter>Dependencies\DevIL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

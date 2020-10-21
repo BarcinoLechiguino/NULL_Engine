@@ -11,7 +11,7 @@ namespace Importer
 	{
 		R_Mesh*	Create();														// Generates/Instances an empty R_Mesh resource. Will use R_Mesh's default constructor.
 
-		void	Import(const aiMesh* imported_mesh, R_Mesh* resource_mesh);		// Processes aiMesh data into a ready-to-use R_Mesh to be saved later. Will return nullptr on ERROR.
+		void	Import(const aiMesh* ai_mesh, R_Mesh* r_mesh);					// Processes aiMesh data into a ready-to-use R_Mesh to be saved later. Will return nullptr on ERROR.
 
 		uint64	Save(const R_Mesh* mesh, char** buffer);						// Processes R_Mesh data into a buffer ready to save. Will return the size of the buffer file (0 on ERROR).
 

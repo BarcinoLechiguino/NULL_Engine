@@ -27,6 +27,9 @@ public:
 	UPDATE_STATUS PostUpdate(float dt) override;
 	bool CleanUp() override;
 
+	bool LoadConfiguration(Configuration& root);
+	bool SaveConfiguration(Configuration& root);
+
 public:
 	ImGuiIO io;
 	bool show_demo_window;

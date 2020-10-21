@@ -10,6 +10,7 @@
 #include "M_Editor.h"
 #include "M_Camera3D.h"
 #include "M_FileSystem.h"
+#include "Configuration.h"
 
 #include "Application.h"
 
@@ -297,11 +298,15 @@ void Application::FinishUpdate()
 	if (want_to_load)
 	{
 		LoadConfigurationNow(load_config_file.c_str());
+
+		want_to_load = false;
 	}
 
 	if (want_to_save)
 	{
 		SaveConfigurationNow(save_config_file.c_str());
+
+		want_to_save = false;
 	}
 
 	// ------------ Framerate Calculations ------------
@@ -405,17 +410,35 @@ void Application::LoadConfiguration(const char* file)
 void Application::SaveConfiguration(const char* file)
 {
 	want_to_save = true;
-	save_config_file = ("Configuration.json");
+	save_config_file = ("Configuration/configuration.json");
 }
 
 void Application::LoadConfigurationNow(const char* file)
 {
+	for (int i = 0; i < modules.size(); ++i)
+	{
+		//JSON_Object* obj = 
 
+		//modules[i]->LoadConfiguration(Configuration());
+	}
 }
 
 void Application::SaveConfigurationNow(const char* file)
 {
+	Configuration config;
+	Configuration node = config.SetNode("EditorState");
+	
+	for (int i = 0; i < modules.size(); ++i)
+	{
+		modules[i]->SaveConfiguration(config.SetNode(modules[i]->GetName()));
+	}
 
+	char* buffer = nullptr;
+	uint size = config.SerializeToBuffer(&buffer);
+
+	file_system->Save(file, buffer, size);
+
+	RELEASE_ARRAY(buffer);
 }
 
 //for (Module* it : modules)

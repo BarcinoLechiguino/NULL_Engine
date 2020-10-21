@@ -1,16 +1,19 @@
 #ifndef __R_MESH_H__
 #define __R_MESH_H__
 
+#include "MathGeoLib/src/Geometry/AABB.h"
 #include "Resource.h"
 
-struct vertex
+struct Vertex
 {
+	Vertex();
+
 	vec3 position;										// Position vector of the vertex in space.	Ex: (2.0f, 1.0f, -1.5f)		(x, y, z)
 	vec3 normal;										// Normal vector of the vertex.				Ex: (0.7f, 0.0f, 0.7f)		(x, y, z)
-	vec2 TexCoords;										// Texture coordinates of the vertex.		Ex:	(0.5f, 1.0f)			(u, v)			From 0 to 1.
+	vec2 tex_coords;									// Texture coordinates of the vertex.		Ex:	(0.5f, 1.0f)			(u, v)			From 0 to 1.
 };
 
-struct texture
+struct Texture
 {
 	uint			id;									// Id of the texture.
 	std::string		type;								// Diffuse or Specular.
@@ -22,14 +25,25 @@ public:
 	R_Mesh();
 	~R_Mesh();
 
+	void Draw();
+
 	void LoadBuffers();
+	void CreateAABB();									// Will create the bounding box that will encase the mesh.
 
 public:
 	// Mesh data
-	std::vector<float>	vertices;
+	/*std::vector<float>	vertices;
 	std::vector<float>	normals;
 	std::vector<float>	tex_coords;
-	std::vector<uint>	indices;
+	std::vector<uint>	indices;*/
+
+	std::vector<Vertex>		vertices;
+	std::vector<uint>		indices;
+	std::vector<Texture>	textures;
+
+	int num_vertices;
+
+	AABB aabb;											// Bounding box of the mesh.
 
 private:
 	// Buffer data
