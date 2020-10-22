@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "PerfectTimer.h"
 #include "Configuration.h"
+#include "HardwareInfo.h"
 
 class Module;												// Modules are forward declared in call order.
 class M_Window;
@@ -39,10 +40,14 @@ public:
 	const char* GetOrganizationName() const;
 
 	void AddEditorLog(const char* log);
+	void LogHardwareInfo();
 	void RequestBrowser(const char* link);
 
 	void LoadConfiguration(const char* file);
 	void SaveConfiguration(const char* file);
+
+	//void InitializeModules();
+	//void InitializeVariables();
 
 private:
 	void PrepareUpdate();
@@ -104,6 +109,9 @@ private:
 
 	PerfectTimer			precise_delay_timer;			// Will keep track of the amount of time spent delaying the processing of the next frame.
 	float					dt;								// Equivalent to the amount of milliseconds that have elapsed in a frame. Keeps everything in the same timestep.
+
+	// Hardware Data
+	HardwareInfo			hardware_info;
 };
 
 extern Application* App;									// Allows to access the Application module from anywhere in the project.

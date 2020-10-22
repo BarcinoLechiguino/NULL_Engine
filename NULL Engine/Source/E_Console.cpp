@@ -1,11 +1,13 @@
 #include "Application.h"
 #include "M_Window.h"
+#include "M_Editor.h"
 
 #include "E_Console.h"
 
 E_Console::E_Console() : E_Panel("Console")
 {
 	scroll_to_bottom = true;
+	show_console = IsActive();
 }
 
 E_Console::~E_Console()
@@ -17,9 +19,7 @@ bool E_Console::Draw(ImGuiIO& io)
 {
 	bool ret = true;
 
-	ImGuiWindowFlags win_flags = ImGuiWindowFlags_MenuBar;
-
-	ImGui::Begin(GetName(), NULL, win_flags);
+	ImGui::Begin(GetName(), NULL, ImGuiWindowFlags_MenuBar);
 	
 	ConsoleMenuBar();													// Constructs the menu bar of the Console panel. It has an Options menu that allows to Clear or Close the console.
 

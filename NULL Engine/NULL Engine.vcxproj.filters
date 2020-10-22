@@ -85,6 +85,9 @@
     <Filter Include="Dependencies\DevIL">
       <UniqueIdentifier>{b9a2a167-7134-4d0d-a130-8e15faad988f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\gpudetect">
+      <UniqueIdentifier>{d8ad7825-f611-407a-ae9f-e791c73d49a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
@@ -293,6 +296,12 @@
     </ClCompile>
     <ClCompile Include="Source\Log.cpp">
       <Filter>SourceCode\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\HardwareInfo.cpp">
+      <Filter>SourceCode\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\gpudetect\includes\DeviceId.cpp">
+      <Filter>Dependencies\gpudetect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -652,6 +661,15 @@
     </ClInclude>
     <ClInclude Include="Source\Log.h">
       <Filter>SourceCode\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\HardwareInfo.h">
+      <Filter>SourceCode\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\gpudetect\includes\DeviceId.h">
+      <Filter>Dependencies\gpudetect</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\gpudetect\includes\dxgi1_4.h">
+      <Filter>Dependencies\gpudetect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

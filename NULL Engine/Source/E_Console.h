@@ -27,6 +27,7 @@ private:
 	std::vector<char*> logs;
 
 	bool scroll_to_bottom;
+	bool show_console;
 };
 
 #endif // !__E_CONSOLE_H__

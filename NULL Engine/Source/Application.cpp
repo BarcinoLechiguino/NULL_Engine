@@ -18,6 +18,7 @@ Application::Application() :
 debug(false), 
 renderPrimitives(true), 
 dt(0.0f),
+hardware_info(),
 window(nullptr),
 input(nullptr),
 scene_intro(nullptr),
@@ -133,6 +134,11 @@ bool Application::Init()
 		++item;
 	}
 	
+	// Initializing hardware info and Logging it.
+	hardware_info.InitializeInfo();
+	LogHardwareInfo();
+	// -----------------------------------------
+
 	LOG("Application Start --------------");
 
 	item = modules.begin();
@@ -418,6 +424,50 @@ void Application::AddEditorLog(const char* log)
 	{
 		editor->AddConsoleLog(log);
 	}
+}
+
+void Application::LogHardwareInfo()
+{
+	LOG(" ------------- CPU INFO ------------- ");
+	LOG("CPU Cores: %d",						hardware_info.CPU.cpu_count);
+	LOG("CPU Cache Size: %d ",					hardware_info.CPU.cache_size);
+	LOG("CPU RAM Size: %.1f GB",				hardware_info.CPU.ram_gb);
+	LOG(" --- DRIVERS --- ");
+	LOG("CPU RDTSC: %s",						hardware_info.CPU.has_RDTSC		?	"True" : "False");
+	LOG("CPU AltiVec: %s",						hardware_info.CPU.has_AltiVec	?	"True" : "False");
+	LOG("CPU Now3D: %s",						hardware_info.CPU.has_3DNow		?	"True" : "False");
+	LOG("CPU MMX: %s",							hardware_info.CPU.has_MMX		?	"True" : "False");
+	LOG("CPU SSE: %s",							hardware_info.CPU.has_SSE		?	"True" : "False");
+	LOG("CPU SSE2: %s",							hardware_info.CPU.has_SSE2		?	"True" : "False");
+	LOG("CPU SSE3: %s",							hardware_info.CPU.has_SSE3		?	"True" : "False");
+	LOG("CPU SSE4.1: %s",						hardware_info.CPU.has_SSE41		?	"True" : "False");
+	LOG("CPU SSE4.2: %s",						hardware_info.CPU.has_SSE42		?	"True" : "False");
+	LOG("CPU AVX: %s",							hardware_info.CPU.has_AVX		?	"True" : "False");
+	LOG("CPU AVX2: %s",							hardware_info.CPU.has_AVX2		?	"True" : "False");
+
+	LOG(" ------------- GPU INFO ------------- ");
+	LOG("GPU Vendor %d Device %d",				hardware_info.GPU.vendor, hardware_info.GPU.device_id);
+	LOG("GPU Brand: %s",						hardware_info.GPU.brand);
+	LOG(" --- VRAM --- ");
+	LOG("GPU VRAM Budget: %.1f MB",				hardware_info.GPU.vram_mb_budget);
+	LOG("GPU VRAM Usage: %.1f MB",				hardware_info.GPU.vram_mb_usage);
+	LOG("GPU VRAM Available: %.1f MB",			hardware_info.GPU.vram_mb_available);
+	LOG("GPU VRAM Reserved: %.1f MB",			hardware_info.GPU.vram_mb_reserved);
+
+	LOG(" ------------- SDL INFO ------------- ");
+	LOG("SDL Version: %s",						hardware_info.SDL.sdl_version);
+
+	LOG(" ------------- OPENGL INFO ------------- ");
+	LOG("OpenGL Model: %s",						hardware_info.OpenGL.model_name);
+	LOG("OpenGL Renderer: %s",					hardware_info.OpenGL.renderer_name);
+	LOG("OpenGL Version: %s",					hardware_info.OpenGL.version);
+	LOG("OpenGL Shading Language Version: %s",	hardware_info.OpenGL.shading_language_version);
+	//LOG("OpenGL Extensions: %s",				hardware_info.OpenGL.extensions);
+
+	/*for (int i = 0; i < hardware_info.OpenGL.extensions.size(); ++i)
+	{
+		LOG("OpenGL Extensions: %s",			hardware_info.OpenGL.extensions[i]);
+	}*/
 }
 
 void Application::RequestBrowser(const char* link)
