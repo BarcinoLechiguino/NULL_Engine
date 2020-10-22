@@ -23,11 +23,6 @@ E_Test::~E_Test()
 bool E_Test::Draw(ImGuiIO& io)
 {
 	bool ret = true;
-	
-	//Start Dear ImGui's frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(App->window->window);
-	ImGui::NewFrame();
 
 	// Showing ImGui's predetermined demo window
 	if (show_demo_window)

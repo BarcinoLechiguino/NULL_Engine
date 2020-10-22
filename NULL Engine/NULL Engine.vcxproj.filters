@@ -90,9 +90,6 @@
     <ClCompile Include="Source\Color.cpp">
       <Filter>SourceCode\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\log.cpp">
-      <Filter>SourceCode\Tools</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Application.cpp">
       <Filter>SourceCode\Core</Filter>
     </ClCompile>
@@ -293,6 +290,9 @@
     </ClCompile>
     <ClCompile Include="Source\E_EngineConfiguration.cpp">
       <Filter>SourceCode\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Log.cpp">
+      <Filter>SourceCode\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -649,6 +649,9 @@
     </ClInclude>
     <ClInclude Include="Source\E_EngineConfiguration.h">
       <Filter>SourceCode\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Log.h">
+      <Filter>SourceCode\Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

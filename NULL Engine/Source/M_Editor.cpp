@@ -8,17 +8,22 @@
 
 #include "E_Panel.h"
 #include "E_Test.h"
+#include "E_Console.h"
 
 #include "M_Editor.h"
 
 #pragma comment (lib, "Source/Dependencies/glew/libx86/glew32.lib")
 
 M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),
-test(nullptr)
+clear_color(0.0f, 0.0f, 0.0f, 1.0f),
+test(nullptr),
+console(nullptr)
 {
-	test = new E_Test();
+	test		= new E_Test();
+	console		= new E_Console();
 
 	AddGuiPanel(test);
+	AddGuiPanel(console);
 }
 
 M_Editor::~M_Editor()
@@ -37,41 +42,7 @@ bool M_Editor::Start()
 {
 	bool ret = true;
 
-	// ImGui ----------------------------------------------
-	// Setting up Dear ImGui's context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-
-	ImGuiIO& io = ImGui::GetIO();								// Needs to be called multiple times during a frame to update IO correctly.
-	(void)io;
-
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;		// Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;			// Enable MultiViewport / Platform Windows
-
-	//Setting up Dear ImGui's style.
-	ImGui::StyleColorsDark();
-	/*ImGui::StyleColorsClassic();*/
-
-	// Tweaking the platform windows to look identical to regular ones.
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
-
-	
-
-	// Setting up Platfor/Renderer bindings
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
-	ImGui_ImplOpenGL3_Init(0);
-
-	// Initializing some variables
-	clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); 
-	// ----------------------------------------------------
+	InitializeImGui();
 	
 	return ret;
 }
@@ -96,7 +67,11 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 	
 	ImGuiIO& io = ImGui::GetIO();
 
-	// ImGui -----------------------------------------------
+	//Start Dear ImGui's frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(App->window->window);
+	ImGui::NewFrame();
+
 	bool draw = true;
 	for (int i = 0; i < gui_panels.size(); ++i)
 	{	
@@ -112,8 +87,6 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 			}
 		}
 	}
-
-	// -----------------------------------------------------
 	
 	return ret;
 }
@@ -160,6 +133,14 @@ void M_Editor::AddGuiPanel(E_Panel* panel)
 	gui_panels.push_back(panel);
 }
 
+void M_Editor::AddConsoleLog(const char* log)
+{
+	if (gui_panels.size() > 0)
+	{
+		console->AddLog(log);
+	}
+}
+
 bool M_Editor::RenderGuiPanels() const
 {
 	// Rendering all ImGui elements
@@ -184,4 +165,40 @@ bool M_Editor::RenderGuiPanels() const
 	}
 
 	return true;
+}
+
+bool M_Editor::InitializeImGui() const
+{
+	bool ret = true;
+
+	// Setting up Dear ImGui's context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	ImGuiIO& io = ImGui::GetIO();								// Needs to be called multiple times during a frame to update IO correctly.
+	(void)io;
+
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;		// Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;			// Enable MultiViewport / Platform Windows
+
+	//Setting up Dear ImGui's style.
+	ImGui::StyleColorsDark();
+	/*ImGui::StyleColorsClassic();*/
+
+	// Tweaking the platform windows to look identical to regular ones.
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
+
+	// Setting up Platfor/Renderer bindings
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
+	ImGui_ImplOpenGL3_Init(0);
+
+	return ret;
 }

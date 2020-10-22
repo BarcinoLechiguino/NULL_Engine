@@ -8,6 +8,7 @@ class Configuration;
 
 class E_Panel;
 class E_Test;
+class E_Console;
 
 enum class IMGUI_STYLE
 {
@@ -37,15 +38,18 @@ public:
 	bool GetEvent(SDL_Event* event) const;											// Will return false if there was no event to read.
 
 	void AddGuiPanel(E_Panel* panel);												//
+	void AddConsoleLog(const char* log);
+
 	bool RenderGuiPanels() const;													//
+	bool InitializeImGui() const;
 
 public:
 	std::vector<E_Panel*>	gui_panels;												//
 
 	E_Test*					test;													//
+	E_Console*				console;
 
 public:
-	//ImGuiIO					io;														//
 	ImVec4					clear_color;											//
 
 private:

@@ -209,8 +209,13 @@ bool Application::CleanUp()
 	while(item != modules.rend() && ret)
 	{
 		ret = (*item)->CleanUp();
+		RELEASE((*item));
+
 		++item;
 	}
+
+	modules.clear();
+
 	return ret;
 }
 
@@ -405,6 +410,14 @@ const char* Application::GetEngineName() const
 const char* Application::GetOrganizationName() const
 {
 	return organization.c_str();
+}
+
+void Application::AddEditorLog(const char* log)
+{
+	if (editor != nullptr)
+	{
+		editor->AddConsoleLog(log);
+	}
 }
 
 void Application::LoadConfiguration(const char* file)

@@ -1,0 +1,5 @@
+﻿  E_Console.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_Console.cpp(46,14): warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_Console.cpp(55,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_Console.cpp(94,20): warning C4018: '<': signed/unsigned mismatch
+  NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

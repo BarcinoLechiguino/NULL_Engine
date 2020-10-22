@@ -2,6 +2,7 @@
 #define __E_PANEL_H__
 
 #include <string>
+#include <vector>
 
 #include "ImGui.h"
 #include "Globals.h"

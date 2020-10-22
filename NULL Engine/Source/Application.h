@@ -38,6 +38,8 @@ public:
 	const char* GetEngineName() const;
 	const char* GetOrganizationName() const;
 
+	void AddEditorLog(const char* log);
+
 	void LoadConfiguration(const char* file);
 	void SaveConfiguration(const char* file);
 

@@ -13,8 +13,20 @@ public:
 
 	bool CleanUp() override;
 
+public:
+	void AddLog(const char* log);
+	
 private:
+	void ClearLog();
 
+	void ConsoleMenuBar();
+	void ConsoleOutput();
+	void ConsoleScrollToBottom();
+	
+private:
+	std::vector<char*> logs;
+
+	bool scroll_to_bottom;
 };
 
 #endif // !__E_CONSOLE_H__
