@@ -9,7 +9,8 @@
 
 E_Toolbar::E_Toolbar() : E_Panel("Toolbar")
 {
-
+	show_close_app_popup = false;
+	show_about_popup = false;
 }
 
 E_Toolbar::~E_Toolbar()
@@ -27,12 +28,23 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 	{
 		if (ImGui::MenuItem("Quit Application"))
 		{
-			return false;
-			
-			/*ImGui::OpenPopup("Close Application?");
+			show_close_app_popup = true;
+		}
 
+		ImGui::EndMenu();
+	}
+
+	if (show_close_app_popup)
+	{
+		ImGui::OpenPopup("Close Application?");
+
+		if (ImGui::BeginPopupModal("Close Application?"))
+		{
 			if (ImGui::Button("YES"))
 			{
+				ImGui::CloseCurrentPopup();
+				show_close_app_popup = false;
+				
 				return false;
 			}
 
@@ -41,12 +53,11 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 			if (ImGui::Button("NO"))
 			{
 				ImGui::CloseCurrentPopup();
+				show_close_app_popup = false;
 			}
 
-			ImGui::EndPopup();*/
+			ImGui::EndPopup();
 		}
-
-		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("View"))
@@ -102,10 +113,15 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 
 		if (ImGui::MenuItem("About"))
 		{
-			App->editor->about->Draw(io);
+			show_about_popup = true;
 		}
 
 		ImGui::EndMenu();
+	}
+
+	if (show_about_popup)
+	{
+		show_about_popup = App->editor->about->Draw(io);
 	}
 
 	ImGui::EndMainMenuBar();

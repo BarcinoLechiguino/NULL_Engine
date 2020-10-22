@@ -14,7 +14,8 @@ public:
 	bool CleanUp() override;
 
 private:
-
+	bool show_close_app_popup;
+	bool show_about_popup;
 };
 
 #endif // !__E_TOOLBAR_H__

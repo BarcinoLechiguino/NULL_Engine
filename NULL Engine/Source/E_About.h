@@ -14,7 +14,7 @@ public:
 	bool CleanUp() override;
 
 private:
-
+	bool show_about_popup;
 };
 
 #endif // !__E_ABOUT_H__
