@@ -31,6 +31,9 @@ public:
 	bool SaveConfiguration(Configuration& root) const override;
 
 public:
+	bool InitOpenGL();
+	bool InitGlew();
+
 	void OnResize(int width, int height);
 
 	void LoadModel(const char* file_path);

@@ -59,8 +59,8 @@ void E_Console::ClearLog()
 
 	logs.clear();
 
-	LOG("[ERROR] Not enough knowledge about ImGui!");
-	LOG("[WARNING] DO NOT copy from other engines! >:(");
+	//LOG("[ERROR] Not enough knowledge about ImGui!");
+	//LOG("[WARNING] DO NOT copy from other engines! >:(");
 
 	scroll_to_bottom = true;
 }
@@ -111,7 +111,6 @@ void E_Console::ConsoleOutput()
 	}
 
 	ImGui::PopStyleVar();
-
 }
 
 void E_Console::ConsoleScrollToBottom()

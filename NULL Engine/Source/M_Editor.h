@@ -8,6 +8,8 @@ class Configuration;
 
 class E_Panel;
 class E_Test;
+class E_Toolbar;
+class E_About;
 class E_Console;
 
 enum class IMGUI_STYLE
@@ -47,6 +49,8 @@ public:
 	std::vector<E_Panel*>	gui_panels;												//
 
 	E_Test*					test;													//
+	E_Toolbar*				toolbar;
+	E_About*				about;
 	E_Console*				console;
 
 public:

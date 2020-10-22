@@ -8,6 +8,8 @@
 
 #include "E_Panel.h"
 #include "E_Test.h"
+#include "E_Toolbar.h"
+#include "E_About.h"
 #include "E_Console.h"
 
 #include "M_Editor.h"
@@ -17,12 +19,18 @@
 M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),
 clear_color(0.0f, 0.0f, 0.0f, 1.0f),
 test(nullptr),
+toolbar(nullptr),
+about(nullptr),
 console(nullptr)
 {
 	test		= new E_Test();
+	toolbar		= new E_Toolbar();
+	about		= new E_About();
 	console		= new E_Console();
 
 	AddGuiPanel(test);
+	AddGuiPanel(toolbar);
+	AddGuiPanel(about);
 	AddGuiPanel(console);
 }
 

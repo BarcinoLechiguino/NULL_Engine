@@ -420,6 +420,11 @@ void Application::AddEditorLog(const char* log)
 	}
 }
 
+void Application::RequestBrowser(const char* link)
+{
+	ShellExecuteA(NULL, "open", link, NULL, "", 0);
+}
+
 void Application::LoadConfiguration(const char* file)
 {
 	want_to_load = true;

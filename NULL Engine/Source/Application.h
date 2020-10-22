@@ -39,6 +39,7 @@ public:
 	const char* GetOrganizationName() const;
 
 	void AddEditorLog(const char* log);
+	void RequestBrowser(const char* link);
 
 	void LoadConfiguration(const char* file);
 	void SaveConfiguration(const char* file);
