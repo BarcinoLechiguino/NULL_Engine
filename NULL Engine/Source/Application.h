@@ -25,40 +25,44 @@ public:
 	Application();
 	~Application();
 
-	bool Init();
-	bool Start();
-	UPDATE_STATUS Update();
-	bool CleanUp();
+	bool			Init();
+	bool			Start();
+	UPDATE_STATUS	Update();
+	bool			CleanUp();
 
 public:
-	void AddModule(Module* module);
+	void			AddModule(Module* module);
 
-	float GetDt() const;
-	float GetUnpausableDt() const;
+	float			GetDt() const;
+	float			GetUnpausableDt() const;
 
-	const char* GetEngineName() const;
-	const char* GetOrganizationName() const;
+	const char*		GetEngineName() const;
+	void			SetEngineName(const char* engine_name);
+	const char*		GetOrganizationName() const;
+	void			SetOrganizationName(const char* organization_name);
 
-	void AddEditorLog(const char* log);
-	void LogHardwareInfo();
-	void RequestBrowser(const char* link);
 
-	void LoadConfiguration(const char* file);
-	void SaveConfiguration(const char* file);
+	void			AddEditorLog(const char* log);
+	void			LogHardwareInfo();
+	void			RequestBrowser(const char* link);
+	void			UpdateFrameData(int frames, int ms);
+
+	void			LoadConfiguration(const char* file);
+	void			SaveConfiguration(const char* file);
 
 	//void InitializeModules();
 	//void InitializeVariables();
 
 private:
-	void PrepareUpdate();
-	void FinishUpdate();
+	void			PrepareUpdate();
+	void			FinishUpdate();
 
-	UPDATE_STATUS PreUpdate();
-	UPDATE_STATUS DoUpdate();
-	UPDATE_STATUS PostUpdate();
+	UPDATE_STATUS	PreUpdate();
+	UPDATE_STATUS	DoUpdate();
+	UPDATE_STATUS	PostUpdate();
 
-	void LoadConfigurationNow(const char* file);
-	void SaveConfigurationNow(const char* file);
+	void			LoadConfigurationNow(const char* file);
+	void			SaveConfigurationNow(const char* file);
 
 public:
 	// Modules

@@ -1,7 +1,11 @@
 ﻿  E_EngineConfiguration.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(109,3): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(113,3): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(227,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(228,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Generating code
-  9 of 3187 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
-    4 functions were new in current compilation
-    84 functions had inline decision re-evaluated but remain unchanged
+  1 of 3203 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    73 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

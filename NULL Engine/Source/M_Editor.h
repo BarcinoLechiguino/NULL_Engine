@@ -10,6 +10,7 @@ class E_Panel;
 class E_Test;
 class E_Toolbar;
 class E_About;
+class E_EngineConfiguration;
 class E_Console;
 
 enum class IMGUI_STYLE
@@ -42,6 +43,8 @@ public:
 	void AddGuiPanel(E_Panel* panel);												//
 	void AddConsoleLog(const char* log);
 
+	void UpdateFrameData(int frames, int ms);
+
 	bool RenderGuiPanels() const;													//
 	bool InitializeImGui() const;
 
@@ -51,6 +54,7 @@ public:
 	E_Test*					test;													//
 	E_Toolbar*				toolbar;
 	E_About*				about;
+	E_EngineConfiguration*	configuration;
 	E_Console*				console;
 
 public:

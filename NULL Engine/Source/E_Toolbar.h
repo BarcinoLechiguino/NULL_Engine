@@ -16,6 +16,8 @@ public:
 private:
 	bool show_close_app_popup;
 	bool show_about_popup;
+
+	bool console_is_active;
 };
 
 #endif // !__E_TOOLBAR_H__

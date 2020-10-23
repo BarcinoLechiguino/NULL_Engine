@@ -10,6 +10,7 @@
 #include "E_Test.h"
 #include "E_Toolbar.h"
 #include "E_About.h"
+#include "E_EngineConfiguration.h"
 #include "E_Console.h"
 
 #include "M_Editor.h"
@@ -21,16 +22,19 @@ clear_color(0.0f, 0.0f, 0.0f, 1.0f),
 test(nullptr),
 toolbar(nullptr),
 about(nullptr),
+configuration(nullptr),
 console(nullptr)
 {
-	test		= new E_Test();
-	toolbar		= new E_Toolbar();
-	about		= new E_About();
-	console		= new E_Console();
+	test			= new E_Test();
+	toolbar			= new E_Toolbar();
+	about			= new E_About();
+	configuration	= new E_EngineConfiguration();
+	console			= new E_Console();
 
 	AddGuiPanel(test);
 	AddGuiPanel(toolbar);
 	AddGuiPanel(about);
+	AddGuiPanel(configuration);
 	AddGuiPanel(console);
 }
 
@@ -147,6 +151,11 @@ void M_Editor::AddConsoleLog(const char* log)
 	{
 		console->AddLog(log);
 	}
+}
+
+void M_Editor::UpdateFrameData(int frames, int ms)
+{
+	configuration->UpdateFrameData(frames, ms);
 }
 
 bool M_Editor::RenderGuiPanels() const

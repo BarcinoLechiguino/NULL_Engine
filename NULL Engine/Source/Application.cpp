@@ -365,7 +365,7 @@ void Application::FinishUpdate()
 
 	// Other frame calculations
 	float avg_fps					= frame_count / startup_timer.ReadSec();
-	uint32 last_frame_ms			= frame_timer.Read();
+	uint32 ms_last_frame			= frame_timer.Read();
 	uint32 frames_on_last_update	= prev_sec_frame_count;
 	//seconds_since_startup			= startup_timer.ReadSec();
 	startup_timer.AddTimeToClock();
@@ -375,14 +375,17 @@ void Application::FinishUpdate()
 		static char framerate_data[256];
 
 		sprintf_s(framerate_data, 256, "Av.FPS: %.2f / Last Frame Ms: %02u / Last sec frames: %i / Last dt: %.3f / Time since startup: %dh %dm %.3fs / Frame Count: %llu",
-			avg_fps, last_frame_ms, frames_on_last_update, dt, startup_timer.clock.hours, startup_timer.clock.minutes, startup_timer.clock.seconds/*seconds_since_startup*/, frame_count);
+			avg_fps, ms_last_frame, frames_on_last_update, dt, startup_timer.clock.hours, startup_timer.clock.minutes, startup_timer.clock.seconds/*seconds_since_startup*/, frame_count);
 
 		App->window->SetTitle(framerate_data);
 	}
 	else
 	{
-		App->window->SetTitle(engine_name.c_str());
+		//App->window->SetTitle(engine_name.c_str());
 	}
+
+	// Editor: Configuration Frame Data Histograms
+	UpdateFrameData(frames_on_last_update, ms_last_frame);
 }
 // ---------------------------------------------
 
@@ -413,9 +416,21 @@ const char* Application::GetEngineName() const
 	return engine_name.c_str();
 }
 
+void Application::SetEngineName(const char* name)
+{
+	engine_name = name;
+
+	App->window->SetTitle(engine_name.c_str());
+}
+
 const char* Application::GetOrganizationName() const
 {
 	return organization.c_str();
+}
+
+void Application::SetOrganizationName(const char* name)
+{
+	organization = name;
 }
 
 void Application::AddEditorLog(const char* log)
@@ -473,6 +488,11 @@ void Application::LogHardwareInfo()
 void Application::RequestBrowser(const char* link)
 {
 	ShellExecuteA(NULL, "open", link, NULL, "", 0);
+}
+
+void Application::UpdateFrameData(int frames, int ms)
+{
+	editor->UpdateFrameData(frames, ms);
 }
 
 void Application::LoadConfiguration(const char* file)

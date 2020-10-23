@@ -9,8 +9,10 @@
 
 E_Toolbar::E_Toolbar() : E_Panel("Toolbar")
 {
-	show_close_app_popup = false;
-	show_about_popup = false;
+	show_close_app_popup	= false;
+	show_about_popup		= false;
+
+	console_is_active		= true;
 }
 
 E_Toolbar::~E_Toolbar()
@@ -60,9 +62,24 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 		}
 	}
 
-	if (ImGui::BeginMenu("View"))
+	if (ImGui::BeginMenu("Window"))
 	{
-		if (ImGui::MenuItem("Console"))
+		if (ImGui::MenuItem("Configuration"))
+		{
+
+		}
+
+		if (ImGui::MenuItem("Inspector"))
+		{
+
+		}
+
+		if (ImGui::MenuItem("Hierarchy"))
+		{
+
+		}
+		
+		if (ImGui::MenuItem("Console", nullptr, &console_is_active))
 		{
 			if (App->editor->console->IsActive())
 			{
@@ -72,11 +89,6 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 			{
 				App->editor->console->Enable();
 			}
-		}
-
-		if (ImGui::MenuItem("Configuration"))
-		{
-
 		}
 
 		ImGui::EndMenu();

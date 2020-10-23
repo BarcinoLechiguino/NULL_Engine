@@ -57,6 +57,7 @@
     <ClCompile Include="Source\E_About.cpp" />
     <ClCompile Include="Source\E_EngineConfiguration.cpp" />
     <ClCompile Include="Source\E_Console.cpp" />
+    <ClCompile Include="Source\E_Hierarchy.cpp" />
     <ClCompile Include="Source\E_Inspector.cpp" />
     <ClCompile Include="Source\E_Panel.cpp" />
     <ClCompile Include="Source\E_Test.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Source\E_About.h" />
     <ClInclude Include="Source\E_EngineConfiguration.h" />
     <ClInclude Include="Source\E_Console.h" />
+    <ClInclude Include="Source\E_Hierarchy.h" />
     <ClInclude Include="Source\E_Inspector.h" />
     <ClInclude Include="Source\E_Panel.h" />
     <ClInclude Include="Source\E_Test.h" />

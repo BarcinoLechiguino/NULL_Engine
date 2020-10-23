@@ -88,6 +88,9 @@
     <Filter Include="Dependencies\gpudetect">
       <UniqueIdentifier>{d8ad7825-f611-407a-ae9f-e791c73d49a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SourceCode\Editor\Panels">
+      <UniqueIdentifier>{f860344e-b0a6-4941-9128-6268f360b20b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
@@ -276,24 +279,6 @@
     <ClCompile Include="Source\E_Panel.cpp">
       <Filter>SourceCode\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Source\E_Test.cpp">
-      <Filter>SourceCode\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\E_Inspector.cpp">
-      <Filter>SourceCode\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\E_About.cpp">
-      <Filter>SourceCode\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\E_Console.cpp">
-      <Filter>SourceCode\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\E_Toolbar.cpp">
-      <Filter>SourceCode\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\E_EngineConfiguration.cpp">
-      <Filter>SourceCode\Editor</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Log.cpp">
       <Filter>SourceCode\Tools</Filter>
     </ClCompile>
@@ -302,6 +287,27 @@
     </ClCompile>
     <ClCompile Include="Source\Dependencies\gpudetect\includes\DeviceId.cpp">
       <Filter>Dependencies\gpudetect</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_About.cpp">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_EngineConfiguration.cpp">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Console.cpp">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Inspector.cpp">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Test.cpp">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Toolbar.cpp">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Hierarchy.cpp">
+      <Filter>SourceCode\Editor\Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -638,26 +644,8 @@
     <ClInclude Include="Source\E_Panel.h">
       <Filter>SourceCode\Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Source\E_Test.h">
-      <Filter>SourceCode\Editor</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Assimp.h">
       <Filter>SourceCode\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_Inspector.h">
-      <Filter>SourceCode\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_About.h">
-      <Filter>SourceCode\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_Console.h">
-      <Filter>SourceCode\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_Toolbar.h">
-      <Filter>SourceCode\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_EngineConfiguration.h">
-      <Filter>SourceCode\Editor</Filter>
     </ClInclude>
     <ClInclude Include="Source\Log.h">
       <Filter>SourceCode\Tools</Filter>
@@ -670,6 +658,27 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\gpudetect\includes\dxgi1_4.h">
       <Filter>Dependencies\gpudetect</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_About.h">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_EngineConfiguration.h">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Console.h">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Inspector.h">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Test.h">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Toolbar.h">
+      <Filter>SourceCode\Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Hierarchy.h">
+      <Filter>SourceCode\Editor\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
