@@ -7,11 +7,13 @@
 class Configuration;
 
 class E_Panel;
-class E_Test;
 class E_Toolbar;
-class E_About;
 class E_EngineConfiguration;
+class E_Hierarchy;
+class E_Inspector;
 class E_Console;
+class E_ImGuiDemo;
+class E_About;
 
 enum class IMGUI_STYLE
 {
@@ -45,20 +47,33 @@ public:
 
 	void UpdateFrameData(int frames, int ms);
 
+	void EditorShortcuts();
+	void CheckShowHideFlags();
+
 	bool RenderGuiPanels() const;													//
 	bool InitializeImGui() const;
 
 public:
 	std::vector<E_Panel*>	gui_panels;												//
 
-	E_Test*					test;													//
-	E_Toolbar*				toolbar;
-	E_About*				about;
-	E_EngineConfiguration*	configuration;
-	E_Console*				console;
+	E_Toolbar*				toolbar;												// 
+	E_EngineConfiguration*	configuration;											// 
+	E_Hierarchy*			hierarchy;												// 
+	E_Inspector*			inspector;												// 
+	E_Console*				console;												// 
+	E_ImGuiDemo*			imgui_demo;												// 
+	E_About*				about;													// 
 
 public:
-	ImVec4					clear_color;											//
+	ImVec4 clear_color;																//
+
+	bool show_configuration;
+	bool show_hierarchy;
+	bool show_inspector;
+	bool show_console;
+	bool show_imgui_demo;
+	bool show_about_popup;
+	bool show_close_app_popup;
 
 private:
 	int b;

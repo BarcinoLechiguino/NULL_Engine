@@ -4,12 +4,13 @@
 // -------------------------------------------------------
 
 #include "Application.h"
+#include "M_Editor.h"
 
 #include "E_About.h"
 
 E_About::E_About() : E_Panel("About", false)
 {
-	show_about_popup = false;
+
 }
 
 E_About::~E_About()
@@ -23,7 +24,7 @@ bool E_About::Draw(ImGuiIO& io)
 
 	ImGui::OpenPopup("About");
 
-	if (ImGui::BeginPopupModal("About", &ret))
+	if (ImGui::BeginPopupModal("About", &App->editor->show_about_popup))
 	{	
 		ImGui::Text("NULL Engine v0.1 - By Angel Gonzalez (CITM UPC)");
 		ImGui::Text("This engine has been coded from scratch in C++.");

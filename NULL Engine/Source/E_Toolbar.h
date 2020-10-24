@@ -14,10 +14,11 @@ public:
 	bool CleanUp() override;
 
 private:
-	bool show_close_app_popup;
-	bool show_about_popup;
+	bool FileMainMenuItem();
+	bool WindowMainMenuItem();
+	bool HelpMainMenuItem();
 
-	bool console_is_active;
+	bool CloseAppPopup();
 };
 
 #endif // !__E_TOOLBAR_H__

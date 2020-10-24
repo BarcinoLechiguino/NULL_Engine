@@ -60,7 +60,7 @@
     <ClCompile Include="Source\E_Hierarchy.cpp" />
     <ClCompile Include="Source\E_Inspector.cpp" />
     <ClCompile Include="Source\E_Panel.cpp" />
-    <ClCompile Include="Source\E_Test.cpp" />
+    <ClCompile Include="Source\E_ImGuiDemo.cpp" />
     <ClCompile Include="Source\E_Toolbar.cpp" />
     <ClCompile Include="Source\HardwareInfo.cpp" />
     <ClCompile Include="Source\I_Meshes.cpp" />
@@ -183,7 +183,7 @@
     <ClInclude Include="Source\E_Hierarchy.h" />
     <ClInclude Include="Source\E_Inspector.h" />
     <ClInclude Include="Source\E_Panel.h" />
-    <ClInclude Include="Source\E_Test.h" />
+    <ClInclude Include="Source\E_ImGuiDemo.h" />
     <ClInclude Include="Source\E_Toolbar.h" />
     <ClInclude Include="Source\HardwareInfo.h" />
     <ClInclude Include="Source\I_Meshes.h" />

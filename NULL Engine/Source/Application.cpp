@@ -14,7 +14,8 @@
 
 #include "Application.h"
 
-Application::Application() : 
+Application::Application() :
+quit(false),
 debug(false), 
 renderPrimitives(true), 
 dt(0.0f),
@@ -64,8 +65,7 @@ file_system(nullptr)
 	// Framerate variables
 	frame_cap				= 0;
 	seconds_since_startup	= 0.0f;
-	frames_are_capped		= true;
-	vsync_is_active			= true;
+	frames_are_capped		= FRAMES_ARE_CAPPED;
 	frame_count				= 0;
 	frames_last_second		= 0;
 	prev_sec_frame_count	= 0;
@@ -184,6 +184,11 @@ UPDATE_STATUS Application::Update()
 {
 	UPDATE_STATUS ret = UPDATE_STATUS::CONTINUE;
 	
+	if (quit)
+	{
+		return UPDATE_STATUS::STOP;
+	}
+
 	PrepareUpdate();
 
 	if (ret == UPDATE_STATUS::CONTINUE)
@@ -221,6 +226,8 @@ bool Application::CleanUp()
 	}
 
 	modules.clear();
+
+	hardware_info.CleanUp();
 
 	return ret;
 }
@@ -345,12 +352,13 @@ void Application::FinishUpdate()
 		//LOG("%d frames last second", prev_sec_frame_count);
 	}
 	
-	// Frame cap and delay.
-	uint frame_cap_ms		= 1000 / frame_cap;
-	uint current_frame_ms	= frame_timer.Read();
+	uint current_frame_ms = frame_timer.Read();
 
+	// Frame cap and delay.
 	if (frames_are_capped)
 	{
+		uint frame_cap_ms = 1000 / frame_cap;							// [ATTENTION] Quick fix to avoid cases where frame_cap = 0.
+
 		if (current_frame_ms < frame_cap_ms)
 		{
 			precise_delay_timer.Start();
@@ -358,8 +366,6 @@ void Application::FinishUpdate()
 			uint required_delay = frame_cap_ms - current_frame_ms;
 
 			SDL_Delay(required_delay);
-
-			//LOG("Application waited for %d milliseconds and got back in %f", required_delay, precise_delay_timer.ReadMs());
 		}
 	}
 
@@ -381,7 +387,7 @@ void Application::FinishUpdate()
 	}
 	else
 	{
-		//App->window->SetTitle(engine_name.c_str());
+		App->window->SetTitle(engine_name.c_str());
 	}
 
 	// Editor: Configuration Frame Data Histograms
@@ -409,6 +415,26 @@ float Application::GetDt() const
 float Application::GetUnpausableDt() const
 {
 	return dt;
+}
+
+uint Application::GetFrameCap() const
+{
+	return frame_cap;
+}
+
+void Application::SetFrameCap(uint new_cap)
+{
+	frame_cap = new_cap;
+}
+
+bool Application::VsyncIsActive()
+{
+	return vsync_is_active;
+}
+
+void Application::SetVsync(bool value)
+{
+	vsync_is_active = value;
 }
 
 const char* Application::GetEngineName() const

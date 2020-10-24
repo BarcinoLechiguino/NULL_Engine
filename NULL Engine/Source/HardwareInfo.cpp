@@ -110,13 +110,11 @@ void HardwareInfo::InitializeInfo()
 	//OpenGL.extensions					= (char*)glewGetString(GL_EXTENSIONS);
 
 	char* ext = "";
-	for (char i = 0; ext != nullptr; ++i)
+	for (int i = 0; ext != nullptr; ++i)
 	{
 		ext = (char*)glGetStringi(GL_EXTENSIONS, i);
 
 		OpenGL.extensions.push_back(ext);
-
-		LOG("Extension nº %d", i);
 	}
 }
 
@@ -134,4 +132,9 @@ void HardwareInfo::UpdateInfo()
 		GPU.vram_mb_available	= float(vram_available) / (1024.0f * 1024.0f * 1024.0f);
 		GPU.vram_mb_reserved	= float(vram_reserved)	/ (1024.0f * 1024.0f * 1024.0f);
 	}
+}
+
+void HardwareInfo::CleanUp()
+{
+	OpenGL.extensions.clear();
 }

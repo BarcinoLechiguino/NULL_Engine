@@ -69,8 +69,12 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 };
 
 // Configuration ------------------------------------
-#define SCREEN_WIDTH			1024
-#define SCREEN_HEIGHT			768
+#define SCREEN_WIDTH			1280
+#define SCREEN_HEIGHT			720
+#define SCREEN_MIN_WIDTH		640
+#define SCREEN_MIN_HEIGHT		480
+#define SCREEN_MAX_WIDTH		3840
+#define SCREEN_MAX_HEIGHT		2160
 #define SCREEN_SIZE				1
 
 #define WIN_MAXIMIZED			false
@@ -78,7 +82,8 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 #define WIN_RESIZABLE			true
 #define WIN_BORDERLESS			false
 #define WIN_FULLSCREEN_DESKTOP	false
-#define VSYNC					true
+#define VSYNC					false
+#define FRAMES_ARE_CAPPED		true
 
 #define TITLE					"NULL Engine"
 #define ORGANIZATION			"UPC - CITM - TTC"

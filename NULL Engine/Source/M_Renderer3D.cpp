@@ -25,6 +25,16 @@
 
 M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), context()
 {
+	vsync = VSYNC;
+
+	gl_depth_test		= true;
+	gl_cull_face		= true;
+	gl_lighting			= true;
+	gl_color_material	= true;
+	gl_texture_2D		= true;
+	gl_show_normals		= false;
+	gl_show_colors		= false;
+	gl_show_tex_coords	= false;
 
 }
 
@@ -88,7 +98,7 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 
 	App->editor->RenderGuiPanels();
 
-	SDL_GL_SwapWindow(App->window->window);
+	SDL_GL_SwapWindow(App->window->GetWindow());
 
 	return UPDATE_STATUS::CONTINUE;
 }
@@ -125,7 +135,7 @@ bool M_Renderer3D::InitOpenGL()
 	bool ret = true;
 	
 	//Create OpenGL Context
-	context = SDL_GL_CreateContext(App->window->window);
+	context = SDL_GL_CreateContext(App->window->GetWindow());
 	if (context == NULL)
 	{
 		LOG("[ERROR] OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -135,7 +145,7 @@ bool M_Renderer3D::InitOpenGL()
 	if (ret == true)
 	{
 		//Use Vsync
-		if (VSYNC && SDL_GL_SetSwapInterval(1) < 0)
+		if (vsync && SDL_GL_SetSwapInterval(1) < 0)
 		{
 			LOG("[WARNING] Unable to set Vsync! SDL Error: %s\n", SDL_GetError());
 		}
@@ -258,6 +268,80 @@ void M_Renderer3D::LoadModel(const char* file_path)
 
 	models.push_back(model);
 }
+
+const char* M_Renderer3D::GetDrivers() const
+{
+	return SDL_GetCurrentVideoDriver();													// SDL_GetCurrentVideoDriver() returns NULL if no driver has been initialized.
+}
+
+bool M_Renderer3D::GetVsync() const
+{
+	return vsync;
+}
+
+void M_Renderer3D::SetVsync(bool set_to)
+{
+	if (set_to != vsync)
+	{
+		vsync = set_to;
+		
+		int result = SDL_GL_SetSwapInterval(vsync ? 1 : 0);								// 0 for immediate updates, 1 for updates synchronized with vertical retrace.
+
+		if (result < 0)																	// SDL_GL_SetSwapInterval() returns 0 on success and -1 on failure.
+		{
+			LOG("[WARNING] Unable to set Vsync! SDL Error: %s\n", SDL_GetError()); 
+		}
+	}
+}
+
+bool M_Renderer3D::GetGLDepthTest() const
+{
+	return gl_depth_test;
+}
+
+bool M_Renderer3D::GetGLCullFace() const
+{
+	return gl_cull_face;
+}
+
+bool M_Renderer3D::GetGLLighting() const
+{
+	return gl_lighting;
+}
+
+bool M_Renderer3D::GetGLColorMaterial() const
+{
+	return gl_color_material;
+}
+
+bool M_Renderer3D::GetGLTexture2D() const
+{
+	return gl_texture_2D;
+}
+
+bool M_Renderer3D::GetGLShowNormals() const
+{
+	return gl_show_normals;
+}
+
+bool M_Renderer3D::GetGLShowColors() const
+{
+	return gl_show_colors;
+}
+
+bool M_Renderer3D::GetGLShowTexCoords() const
+{
+	return gl_show_tex_coords;
+}
+
+
+
+
+
+
+
+
+
 
 void M_Renderer3D::PrimitiveExamples()
 {

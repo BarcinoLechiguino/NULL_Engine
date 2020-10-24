@@ -5,13 +5,16 @@
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Renderer3D.h"
+#include "M_Input.h"
 
 #include "E_Panel.h"
-#include "E_Test.h"
 #include "E_Toolbar.h"
-#include "E_About.h"
 #include "E_EngineConfiguration.h"
+#include "E_Hierarchy.h"
+#include "E_Inspector.h"
 #include "E_Console.h"
+#include "E_ImGuiDemo.h"
+#include "E_About.h"
 
 #include "M_Editor.h"
 
@@ -19,23 +22,37 @@
 
 M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),
 clear_color(0.0f, 0.0f, 0.0f, 1.0f),
-test(nullptr),
 toolbar(nullptr),
-about(nullptr),
 configuration(nullptr),
-console(nullptr)
+hierarchy(nullptr),
+inspector(nullptr),
+console(nullptr),
+imgui_demo(nullptr),
+about(nullptr)
 {
-	test			= new E_Test();
 	toolbar			= new E_Toolbar();
-	about			= new E_About();
 	configuration	= new E_EngineConfiguration();
+	hierarchy		= new E_Hierarchy();
+	inspector		= new E_Inspector();
 	console			= new E_Console();
+	imgui_demo		= new E_ImGuiDemo();
+	about			= new E_About();
 
-	AddGuiPanel(test);
 	AddGuiPanel(toolbar);
-	AddGuiPanel(about);
 	AddGuiPanel(configuration);
+	AddGuiPanel(hierarchy);
+	AddGuiPanel(inspector);
 	AddGuiPanel(console);
+	AddGuiPanel(imgui_demo);
+	AddGuiPanel(about);
+
+	show_configuration		= true;
+	show_hierarchy			= true;
+	show_inspector			= true;
+	show_console			= true;
+	show_imgui_demo			= true;
+	show_about_popup		= false;
+	show_close_app_popup	= false;
 }
 
 M_Editor::~M_Editor()
@@ -63,6 +80,9 @@ UPDATE_STATUS M_Editor::PreUpdate(float dt)
 {
 	UPDATE_STATUS ret = UPDATE_STATUS::CONTINUE;
 
+	EditorShortcuts();
+	CheckShowHideFlags();
+
 	return ret;
 }
 
@@ -81,7 +101,7 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 
 	//Start Dear ImGui's frame
 	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(App->window->window);
+	ImGui_ImplSDL2_NewFrame(App->window->GetWindow());
 	ImGui::NewFrame();
 
 	bool draw = true;
@@ -158,6 +178,107 @@ void M_Editor::UpdateFrameData(int frames, int ms)
 	configuration->UpdateFrameData(frames, ms);
 }
 
+void M_Editor::EditorShortcuts()
+{	
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_STATE::KEY_DOWN)
+	{
+		show_configuration = !show_configuration;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_STATE::KEY_DOWN)
+	{
+		show_hierarchy = !show_hierarchy;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_STATE::KEY_DOWN)
+	{
+		show_inspector = !show_inspector;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_STATE::KEY_DOWN)
+	{
+		show_console = !show_console;
+	}
+	
+	if (App->input->GetKey(SDL_SCANCODE_8) == KEY_STATE::KEY_DOWN)
+	{
+		show_imgui_demo = !show_imgui_demo;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_9) == KEY_STATE::KEY_DOWN)
+	{
+		show_about_popup = !show_about_popup;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_STATE::KEY_DOWN)
+	{
+		show_close_app_popup = !show_close_app_popup;
+	}
+}
+
+void M_Editor::CheckShowHideFlags()
+{
+	// --- ENGINE CONFIGRUATION ---
+	if (show_configuration)
+	{
+		configuration->Enable();
+	}
+	else
+	{
+		configuration->Disable();
+	}
+
+	// --- HIERARCHY ---
+	if (show_hierarchy)
+	{
+		hierarchy->Enable();
+	}
+	else
+	{
+		hierarchy->Disable();
+	}
+
+	// --- INSPECTOR ---
+	if (show_inspector)
+	{
+		inspector->Enable();
+	}
+	else
+	{
+		inspector->Disable();
+	}
+
+	// --- CONSOLE ---
+	if (show_console)
+	{
+		console->Enable();
+	}
+	else
+	{
+		console->Disable();
+	}
+
+	// --- IMGUI DEMO ---
+	if (show_imgui_demo)
+	{
+		imgui_demo->Enable();
+	}
+	else
+	{
+		imgui_demo->Disable();
+	}
+
+	// --- ABOUT POPUP ---
+	if (show_about_popup)
+	{
+		about->Enable();
+	}
+	else
+	{
+		about->Disable();
+	}
+}
+
 bool M_Editor::RenderGuiPanels() const
 {
 	// Rendering all ImGui elements
@@ -214,7 +335,7 @@ bool M_Editor::InitializeImGui() const
 	}
 
 	// Setting up Platfor/Renderer bindings
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
+	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->context);
 	ImGui_ImplOpenGL3_Init(0);
 
 	return ret;

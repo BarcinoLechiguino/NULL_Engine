@@ -19,6 +19,8 @@ public:
 	void UpdateFrameData(int frames, int ms);
 
 private:
+	bool ConfigurationMenuBar();
+	
 	bool ApplicationMenu();
 	bool WindowMenu();
 	bool RendererMenu();
@@ -29,6 +31,10 @@ private:
 	bool AudioMenu();
 	bool PhysicsMenu();
 	bool HardwareMenu();
+
+	// ------- MENU METHODS -------
+	void PlotFrameDataHistogram();										// Application menu: Will plot the frame data histogram according to the current frame data values.
+	void GenerateFrameCapSlider();										// Application menu: Will generate a slider that will modify the frame cap value. From 0 (no cap) to 60.
 
 private:
 	float FPS_data[MAX_HISTOGRAM_SIZE];

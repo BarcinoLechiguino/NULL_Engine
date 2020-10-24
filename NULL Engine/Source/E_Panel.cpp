@@ -31,10 +31,6 @@ void E_Panel::Enable()
 	{
 		is_active = true;
 	}
-	else
-	{
-		LOG("[EDITOR] %s Panel is already active!", name);
-	}
 }
 
 void E_Panel::Disable()
@@ -42,10 +38,6 @@ void E_Panel::Disable()
 	if (is_active)
 	{
 		is_active = false;
-	}
-	else
-	{
-		LOG("[EDITOR] %s Panel is already inactive!", name);
 	}
 }
 

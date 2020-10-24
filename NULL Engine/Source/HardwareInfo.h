@@ -56,6 +56,7 @@ struct HardwareInfo
 	
 	void InitializeInfo();						// Will initialize all Hardware Info. Currently it inititializes CPU, GPU, SDL and OpenGL info.
 	void UpdateInfo();							// Will update the Hardware Info. Currently it only updates GPU VRAM's information.
+	void CleanUp();
 
 	CPU			CPU;							// Container for CPU Information.
 	GPU			GPU;							// Container for GPU Information.

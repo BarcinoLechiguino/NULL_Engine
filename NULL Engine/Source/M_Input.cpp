@@ -142,7 +142,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 					App->renderer->OnResize(event.window.data1, event.window.data2);
 				}
 
-				if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->window))
+				if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->GetWindow()))
 				{
 					return UPDATE_STATUS::STOP;
 				}
@@ -153,11 +153,6 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 				App->renderer->LoadModel(dropped_file_path);							// TMP. Use M_FileSystem later.
 			break;
 		}
-	}
-
-	if (quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_STATE::KEY_UP)							// Exiting application upon pressing ESC here.
-	{
-		return UPDATE_STATUS::STOP;
 	}
 
 	return UPDATE_STATUS::CONTINUE;

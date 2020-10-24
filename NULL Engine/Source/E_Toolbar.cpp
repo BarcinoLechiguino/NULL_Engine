@@ -1,18 +1,11 @@
 #include "Application.h"
 #include "M_Editor.h"
 
-#include "E_Test.h"
-#include "E_About.h"
-#include "E_Console.h"
-
 #include "E_Toolbar.h"
 
 E_Toolbar::E_Toolbar() : E_Panel("Toolbar")
 {
-	show_close_app_popup	= false;
-	show_about_popup		= false;
 
-	console_is_active		= true;
 }
 
 E_Toolbar::~E_Toolbar()
@@ -26,87 +19,67 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 
 	ImGui::BeginMainMenuBar();
 
+	FileMainMenuItem();
+	WindowMainMenuItem();
+	HelpMainMenuItem();
+
+	if (App->editor->show_close_app_popup)
+	{
+		CloseAppPopup();																	// Not actually inside MainMenuBar but related to FileMainMenuItem().
+	}
+
+	ImGui::EndMainMenuBar();
+
+	return ret;
+}
+
+bool E_Toolbar::CleanUp()
+{
+	bool ret = true;
+
+	return ret;
+}
+
+// -------- TOOLBAR METHODS --------
+bool E_Toolbar::FileMainMenuItem()
+{
+	bool ret = true;
+	
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("Quit Application"))
-		{
-			show_close_app_popup = true;
-		}
+		ImGui::MenuItem("Quit Application", "ESC", &App->editor->show_close_app_popup);		// MenuItem(Item name string, shortcut string, bool to modify / get modified by)
 
 		ImGui::EndMenu();
 	}
 
-	if (show_close_app_popup)
-	{
-		ImGui::OpenPopup("Close Application?");
+	return ret;
+}
 
-		if (ImGui::BeginPopupModal("Close Application?"))
-		{
-			if (ImGui::Button("YES"))
-			{
-				ImGui::CloseCurrentPopup();
-				show_close_app_popup = false;
-				
-				return false;
-			}
-
-			ImGui::SameLine();
-
-			if (ImGui::Button("NO"))
-			{
-				ImGui::CloseCurrentPopup();
-				show_close_app_popup = false;
-			}
-
-			ImGui::EndPopup();
-		}
-	}
+bool E_Toolbar::WindowMainMenuItem()
+{
+	bool ret = true;
 
 	if (ImGui::BeginMenu("Window"))
 	{
-		if (ImGui::MenuItem("Configuration"))
-		{
-
-		}
-
-		if (ImGui::MenuItem("Inspector"))
-		{
-
-		}
-
-		if (ImGui::MenuItem("Hierarchy"))
-		{
-
-		}
-		
-		if (ImGui::MenuItem("Console", nullptr, &console_is_active))
-		{
-			if (App->editor->console->IsActive())
-			{
-				App->editor->console->Disable();
-			}
-			else
-			{
-				App->editor->console->Enable();
-			}
-		}
+		ImGui::MenuItem("Configuration", "1", &App->editor->show_configuration);
+		ImGui::MenuItem("Inspector", "2", &App->editor->show_hierarchy);
+		ImGui::MenuItem("Hierarchy", "3", &App->editor->show_inspector);
+		ImGui::MenuItem("Console", "4", &App->editor->show_console);
 
 		ImGui::EndMenu();
 	}
 
+	return ret;
+}
+
+bool E_Toolbar::HelpMainMenuItem()
+{
+	bool ret = true;
+
 	if (ImGui::BeginMenu("Help"))
 	{
-		if (ImGui::MenuItem("GuiDemo"))
-		{
-			if (App->editor->test->IsActive())
-			{
-				App->editor->test->Disable();
-			}
-			else
-			{
-				App->editor->test->Enable();
-			}
-		}
+		ImGui::MenuItem("GuiDemo", "8", &App->editor->show_imgui_demo);
+		ImGui::MenuItem("About", "9", &App->editor->show_about_popup);
 
 		if (ImGui::MenuItem("Documentation"))
 		{
@@ -123,27 +96,38 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 			App->RequestBrowser("https://github.com/BarcinoLechiguino/NULL_Engine/issues/new");
 		}
 
-		if (ImGui::MenuItem("About"))
-		{
-			show_about_popup = true;
-		}
-
 		ImGui::EndMenu();
 	}
-
-	if (show_about_popup)
-	{
-		show_about_popup = App->editor->about->Draw(io);
-	}
-
-	ImGui::EndMainMenuBar();
 
 	return ret;
 }
 
-bool E_Toolbar::CleanUp()
+bool E_Toolbar::CloseAppPopup()
 {
 	bool ret = true;
+
+	ImGui::OpenPopup("Close Application?");
+
+	if (ImGui::BeginPopupModal("Close Application?"))
+	{
+		if (ImGui::Button("CONFIRM"))
+		{
+			ImGui::CloseCurrentPopup();
+			App->editor->show_close_app_popup = false;
+
+			App->quit = true;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("CANCEL"))
+		{
+			ImGui::CloseCurrentPopup();
+			App->editor->show_close_app_popup = false;
+		}
+
+		ImGui::EndPopup();
+	}
 
 	return ret;
 }

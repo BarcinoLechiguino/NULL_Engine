@@ -35,6 +35,12 @@ public:
 
 	float			GetDt() const;
 	float			GetUnpausableDt() const;
+	
+	uint			GetFrameCap() const;
+	void			SetFrameCap(uint frame);
+	bool			VsyncIsActive();
+	void			SetVsync(bool value);
+
 
 	const char*		GetEngineName() const;
 	void			SetEngineName(const char* engine_name);
@@ -74,6 +80,7 @@ public:
 	M_Camera3D*				camera;
 	M_FileSystem*			file_system;
 
+	bool					quit;
 	bool					debug;
 	bool					renderPrimitives;
 
@@ -82,7 +89,7 @@ public:
 	float					seconds_since_startup;			// Stores the total amount of seconds that have elapsed since application start.
 
 	bool					frames_are_capped;				// Will keep track of whether or not the frames are currently capped.
-	bool					vsync_is_active;				// Will keep track of whether or not the vsync is currently active.
+
 	bool					pause;							// Will keep track of whether or not the applcation is currently paused.
 	bool					display_framerate_data;			
 

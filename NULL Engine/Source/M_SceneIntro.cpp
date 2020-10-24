@@ -86,8 +86,8 @@ void M_SceneIntro::HandleDebugInput()
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_DOWN)
 	{
 		//Get a vector indicating the direction from the camera viewpoint to the "mouse"
-		float mouse_x_position = ((float)App->input->GetMouseX() / (float)App->window->Width()) * 2.f - 1.f;
-		float mouse_y_position = -((float)App->input->GetMouseY() / (float)App->window->Height()) * 2.f + 1.f;
+		float mouse_x_position = ((float)App->input->GetMouseX() / (float)App->window->GetWidth()) * 2.f - 1.f;
+		float mouse_y_position = -((float)App->input->GetMouseY() / (float)App->window->GetHeight()) * 2.f + 1.f;
 
 		const vec2 mousePos(mouse_x_position, mouse_y_position);
 		

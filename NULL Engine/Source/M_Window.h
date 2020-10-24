@@ -1,5 +1,5 @@
-#ifndef __ModuleWindow_H__
-#define __ModuleWindow_H__
+#ifndef __MODULEWINDOW_H__
+#define __MODULEWINDOW_H__
 
 #include "Module.h"
 #include "Dependencies/SDL/include/SDL.h"
@@ -10,9 +10,8 @@ class Configuration;
 class M_Window : public Module
 {
 public:
-
 	M_Window(bool is_active = true);
-	virtual ~M_Window();							// Destructor
+	virtual ~M_Window();												// Destructor
 
 	bool Init(Configuration& config) override;
 	bool CleanUp() override;
@@ -21,14 +20,47 @@ public:
 	bool SaveConfiguration(Configuration& root) const override;
 	
 public:
-	int Width() const;
-	int Height() const;
+	SDL_Window* GetWindow() const;
+	void		SetTitle(const char* title);
 
-	void SetTitle(const char* title);
+	const char* GetIcon() const;
+	void		SetIcon(const char* file);
+	void		SetDefaultIcon();
 
-public:
-	SDL_Window* window;								// The window we'll be rendering to
-	SDL_Surface* screen_surface;					// The surface contained by the window
+	uint		GetWidth() const;
+	uint		GetHeight() const;
+	void		GetMinMaxSize(uint& min_width, uint& min_height, uint& max_width, uint& max_height) const;
+	float		GetBrightness() const;
+	int			GetRefreshRate() const;
+
+	void		SetWidth(uint width);
+	void		SetHeight(uint height);
+	void		SetSize(uint width, uint height);
+	void		SetBrightness(float brightness);
+
+	bool		IsFullscreen() const;
+	bool		IsResizable() const;
+	bool		IsBorderless() const;
+	bool		IsFullscreenDesktop() const;
+
+	void		SetFullscreen(bool set_to);
+	void		SetResizable(bool set_to);
+	void		SetBorderless(bool set_to);
+	void		SetFullscreenDesktop(bool set_to);
+
+private:
+	SDL_Window*		window;											// The window we'll be rendering to
+	SDL_Surface*	screen_surface;									// The surface contained by the window
+
+	std::string		icon_file;
+
+	uint			screen_width;									// Width of the window in pixels.
+	uint			screen_height;									// Height of the window in pixels.
+
+	bool			is_fullscreen;
+	bool			is_resizable;
+	bool			is_borderless;
+	bool			is_fullscreen_desktop;
 };
 
-#endif // __ModuleWindow_H__
+#endif // __MODULEWINDOW_H__
