@@ -17,7 +17,6 @@
 Application::Application() :
 quit(false),
 debug(false), 
-renderPrimitives(true), 
 dt(0.0f),
 hardware_info(),
 window(nullptr),
@@ -538,7 +537,7 @@ void Application::SaveConfiguration(const char* file)
 
 void Application::LoadConfigurationNow(const char* file)
 {
-	for (int i = 0; i < modules.size(); ++i)
+	for (uint i = 0; i < modules.size(); ++i)
 	{
 		//JSON_Object* obj = 
 
@@ -551,7 +550,7 @@ void Application::SaveConfigurationNow(const char* file)
 	Configuration config;
 	Configuration node = config.SetNode("EditorState");
 	
-	for (int i = 0; i < modules.size(); ++i)
+	for (uint i = 0; i < modules.size(); ++i)
 	{
 		modules[i]->SaveConfiguration(config.SetNode(modules[i]->GetName()));
 	}

@@ -52,7 +52,7 @@ void E_Console::AddLog(const char* log)
 
 void E_Console::ClearLog()
 {
-	for (int i = 0; i < logs.size(); ++i)										// Iterates through all the strings inside logs and frees them from memory.
+	for (uint i = 0; i < logs.size(); ++i)										// Iterates through all the strings inside logs and frees them from memory.
 	{
 		free(logs[i]);
 	}

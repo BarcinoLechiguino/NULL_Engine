@@ -27,11 +27,7 @@ M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), co
 {
 	vsync = VSYNC;
 
-	gl_depth_test		= true;
-	gl_cull_face		= true;
-	gl_lighting			= true;
-	gl_color_material	= true;
-	gl_texture_2D		= true;
+	gl_show_wireframe	= false;
 	gl_show_normals		= false;
 	gl_show_colors		= false;
 	gl_show_tex_coords	= false;
@@ -91,7 +87,7 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 		meshes[i]->Draw();
 	}*/
 
-	for (int i = 0; i < models.size(); ++i)
+	for (uint i = 0; i < models.size(); ++i)
 	{
 		models[i]->Draw();
 	}
@@ -257,8 +253,6 @@ void M_Renderer3D::LoadModel(const char* file_path)
 	
 	const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
-	//aiImportFileFromMemory()
-
 	if (scene != nullptr)
 	{
 		model->ProcessScene(scene);
@@ -299,9 +293,14 @@ bool M_Renderer3D::GetGLFlag(GLenum cap) const
 	return glIsEnabled(cap);
 }
 
+bool M_Renderer3D::GetGLFlag(RENDERER_FLAGS cap) const
+{
+	return glIsEnabled((GLenum)cap);
+}
+
 void M_Renderer3D::SetGLFlag(GLenum cap, bool set_to)
 {
-	if (set_to != glIsEnabled(cap))
+	if (set_to != (bool)glIsEnabled(cap))
 	{
 		if (set_to)
 		{
@@ -314,29 +313,26 @@ void M_Renderer3D::SetGLFlag(GLenum cap, bool set_to)
 	}
 }
 
-bool M_Renderer3D::GetGLDepthTest() const
+void M_Renderer3D::SetGLFlag(RENDERER_FLAGS cap, bool set_to)
 {
-	return gl_depth_test;
+	GLenum flag = (GLenum)cap;
+	
+	if (set_to != (bool)glIsEnabled(flag))
+	{
+		if (set_to)
+		{
+			glEnable(flag);
+		}
+		else
+		{
+			glDisable(flag);
+		}
+	}
 }
 
-bool M_Renderer3D::GetGLCullFace() const
+bool M_Renderer3D::GetGLShowWireframe() const
 {
-	return gl_cull_face;
-}
-
-bool M_Renderer3D::GetGLLighting() const
-{
-	return gl_lighting;
-}
-
-bool M_Renderer3D::GetGLColorMaterial() const
-{
-	return gl_color_material;
-}
-
-bool M_Renderer3D::GetGLTexture2D() const
-{
-	return gl_texture_2D;
+	return gl_show_wireframe;
 }
 
 bool M_Renderer3D::GetGLShowNormals() const
@@ -354,104 +350,72 @@ bool M_Renderer3D::GetGLShowTexCoords() const
 	return gl_show_tex_coords;
 }
 
-void M_Renderer3D::SetGLDepthTest(bool set_to)
+void M_Renderer3D::SetGLShowWireframe(bool set_to)
 {
-	if (set_to != gl_depth_test)
+	if (set_to != gl_show_wireframe)
 	{
-		gl_depth_test = set_to;
+		gl_show_wireframe = set_to;
 
-		if (gl_depth_test)
+		if (gl_show_wireframe)
 		{
-			glEnable(GL_DEPTH_TEST);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 		else
 		{
-			glDisable(GL_DEPTH_TEST);
-		}
-	}
-}
-
-void M_Renderer3D::SetGLCullFace(bool set_to)
-{
-	if (set_to != gl_cull_face)
-	{
-		gl_cull_face = set_to;
-
-		if (gl_cull_face)
-		{
-			glEnable(GL_CULL_FACE);
-		}
-		else
-		{
-			glDisable(GL_CULL_FACE);
-		}
-	}
-}
-
-void M_Renderer3D::SetGLLighting(bool set_to)
-{
-	if (set_to != gl_lighting)
-	{
-		gl_lighting = set_to;
-
-		if (gl_lighting)
-		{
-			glEnable(GL_LIGHTING);
-		}
-		else
-		{
-			glDisable(GL_LIGHTING);
-		}
-	}
-}
-
-void M_Renderer3D::SetGLColorMaterial(bool set_to)
-{
-	if (set_to != gl_color_material)
-	{
-		gl_color_material = set_to;
-
-		if (gl_lighting)
-		{
-			glEnable(GL_LIGHTING);
-		}
-		else
-		{
-			glDisable(GL_LIGHTING);
-		}
-	}
-}
-
-void M_Renderer3D::SetGLTexture2D(bool set_to)
-{
-	if (set_to != gl_texture_2D)
-	{
-		gl_texture_2D = set_to;
-
-		if (gl_lighting)
-		{
-			glEnable(GL_TEXTURE_2D);
-		}
-		else
-		{
-			glDisable(GL_TEXTURE_2D);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
 }
 
 void M_Renderer3D::SetGLShowNormals(bool set_to)
 {
-	gl_show_normals = set_to;
+	if (set_to != gl_show_normals)
+	{
+		gl_show_normals = set_to;
+
+		if (gl_show_normals)
+		{
+
+		}
+		else
+		{
+
+		}
+	}
 }
 
 void M_Renderer3D::SetGLShowColors(bool set_to)
 {
-	gl_show_colors = set_to;
+	if (set_to != gl_show_colors)
+	{
+		gl_show_colors = set_to;
+
+		if (gl_show_colors)
+		{
+
+		}
+		else
+		{
+
+		}
+	}
 }
 
 void M_Renderer3D::SetGLShowTexCoords(bool set_to)
 {
-	gl_show_tex_coords = set_to;
+	if (set_to != gl_show_tex_coords)
+	{
+		gl_show_tex_coords = set_to;
+
+		if (gl_show_tex_coords)
+		{
+
+		}
+		else
+		{
+
+		}
+	}
 }
 
 void M_Renderer3D::PrimitiveExamples()

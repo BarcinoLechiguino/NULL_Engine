@@ -85,10 +85,14 @@ void HardwareInfo::InitializeInfo()
 		GPU.device_id			= device_id;													//
 		sprintf_s(GPU.brand, 250, "%S", brand.c_str());											// --------------------
 
-		GPU.vram_mb_budget		= float(vram_budget)	/ 1073741824.0f;						// Passing the variables to mb from different types (bits, bytes...)
+		GPU.vram_mb_budget		= float(vram_budget)	/ (1024.0f * 1024.0f * 1024.0f);		// Passing the variables to mb from different types (bits, bytes...)
 		GPU.vram_mb_usage		= float(vram_usage)		/ (1024.0f * 1024.0f * 1024.0f);		//
 		GPU.vram_mb_available	= float(vram_available)	/ (1024.0f * 1024.0f * 1024.0f);		//
 		GPU.vram_mb_reserved	= float(vram_reserved)	/ (1024.0f * 1024.0f * 1024.0f);		// --------------------
+	}
+	else
+	{
+		LOG("[ERROR] Could not get GPU Info from getGraphicsDeviceInfo()!");
 	}
 
 	// ------ SDL INFO ------

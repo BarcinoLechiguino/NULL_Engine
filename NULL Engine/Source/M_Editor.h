@@ -36,22 +36,23 @@ public:
 	UPDATE_STATUS	PostUpdate(float dt) override;
 	bool			CleanUp() override;
 
-	bool LoadConfiguration(Configuration& root) override;
-	bool SaveConfiguration(Configuration& root) const override;
+	bool			LoadConfiguration(Configuration& root) override;
+	bool			SaveConfiguration(Configuration& root) const override;
 
 public:
-	bool GetEvent(SDL_Event* event) const;											// Will return false if there was no event to read.
+	bool			GetEvent(SDL_Event* event) const;								// Will return false if there was no event to read.
 
-	void AddGuiPanel(E_Panel* panel);												//
-	void AddConsoleLog(const char* log);
+	void			AddGuiPanel(E_Panel* panel);									//
+	void			AddConsoleLog(const char* log);
+	void			AddInputLog(uint key, uint state);
 
-	void UpdateFrameData(int frames, int ms);
+	void			UpdateFrameData(int frames, int ms);
 
-	void EditorShortcuts();
-	void CheckShowHideFlags();
+	void			EditorShortcuts();
+	void			CheckShowHideFlags();
 
-	bool RenderGuiPanels() const;													//
-	bool InitializeImGui() const;
+	bool			RenderGuiPanels() const;										//
+	bool			InitializeImGui() const;
 
 public:
 	std::vector<E_Panel*>	gui_panels;												//
@@ -67,13 +68,13 @@ public:
 public:
 	ImVec4 clear_color;																//
 
-	bool show_configuration;
-	bool show_hierarchy;
-	bool show_inspector;
-	bool show_console;
-	bool show_imgui_demo;
-	bool show_about_popup;
-	bool show_close_app_popup;
+	bool show_configuration;														// 
+	bool show_hierarchy;															// 
+	bool show_inspector;															// 
+	bool show_console;																// 
+	bool show_imgui_demo;															// 
+	bool show_about_popup;															// 
+	bool show_close_app_popup;														// 
 
 private:
 	int b;

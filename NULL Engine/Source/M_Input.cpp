@@ -13,6 +13,8 @@ M_Input::M_Input(bool is_active) : Module("Input", is_active)
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, 0, sizeof(KEY_STATE) * MAX_KEYS);
 
+	max_num_scancodes = (uint)SDL_NUM_SCANCODES;
+
 	mouse_x			= 0;
 	mouse_y			= 0;
 	mouse_z			= 0;
@@ -54,7 +56,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 	SDL_PumpEvents();
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
-	
+
 	for(int i = 0; i < MAX_KEYS; ++i)
 	{
 		if(keys[i] == 1)
@@ -62,10 +64,14 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			if (keyboard[i] == KEY_STATE::KEY_IDLE)
 			{
 				keyboard[i] = KEY_STATE::KEY_DOWN;
+
+				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_DOWN);
 			}
 			else
 			{
 				keyboard[i] = KEY_STATE::KEY_REPEAT;
+
+				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_REPEAT);
 			}
 		}
 		else
@@ -73,6 +79,8 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			if (keyboard[i] == KEY_STATE::KEY_REPEAT || keyboard[i] == KEY_STATE::KEY_DOWN)
 			{
 				keyboard[i] = KEY_STATE::KEY_UP;
+
+				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_UP);
 			}
 			else
 			{
@@ -94,10 +102,12 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			if (mouse_buttons[i] == KEY_STATE::KEY_IDLE)
 			{
 				mouse_buttons[i] = KEY_STATE::KEY_DOWN;
+				App->editor->AddInputLog(max_num_scancodes + i, (uint)KEY_STATE::KEY_DOWN);
 			}
 			else
 			{
 				mouse_buttons[i] = KEY_STATE::KEY_REPEAT;
+				App->editor->AddInputLog(max_num_scancodes + i, (uint)KEY_STATE::KEY_REPEAT);
 			}
 		}
 		else
@@ -105,6 +115,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			if(mouse_buttons[i] == KEY_STATE::KEY_REPEAT || mouse_buttons[i] == KEY_STATE::KEY_DOWN)
 			{
 				mouse_buttons[i] = KEY_STATE::KEY_UP;
+				App->editor->AddInputLog(max_num_scancodes + i, (uint)KEY_STATE::KEY_UP);
 			}
 			else
 			{
@@ -172,7 +183,7 @@ UPDATE_STATUS M_Input::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_STATE::KEY_DOWN)
 	{
-		App->renderPrimitives = !App->renderPrimitives;
+		App->renderer->SetGLShowWireframe(!App->renderer->GetGLShowWireframe());
 	}
 
 	return UPDATE_STATUS::CONTINUE;
@@ -209,6 +220,11 @@ KEY_STATE M_Input::GetKey(int id) const
 KEY_STATE M_Input::GetMouseButton(int id) const
 {
 	return mouse_buttons[id];
+}
+
+uint M_Input::GetMaxNumScancodes() const
+{
+	return max_num_scancodes;
 }
 
 int M_Input::GetMouseX() const

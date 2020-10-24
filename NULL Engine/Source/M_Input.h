@@ -28,26 +28,28 @@ public:
 	UPDATE_STATUS	Update(float dt) override;
 	bool			CleanUp() override;
 
-	bool LoadConfiguration(Configuration& root) override;
-	bool SaveConfiguration(Configuration& root) const override;
+	bool			LoadConfiguration(Configuration& root) override;
+	bool			SaveConfiguration(Configuration& root) const override;
 
 public:
-	KEY_STATE GetKey(int id) const;
-	KEY_STATE GetMouseButton(int id) const;
+	KEY_STATE		GetKey(int id) const;
+	KEY_STATE		GetMouseButton(int id) const;
+	uint			GetMaxNumScancodes() const;
 
-	int GetMouseX() const;
-	int GetMouseY() const;
-	int GetMouseZ() const;
-	int GetMouseXMotion() const;
-	int GetMouseYMotion() const;
-	int GetMouseXWheel() const;
-	int GetMouseYWheel() const;
+	int				GetMouseX() const;
+	int				GetMouseY() const;
+	int				GetMouseZ() const;
+	int				GetMouseXMotion() const;
+	int				GetMouseYMotion() const;
+	int				GetMouseXWheel() const;
+	int				GetMouseYWheel() const;
 
-	const char* GetDroppedFilePath() const;
+	const char*		GetDroppedFilePath() const;
 
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouse_buttons[MAX_MOUSE_BUTTONS];
+	uint max_num_scancodes;
 
 	int mouse_x;
 	int mouse_y;

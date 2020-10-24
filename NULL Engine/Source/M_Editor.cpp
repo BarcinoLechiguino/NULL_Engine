@@ -105,7 +105,7 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 	ImGui::NewFrame();
 
 	bool draw = true;
-	for (int i = 0; i < gui_panels.size(); ++i)
+	for (uint i = 0; i < gui_panels.size(); ++i)
 	{	
 		if (gui_panels[i]->IsActive())
 		{	
@@ -125,9 +125,10 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 
 bool M_Editor::CleanUp()
 {
-	for (int i = 0; i < gui_panels.size(); ++i)
+	for (uint i = 0; i < gui_panels.size(); ++i)
 	{
 		gui_panels[i]->CleanUp();
+		RELEASE(gui_panels[i]);
 	}
 
 	gui_panels.clear();
@@ -169,7 +170,34 @@ void M_Editor::AddConsoleLog(const char* log)
 {
 	if (gui_panels.size() > 0)
 	{
-		console->AddLog(log);
+		if (console != nullptr)
+		{
+			console->AddLog(log);
+		}
+	}
+}
+
+void M_Editor::AddInputLog(uint key, uint state)
+{
+	char input[128];
+	const char* states[] = { "IDLE", "DOWN", "REPEAT", "UP" };										// We add the 4 main key states. In practice "IDLE" will not be displayed.
+	
+	if (configuration != nullptr)
+	{
+		if (key < App->input->GetMaxNumScancodes())
+		{
+			const char* key_name = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)key));			// Through the scancode it is possible to get a string with the name of the key.
+
+			sprintf_s(input, 128, "[KEY] %02u - %s - %s\n", key, key_name, states[state]);
+		}
+		else
+		{
+			uint mouse_button = key - App->input->GetMaxNumScancodes();
+
+			sprintf_s(input, 128, "[MOUSE] %02u - %s\n", mouse_button, states[state]);
+		}
+
+		configuration->AddInputLog(input);
 	}
 }
 

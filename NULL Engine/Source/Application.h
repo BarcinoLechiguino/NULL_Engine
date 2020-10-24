@@ -80,7 +80,6 @@ public:
 
 	bool					quit;
 	bool					debug;
-	bool					renderPrimitives;
 
 	//Framerate
 	uint					frame_cap;						// Stores the cap value that will be aplied to the framerate.

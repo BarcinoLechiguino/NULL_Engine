@@ -17,6 +17,8 @@ E_EngineConfiguration::E_EngineConfiguration() : E_Panel("Configuration")
 		FPS_data[i]	= 0;
 		ms_data[i]	= 0;
 	}
+
+	input_log_scroll_to_bottom = true;
 }
 
 E_EngineConfiguration::~E_EngineConfiguration()
@@ -51,6 +53,8 @@ bool E_EngineConfiguration::Draw(ImGuiIO& io)
 bool E_EngineConfiguration::CleanUp()
 {
 	bool ret = true; 
+
+	ClearInputLog();
 
 	return true;
 }
@@ -178,7 +182,7 @@ bool E_EngineConfiguration::RendererMenu()
 	{
 		// --- IS ACTIVE AND CURRENT DRIVER
 		ImGui::Text("Is Active:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->renderer->IsActive() ? "True" : "False");
-		ImGui::Text("Driver:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->renderer->GetDrivers());
+		ImGui::Text("Driver:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->renderer->GetDrivers());
 
 		// --- VSYNC
 		bool vsync = App->renderer->GetVsync();
@@ -191,57 +195,63 @@ bool E_EngineConfiguration::RendererMenu()
 		ImGui::Separator();
 		ImGui::Text("Renderer flags: ");
 
-		bool depth_test			= App->renderer->GetGLFlag(GL_DEPTH_TEST);
-		bool cull_face			= App->renderer->GetGLFlag(GL_CULL_FACE);
-		bool lighting			= App->renderer->GetGLFlag(GL_LIGHTING);
-		bool color_material		= App->renderer->GetGLFlag(GL_COLOR_MATERIAL);
-		bool texture_2D			= App->renderer->GetGLFlag(GL_TEXTURE_2D);
+		bool depth_test			= App->renderer->GetGLFlag(RENDERER_FLAGS::DEPTH_TEST);
+		bool cull_face			= App->renderer->GetGLFlag(RENDERER_FLAGS::CULL_FACE);
+		bool lighting			= App->renderer->GetGLFlag(RENDERER_FLAGS::LIGHTING);
+		bool color_material		= App->renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL);
+		bool texture_2D			= App->renderer->GetGLFlag(RENDERER_FLAGS::TEXTURE_2D);
+		bool show_wireframe		= App->renderer->GetGLShowWireframe();
 		bool show_normals		= App->renderer->GetGLShowNormals();
 		bool show_colors		= App->renderer->GetGLShowColors();
 		bool show_tex_coords	= App->renderer->GetGLShowTexCoords();
 
 		if (ImGui::Checkbox("Depth Buffer", &depth_test))
 		{
-			App->renderer->SetGLFlag(GL_DEPTH_TEST, depth_test);
+			App->renderer->SetGLFlag(RENDERER_FLAGS::DEPTH_TEST, depth_test);
 		}	
 
-		ImGui::SameLine();
+		ImGui::SameLine(175.0f);
 
 		if (ImGui::Checkbox("Cull Face", &cull_face))
 		{
-			App->renderer->SetGLFlag(GL_CULL_FACE, cull_face);
+			App->renderer->SetGLFlag(RENDERER_FLAGS::CULL_FACE, cull_face);
 		}
 
 		if (ImGui::Checkbox("Lighting", &lighting))
 		{
-			App->renderer->SetGLFlag(GL_LIGHTING, lighting);
+			App->renderer->SetGLFlag(RENDERER_FLAGS::LIGHTING, lighting);
 		}
 
-		ImGui::SameLine();
+		ImGui::SameLine(175.0f);
 
 		if (ImGui::Checkbox("Color Material", &color_material))
 		{
-			App->renderer->SetGLFlag(GL_COLOR_MATERIAL, color_material);
+			App->renderer->SetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL, color_material);
 		}
 
 		if (ImGui::Checkbox("Texture 2D", &texture_2D))
 		{
-			App->renderer->SetGLFlag(GL_TEXTURE_2D, texture_2D);
+			App->renderer->SetGLFlag(RENDERER_FLAGS::TEXTURE_2D, texture_2D);
 		}
 
-		ImGui::SameLine();
+		ImGui::SameLine(175.0f);
 
+		if (ImGui::Checkbox("Show Wireframes", &show_wireframe))
+		{
+			App->renderer->SetGLShowWireframe(show_wireframe);
+		}
+		
 		if (ImGui::Checkbox("Show Normals", &show_normals))
 		{
 			App->renderer->SetGLShowNormals(show_normals);
 		}
 
+		ImGui::SameLine(175.0f);
+
 		if (ImGui::Checkbox("Show Colors", &show_colors))
 		{
 			App->renderer->SetGLShowColors(show_colors);
 		}
-
-		ImGui::SameLine();
 
 		if (ImGui::Checkbox("Show Tex Coords", &show_tex_coords))
 		{
@@ -303,7 +313,14 @@ bool E_EngineConfiguration::InputMenu()
 		ImGui::Text("Mouse Wheel:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseXWheel(), App->input->GetMouseYWheel());
 
 		// --- INPUT LOG
-		//ImGui::TextUnformatted();
+		ImGui::Separator();
+		ImGui::BeginChild("Input Log");
+
+		InputLogOutput();
+		ReduceInputLog();
+		InputLogScrollToBottom();
+
+		ImGui::EndChild();
 	}
 
 	return ret;
@@ -350,7 +367,7 @@ bool E_EngineConfiguration::HardwareMenu()
 		// --- CPU INFO
 		ImGui::Separator();
 		ImGui::Text("CPUs:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u (Cache: %ukb)", hw_info.CPU.cpu_count, hw_info.CPU.cache_size);
-		ImGui::Text("RAM Size:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%i", hw_info.CPU.ram_gb);
+		ImGui::Text("RAM Size:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f GB", hw_info.CPU.ram_gb);
 		
 		ImGui::Text("Drivers:");		
 		ImGui::SameLine();	
@@ -372,12 +389,12 @@ bool E_EngineConfiguration::HardwareMenu()
 		ImGui::Separator();
 		ImGui::Text("GPU:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vendor %i Device %i", hw_info.GPU.vendor, hw_info.GPU.device_id);
 		ImGui::Text("Brand:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.GPU.brand);
-		ImGui::Text("VRAM Budget:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_budget);
-		ImGui::Text("VRAM Usage:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_usage);
-		ImGui::Text("VRAM Available:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_available);
-		ImGui::Text("VRAM Reserved:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_reserved);
+		ImGui::Text("VRAM Budget:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_budget);
+		ImGui::Text("VRAM Usage:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_usage);
+		ImGui::Text("VRAM Available:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_available);
+		ImGui::Text("VRAM Reserved:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_reserved);
 	}
-
+ 
 	return ret;
 }
 
@@ -416,14 +433,14 @@ bool E_EngineConfiguration::PhysicsMenu()
 
 void E_EngineConfiguration::UpdateFrameData(int frames, int ms)
 {
-	for (int i = 0; i < (MAX_HISTOGRAM_SIZE - 1); ++i)				// All elements in FPS[] and Ms[] are moved forward 1 position.
+	for (uint i = 0; i < (MAX_HISTOGRAM_SIZE - 1); ++i)				// All elements in FPS[] and Ms[] are moved forward 1 position.
 	{																// 
-		FPS_data[i]	= FPS_data[i + 1];										// The last position is left "empty".
-		ms_data[i]	= ms_data[i + 1];										// 
+		FPS_data[i]	= FPS_data[i + 1];								// The last position is left "empty".
+		ms_data[i]	= ms_data[i + 1];								// 
 	}																// --------------------
 
-	FPS_data[MAX_HISTOGRAM_SIZE - 1]	= frames;						// Adds to FPS[] the frames per second passed as argument to the last position in it.
-	ms_data[MAX_HISTOGRAM_SIZE - 1]		= ms;							// Adds to Ms[] the ms per frame passed as argument to the last position in it.
+	FPS_data[MAX_HISTOGRAM_SIZE - 1]	= (float)frames;			// Adds to FPS[] the frames per second passed as argument to the last position in it.
+	ms_data[MAX_HISTOGRAM_SIZE - 1]		= (float)ms;				// Adds to Ms[] the ms per frame passed as argument to the last position in it.
 }
 
 void E_EngineConfiguration::PlotFrameDataHistogram()
@@ -441,11 +458,11 @@ void E_EngineConfiguration::PlotFrameDataHistogram()
 	average_ms	/= (float)MAX_HISTOGRAM_SIZE;
 
 	char overlay[32];
-	sprintf(overlay, "Framerate: %.2f", FPS_data[MAX_HISTOGRAM_SIZE - 1]);
+	sprintf_s(overlay, "Framerate: %.2f", FPS_data[MAX_HISTOGRAM_SIZE - 1]);
 	ImGui::PlotHistogram("FPS", FPS_data, IM_ARRAYSIZE(FPS_data), 0, overlay, 0.0f, 120.0f, ImVec2(0, 80));
 	ImGui::Text("Average FPS: ");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f", average_FPS);
 
-	sprintf(overlay, "ms last frame: %.2f", ms_data[MAX_HISTOGRAM_SIZE - 1]);
+	sprintf_s(overlay, "ms last frame: %.2f", ms_data[MAX_HISTOGRAM_SIZE - 1]);
 	ImGui::PlotHistogram("MS", ms_data, IM_ARRAYSIZE(ms_data), 0, overlay, 0.0f, 40.0f, ImVec2(0, 80));
 	ImGui::Text("Average ms: ");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f", average_ms);
 }
@@ -466,4 +483,68 @@ void E_EngineConfiguration::GenerateFrameCapSlider()
 	{
 		App->frames_are_capped = true;														// [ATTENTION] Could be troubling when trying to manage the framecap elsewhere.
 	}
+}
+
+void E_EngineConfiguration::AddInputLog(const char* log)
+{
+	if (log != nullptr)
+	{
+		char* tmp = strdup(log);
+		
+		input_logs.push_back(tmp);
+
+		input_log_scroll_to_bottom = true;
+	}
+}
+
+void E_EngineConfiguration::ReduceInputLog()
+{
+	if (input_logs.size() > MAX_INPUT_LOG_SIZE)
+	{
+		ClearInputLog();
+
+		LOG("[WARNING] Cleared Input Log: Exceeded maximum input log size!");
+	}
+}
+
+void E_EngineConfiguration::InputLogOutput()
+{
+	for (uint i = 0; i < input_logs.size(); ++i)
+	{
+		ImVec4 text_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		if (strstr(input_logs[i], "[KEY]") != nullptr)										// White is the default colour, but added this to be able to easily change it.
+		{
+			text_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+		}
+		
+		if (strstr(input_logs[i], "[MOUSE]") != nullptr)
+		{
+			text_colour = { 1.0f, 1.0f, 0.0f, 1.0f };
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
+		ImGui::TextUnformatted(input_logs[i]);
+		ImGui::PopStyleColor();
+	}
+}
+
+void E_EngineConfiguration::InputLogScrollToBottom()
+{
+	if (input_log_scroll_to_bottom)
+	{
+		ImGui::SetScrollHere(1.0f);
+
+		input_log_scroll_to_bottom = false;
+	}
+}
+
+void E_EngineConfiguration::ClearInputLog()
+{
+	for (uint i = 0; i < input_logs.size(); ++i)
+	{
+		free(input_logs[i]);
+	}
+
+	input_logs.clear();
 }

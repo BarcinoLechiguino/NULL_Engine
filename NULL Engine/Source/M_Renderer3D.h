@@ -8,7 +8,6 @@
 
 #include "Primitive.h"															// REMOVE LATER
 
-#include "glew/include/glew.h"
 #include "ImGui/imgui.h"
 
 #define MAX_LIGHTS 8
@@ -16,6 +15,21 @@
 class Configuration;
 class R_Mesh;
 class R_Model;
+
+typedef unsigned int GLenum;
+
+enum class RENDERER_FLAGS
+{
+	DEPTH_TEST		= 0x0B71,
+	CULL_FACE		= 0x0B44,
+	LIGHTING		= 0x0B50,
+	COLOR_MATERIAL	= 0x0B57,
+	TEXTURE_2D		= 0x0DE1,
+	SHOW_WIREFRAME	= -1,
+	SHOW_NORMALS	= 0,
+	SHOW_COLORS		= 1,
+	SHOW_TEX_COORDS = 2
+};
 
 class M_Renderer3D : public Module
 {
@@ -39,30 +53,23 @@ public:
 
 	void			OnResize(int width, int height);
 
-	const char*		GetDrivers() const;
-	bool			GetVsync() const;
-	void			SetVsync(bool set_to);
+	const char*		GetDrivers() const;											// 
+	bool			GetVsync() const;											// 
+	void			SetVsync(bool set_to);										// 
 
-	bool			GetGLFlag(GLenum cap) const;
-	void			SetGLFlag(GLenum cap, bool set_to);
+	bool			GetGLFlag(GLenum cap) const;								// 
+	bool			GetGLFlag(RENDERER_FLAGS cap) const;						// 
+	void			SetGLFlag(GLenum cap, bool set_to);							// 
+	void			SetGLFlag(RENDERER_FLAGS cap, bool set_to);					// 
 
-	bool			GetGLDepthTest() const;
-	bool			GetGLCullFace() const;
-	bool			GetGLLighting() const;
-	bool			GetGLColorMaterial() const;
-	bool			GetGLTexture2D() const;
-	bool			GetGLShowNormals() const;
-	bool			GetGLShowColors() const;
-	bool			GetGLShowTexCoords() const;
-
-	void			SetGLDepthTest(bool set_to);
-	void			SetGLCullFace(bool set_to);
-	void			SetGLLighting(bool set_to);
-	void			SetGLColorMaterial(bool set_to);
-	void			SetGLTexture2D(bool set_to);
-	void			SetGLShowNormals(bool set_to);
-	void			SetGLShowColors(bool set_to);
-	void			SetGLShowTexCoords(bool set_to);
+	bool			GetGLShowWireframe() const;									//
+	bool			GetGLShowNormals() const;									// 								
+	bool			GetGLShowColors() const;									// 
+	bool			GetGLShowTexCoords() const;									// 
+	void			SetGLShowWireframe(bool set_to);							//
+	void			SetGLShowNormals(bool set_to);								// 
+	void			SetGLShowColors(bool set_to);								// 
+	void			SetGLShowTexCoords(bool set_to);							// 
 
 	void			PrimitiveExamples();										// REMOVE LATER
 
@@ -74,11 +81,7 @@ public:
 
 	bool					vsync;												// Will keep track of whether or not the vsync is currently active.
 
-	bool					gl_depth_test;										// 
-	bool					gl_cull_face;										// 
-	bool					gl_lighting;										// 
-	bool					gl_color_material;									// 
-	bool					gl_texture_2D;										// 
+	bool					gl_show_wireframe;									//
 	bool					gl_show_normals;									// 
 	bool					gl_show_colors;										// 
 	bool					gl_show_tex_coords;									// 
