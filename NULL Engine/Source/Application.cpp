@@ -427,16 +427,6 @@ void Application::SetFrameCap(uint new_cap)
 	frame_cap = new_cap;
 }
 
-bool Application::VsyncIsActive()
-{
-	return vsync_is_active;
-}
-
-void Application::SetVsync(bool value)
-{
-	vsync_is_active = value;
-}
-
 const char* Application::GetEngineName() const
 {
 	return engine_name.c_str();
@@ -519,6 +509,11 @@ void Application::RequestBrowser(const char* link)
 void Application::UpdateFrameData(int frames, int ms)
 {
 	editor->UpdateFrameData(frames, ms);
+}
+
+HardwareInfo Application::GetHardwareInfo() const
+{
+	return hardware_info;
 }
 
 void Application::LoadConfiguration(const char* file)

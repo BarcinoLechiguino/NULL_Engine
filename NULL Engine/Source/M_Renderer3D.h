@@ -8,6 +8,7 @@
 
 #include "Primitive.h"															// REMOVE LATER
 
+#include "glew/include/glew.h"
 #include "ImGui/imgui.h"
 
 #define MAX_LIGHTS 8
@@ -41,6 +42,9 @@ public:
 	const char*		GetDrivers() const;
 	bool			GetVsync() const;
 	void			SetVsync(bool set_to);
+
+	bool			GetGLFlag(GLenum cap) const;
+	void			SetGLFlag(GLenum cap, bool set_to);
 
 	bool			GetGLDepthTest() const;
 	bool			GetGLCullFace() const;

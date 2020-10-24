@@ -1,5 +1,12 @@
+#include "glew/include/glew.h"						// Maybe remove later so dependencies are kept to the minimum?
+
 #include "Application.h"
 #include "M_Window.h"
+#include "M_Renderer3D.h"
+#include "M_Camera3D.h"
+#include "M_Input.h"
+#include "M_FileSystem.h"
+#include "HardwareInfo.h"
 
 #include "E_EngineConfiguration.h"
 
@@ -108,8 +115,8 @@ bool E_EngineConfiguration::WindowMenu()
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		// --- IS ACTIVE & ICON
-		ImGui::Text("Is Active: ");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->window->IsActive() ? "True" : "False");
-		ImGui::Text("Icon: ");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "None (WIP)");
+		ImGui::Text("Is Active");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->window->IsActive() ? "True" : "False");
+		ImGui::Text("Icon:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "None (WIP)");
 
 		// --- WINDOW BRIGHTNESS
 		float brightness = App->window->GetBrightness();
@@ -128,33 +135,33 @@ bool E_EngineConfiguration::WindowMenu()
 		App->window->SetSize(width, height);
 
 		// --- REFRESH RATE
-		ImGui::Text("Refresh Rate: ");  ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%d", App->window->GetRefreshRate());
+		ImGui::Text("Refresh Rate:");  ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%d", App->window->GetRefreshRate());
 
 		// --- WINDOW MODE/FLAGS
 		ImGui::Separator();
-		ImGui::Text("Window Mode: ");
+		ImGui::Text("Window Mode:");
 
 		bool fullscreen				= App->window->IsFullscreen();
 		bool resizable				= App->window->IsResizable();
 		bool borderless				= App->window->IsBorderless();
 		bool fullscreen_desktop		= App->window->IsFullscreenDesktop();
 
-		ImGui::Checkbox("Fullscreen", &fullscreen);
+		if (ImGui::Checkbox("Fullscreen", &fullscreen))
 		{
 			App->window->SetFullscreen(fullscreen);
 		}
 
-		ImGui::Checkbox("Resizable", &resizable);
+		if (ImGui::Checkbox("Resizable", &resizable))
 		{
 			App->window->SetResizable(resizable);
 		}
 
-		ImGui::Checkbox("Borderless", &borderless);
+		if (ImGui::Checkbox("Borderless", &borderless))
 		{
 			App->window->SetBorderless(borderless);
 		}
 
-		ImGui::Checkbox("Fullscreen Desktop", &fullscreen_desktop);
+		if (ImGui::Checkbox("Fullscreen Desktop", &fullscreen_desktop))
 		{
 			App->window->SetFullscreenDesktop(fullscreen_desktop);
 		}
@@ -169,7 +176,77 @@ bool E_EngineConfiguration::RendererMenu()
 
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
+		// --- IS ACTIVE AND CURRENT DRIVER
+		ImGui::Text("Is Active:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->renderer->IsActive() ? "True" : "False");
+		ImGui::Text("Driver:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->renderer->GetDrivers());
 
+		// --- VSYNC
+		bool vsync = App->renderer->GetVsync();
+		if (ImGui::Checkbox("Vsync", &vsync))
+		{
+			App->renderer->SetVsync(vsync);
+		}
+
+		// --- RENDERER FLAGS
+		ImGui::Separator();
+		ImGui::Text("Renderer flags: ");
+
+		bool depth_test			= App->renderer->GetGLFlag(GL_DEPTH_TEST);
+		bool cull_face			= App->renderer->GetGLFlag(GL_CULL_FACE);
+		bool lighting			= App->renderer->GetGLFlag(GL_LIGHTING);
+		bool color_material		= App->renderer->GetGLFlag(GL_COLOR_MATERIAL);
+		bool texture_2D			= App->renderer->GetGLFlag(GL_TEXTURE_2D);
+		bool show_normals		= App->renderer->GetGLShowNormals();
+		bool show_colors		= App->renderer->GetGLShowColors();
+		bool show_tex_coords	= App->renderer->GetGLShowTexCoords();
+
+		if (ImGui::Checkbox("Depth Buffer", &depth_test))
+		{
+			App->renderer->SetGLFlag(GL_DEPTH_TEST, depth_test);
+		}	
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Cull Face", &cull_face))
+		{
+			App->renderer->SetGLFlag(GL_CULL_FACE, cull_face);
+		}
+
+		if (ImGui::Checkbox("Lighting", &lighting))
+		{
+			App->renderer->SetGLFlag(GL_LIGHTING, lighting);
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Color Material", &color_material))
+		{
+			App->renderer->SetGLFlag(GL_COLOR_MATERIAL, color_material);
+		}
+
+		if (ImGui::Checkbox("Texture 2D", &texture_2D))
+		{
+			App->renderer->SetGLFlag(GL_TEXTURE_2D, texture_2D);
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Show Normals", &show_normals))
+		{
+			App->renderer->SetGLShowNormals(show_normals);
+		}
+
+		if (ImGui::Checkbox("Show Colors", &show_colors))
+		{
+			App->renderer->SetGLShowColors(show_colors);
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Show Tex Coords", &show_tex_coords))
+		{
+			App->renderer->SetGLShowTexCoords(show_tex_coords);
+		}
 	}
 
 	return ret;
@@ -181,19 +258,31 @@ bool E_EngineConfiguration::CameraMenu()
 
 	if (ImGui::CollapsingHeader("Camera"))
 	{
+		// --- IS ACTIVE
+		ImGui::Text("Is Active:"); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->camera->IsActive() ? "True" : "False");
 
-	}
+		// --- POSITION
+		float position[3] = { App->camera->Position.x, App->camera->Position.y, App->camera->Position.z };
+		ImGui::DragFloat3("Position", position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+		App->camera->SetPosition(vec3(position[0], position[1], position[2]));
 
-	return ret;
-}
+		// --- REFERENCE
+		float reference[3] = { App->camera->Reference.x, App->camera->Reference.y, App->camera->Reference.z };
+		ImGui::DragFloat3("Reference", reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+		App->camera->SetReference(vec3(reference[0], reference[1], reference[2]));
 
-bool E_EngineConfiguration::FileSystemMenu()
-{
-	bool ret = true;
+		// --- MOVEMENT, ROTATION & ZOOM SPEED
+		float movement_speed	= App->camera->GetMovementSpeed();
+		float rotation_speed	= App->camera->GetRotationSpeed();
+		float zoom_speed		= App->camera->GetZoomSpeed();
 
-	if (ImGui::CollapsingHeader("File System"))
-	{
+		ImGui::DragFloat("Movement Speed", &movement_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
+		ImGui::DragFloat("Rotation Speed", &rotation_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
+		ImGui::DragFloat("Zoom Speed", &zoom_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
 
+		App->camera->SetMovementSpeed(movement_speed);
+		App->camera->SetRotationSpeed(rotation_speed);
+		App->camera->SetZoomSpeed(zoom_speed);
 	}
 
 	return ret;
@@ -205,7 +294,43 @@ bool E_EngineConfiguration::InputMenu()
 
 	if (ImGui::CollapsingHeader("Input"))
 	{
+		// --- IS ACTIVE
+		ImGui::Text("Is Active:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->input->IsActive() ? "True" : "False");
+		
+		// --- MOUSE POSITION, MOTION & WHEEL
+		ImGui::Text("Mouse Position:"); ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseX(), App->input->GetMouseY());
+		ImGui::Text("Mouse Motion:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
+		ImGui::Text("Mouse Wheel:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseXWheel(), App->input->GetMouseYWheel());
 
+		// --- INPUT LOG
+		//ImGui::TextUnformatted();
+	}
+
+	return ret;
+}
+
+bool E_EngineConfiguration::FileSystemMenu()
+{
+	bool ret = true;
+
+	if (ImGui::CollapsingHeader("File System"))
+	{
+		ImGui::Text("Is Active:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->file_system->IsActive() ? "True" : "False");
+
+		ImGui::Text("Base Directory:");
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+		ImGui::TextWrapped(App->file_system->GetBaseDirectory());
+		ImGui::PopStyleColor();
+
+		ImGui::Text("Read Directories:");
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+		ImGui::TextWrapped(App->file_system->GetReadDirectories());
+		ImGui::PopStyleColor();
+
+		ImGui::Text("Write Directory:");
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+		ImGui::TextWrapped(App->file_system->GetWriteDirectory());
+		ImGui::PopStyleColor();
 	}
 
 	return ret;
@@ -217,7 +342,40 @@ bool E_EngineConfiguration::HardwareMenu()
 
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
+		HardwareInfo hw_info = App->GetHardwareInfo();
 
+		// --- SDL INFO
+		ImGui::Text("SDL Version:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.SDL.sdl_version);
+
+		// --- CPU INFO
+		ImGui::Separator();
+		ImGui::Text("CPUs:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u (Cache: %ukb)", hw_info.CPU.cpu_count, hw_info.CPU.cache_size);
+		ImGui::Text("RAM Size:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%i", hw_info.CPU.ram_gb);
+		
+		ImGui::Text("Drivers:");		
+		ImGui::SameLine();	
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s%s", 
+			hw_info.CPU.has_RDTSC	? "RDTSC,"	: "",
+			hw_info.CPU.has_AltiVec ? "AltiVec,": "",
+			hw_info.CPU.has_3DNow	? "3DNow,"	: "",
+			hw_info.CPU.has_MMX		? "MMX,"	: "", 
+			hw_info.CPU.has_SSE		? "SSE,"	: "", 
+			hw_info.CPU.has_SSE2	? "SSE2,"	: "");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s",
+			hw_info.CPU.has_SSE3	? "SSE3,"	: "", 
+			hw_info.CPU.has_SSE41	? "SSE4.1," : "", 
+			hw_info.CPU.has_SSE42	? "SSE4.2," : "", 
+			hw_info.CPU.has_RDTSC	? "AVX,"	: "", 
+			hw_info.CPU.has_RDTSC	? "AVX2,"	: "");
+
+		// --- GPU INFO
+		ImGui::Separator();
+		ImGui::Text("GPU:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vendor %i Device %i", hw_info.GPU.vendor, hw_info.GPU.device_id);
+		ImGui::Text("Brand:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.GPU.brand);
+		ImGui::Text("VRAM Budget:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_budget);
+		ImGui::Text("VRAM Usage:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_usage);
+		ImGui::Text("VRAM Available:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_available);
+		ImGui::Text("VRAM Reserved:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f", hw_info.GPU.vram_mb_reserved);
 	}
 
 	return ret;

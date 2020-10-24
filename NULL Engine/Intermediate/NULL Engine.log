@@ -1,2 +1,6 @@
-﻿  M_Window.cpp
+﻿  E_EngineConfiguration.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(426,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(427,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(445,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(449,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

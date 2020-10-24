@@ -38,20 +38,18 @@ public:
 	
 	uint			GetFrameCap() const;
 	void			SetFrameCap(uint frame);
-	bool			VsyncIsActive();
-	void			SetVsync(bool value);
-
 
 	const char*		GetEngineName() const;
 	void			SetEngineName(const char* engine_name);
 	const char*		GetOrganizationName() const;
 	void			SetOrganizationName(const char* organization_name);
 
-
 	void			AddEditorLog(const char* log);
 	void			LogHardwareInfo();
 	void			RequestBrowser(const char* link);
 	void			UpdateFrameData(int frames, int ms);
+
+	HardwareInfo	GetHardwareInfo() const;
 
 	void			LoadConfiguration(const char* file);
 	void			SaveConfiguration(const char* file);

@@ -13,12 +13,15 @@ M_Input::M_Input(bool is_active) : Module("Input", is_active)
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, 0, sizeof(KEY_STATE) * MAX_KEYS);
 
-	mouse_x	= 0;
-	mouse_y	= 0;
-	mouse_z	= 0;
+	mouse_x			= 0;
+	mouse_y			= 0;
+	mouse_z			= 0;
 	
-	mouse_x_motion = 0;
-	mouse_y_motion = 0;
+	mouse_x_motion	= 0;
+	mouse_y_motion	= 0;
+
+	mouse_x_wheel	= 0;
+	mouse_y_wheel	= 0;
 
 	dropped_file_path = nullptr;
 }
@@ -121,6 +124,8 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 		switch(event.type)
 		{
 			case SDL_MOUSEWHEEL:
+				mouse_x_wheel = event.wheel.x;
+				mouse_y_wheel = event.wheel.y;
 				mouse_z = event.wheel.y;
 			break;
 
@@ -161,10 +166,14 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 UPDATE_STATUS M_Input::Update(float dt)
 {
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_STATE::KEY_DOWN)
+	{
 		App->debug = !App->debug;
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_STATE::KEY_DOWN)
+	{
 		App->renderPrimitives = !App->renderPrimitives;
+	}
 
 	return UPDATE_STATUS::CONTINUE;
 }
@@ -225,6 +234,16 @@ int M_Input::GetMouseXMotion() const
 int M_Input::GetMouseYMotion() const
 {
 	return mouse_y_motion;
+}
+
+int M_Input::GetMouseXWheel() const
+{
+	return mouse_x_wheel;
+}
+
+int M_Input::GetMouseYWheel() const
+{
+	return mouse_y_wheel;
 }
 
 const char* M_Input::GetDroppedFilePath() const

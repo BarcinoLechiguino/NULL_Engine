@@ -141,9 +141,31 @@ bool M_FileSystem::IsDirectory(const char* file) const
 	return PHYSFS_isDirectory(file);														// Method to check whether or not the given file is already a registered directory.
 }
 
+const char* M_FileSystem::GetBaseDirectory() const
+{
+	return PHYSFS_getBaseDir();																// Method that returns the directory from where the application was run from.
+}
+
 const char* M_FileSystem::GetWriteDirectory() const
 {
 	return PHYSFS_getWriteDir();															// Method that returns a path where PhysFS will allow file writing. Returns NULL by default.
+}
+
+const char* M_FileSystem::GetReadDirectories() const
+{
+	static char paths[512];
+
+	paths[0] = '\0';
+
+	char** path;
+
+	for (path = PHYSFS_getSearchPath(); *path != nullptr; ++path)							// Method that returns the current search path (array of strings). Returns an empty list by df.
+	{
+		strcat_s(paths, 512, *path);
+		strcat_s(paths, 512, "\n");
+	}
+
+	return paths;
 }
 
 void M_FileSystem::GetRealDirectory(const char* path, std::string& output) const

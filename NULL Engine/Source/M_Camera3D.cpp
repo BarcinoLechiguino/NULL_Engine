@@ -8,12 +8,16 @@ M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
 {
 	CalculateViewMatrix();
 
-	X = vec3(1.0f, 0.0f, 0.0f);
-	Y = vec3(0.0f, 1.0f, 0.0f);
-	Z = vec3(0.0f, 0.0f, 1.0f);
+	X				= vec3(1.0f, 0.0f, 0.0f);
+	Y				= vec3(0.0f, 1.0f, 0.0f);
+	Z				= vec3(0.0f, 0.0f, 1.0f);
 
-	Position = vec3(0.0f, 0.0f, 5.0f);
-	Reference = vec3(0.0f, 0.0f, 0.0f);
+	Position		= vec3(0.0f, 0.0f, 5.0f);
+	Reference		= vec3(0.0f, 0.0f, 0.0f);
+
+	movement_speed	= 10.0f;
+	rotation_speed	= 5.0f;
+	zoom_speed		= 2.5f;
 }
 
 M_Camera3D::~M_Camera3D()
@@ -209,4 +213,68 @@ void M_Camera3D::CalculateViewMatrix()
 {
 	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
+}
+
+vec3 M_Camera3D::GetPosition() const
+{
+	return Position;
+}
+
+vec3 M_Camera3D::GetReference() const
+{
+	return Reference;
+}
+
+vec3 M_Camera3D::GetSpot() const
+{
+	return vec3(0.0f, 0.0f, 0.0f);
+}
+
+void M_Camera3D::SetPosition(vec3 position)
+{
+	Position.x = position.x;
+	Position.y = position.y;
+	Position.z = position.z;
+}
+
+void M_Camera3D::SetReference(vec3 reference)
+{
+	Reference.x = reference.x;
+	Reference.y = reference.y;
+	Reference.z = reference.z;
+}
+
+void M_Camera3D::SetSpot(vec3 spot)
+{
+
+}
+
+float M_Camera3D::GetMovementSpeed() const
+{
+	return movement_speed;
+}
+
+float M_Camera3D::GetRotationSpeed() const
+{
+	return rotation_speed;
+}
+
+float M_Camera3D::GetZoomSpeed() const
+{
+	return zoom_speed;
+}
+
+void M_Camera3D::SetMovementSpeed(float movement_speed)
+{
+	this->movement_speed = movement_speed;
+}
+
+void M_Camera3D::SetRotationSpeed(float rotation_speed)
+{
+	this->rotation_speed = rotation_speed;
+}
+
+void M_Camera3D::SetZoomSpeed(float zoom_speed)
+{
+	this->zoom_speed = zoom_speed;
 }

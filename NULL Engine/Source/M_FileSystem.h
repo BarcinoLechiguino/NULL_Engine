@@ -33,7 +33,9 @@ public:
 	void CreateLibraryDirectories();														// Will call CreateDir() to create all the required directories in the same method.
 	bool CreateDir(const char* directory);													// Will create a directory. This directory will be used by PhysFS.
 	bool IsDirectory(const char* file) const;												// Will check whether or not the given directory is a PhysFS directory already (See above).
+	const char* GetBaseDirectory() const;
 	const char* GetWriteDirectory() const;													// Will return a path where PhysFS will allow file writing. Gets the current write directory.
+	const char* GetReadDirectories() const;
 	void GetRealDirectory(const char* path, std::string& output) const;						// Will return the real directory path of the given path as the output.
 	std::string GetPathRelativeToAssets(const char* original_path) const;					// Will get the path relative to the assets from the given path.
 

@@ -294,6 +294,26 @@ void M_Renderer3D::SetVsync(bool set_to)
 	}
 }
 
+bool M_Renderer3D::GetGLFlag(GLenum cap) const
+{
+	return glIsEnabled(cap);
+}
+
+void M_Renderer3D::SetGLFlag(GLenum cap, bool set_to)
+{
+	if (set_to != glIsEnabled(cap))
+	{
+		if (set_to)
+		{
+			glEnable(cap);
+		}
+		else
+		{
+			glDisable(cap);
+		}
+	}
+}
+
 bool M_Renderer3D::GetGLDepthTest() const
 {
 	return gl_depth_test;
@@ -334,14 +354,105 @@ bool M_Renderer3D::GetGLShowTexCoords() const
 	return gl_show_tex_coords;
 }
 
+void M_Renderer3D::SetGLDepthTest(bool set_to)
+{
+	if (set_to != gl_depth_test)
+	{
+		gl_depth_test = set_to;
 
+		if (gl_depth_test)
+		{
+			glEnable(GL_DEPTH_TEST);
+		}
+		else
+		{
+			glDisable(GL_DEPTH_TEST);
+		}
+	}
+}
 
+void M_Renderer3D::SetGLCullFace(bool set_to)
+{
+	if (set_to != gl_cull_face)
+	{
+		gl_cull_face = set_to;
 
+		if (gl_cull_face)
+		{
+			glEnable(GL_CULL_FACE);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
+	}
+}
 
+void M_Renderer3D::SetGLLighting(bool set_to)
+{
+	if (set_to != gl_lighting)
+	{
+		gl_lighting = set_to;
 
+		if (gl_lighting)
+		{
+			glEnable(GL_LIGHTING);
+		}
+		else
+		{
+			glDisable(GL_LIGHTING);
+		}
+	}
+}
 
+void M_Renderer3D::SetGLColorMaterial(bool set_to)
+{
+	if (set_to != gl_color_material)
+	{
+		gl_color_material = set_to;
 
+		if (gl_lighting)
+		{
+			glEnable(GL_LIGHTING);
+		}
+		else
+		{
+			glDisable(GL_LIGHTING);
+		}
+	}
+}
 
+void M_Renderer3D::SetGLTexture2D(bool set_to)
+{
+	if (set_to != gl_texture_2D)
+	{
+		gl_texture_2D = set_to;
+
+		if (gl_lighting)
+		{
+			glEnable(GL_TEXTURE_2D);
+		}
+		else
+		{
+			glDisable(GL_TEXTURE_2D);
+		}
+	}
+}
+
+void M_Renderer3D::SetGLShowNormals(bool set_to)
+{
+	gl_show_normals = set_to;
+}
+
+void M_Renderer3D::SetGLShowColors(bool set_to)
+{
+	gl_show_colors = set_to;
+}
+
+void M_Renderer3D::SetGLShowTexCoords(bool set_to)
+{
+	gl_show_tex_coords = set_to;
+}
 
 void M_Renderer3D::PrimitiveExamples()
 {

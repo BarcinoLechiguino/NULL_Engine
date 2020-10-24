@@ -40,6 +40,8 @@ public:
 	int GetMouseZ() const;
 	int GetMouseXMotion() const;
 	int GetMouseYMotion() const;
+	int GetMouseXWheel() const;
+	int GetMouseYWheel() const;
 
 	const char* GetDroppedFilePath() const;
 
@@ -53,6 +55,8 @@ private:
 	int mouse_x_motion;
 	int mouse_y_motion;
 	//int mouse_z_motion;
+	int mouse_x_wheel;
+	int mouse_y_wheel;
 
 	const char* dropped_file_path;
 };
