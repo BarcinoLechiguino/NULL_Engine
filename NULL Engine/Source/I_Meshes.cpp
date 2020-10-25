@@ -38,7 +38,7 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 		}
 		else
 		{
-			LOG("[WARNING] Warning! Vertex %d has no position vector!", i);
+			LOG("[WARNING] Vertex %d has no position vector!", i);
 		}
 
 		if (ai_mesh->HasNormals())
@@ -49,7 +49,7 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 		}
 		else
 		{
-			LOG("[WARNING] Warning! Vertex %d has no position vector!", i);
+			LOG("[WARNING] Vertex %d has no position vector!", i);
 		}
 
 		if (ai_mesh->HasTextureCoords(0))

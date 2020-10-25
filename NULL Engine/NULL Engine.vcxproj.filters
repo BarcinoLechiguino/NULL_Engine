@@ -596,15 +596,6 @@
     <ClInclude Include="Source\PathNode.h">
       <Filter>SourceCode\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Dependencies\Assimp\include\cimport.h">
-      <Filter>Dependencies\Assimp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Dependencies\Assimp\include\postprocess.h">
-      <Filter>Dependencies\Assimp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Dependencies\Assimp\include\scene.h">
-      <Filter>Dependencies\Assimp</Filter>
-    </ClInclude>
     <ClInclude Include="Source\I_Meshes.h">
       <Filter>SourceCode\Importers</Filter>
     </ClInclude>
@@ -679,6 +670,15 @@
     </ClInclude>
     <ClInclude Include="Source\E_ImGuiDemo.h">
       <Filter>SourceCode\Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\Assimp\include\cimport.h">
+      <Filter>Dependencies\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\Assimp\include\postprocess.h">
+      <Filter>Dependencies\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\Assimp\include\scene.h">
+      <Filter>Dependencies\Assimp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

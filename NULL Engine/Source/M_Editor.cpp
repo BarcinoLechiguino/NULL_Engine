@@ -50,7 +50,7 @@ about(nullptr)
 	show_hierarchy			= true;
 	show_inspector			= true;
 	show_console			= true;
-	show_imgui_demo			= true;
+	show_imgui_demo			= false;
 	show_about_popup		= false;
 	show_close_app_popup	= false;
 }
@@ -188,7 +188,7 @@ void M_Editor::AddInputLog(uint key, uint state)
 		{
 			const char* key_name = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)key));			// Through the scancode it is possible to get a string with the name of the key.
 
-			sprintf_s(input, 128, "[KEY] %02u - %s - %s\n", key, key_name, states[state]);
+			sprintf_s(input, 128, "[KEY] %02u %s - %s\n", key, key_name, states[state]);
 		}
 		else
 		{

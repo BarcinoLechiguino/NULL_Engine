@@ -5,9 +5,9 @@
 
 #include "R_Model.h"
 
-R_Model::R_Model() : Resource()
+R_Model::R_Model(vec4 colour) : Resource()
 {
-
+	this->colour = colour;
 }
 
 R_Model::~R_Model()
@@ -17,10 +17,31 @@ R_Model::~R_Model()
 
 void R_Model::Draw()
 {
-	for (int i = 0; i < meshes.size(); ++i)
+	for (uint i = 0; i < meshes.size(); ++i)
 	{
-		meshes[i]->Draw();
+		meshes[i]->Draw(colour);
 	}
+}
+
+void R_Model::DrawNormals()
+{
+	for (uint i = 0; i < meshes.size(); ++i)
+	{
+		meshes[i]->DrawNormals();
+	}
+}
+
+void R_Model::DrawTexCoords()
+{
+	for (uint i = 0; i < meshes.size(); ++i)
+	{
+		meshes[i]->DrawTexCoords();
+	}
+}
+
+void R_Model::SetMaterialColour(vec4 colour)
+{
+	this->colour = colour;
 }
 
 void R_Model::ProcessScene(const aiScene* scene)

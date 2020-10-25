@@ -25,23 +25,20 @@ public:
 	R_Mesh();
 	~R_Mesh();
 
-	void Draw();
+	void Draw(vec4 colour);
+	void DrawNormals();
+	void DrawTexCoords();
 
 	void LoadBuffers();
 	void CreateAABB();									// Will create the bounding box that will encase the mesh.
 
 public:
 	// Mesh data
-	/*std::vector<float>	vertices;
-	std::vector<float>	normals;
-	std::vector<float>	tex_coords;
-	std::vector<uint>	indices;*/
-
 	std::vector<Vertex>		vertices;
 	std::vector<uint>		indices;
 	std::vector<Texture>	textures;
 
-	int num_vertices;
+	vec4 colour;
 
 	AABB aabb;											// Bounding box of the mesh.
 

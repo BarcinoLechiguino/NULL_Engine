@@ -1,6 +1,5 @@
-﻿  E_Console.cpp
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_Console.cpp(46,14): warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_Console.cpp(94,20): warning C4018: '<': signed/unsigned mismatch
-  M_Editor.cpp
-  Generating Code...
+﻿  R_Mesh.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\MathGeoLib\src\Geometry\AABB2D.h(110,3): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Globals.h(19,1): warning C4005: 'LOG': macro redefinition
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\MathGeoLib\src\Math\MathLog.h(63): message : see previous definition of 'LOG'
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

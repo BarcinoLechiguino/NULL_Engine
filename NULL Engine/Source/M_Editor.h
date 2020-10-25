@@ -43,16 +43,18 @@ public:
 	bool			GetEvent(SDL_Event* event) const;								// Will return false if there was no event to read.
 
 	void			AddGuiPanel(E_Panel* panel);									//
-	void			AddConsoleLog(const char* log);
-	void			AddInputLog(uint key, uint state);
-
-	void			UpdateFrameData(int frames, int ms);
 
 	void			EditorShortcuts();
 	void			CheckShowHideFlags();
 
 	bool			RenderGuiPanels() const;										//
 	bool			InitializeImGui() const;
+
+public:																				// --- Panel/Window Methods
+	void			AddConsoleLog(const char* log);
+	void			AddInputLog(uint key, uint state);
+
+	void			UpdateFrameData(int frames, int ms);
 
 public:
 	std::vector<E_Panel*>	gui_panels;												//

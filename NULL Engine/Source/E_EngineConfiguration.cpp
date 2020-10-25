@@ -511,16 +511,16 @@ void E_EngineConfiguration::InputLogOutput()
 {
 	for (uint i = 0; i < input_logs.size(); ++i)
 	{
-		ImVec4 text_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+		ImVec4 text_colour = { 1.0f, 1.0f, 1.0f, 1.0f };									// White is the default colour, but added this to be able to easily change it.					
 
-		if (strstr(input_logs[i], "[KEY]") != nullptr)										// White is the default colour, but added this to be able to easily change it.
+		if (strstr(input_logs[i], "[KEY]") != nullptr)
 		{
-			text_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+			text_colour = { 0.0f, 1.0f, 1.0f, 1.0f };
 		}
 		
 		if (strstr(input_logs[i], "[MOUSE]") != nullptr)
 		{
-			text_colour = { 1.0f, 1.0f, 0.0f, 1.0f };
+			text_colour = { 1.0f, 0.0f, 1.0f, 1.0f };
 		}
 
 		ImGui::PushStyleColor(ImGuiCol_Text, text_colour);

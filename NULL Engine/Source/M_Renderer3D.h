@@ -16,6 +16,7 @@ class Configuration;
 class R_Mesh;
 class R_Model;
 
+class aiScene;
 typedef unsigned int GLenum;
 
 enum class RENDERER_FLAGS
@@ -25,10 +26,10 @@ enum class RENDERER_FLAGS
 	LIGHTING		= 0x0B50,
 	COLOR_MATERIAL	= 0x0B57,
 	TEXTURE_2D		= 0x0DE1,
-	SHOW_WIREFRAME	= -1,
-	SHOW_NORMALS	= 0,
-	SHOW_COLORS		= 1,
-	SHOW_TEX_COORDS = 2
+	SHOW_WIREFRAME	= 0,
+	SHOW_NORMALS	= 1,
+	SHOW_COLORS		= 2,
+	SHOW_TEX_COORDS = 3
 };
 
 class M_Renderer3D : public Module
@@ -48,11 +49,16 @@ public:
 public:
 	bool			InitOpenGL();
 	bool			InitGlew();
-
-	void			LoadModel(const char* file_path);
-
 	void			OnResize(int width, int height);
 
+	void			LoadModel(const char* file_path, vec4 mat_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	void			CorrectAxisAlignment(aiScene* scene);
+
+	void			RendererShortcuts();
+
+	void			PrimitiveExamples();										// REMOVE LATER
+
+public:																			// --- GET/SET METHODS
 	const char*		GetDrivers() const;											// 
 	bool			GetVsync() const;											// 
 	void			SetVsync(bool set_to);										// 
@@ -70,8 +76,6 @@ public:
 	void			SetGLShowNormals(bool set_to);								// 
 	void			SetGLShowColors(bool set_to);								// 
 	void			SetGLShowTexCoords(bool set_to);							// 
-
-	void			PrimitiveExamples();										// REMOVE LATER
 
 public:
 	Light					lights[MAX_LIGHTS];									// 

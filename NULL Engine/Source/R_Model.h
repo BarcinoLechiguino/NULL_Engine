@@ -15,10 +15,14 @@ class	R_Mesh;
 class R_Model : public Resource
 {
 public:
-	R_Model();
+	R_Model(vec4 colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	~R_Model();
 
 	void Draw();
+	void DrawNormals();
+	void DrawTexCoords();
+
+	void SetMaterialColour(vec4 colour);
 
 	void ProcessScene(const aiScene* scene);
 
@@ -30,6 +34,8 @@ private:
 private:
 	std::vector<R_Mesh*> meshes;
 	std::string directory;
+
+	vec4 colour;
 
 };
 

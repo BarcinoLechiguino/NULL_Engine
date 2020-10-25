@@ -50,8 +50,8 @@ bool M_Renderer3D::Init(Configuration& config)
 
 	InitGlew();																	// Initializing Glew.
 
-	LoadModel("Assets/Models/warrior/warrior.FBX");
-	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
+	//LoadModel("Assets/Models/warrior/warrior.FBX");
+	LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 
 	return ret;
 }
@@ -74,6 +74,9 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 		lights[i].Render();
 	}
 
+	// --- RENDERER SHORTCUTS
+	RendererShortcuts();
+
 	return UPDATE_STATUS::CONTINUE;
 }
 
@@ -82,14 +85,19 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 {	
 	PrimitiveExamples();
 
-	/*for (int i = 0; i < meshes.size(); ++i)
-	{
-		meshes[i]->Draw();
-	}*/
-
 	for (uint i = 0; i < models.size(); ++i)
 	{
 		models[i]->Draw();
+
+		if (gl_show_normals)
+		{
+			models[i]->DrawNormals();
+		}
+
+		if (gl_show_tex_coords)
+		{
+			models[i]->DrawTexCoords();
+		}
 	}
 
 	App->editor->RenderGuiPanels();
@@ -241,9 +249,14 @@ void M_Renderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 }
 
-void M_Renderer3D::LoadModel(const char* file_path)
+void M_Renderer3D::RendererShortcuts()
 {
-	R_Model* model = new R_Model();
+
+}
+
+void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
+{
+	R_Model* model = new R_Model(mat_colour);
 
 	//const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
@@ -261,6 +274,85 @@ void M_Renderer3D::LoadModel(const char* file_path)
 	}
 
 	models.push_back(model);
+}
+
+void M_Renderer3D::CorrectAxisAlignment(aiScene* scene)
+{
+	int upAxis			= 0;
+	int upAxisSign		= 1;
+	
+	int frontAxis		= 0;
+	int frontAxisSign	= 1;
+	
+	int coordAxis		= 0;
+	int coordAxisSign	= 1;
+
+	/*scene->mMetaData->Get<int>("UpAxis",			upAxis);
+	scene->mMetaData->Get<int>("UpAxisSign",		upAxisSign);
+	
+	scene->mMetaData->Get<int>("FrontAxis",			frontAxis);
+	scene->mMetaData->Get<int>("FrontAxisSign",		frontAxisSign);
+	
+	scene->mMetaData->Get<int>("RightAxis",			coordAxis);
+	scene->mMetaData->Get<int>("RightAxisSign",		coordAxisSign);*/
+
+	aiVector3D upVec		= upAxis	== 0 ? aiVector3D(upAxisSign, 0, 0) : upAxis == 1 ? aiVector3D(0, upAxisSign, 0) : aiVector3D(0, 0, upAxisSign);
+	aiVector3D forwardVec	= frontAxis == 0 ? aiVector3D(frontAxisSign, 0, 0) : frontAxis == 1 ? aiVector3D(0, frontAxisSign, 0) : aiVector3D(0, 0, frontAxisSign);
+	aiVector3D rightVec		= coordAxis == 0 ? aiVector3D(coordAxisSign, 0, 0) : coordAxis == 1 ? aiVector3D(0, coordAxisSign, 0) : aiVector3D(0, 0, coordAxisSign);
+
+	if (upAxis == 0)
+	{
+		upVec = aiVector3D(upAxisSign, 0, 0);
+	}
+	else
+	{
+		if (upAxis == 1)
+		{
+			upVec = aiVector3D(0, upAxisSign, 0);
+		}
+		else
+		{
+			upVec = aiVector3D(0, 0, upAxisSign);
+		}
+	}
+
+	if (frontAxis == 0)
+	{
+		forwardVec = aiVector3D(frontAxisSign, 0, 0);
+	}
+	else
+	{
+		if (frontAxis == 1)
+		{
+			forwardVec = aiVector3D(0, frontAxisSign, 0);
+		}
+		else
+		{
+			forwardVec = aiVector3D(0, 0, frontAxisSign);
+		}
+	}
+
+
+	if (coordAxis == 0)
+	{
+		rightVec = aiVector3D(coordAxisSign, 0, 0);
+	}
+	else
+	{
+		if (coordAxis == 1)
+		{
+			rightVec = aiVector3D(0, coordAxisSign, 0);
+		}
+		else
+		{
+			rightVec = aiVector3D(0, 0, coordAxisSign);
+		}
+	}
+
+	aiMatrix4x4 mat(rightVec.x,		rightVec.y,		rightVec.z,		0.0f,
+					upVec.x,		upVec.y,		upVec.z,		0.0f,
+					forwardVec.x,	forwardVec.y,	forwardVec.z,	0.0f,
+					0.0f,			0.0f,			0.0f,			1.0f);
 }
 
 const char* M_Renderer3D::GetDrivers() const
