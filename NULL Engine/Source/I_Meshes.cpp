@@ -16,7 +16,7 @@ R_Mesh* Importer::Meshes::Create()
 	return new R_Mesh();
 }
 
-void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
+void Importer::Meshes::Import(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
 {	
 	// Allocating the required memory for each vector
 	uint size = ai_mesh->mNumVertices;
@@ -56,10 +56,14 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 		{
 			vertex.tex_coords.x = ai_mesh->mTextureCoords[0][i].x;
 			vertex.tex_coords.y = ai_mesh->mTextureCoords[0][i].y;
+
+			LOG("Vertex %u tex coords: { %.1f, %.1f }", i, vertex.tex_coords.x, vertex.tex_coords.y);
 		}
 		else
 		{
 			vertex.tex_coords = vec2(0.0f, 0.0f);
+
+			LOG("Vertex %u tex coords: { %.1f, %.1f }", i, vertex.tex_coords.x, vertex.tex_coords.y);
 		}
 
 		r_mesh->vertices[i] = vertex;
@@ -79,7 +83,7 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 
 	if (ai_mesh->mMaterialIndex >= 0)
 	{
-
+		aiMaterial* material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
 	}
 
 	r_mesh->CreateAABB();

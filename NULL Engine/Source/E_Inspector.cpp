@@ -14,6 +14,10 @@ bool E_Inspector::Draw(ImGuiIO& io)
 {
 	bool ret = true;
 
+	ImGui::Begin("Inspector");
+
+	ImGui::End();
+
 	return ret;
 }
 

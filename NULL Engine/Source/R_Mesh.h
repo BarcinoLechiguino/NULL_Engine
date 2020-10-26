@@ -7,6 +7,14 @@
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
 
+enum class TEXTURE_TYPE									// The enum values are set according to the values of Assimp's aiTextureType enum.
+{
+	NONE		= 0x0,
+	DIFFUSE		= 0x1,
+	SPECULAR	= 0x2,
+	UNKNOWN		= 0xC
+};
+
 struct Vertex
 {
 	Vertex();
@@ -19,7 +27,7 @@ struct Vertex
 struct Texture
 {
 	uint			id;									// Id of the texture.
-	std::string		type;								// Diffuse or Specular.
+	TEXTURE_TYPE	type;								// Diffuse or Specular.
 	std::string		path;								// Path of the file in the directory. Will be used to avoid making duplicates.
 };
 

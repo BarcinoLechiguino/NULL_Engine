@@ -53,7 +53,7 @@ bool M_Renderer3D::Init(Configuration& config)
 	InitGlew();																	// Initializing Glew.
 
 	//LoadModel("Assets/Models/warrior/warrior.FBX");
-	LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	//LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
 
@@ -119,9 +119,9 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 		primitives[i]->Render();
 	}
 
-	App->editor->RenderGuiPanels();
-	
 	PrimitiveExamples();
+
+	App->editor->RenderGuiPanels();
 
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
@@ -307,14 +307,14 @@ void M_Renderer3D::DrawWorldGrid(int size)
 {
 	glBegin(GL_LINES);
 
-	float dist = (float)size;
+	float destination = (float)size;
 	
-	for (float i = -dist; i <= dist; i += 1.0f)
+	for (float origin = -destination; origin <= destination; origin += 1.0f)
 	{
-		glVertex3f(i, 0.0f, -dist);
-		glVertex3f(i, 0.0f, dist);
-		glVertex3f(-dist, 0.0f, i);
-		glVertex3f(dist, 0.0f, i);
+		glVertex3f( origin,		 0.0f, -destination);
+		glVertex3f( origin,		 0.0f,  destination);
+		glVertex3f(-destination, 0.0f,  origin);
+		glVertex3f( destination, 0.0f,  origin);
 	}
 
 	glEnd();
@@ -327,21 +327,21 @@ void M_Renderer3D::DrawWorldAxis()
 	glBegin(GL_LINES);
 
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);											// X Axis.
-	glVertex3f(0.0f, 0.0f, 0.0f);		glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);		glVertex3f(1.0f,  0.0f, 0.0f);
 	glVertex3f(1.0f, 0.1f, 0.0f);		glVertex3f(1.1f, -0.1f, 0.0f);
 	glVertex3f(1.1f, 0.1f, 0.0f);		glVertex3f(1.0f, -0.1f, 0.0f);
 
 	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);											// Y Axis.
-	glVertex3f(0.0f, 0.0f, 0.0f);		glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f( 0.0f,  0.0f,  0.0f);	glVertex3f(0.0f, 1.0f,  0.0f);
 	glVertex3f(-0.05f, 1.25f, 0.0f);	glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.05f, 1.25f, 0.0f);		glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.0f, 1.15f, 0.0f);		glVertex3f(0.0f, 1.05f, 0.0f);
+	glVertex3f( 0.05f, 1.25f, 0.0f);	glVertex3f(0.0f, 1.15f, 0.0f);
+	glVertex3f( 0.0f,  1.15f, 0.0f);	glVertex3f(0.0f, 1.05f, 0.0f);
 
 	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);											// Z Axis.
-	glVertex3f(0.0f, 0.0f, 0.0f);		glVertex3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-0.05f, 0.1f, 1.05f);	glVertex3f(0.05f, 0.1f, 1.05f);
-	glVertex3f(0.05f, 0.1f, 1.05f);		glVertex3f(-0.05f, -0.1f, 1.05f);
-	glVertex3f(-0.05f, -0.1f, 1.05f);	glVertex3f(0.05f, -0.1f, 1.05f);
+	glVertex3f( 0.0f,   0.0f, 0.0f);	glVertex3f( 0.0f,   0.0f, 1.0f);
+	glVertex3f(-0.05f,  0.1f, 1.05f);	glVertex3f( 0.05f,  0.1f, 1.05f);
+	glVertex3f( 0.05f,  0.1f, 1.05f);	glVertex3f(-0.05f, -0.1f, 1.05f);
+	glVertex3f(-0.05f, -0.1f, 1.05f);	glVertex3f( 0.05f, -0.1f, 1.05f);
 
 	glEnd();
 
@@ -355,7 +355,7 @@ void M_Renderer3D::AddPrimitive(Primitive* primitive)
 
 void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
 {
-	R_Model* model = new R_Model(mat_colour);
+	R_Model* model = new R_Model(file_path, mat_colour);
 
 	//const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
@@ -377,39 +377,39 @@ void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
 
 void M_Renderer3D::LoadDebugTexture()
 {	
-	//GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];					// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
+	GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];					// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
 
-	//for (int i = 0; i < CHECKERS_HEIGHT; ++i)									// There will be CHECKERS_WIDTH rows per column.
-	//{
-	//	for (int j = 0; j < CHECKERS_WIDTH; ++j)								// There will be an RGBA value per checker.
-	//	{
-	//		int color = ((((i&0x8) == 0) ^ ((j&0x8) == 0))) * 255;				// Getting whether the checker will be white or black according to the iteration indexes and bitwise operations.
+	for (int i = 0; i < CHECKERS_HEIGHT; ++i)									// There will be CHECKERS_WIDTH rows per column.
+	{
+		for (int j = 0; j < CHECKERS_WIDTH; ++j)								// There will be an RGBA value per checker.
+		{
+			int color = ((((i & 0x8) == 0) ^ ((j & 0x8) == 0))) * 255;			// Getting whether the checker will be white or black according to the iteration indexes and bitwise operations.
 
-	//		checker_image[i][j][0] = (GLubyte)color;							// R
-	//		checker_image[i][j][1] = (GLubyte)color;							// G
-	//		checker_image[i][j][2] = (GLubyte)color;							// B
-	//		checker_image[i][j][3] = (GLubyte)255;								// A
-	//	}
-	//}
+			checker_image[i][j][0] = (GLubyte)color;							// R
+			checker_image[i][j][1] = (GLubyte)color;							// G
+			checker_image[i][j][2] = (GLubyte)color;							// B
+			checker_image[i][j][3] = (GLubyte)255;								// A
 
-	//GLuint textureID = 0;														// Buffer for the checkers texture.
+			//LOG("CHECKER COLOR: %s", color == 255 ? "White" : "Black");
+		}
+	}
 
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);										// Sets the pixel storage modes. GL_UNPACK_ALIGNMENT specifies the alignment requirements for the
-	//// --->																		// start of each pixel row in memory. 1 means that the alignment requirements will be byte-alignment.
-	//glGenTextures(1, &textureID);												// Generate texture names. Returns n names in the given buffer. GL_INVALID_VALUE if n is negative.
-	//glBindTexture(GL_TEXTURE_2D, textureID);									// Bind a named texture to a texturing target. Binds the buffer with the given target (GL_TEXTURE_2D).
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);				// Set texture parameters. WRAP_S: Set the wrap parameters for texture coordinate s. GL_REPEAT is the default.
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);				// WRAP_T: Set the wrap parameters for the texture coordinate r
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);			// MAG_FILTER: Sets the texture magnification process parameters. GL_NEAREST rets the val. of nearest tex elem.
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);			// MIN_FILTER: Sets the texture minimization process parameters. " ".
-	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
-	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// handle the process of resizing a tex. Takes the mipmap that most closely matches the size of the px.
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);										// Sets the pixel storage modes. GL_UNPACK_ALIGNMENT specifies the alignment requirements for the
+	// --->																		// start of each pixel row in memory. 1 means that the alignment requirements will be byte-alignment.
+	glGenTextures(1, &debug_texture_id);										// Generate texture names. Returns n names in the given buffer. GL_INVALID_VALUE if n is negative.
+	glBindTexture(GL_TEXTURE_2D, debug_texture_id);								// Bind a named texture to a texturing target. Binds the buffer with the given target (GL_TEXTURE_2D).
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);				// Set texture parameters. WRAP_S: Set the wrap parameters for texture coordinate s. GL_REPEAT is the default.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);				// WRAP_T: Set the wrap parameters for the texture coordinate r
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);			// MAG_FILTER: Sets the texture magnification process parameters. GL_NEAREST rets the val. of nearest tex elem.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);			// MIN_FILTER: Sets the texture minimization process parameters. " ".
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
+	// --->																				// handle the process of resizing a tex. Takes the mipmap that most closely matches the size of the px.
 
-	////glGenerateMipmap(GL_TEXTURE_2D);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, checker_image);
 
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, checker_image);
+	//glGenerateMipmap(GL_TEXTURE_2D);
 
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void M_Renderer3D::CorrectAxisAlignment(aiScene* scene)
@@ -633,14 +633,18 @@ void M_Renderer3D::SetShowTexCoords(bool set_to)
 }
 
 void M_Renderer3D::PrimitiveExamples()
-{
+{	
 	//OGL_draw_examples.DrawAllExamples();
 
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
 	//cube_direct.DirectRender();
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	//cube_array.ArrayRender();
+	glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+	cube_array.ArrayRender();
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 

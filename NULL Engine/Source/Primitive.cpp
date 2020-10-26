@@ -160,7 +160,67 @@ void Cube::DirectRender() const
 
 	glBegin(GL_QUADS);
 
-	glNormal3f(0.0f, 0.0f, 1.0f);
+	glNormal3f(0.0f, 0.0f, 1.0f);			// ABDC
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-sx, -sy,  sz);				// A
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f( sx,	-sy,  sz);				// B
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f( sx,	 sy,  sz);				// D
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-sx,  sy,  sz);				// C
+
+	glNormal3f(0.0f, 0.0f, -1.0f);			// FEGH
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f( sx, -sy, -sz);				// F
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(-sx, -sy, -sz);				// E
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(-sx,  sy, -sz);				// G
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f( sx,  sy, -sz);				// H
+
+	glNormal3f(1.0f, 0.0f, 0.0f);			//BFHD
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(sx, -sy,  sz);				// B
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(sx, -sy, -sz);				// F
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(sx,  sy, -sz);				// H
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(sx,  sy,  sz);				// D
+
+	glNormal3f(-1.0f, 0.0f, 0.0f);			// EACG
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-sx, -sy, -sz);				// E
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(-sx, -sy,  sz);				// A
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(-sx,  sy,  sz);				// C
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-sx,  sy, -sz);				// G
+
+	glNormal3f(0.0f, 1.0f, 0.0f);			// CDHG
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-sx, sy,  sz);				// C
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f( sx, sy,  sz);				// D
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f( sx, sy, -sz);				// H
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-sx, sy, -sz);				// G
+
+	glNormal3f(0.0f, -1.0f, 0.0f);			// EFBA
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(-sx, -sy, -sz);				// E
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f( sx, -sy, -sz);				// F
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f( sx, -sy,  sz);				// B
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-sx, -sy,  sz);				// A
+
+	/*glNormal3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(-sx, -sy, sz);
 	glVertex3f( sx, -sy, sz);
 	glVertex3f( sx,  sy, sz);
@@ -194,7 +254,7 @@ void Cube::DirectRender() const
 	glVertex3f(-sx, -sy, -sz);
 	glVertex3f( sx, -sy, -sz);
 	glVertex3f( sx, -sy,  sz);
-	glVertex3f(-sx, -sy,  sz);
+	glVertex3f(-sx, -sy,  sz);*/
 
 	glEnd();
 }
@@ -212,58 +272,63 @@ void Cube::ArrayRender()
 			// --- (0.0f, 0.0f, 0.0f) AS THE CENTER
 			// -- FRONT --
 			-1.0f, -1.0f, 1.0f,		//ABC
-			1.0f, -1.0f, 1.0f,
-			-1.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 1.0f,
+			-1.0f,  1.0f, 1.0f,
 			
-			1.0f, -1.0f, 1.0f,		//BDC
-			1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 1.0f,		//BDC
+			 1.0f,  1.0f, 1.0f,
+			-1.0f,  1.0f, 1.0f,
 			
 			// -- RIGHT --
-			1.0f, -1.0f, 1.0f,		//BFD
+			1.0f, -1.0f,  1.0f,		//BFD
 			1.0f, -1.0f, -1.0f,
-			1.0f, 1.0f, 1.0f,
+			1.0f,  1.0f,  1.0f,
 			
 			1.0f, -1.0f, -1.0f,		//FHD
-			1.0f, 1.0f, -1.0f,
-			1.0f, 1.0f, 1.0f,
+			1.0f,  1.0f, -1.0f,
+			1.0f,  1.0f,  1.0f,
 			
 			// -- BACK --
 			-1.0f, -1.0f, -1.0f,	//EGH
-			-1.0f, 1.0f, -1.0f,
-			1.0f, 1.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f,
 			
-			1.0f, -1.0f, -1.0f,		//FEH
+			 1.0f, -1.0f, -1.0f,	//FEH
 			-1.0f, -1.0f, -1.0f,
-			1.0f, 1.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f,
 			
 			// -- LEFT --
 			-1.0f, -1.0f, -1.0f,	//EAG
-			-1.0f, -1.0f, 1.0f,
-			-1.0f, 1.0f, -1.0f,
+			-1.0f, -1.0f,  1.0f,
+			-1.0f,  1.0f, -1.0f,
 			
-			-1.0f, -1.0f, 1.0f,		//ACG
-			-1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f, -1.0f,
+			-1.0f, -1.0f,  1.0f,	//ACG
+			-1.0f,  1.0f,  1.0f,
+			-1.0f,  1.0f, -1.0f,
 			
 			// -- BOTTOM --
-			-1.0f, -1.0f, 1.0f,		//AEF
+			-1.0f, -1.0f,  1.0f,	//AEF
 			-1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
 			
-			-1.0f, -1.0f, 1.0f,		//AFB
-			1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, 1.0f,
+			-1.0f, -1.0f,  1.0f,	//AFB
+			 1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f,  1.0f,
 			
 			// -- TOP --
-			-1.0f, 1.0f, 1.0f,		//CDG
-			1.0f, 1.0f, 1.0f,
+			-1.0f, 1.0f,  1.0f,		//CDG
+			 1.0f, 1.0f,  1.0f,
 			-1.0f, 1.0f, -1.0f,
 			
-			1.0f, 1.0f, 1.0f,		//DHG
-			1.0f, 1.0f, -1.0f,
+			 1.0f, 1.0f,  1.0f,		//DHG
+			 1.0f, 1.0f, -1.0f,
 			-1.0f, 1.0f, -1.0f
 			// ------------------------------------
+		};
+
+		float cube_tex_coords[array_size] =
+		{
+
 		};
 
 		int j = 0;

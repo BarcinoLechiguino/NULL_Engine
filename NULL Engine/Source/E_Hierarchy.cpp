@@ -14,6 +14,10 @@ bool E_Hierarchy::Draw(ImGuiIO& io)
 {
 	bool ret = true;
 
+	ImGui::Begin("Hierarchy");
+
+	ImGui::End();
+
 	return ret;
 }
 

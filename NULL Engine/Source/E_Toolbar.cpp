@@ -110,6 +110,7 @@ bool E_Toolbar::CloseAppPopup()
 
 	if (ImGui::BeginPopupModal("Close Application?"))
 	{
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 1.0f, 0.0f, 0.5f));
 		if (ImGui::Button("CONFIRM"))
 		{
 			ImGui::CloseCurrentPopup();
@@ -117,14 +118,17 @@ bool E_Toolbar::CloseAppPopup()
 
 			App->quit = true;
 		}
+		ImGui::PopStyleColor();
 
 		ImGui::SameLine();
 
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 0.5f));
 		if (ImGui::Button("CANCEL"))
 		{
 			ImGui::CloseCurrentPopup();
 			App->editor->show_close_app_popup = false;
 		}
+		ImGui::PopStyleColor();
 
 		ImGui::EndPopup();
 	}
