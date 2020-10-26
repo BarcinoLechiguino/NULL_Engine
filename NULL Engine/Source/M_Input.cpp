@@ -181,11 +181,6 @@ UPDATE_STATUS M_Input::Update(float dt)
 		App->debug = !App->debug;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_STATE::KEY_DOWN)
-	{
-		App->renderer->SetGLShowWireframe(!App->renderer->GetGLShowWireframe());
-	}
-
 	return UPDATE_STATUS::CONTINUE;
 }
 

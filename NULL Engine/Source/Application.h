@@ -44,6 +44,8 @@ public:
 	const char*		GetOrganizationName() const;
 	void			SetOrganizationName(const char* organization_name);
 
+	void			EngineShortcuts();
+
 	void			AddEditorLog(const char* log);
 	void			LogHardwareInfo();
 	void			RequestBrowser(const char* link);

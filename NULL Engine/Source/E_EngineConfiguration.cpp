@@ -191,72 +191,10 @@ bool E_EngineConfiguration::RendererMenu()
 			App->renderer->SetVsync(vsync);
 		}
 
-		// --- RENDERER FLAGS
 		ImGui::Separator();
-		ImGui::Text("Renderer flags: ");
 
-		bool depth_test			= App->renderer->GetGLFlag(RENDERER_FLAGS::DEPTH_TEST);
-		bool cull_face			= App->renderer->GetGLFlag(RENDERER_FLAGS::CULL_FACE);
-		bool lighting			= App->renderer->GetGLFlag(RENDERER_FLAGS::LIGHTING);
-		bool color_material		= App->renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL);
-		bool texture_2D			= App->renderer->GetGLFlag(RENDERER_FLAGS::TEXTURE_2D);
-		bool show_wireframe		= App->renderer->GetGLShowWireframe();
-		bool show_normals		= App->renderer->GetGLShowNormals();
-		bool show_colors		= App->renderer->GetGLShowColors();
-		bool show_tex_coords	= App->renderer->GetGLShowTexCoords();
-
-		if (ImGui::Checkbox("Depth Buffer", &depth_test))
-		{
-			App->renderer->SetGLFlag(RENDERER_FLAGS::DEPTH_TEST, depth_test);
-		}	
-
-		ImGui::SameLine(175.0f);
-
-		if (ImGui::Checkbox("Cull Face", &cull_face))
-		{
-			App->renderer->SetGLFlag(RENDERER_FLAGS::CULL_FACE, cull_face);
-		}
-
-		if (ImGui::Checkbox("Lighting", &lighting))
-		{
-			App->renderer->SetGLFlag(RENDERER_FLAGS::LIGHTING, lighting);
-		}
-
-		ImGui::SameLine(175.0f);
-
-		if (ImGui::Checkbox("Color Material", &color_material))
-		{
-			App->renderer->SetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL, color_material);
-		}
-
-		if (ImGui::Checkbox("Texture 2D", &texture_2D))
-		{
-			App->renderer->SetGLFlag(RENDERER_FLAGS::TEXTURE_2D, texture_2D);
-		}
-
-		ImGui::SameLine(175.0f);
-
-		if (ImGui::Checkbox("Show Wireframes", &show_wireframe))
-		{
-			App->renderer->SetGLShowWireframe(show_wireframe);
-		}
-		
-		if (ImGui::Checkbox("Show Normals", &show_normals))
-		{
-			App->renderer->SetGLShowNormals(show_normals);
-		}
-
-		ImGui::SameLine(175.0f);
-
-		if (ImGui::Checkbox("Show Colors", &show_colors))
-		{
-			App->renderer->SetGLShowColors(show_colors);
-		}
-
-		if (ImGui::Checkbox("Show Tex Coords", &show_tex_coords))
-		{
-			App->renderer->SetGLShowTexCoords(show_tex_coords);
-		}
+		// --- RENDERER FLAGS
+		RendererFlags();
 	}
 
 	return ret;
@@ -482,6 +420,91 @@ void E_EngineConfiguration::GenerateFrameCapSlider()
 	else
 	{
 		App->frames_are_capped = true;														// [ATTENTION] Could be troubling when trying to manage the framecap elsewhere.
+	}
+}
+
+void E_EngineConfiguration::RendererFlags()
+{
+	ImGui::Text("Renderer flags: ");
+	
+	// --- OPENGL FLAGS
+	bool depth_test			= App->renderer->GetGLFlag(RENDERER_FLAGS::DEPTH_TEST);
+	bool cull_face			= App->renderer->GetGLFlag(RENDERER_FLAGS::CULL_FACE);
+	bool lighting			= App->renderer->GetGLFlag(RENDERER_FLAGS::LIGHTING);
+	bool color_material		= App->renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL);
+	bool texture_2D			= App->renderer->GetGLFlag(RENDERER_FLAGS::TEXTURE_2D);
+
+	// --- SHOW FLAGS
+	bool show_wireframe		= App->renderer->GetShowWireframe();
+	bool show_normals		= App->renderer->GetShowNormals();
+	bool show_tex_coords	= App->renderer->GetShowTexCoords();
+
+	// --- DRAW FLAGS
+	bool draw_grid			= App->renderer->GetDrawWorldGrid();
+	bool draw_axis			= App->renderer->GetDrawWorldAxis();
+
+
+	// --- OPENGL FLAGS
+	if (ImGui::Checkbox("Depth Buffer", &depth_test))
+	{
+		App->renderer->SetGLFlag(RENDERER_FLAGS::DEPTH_TEST, depth_test);
+	}
+
+	ImGui::SameLine(175.0f);
+
+	if (ImGui::Checkbox("Cull Face", &cull_face))
+	{
+		App->renderer->SetGLFlag(RENDERER_FLAGS::CULL_FACE, cull_face);
+	}
+
+	if (ImGui::Checkbox("Lighting", &lighting))
+	{
+		App->renderer->SetGLFlag(RENDERER_FLAGS::LIGHTING, lighting);
+	}
+
+	ImGui::SameLine(175.0f);
+
+	if (ImGui::Checkbox("Color Material", &color_material))
+	{
+		App->renderer->SetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL, color_material);
+	}
+
+	if (ImGui::Checkbox("Texture 2D", &texture_2D))
+	{
+		App->renderer->SetGLFlag(RENDERER_FLAGS::TEXTURE_2D, texture_2D);
+	}
+
+	ImGui::SameLine(175.0f);
+
+	// --- SHOW FLAGS
+	if (ImGui::Checkbox("Show Wireframes", &show_wireframe))
+	{
+		App->renderer->SetShowWireframe(show_wireframe);
+	}
+
+	if (ImGui::Checkbox("Show Normals", &show_normals))
+	{
+		App->renderer->SetShowNormals(show_normals);
+	}
+
+	ImGui::SameLine(175.0f);
+
+	if (ImGui::Checkbox("Show Tex Coords", &show_tex_coords))
+	{
+		App->renderer->SetShowTexCoords(show_tex_coords);
+	}
+
+	// --- DRAW FLAGS
+	if (ImGui::Checkbox("Draw World Grid", &draw_grid))
+	{
+		App->renderer->SetDrawWorldGrid(draw_grid);
+	}
+
+	ImGui::SameLine(175.0f);
+
+	if (ImGui::Checkbox("Draw World Axis", &draw_axis))
+	{
+		App->renderer->SetDrawWorldAxis(draw_axis);
 	}
 }
 

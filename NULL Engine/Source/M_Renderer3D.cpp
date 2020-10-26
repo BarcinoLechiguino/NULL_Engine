@@ -27,11 +27,13 @@ M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), co
 {
 	vsync = VSYNC;
 
-	gl_show_wireframe	= false;
-	gl_show_normals		= false;
-	gl_show_colors		= false;
-	gl_show_tex_coords	= false;
+	draw_world_grid		= true;
+	draw_world_axis		= true;
+	show_wireframe		= false;
+	show_normals		= false;
+	show_tex_coords		= false;
 
+	debug_texture_id	= 0;
 }
 
 // Destructor
@@ -52,13 +54,17 @@ bool M_Renderer3D::Init(Configuration& config)
 
 	//LoadModel("Assets/Models/warrior/warrior.FBX");
 	LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	//LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
+
+	LoadDebugTexture();
 
 	return ret;
 }
 
 // PreUpdate: clear buffer
 UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
-{
+{	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -83,24 +89,39 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 {	
-	PrimitiveExamples();
+	if (draw_world_grid)
+	{
+		DrawWorldGrid(WORLD_GRID_SIZE);
+	}
 
+	if (draw_world_axis)
+	{
+		DrawWorldAxis();
+	}
+	
 	for (uint i = 0; i < models.size(); ++i)
 	{
 		models[i]->Draw();
 
-		if (gl_show_normals)
+		if (show_normals)
 		{
 			models[i]->DrawNormals();
 		}
 
-		if (gl_show_tex_coords)
+		if (show_tex_coords)
 		{
 			models[i]->DrawTexCoords();
 		}
 	}
 
+	for (uint i = 0; i < primitives.size(); ++i)
+	{
+		primitives[i]->Render();
+	}
+
 	App->editor->RenderGuiPanels();
+	
+	PrimitiveExamples();
 
 	SDL_GL_SwapWindow(App->window->GetWindow());
 
@@ -209,11 +230,11 @@ bool M_Renderer3D::InitOpenGL()
 
 		lights[0].Active(true);
 
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_COLOR_MATERIAL);
-		glEnable(GL_TEXTURE_2D);
+		SetGLFlag(GL_DEPTH_TEST, true);
+		SetGLFlag(GL_CULL_FACE, true);
+		SetGLFlag(GL_LIGHTING, true);
+		SetGLFlag(GL_COLOR_MATERIAL, true);
+		SetGLFlag(GL_TEXTURE_2D, true);
 	}
 
 	return ret;
@@ -251,7 +272,85 @@ void M_Renderer3D::OnResize(int width, int height)
 
 void M_Renderer3D::RendererShortcuts()
 {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_STATE::KEY_DOWN)
+	{
+		draw_world_grid = !draw_world_grid;
+	}
 
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_STATE::KEY_DOWN)
+	{
+		draw_world_axis = !draw_world_axis;
+	}
+	
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_STATE::KEY_DOWN)
+	{
+		SetShowWireframe(!show_wireframe);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_STATE::KEY_DOWN)
+	{
+		show_normals = !show_normals;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_STATE::KEY_DOWN)
+	{
+		show_tex_coords = !show_tex_coords;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_STATE::KEY_DOWN)
+	{
+		SetGLFlag(GL_COLOR_MATERIAL, !GetGLFlag(GL_COLOR_MATERIAL));
+	}
+}
+
+void M_Renderer3D::DrawWorldGrid(int size)
+{
+	glBegin(GL_LINES);
+
+	float dist = (float)size;
+	
+	for (float i = -dist; i <= dist; i += 1.0f)
+	{
+		glVertex3f(i, 0.0f, -dist);
+		glVertex3f(i, 0.0f, dist);
+		glVertex3f(-dist, 0.0f, i);
+		glVertex3f(dist, 0.0f, i);
+	}
+
+	glEnd();
+}
+
+void M_Renderer3D::DrawWorldAxis()
+{
+	glLineWidth(2.0f);
+
+	glBegin(GL_LINES);
+
+	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);											// X Axis.
+	glVertex3f(0.0f, 0.0f, 0.0f);		glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.1f, 0.0f);		glVertex3f(1.1f, -0.1f, 0.0f);
+	glVertex3f(1.1f, 0.1f, 0.0f);		glVertex3f(1.0f, -0.1f, 0.0f);
+
+	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);											// Y Axis.
+	glVertex3f(0.0f, 0.0f, 0.0f);		glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-0.05f, 1.25f, 0.0f);	glVertex3f(0.0f, 1.15f, 0.0f);
+	glVertex3f(0.05f, 1.25f, 0.0f);		glVertex3f(0.0f, 1.15f, 0.0f);
+	glVertex3f(0.0f, 1.15f, 0.0f);		glVertex3f(0.0f, 1.05f, 0.0f);
+
+	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);											// Z Axis.
+	glVertex3f(0.0f, 0.0f, 0.0f);		glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(-0.05f, 0.1f, 1.05f);	glVertex3f(0.05f, 0.1f, 1.05f);
+	glVertex3f(0.05f, 0.1f, 1.05f);		glVertex3f(-0.05f, -0.1f, 1.05f);
+	glVertex3f(-0.05f, -0.1f, 1.05f);	glVertex3f(0.05f, -0.1f, 1.05f);
+
+	glEnd();
+
+	glLineWidth(1.0f);
+}
+
+void M_Renderer3D::AddPrimitive(Primitive* primitive)
+{
+	primitives.push_back(primitive);
 }
 
 void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
@@ -276,6 +375,43 @@ void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
 	models.push_back(model);
 }
 
+void M_Renderer3D::LoadDebugTexture()
+{	
+	//GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];					// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
+
+	//for (int i = 0; i < CHECKERS_HEIGHT; ++i)									// There will be CHECKERS_WIDTH rows per column.
+	//{
+	//	for (int j = 0; j < CHECKERS_WIDTH; ++j)								// There will be an RGBA value per checker.
+	//	{
+	//		int color = ((((i&0x8) == 0) ^ ((j&0x8) == 0))) * 255;				// Getting whether the checker will be white or black according to the iteration indexes and bitwise operations.
+
+	//		checker_image[i][j][0] = (GLubyte)color;							// R
+	//		checker_image[i][j][1] = (GLubyte)color;							// G
+	//		checker_image[i][j][2] = (GLubyte)color;							// B
+	//		checker_image[i][j][3] = (GLubyte)255;								// A
+	//	}
+	//}
+
+	//GLuint textureID = 0;														// Buffer for the checkers texture.
+
+	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);										// Sets the pixel storage modes. GL_UNPACK_ALIGNMENT specifies the alignment requirements for the
+	//// --->																		// start of each pixel row in memory. 1 means that the alignment requirements will be byte-alignment.
+	//glGenTextures(1, &textureID);												// Generate texture names. Returns n names in the given buffer. GL_INVALID_VALUE if n is negative.
+	//glBindTexture(GL_TEXTURE_2D, textureID);									// Bind a named texture to a texturing target. Binds the buffer with the given target (GL_TEXTURE_2D).
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);				// Set texture parameters. WRAP_S: Set the wrap parameters for texture coordinate s. GL_REPEAT is the default.
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);				// WRAP_T: Set the wrap parameters for the texture coordinate r
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);			// MAG_FILTER: Sets the texture magnification process parameters. GL_NEAREST rets the val. of nearest tex elem.
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);			// MIN_FILTER: Sets the texture minimization process parameters. " ".
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// handle the process of resizing a tex. Takes the mipmap that most closely matches the size of the px.
+
+	////glGenerateMipmap(GL_TEXTURE_2D);
+
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, checker_image);
+
+	//glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void M_Renderer3D::CorrectAxisAlignment(aiScene* scene)
 {
 	int upAxis			= 0;
@@ -287,14 +423,14 @@ void M_Renderer3D::CorrectAxisAlignment(aiScene* scene)
 	int coordAxis		= 0;
 	int coordAxisSign	= 1;
 
-	/*scene->mMetaData->Get<int>("UpAxis",			upAxis);
-	scene->mMetaData->Get<int>("UpAxisSign",		upAxisSign);
+	//scene->mMetaData->Get<int>("UpAxis",			upAxis);
+	//scene->mMetaData->Get<int>("UpAxisSign",		upAxisSign);
 	
-	scene->mMetaData->Get<int>("FrontAxis",			frontAxis);
-	scene->mMetaData->Get<int>("FrontAxisSign",		frontAxisSign);
+	//scene->mMetaData->Get<int>("FrontAxis",			frontAxis);
+	//scene->mMetaData->Get<int>("FrontAxisSign",		frontAxisSign);
 	
-	scene->mMetaData->Get<int>("RightAxis",			coordAxis);
-	scene->mMetaData->Get<int>("RightAxisSign",		coordAxisSign);*/
+	//scene->mMetaData->Get<int>("RightAxis",			coordAxis);
+	//scene->mMetaData->Get<int>("RightAxisSign",		coordAxisSign);
 
 	aiVector3D upVec		= upAxis	== 0 ? aiVector3D(upAxisSign, 0, 0) : upAxis == 1 ? aiVector3D(0, upAxisSign, 0) : aiVector3D(0, 0, upAxisSign);
 	aiVector3D forwardVec	= frontAxis == 0 ? aiVector3D(frontAxisSign, 0, 0) : frontAxis == 1 ? aiVector3D(0, frontAxisSign, 0) : aiVector3D(0, 0, frontAxisSign);
@@ -422,33 +558,54 @@ void M_Renderer3D::SetGLFlag(RENDERER_FLAGS cap, bool set_to)
 	}
 }
 
-bool M_Renderer3D::GetGLShowWireframe() const
+bool M_Renderer3D::GetDrawWorldGrid() const
 {
-	return gl_show_wireframe;
+	return draw_world_grid;
 }
 
-bool M_Renderer3D::GetGLShowNormals() const
+bool M_Renderer3D::GetDrawWorldAxis() const
 {
-	return gl_show_normals;
+	return draw_world_axis;
 }
 
-bool M_Renderer3D::GetGLShowColors() const
+bool M_Renderer3D::GetShowWireframe() const
 {
-	return gl_show_colors;
+	return show_wireframe;
 }
 
-bool M_Renderer3D::GetGLShowTexCoords() const
+bool M_Renderer3D::GetShowNormals() const
 {
-	return gl_show_tex_coords;
+	return show_normals;
 }
 
-void M_Renderer3D::SetGLShowWireframe(bool set_to)
+bool M_Renderer3D::GetShowTexCoords() const
 {
-	if (set_to != gl_show_wireframe)
+	return show_tex_coords;
+}
+
+void M_Renderer3D::SetDrawWorldGrid(bool set_to)
+{
+	if (set_to != draw_world_grid)
 	{
-		gl_show_wireframe = set_to;
+		draw_world_grid = set_to;
+	}
+}
 
-		if (gl_show_wireframe)
+void M_Renderer3D::SetDrawWorldAxis(bool set_to)
+{
+	if (set_to != draw_world_axis)
+	{
+		draw_world_axis = set_to;
+	}
+}
+
+void M_Renderer3D::SetShowWireframe(bool set_to)
+{
+	if (set_to != show_wireframe)
+	{
+		show_wireframe = set_to;
+
+		if (show_wireframe)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
@@ -459,54 +616,19 @@ void M_Renderer3D::SetGLShowWireframe(bool set_to)
 	}
 }
 
-void M_Renderer3D::SetGLShowNormals(bool set_to)
+void M_Renderer3D::SetShowNormals(bool set_to)
 {
-	if (set_to != gl_show_normals)
+	if (set_to != show_normals)
 	{
-		gl_show_normals = set_to;
-
-		if (gl_show_normals)
-		{
-
-		}
-		else
-		{
-
-		}
+		show_normals = set_to;
 	}
 }
 
-void M_Renderer3D::SetGLShowColors(bool set_to)
+void M_Renderer3D::SetShowTexCoords(bool set_to)
 {
-	if (set_to != gl_show_colors)
+	if (set_to != show_tex_coords)
 	{
-		gl_show_colors = set_to;
-
-		if (gl_show_colors)
-		{
-
-		}
-		else
-		{
-
-		}
-	}
-}
-
-void M_Renderer3D::SetGLShowTexCoords(bool set_to)
-{
-	if (set_to != gl_show_tex_coords)
-	{
-		gl_show_tex_coords = set_to;
-
-		if (gl_show_tex_coords)
-		{
-
-		}
-		else
-		{
-
-		}
+		show_tex_coords = set_to;
 	}
 }
 

@@ -107,10 +107,6 @@ void M_SceneIntro::DebugSpawnPrimitive(Primitive * p)
 // Update
 UPDATE_STATUS M_SceneIntro::Update(float dt)
 {
-	Plane p(vec3(0, 1, 0));
-	p.axis = true;
-	p.Render();
-
 	if (App->debug == true)
 	{
 		HandleDebugInput();

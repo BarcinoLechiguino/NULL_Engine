@@ -4,6 +4,9 @@
 #include "MathGeoLib/src/Geometry/AABB.h"
 #include "Resource.h"
 
+#define CHECKERS_WIDTH 64
+#define CHECKERS_HEIGHT 64
+
 struct Vertex
 {
 	Vertex();
@@ -17,6 +20,7 @@ struct Texture
 {
 	uint			id;									// Id of the texture.
 	std::string		type;								// Diffuse or Specular.
+	std::string		path;								// Path of the file in the directory. Will be used to avoid making duplicates.
 };
 
 class R_Mesh : public Resource
@@ -28,6 +32,8 @@ public:
 	void Draw(vec4 colour);
 	void DrawNormals();
 	void DrawTexCoords();
+
+	void LoadDebugTexture();
 
 	void LoadBuffers();
 	void CreateAABB();									// Will create the bounding box that will encase the mesh.
@@ -46,9 +52,9 @@ private:
 	// Buffer data
 	uint VAO;											// Vertex Array Object.		-->		Will store all the buffer objects of the mesh.
 	uint VBO;											// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.
-	uint NBO;											// Normal Buffer Object.	--> 	Will store all the buffer data of the normals of the mesh.
-	uint TBO;											// Texture Buffer Object.	--> 	Will store all the buffer data of the texture coordinates of the mesh.
 	uint IBO;											// Index Buffer Object.		--> 	Will store all the buffer data of the indices of the mesh.
+
+	uint debug_texture_id;
 };
 
 #endif // !__R_MESH_H__

@@ -448,6 +448,14 @@ void Application::SetOrganizationName(const char* name)
 	organization = name;
 }
 
+void Application::EngineShortcuts()
+{
+	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_STATE::KEY_DOWN)
+	{
+		renderer->SetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL, !renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL));
+	}
+}
+
 void Application::AddEditorLog(const char* log)
 {
 	if (editor != nullptr)
