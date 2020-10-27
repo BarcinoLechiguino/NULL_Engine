@@ -11,6 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="C_Material.cpp" />
+    <ClCompile Include="C_Mesh.cpp" />
+    <ClCompile Include="C_Transform.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="I_Materials.cpp" />
+    <ClCompile Include="R_Material.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Configuration.cpp" />
@@ -85,6 +92,13 @@
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="C_Material.h" />
+    <ClInclude Include="C_Mesh.h" />
+    <ClInclude Include="C_Transform.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="I_Materials.h" />
+    <ClInclude Include="R_Material.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
     <ClInclude Include="Source\Color.h" />

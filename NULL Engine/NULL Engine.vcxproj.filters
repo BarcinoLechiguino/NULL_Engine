@@ -4,38 +4,11 @@
     <Filter Include="SourceCode">
       <UniqueIdentifier>{847d135d-9520-4f5b-aeac-e70c9571d346}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SourceCode\Resources">
-      <UniqueIdentifier>{3fc70017-e1cf-4939-9e07-c815a6a86cb3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\Tools">
-      <UniqueIdentifier>{880511d6-016b-4f4c-9c9a-c2b51f422055}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\Light">
-      <UniqueIdentifier>{a98d25d7-2c83-45fa-a41c-8e3fc94ae71c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\Modules">
-      <UniqueIdentifier>{089a5297-550b-4568-a2fc-b7d6cde40b2a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\Core">
-      <UniqueIdentifier>{bd7cff50-eca0-4035-917c-d1a964a1cbad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\Importers">
-      <UniqueIdentifier>{41994cb1-bb1d-4cb8-851d-cd929e1d1ca6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SourceCode\Helpers">
       <UniqueIdentifier>{66983efd-86bc-4c9b-bf60-feb3f97dda9a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SourceCode\GameObjects">
-      <UniqueIdentifier>{89d9c265-e7ec-4b81-b8e3-1466b0cf3102}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\Editor">
-      <UniqueIdentifier>{ce5f9503-c3b1-42dc-9ff4-9c9ec577a356}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Dependencies">
       <UniqueIdentifier>{8ff307dd-7d8a-439f-810f-ce188766b944}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\Containers">
-      <UniqueIdentifier>{1e102abd-c9e5-43e3-80d1-7bdfd5aae25a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Dependencies\mmgr">
       <UniqueIdentifier>{edb6d39a-4150-4f31-8972-6d53a55cf8c6}</UniqueIdentifier>
@@ -70,14 +43,8 @@
     <Filter Include="Dependencies\parson">
       <UniqueIdentifier>{291f8e74-890d-48b6-aefd-69e00471d087}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SourceCode\Tools\Timers">
-      <UniqueIdentifier>{8383af2d-812c-46ce-988c-4cfcc424cdba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Dependencies\PhysFS">
       <UniqueIdentifier>{5cc0d5d5-b067-4d25-862c-e0dd34bc6fa5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SourceCode\ConfigurationFiles">
-      <UniqueIdentifier>{a1d95bfc-501e-4e7e-8565-32b3471c7ce5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Dependencies\Assimp">
       <UniqueIdentifier>{6aa303e1-6694-4757-8209-ffed78b5ee7b}</UniqueIdentifier>
@@ -88,28 +55,64 @@
     <Filter Include="Dependencies\gpudetect">
       <UniqueIdentifier>{d8ad7825-f611-407a-ae9f-e791c73d49a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SourceCode\Editor\Panels">
+    <Filter Include="SourceCode\0_Core">
+      <UniqueIdentifier>{bd7cff50-eca0-4035-917c-d1a964a1cbad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\2_Editor">
+      <UniqueIdentifier>{ce5f9503-c3b1-42dc-9ff4-9c9ec577a356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\2_Editor\Panels">
       <UniqueIdentifier>{f860344e-b0a6-4941-9128-6268f360b20b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\5_GameObjects">
+      <UniqueIdentifier>{89d9c265-e7ec-4b81-b8e3-1466b0cf3102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\5_GameObjects\Components">
+      <UniqueIdentifier>{c68e88bb-471c-4d14-bd73-268ca1a3fc4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\5_GameObjects\Primitives">
+      <UniqueIdentifier>{cee3d9d8-82ce-44fb-9b7d-440b0f93cc4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\5_GameObjects\Light">
+      <UniqueIdentifier>{a98d25d7-2c83-45fa-a41c-8e3fc94ae71c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\4_Importers">
+      <UniqueIdentifier>{41994cb1-bb1d-4cb8-851d-cd929e1d1ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\1_Modules">
+      <UniqueIdentifier>{089a5297-550b-4568-a2fc-b7d6cde40b2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\3_Resources">
+      <UniqueIdentifier>{3fc70017-e1cf-4939-9e07-c815a6a86cb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\6_Containers">
+      <UniqueIdentifier>{1e102abd-c9e5-43e3-80d1-7bdfd5aae25a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\7_Tools">
+      <UniqueIdentifier>{880511d6-016b-4f4c-9c9a-c2b51f422055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\7_Tools\Timers">
+      <UniqueIdentifier>{8383af2d-812c-46ce-988c-4cfcc424cdba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\8_ConfigurationFiles">
+      <UniqueIdentifier>{a1d95bfc-501e-4e7e-8565-32b3471c7ce5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
-      <Filter>SourceCode\Containers</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Application.cpp">
-      <Filter>SourceCode\Core</Filter>
+      <Filter>SourceCode\0_Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Main.cpp">
-      <Filter>SourceCode\Core</Filter>
+      <Filter>SourceCode\0_Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Light.cpp">
-      <Filter>SourceCode\Light</Filter>
+      <Filter>SourceCode\5_GameObjects\Light</Filter>
     </ClCompile>
     <ClCompile Include="Source\glmath.cpp">
-      <Filter>SourceCode\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Primitive.cpp">
-      <Filter>SourceCode\GameObjects</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Dependencies\MathGeoLib\src\Algorithm\Random\LCG.cpp">
       <Filter>Dependencies\MathGeoLib\Algorithm\Random</Filter>
@@ -229,105 +232,126 @@
       <Filter>Dependencies\parson</Filter>
     </ClCompile>
     <ClCompile Include="Source\M_Editor.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\Configuration.cpp">
-      <Filter>SourceCode\Containers</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClCompile>
     <ClCompile Include="Source\PerfectTimer.cpp">
-      <Filter>SourceCode\Tools\Timers</Filter>
+      <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Timer.cpp">
-      <Filter>SourceCode\Tools\Timers</Filter>
+      <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClCompile>
     <ClCompile Include="Source\M_Input.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\M_Renderer3D.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\M_SceneIntro.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\M_Window.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\Module.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\M_FileSystem.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\M_Camera3D.cpp">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source\PathNode.cpp">
-      <Filter>SourceCode\Containers</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClCompile>
     <ClCompile Include="Source\I_Meshes.cpp">
-      <Filter>SourceCode\Importers</Filter>
+      <Filter>SourceCode\4_Importers</Filter>
     </ClCompile>
     <ClCompile Include="Source\R_Mesh.cpp">
-      <Filter>SourceCode\Resources</Filter>
+      <Filter>SourceCode\3_Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Resource.cpp">
-      <Filter>SourceCode\Resources</Filter>
+      <Filter>SourceCode\3_Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\R_Model.cpp">
-      <Filter>SourceCode\Resources</Filter>
+      <Filter>SourceCode\3_Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Panel.cpp">
-      <Filter>SourceCode\Editor</Filter>
+      <Filter>SourceCode\2_Editor</Filter>
     </ClCompile>
     <ClCompile Include="Source\Log.cpp">
-      <Filter>SourceCode\Tools</Filter>
+      <Filter>SourceCode\7_Tools</Filter>
     </ClCompile>
     <ClCompile Include="Source\HardwareInfo.cpp">
-      <Filter>SourceCode\Tools</Filter>
+      <Filter>SourceCode\7_Tools</Filter>
     </ClCompile>
     <ClCompile Include="Source\Dependencies\gpudetect\includes\DeviceId.cpp">
       <Filter>Dependencies\gpudetect</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_About.cpp">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_EngineConfiguration.cpp">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Console.cpp">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Inspector.cpp">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Toolbar.cpp">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Hierarchy.cpp">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_ImGuiDemo.cpp">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>SourceCode\5_GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Transform.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Primitive.cpp">
+      <Filter>SourceCode\5_GameObjects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Mesh.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Material.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="I_Materials.cpp">
+      <Filter>SourceCode\4_Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Material.cpp">
+      <Filter>SourceCode\3_Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
-      <Filter>SourceCode\Containers</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Application.h">
-      <Filter>SourceCode\Core</Filter>
+      <Filter>SourceCode\0_Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Globals.h">
-      <Filter>SourceCode\Core</Filter>
+      <Filter>SourceCode\0_Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Light.h">
-      <Filter>SourceCode\Light</Filter>
+      <Filter>SourceCode\5_GameObjects\Light</Filter>
     </ClInclude>
     <ClInclude Include="Source\glmath.h">
-      <Filter>SourceCode\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Primitive.h">
-      <Filter>SourceCode\GameObjects</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\glew\include\eglew.h">
       <Filter>Dependencies\glew</Filter>
@@ -342,7 +366,7 @@
       <Filter>Dependencies\glew</Filter>
     </ClInclude>
     <ClInclude Include="Source\OpenGL.h">
-      <Filter>SourceCode\Tools</Filter>
+      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\MathGeoLib\src\MathBuildConfig.h">
       <Filter>Dependencies\MathGeoLib</Filter>
@@ -555,58 +579,58 @@
       <Filter>Dependencies\parson</Filter>
     </ClInclude>
     <ClInclude Include="Source\M_Editor.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\Configuration.h">
-      <Filter>SourceCode\Containers</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source\PerfectTimer.h">
-      <Filter>SourceCode\Tools\Timers</Filter>
+      <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Timer.h">
-      <Filter>SourceCode\Tools\Timers</Filter>
+      <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClInclude>
     <ClInclude Include="Source\ImGui.h">
-      <Filter>SourceCode\Tools</Filter>
+      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\PhysFS\include\physfs.h">
       <Filter>Dependencies\PhysFS</Filter>
     </ClInclude>
     <ClInclude Include="Source\M_Input.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\M_Renderer3D.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\M_SceneIntro.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\M_Window.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\Module.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\M_FileSystem.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\M_Camera3D.h">
-      <Filter>SourceCode\Modules</Filter>
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\PathNode.h">
-      <Filter>SourceCode\Containers</Filter>
+      <Filter>SourceCode\6_Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source\I_Meshes.h">
-      <Filter>SourceCode\Importers</Filter>
+      <Filter>SourceCode\4_Importers</Filter>
     </ClInclude>
     <ClInclude Include="Source\R_Mesh.h">
-      <Filter>SourceCode\Resources</Filter>
+      <Filter>SourceCode\3_Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\Resource.h">
-      <Filter>SourceCode\Resources</Filter>
+      <Filter>SourceCode\3_Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\R_Model.h">
-      <Filter>SourceCode\Resources</Filter>
+      <Filter>SourceCode\3_Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\DevIL\include\config.h">
       <Filter>Dependencies\DevIL</Filter>
@@ -633,16 +657,16 @@
       <Filter>Dependencies\DevIL</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Panel.h">
-      <Filter>SourceCode\Editor</Filter>
+      <Filter>SourceCode\2_Editor</Filter>
     </ClInclude>
     <ClInclude Include="Source\Assimp.h">
-      <Filter>SourceCode\Tools</Filter>
+      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\Log.h">
-      <Filter>SourceCode\Tools</Filter>
+      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\HardwareInfo.h">
-      <Filter>SourceCode\Tools</Filter>
+      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\gpudetect\includes\DeviceId.h">
       <Filter>Dependencies\gpudetect</Filter>
@@ -651,25 +675,25 @@
       <Filter>Dependencies\gpudetect</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_About.h">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_EngineConfiguration.h">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Console.h">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Inspector.h">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Toolbar.h">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Hierarchy.h">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_ImGuiDemo.h">
-      <Filter>SourceCode\Editor\Panels</Filter>
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\Assimp\include\cimport.h">
       <Filter>Dependencies\Assimp</Filter>
@@ -679,6 +703,30 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\Assimp\include\scene.h">
       <Filter>Dependencies\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>SourceCode\5_GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Transform.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Primitive.h">
+      <Filter>SourceCode\5_GameObjects\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Mesh.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Material.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="I_Materials.h">
+      <Filter>SourceCode\4_Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Material.h">
+      <Filter>SourceCode\3_Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -701,10 +749,10 @@
       <Filter>Dependencies\MathGeoLib\Math</Filter>
     </None>
     <None Include="Resources\Configuration\configuration.JSON">
-      <Filter>SourceCode\ConfigurationFiles</Filter>
+      <Filter>SourceCode\8_ConfigurationFiles</Filter>
     </None>
     <None Include="Resources\Configuration\default_configuration.JSON">
-      <Filter>SourceCode\ConfigurationFiles</Filter>
+      <Filter>SourceCode\8_ConfigurationFiles</Filter>
     </None>
   </ItemGroup>
 </Project>

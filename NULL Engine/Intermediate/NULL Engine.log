@@ -1,2 +1,96 @@
-﻿  Primitive.cpp
+﻿  M_Renderer3D.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.h(22,14): warning C4099: 'aiScene': type name first seen using 'struct' now seen using 'class'
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\I_Meshes.h(4): message : see declaration of 'aiScene'
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(435,47): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(435,95): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(435,129): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(436,54): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(436,108): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(436,145): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(437,53): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(437,107): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(437,144): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(441,22): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(447,26): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(451,29): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(457,27): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(463,31): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(467,34): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(474,25): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(480,29): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.cpp(484,32): warning C4244: 'argument': conversion from 'int' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+  Primitive.cpp
+  Generating Code...
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

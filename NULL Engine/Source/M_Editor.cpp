@@ -172,7 +172,10 @@ void M_Editor::AddConsoleLog(const char* log)
 	{
 		if (console != nullptr)
 		{
-			console->AddLog(log);
+			if (!App->quit)
+			{
+				console->AddLog(log);
+			}
 		}
 	}
 }
