@@ -88,7 +88,7 @@ void R_Mesh::LoadBuffers()
 
 	// Texture coordinates
 	glEnableVertexAttribArray(2);																			// Uses the currently bound VAO to enable the specified generic vertex attrib array.
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coords));	// The byte offset of the tex_coord vector = byte offset tex_coord attrib offset.
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coords));	// The byte offset of the tex_coord vector = byte offset tex_coord attrib offset.
 
 	glBindVertexArray(0);																					// Breaks the existing VAO binding.
 }

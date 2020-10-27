@@ -91,6 +91,8 @@ protected:
 private:
 	vec3 size;
 
+	//unsigned int VAO;
+
 	bool loaded_in_array;
 	bool loaded_in_indices;
 };
