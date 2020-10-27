@@ -10,7 +10,7 @@ namespace Importer
 {
 	namespace Meshes
 	{
-		R_Mesh*	Create();																	// Generates/Instances an empty R_Mesh resource. Will use R_Mesh's default constructor.
+		R_Mesh*	Create();																	// Generates an empty R_Mesh resource. Will use R_Mesh's default constructor.
 
 		void	Import(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh);		// Processes aiMesh data into a ready-to-use R_Mesh to be saved later. Will return nullptr on ERROR.
 

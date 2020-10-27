@@ -179,9 +179,9 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 			bool wire = false;
 			bool vert = false;
 
-			ImGui::Checkbox("Mesh", &mesh);
-			ImGui::Checkbox("Wireframe", &wire);
-			ImGui::Checkbox("Vertices", &vert);
+			ImGui::MenuItem("Mesh", "TBD", &mesh);
+			ImGui::MenuItem("Wireframe", "F3", &wire);
+			ImGui::MenuItem("Vertices", "TBD", &vert);
 
 			ImGui::EndMenu();
 		}
@@ -190,7 +190,7 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 		{
 			bool norm = false;
 
-			ImGui::Checkbox("Normals", &norm);
+			ImGui::MenuItem("Show Normals", "F4", &norm);
 
 			ImGui::EndMenu();
 		}

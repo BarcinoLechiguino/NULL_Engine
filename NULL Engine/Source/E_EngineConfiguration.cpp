@@ -30,7 +30,7 @@ bool E_EngineConfiguration::Draw(ImGuiIO& io)
 {
 	bool ret = true;
 
-	ImGui::Begin(GetName(), NULL, ImGuiWindowFlags_MenuBar);
+	ImGui::Begin(GetName(), nullptr, ImGuiWindowFlags_MenuBar);
 
 	ConfigurationMenuBar();
 
@@ -124,7 +124,7 @@ bool E_EngineConfiguration::WindowMenu()
 
 		// --- WINDOW BRIGHTNESS
 		float brightness = App->window->GetBrightness();
-		ImGui::SliderFloat("Brightness", &brightness, 0.250f, 1.0f, "%.3f", NULL);
+		ImGui::SliderFloat("Brightness", &brightness, 0.250f, 1.0f, "%.3f", 0);
 		App->window->SetBrightness(brightness);
 
 		// --- WINDOW SIZE

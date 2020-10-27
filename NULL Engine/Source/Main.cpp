@@ -5,8 +5,11 @@
 #include "mmgr/mmgr.h"
 
 #include "Dependencies/SDL/include/SDL.h"
+#include "Dependencies/Brofiler/include/Brofiler.h"
+
 #pragma comment( lib, "Source/Dependencies/SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "Source/Dependencies/SDL/libx86/SDL2main.lib" )
+#pragma comment( lib, "Source/Dependencies/Brofiler/libx86/ProfilerCore32.lib" )
 
 enum class MAIN_STATUS
 {
@@ -18,7 +21,7 @@ enum class MAIN_STATUS
 	EXIT
 };
 
-Application* App = NULL;
+Application* App = nullptr;
 
 int main(int argc, char ** argv)
 {
@@ -29,6 +32,8 @@ int main(int argc, char ** argv)
 
 	while (state != MAIN_STATUS::EXIT)
 	{
+		BROFILER_FRAME("NULL Engine Profiling Test");
+
 		switch (state)
 		{
 		case MAIN_STATUS::CREATION:

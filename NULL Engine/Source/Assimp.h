@@ -5,4 +5,8 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 
+#include "Assimp/include/mesh.h"
+#include "Assimp/include/material.h"
+#include "Assimp/include/texture.h"
+
 #endif // !__ASSIMP_H__

@@ -11,16 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="C_Material.cpp" />
-    <ClCompile Include="C_Mesh.cpp" />
-    <ClCompile Include="C_Transform.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="I_Materials.cpp" />
-    <ClCompile Include="R_Material.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Color.cpp" />
+    <ClCompile Include="Source\Component.cpp" />
     <ClCompile Include="Source\Configuration.cpp" />
+    <ClCompile Include="Source\C_Material.cpp" />
+    <ClCompile Include="Source\C_Mesh.cpp" />
+    <ClCompile Include="Source\C_Transform.cpp" />
     <ClCompile Include="Source\Dependencies\gpudetect\includes\DeviceId.cpp" />
     <ClCompile Include="Source\Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Source\Dependencies\ImGui\ImGuizmo\ImGuizmo.cpp" />
@@ -69,7 +66,9 @@
     <ClCompile Include="Source\E_Panel.cpp" />
     <ClCompile Include="Source\E_ImGuiDemo.cpp" />
     <ClCompile Include="Source\E_Toolbar.cpp" />
+    <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\HardwareInfo.cpp" />
+    <ClCompile Include="Source\I_Materials.cpp" />
     <ClCompile Include="Source\I_Meshes.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\M_Editor.cpp" />
@@ -87,25 +86,24 @@
     <ClCompile Include="Source\PerfectTimer.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
     <ClCompile Include="Source\Resource.cpp" />
+    <ClCompile Include="Source\R_Material.cpp" />
     <ClCompile Include="Source\R_Mesh.cpp" />
     <ClCompile Include="Source\R_Model.cpp" />
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="C_Material.h" />
-    <ClInclude Include="C_Mesh.h" />
-    <ClInclude Include="C_Transform.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="I_Materials.h" />
-    <ClInclude Include="R_Material.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
     <ClInclude Include="Source\Color.h" />
+    <ClInclude Include="Source\Component.h" />
     <ClInclude Include="Source\Configuration.h" />
+    <ClInclude Include="Source\C_Material.h" />
+    <ClInclude Include="Source\C_Mesh.h" />
+    <ClInclude Include="Source\C_Transform.h" />
     <ClInclude Include="Source\Dependencies\Assimp\include\cimport.h" />
     <ClInclude Include="Source\Dependencies\Assimp\include\postprocess.h" />
     <ClInclude Include="Source\Dependencies\Assimp\include\scene.h" />
+    <ClInclude Include="Source\Dependencies\Brofiler\include\Brofiler.h" />
     <ClInclude Include="Source\Dependencies\DevIL\include\config.h" />
     <ClInclude Include="Source\Dependencies\DevIL\include\devil_internal_exports.h" />
     <ClInclude Include="Source\Dependencies\DevIL\include\il.h" />
@@ -191,6 +189,7 @@
     <ClInclude Include="Source\Dependencies\mmgr\nommgr.h" />
     <ClInclude Include="Source\Dependencies\parson\parson.h" />
     <ClInclude Include="Source\Dependencies\PhysFS\include\physfs.h" />
+    <ClInclude Include="Source\DevIL.h" />
     <ClInclude Include="Source\E_About.h" />
     <ClInclude Include="Source\E_EngineConfiguration.h" />
     <ClInclude Include="Source\E_Console.h" />
@@ -199,7 +198,9 @@
     <ClInclude Include="Source\E_Panel.h" />
     <ClInclude Include="Source\E_ImGuiDemo.h" />
     <ClInclude Include="Source\E_Toolbar.h" />
+    <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\HardwareInfo.h" />
+    <ClInclude Include="Source\I_Materials.h" />
     <ClInclude Include="Source\I_Meshes.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\M_Editor.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="Source\PerfectTimer.h" />
     <ClInclude Include="Source\Primitive.h" />
     <ClInclude Include="Source\Resource.h" />
+    <ClInclude Include="Source\R_Material.h" />
     <ClInclude Include="Source\R_Mesh.h" />
     <ClInclude Include="Source\R_Model.h" />
     <ClInclude Include="Source\Timer.h" />

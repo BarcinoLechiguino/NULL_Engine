@@ -97,6 +97,9 @@
     <Filter Include="SourceCode\8_ConfigurationFiles">
       <UniqueIdentifier>{a1d95bfc-501e-4e7e-8565-32b3471c7ce5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\Brofiler">
+      <UniqueIdentifier>{0503ae36-a6bc-4563-90f6-9b89e0532490}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
@@ -312,29 +315,29 @@
     <ClCompile Include="Source\E_ImGuiDemo.cpp">
       <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>SourceCode\5_GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="C_Transform.cpp">
-      <Filter>SourceCode\5_GameObjects\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Primitive.cpp">
       <Filter>SourceCode\5_GameObjects\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="C_Mesh.cpp">
-      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    <ClCompile Include="Source\R_Material.cpp">
+      <Filter>SourceCode\3_Resources</Filter>
     </ClCompile>
-    <ClCompile Include="C_Material.cpp">
-      <Filter>SourceCode\5_GameObjects\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="I_Materials.cpp">
+    <ClCompile Include="Source\I_Materials.cpp">
       <Filter>SourceCode\4_Importers</Filter>
     </ClCompile>
-    <ClCompile Include="Component.cpp">
+    <ClCompile Include="Source\C_Material.cpp">
       <Filter>SourceCode\5_GameObjects\Components</Filter>
     </ClCompile>
-    <ClCompile Include="R_Material.cpp">
-      <Filter>SourceCode\3_Resources</Filter>
+    <ClCompile Include="Source\C_Mesh.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\C_Transform.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Component.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject.cpp">
+      <Filter>SourceCode\5_GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -704,29 +707,35 @@
     <ClInclude Include="Source\Dependencies\Assimp\include\scene.h">
       <Filter>Dependencies\Assimp</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>SourceCode\5_GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="C_Transform.h">
-      <Filter>SourceCode\5_GameObjects\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Primitive.h">
       <Filter>SourceCode\5_GameObjects\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="C_Mesh.h">
-      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    <ClInclude Include="Source\R_Material.h">
+      <Filter>SourceCode\3_Resources</Filter>
     </ClInclude>
-    <ClInclude Include="C_Material.h">
-      <Filter>SourceCode\5_GameObjects\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="I_Materials.h">
+    <ClInclude Include="Source\I_Materials.h">
       <Filter>SourceCode\4_Importers</Filter>
     </ClInclude>
-    <ClInclude Include="Component.h">
+    <ClInclude Include="Source\C_Material.h">
       <Filter>SourceCode\5_GameObjects\Components</Filter>
     </ClInclude>
-    <ClInclude Include="R_Material.h">
-      <Filter>SourceCode\3_Resources</Filter>
+    <ClInclude Include="Source\C_Mesh.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\C_Transform.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Component.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject.h">
+      <Filter>SourceCode\5_GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DevIL.h">
+      <Filter>SourceCode\7_Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\Brofiler\include\Brofiler.h">
+      <Filter>Dependencies\Brofiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,8 +5,8 @@
 
 M_Window::M_Window(bool is_active) : Module("Window", is_active)
 {
-	window					= NULL;
-	screen_surface			= NULL;
+	window					= nullptr;
+	screen_surface			= nullptr;
 
 	screen_width			= 0;
 	screen_height			= 0;
@@ -66,7 +66,7 @@ bool M_Window::Init(Configuration& config)
 
 		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, flags);
 
-		if(window == NULL)
+		if(window == nullptr)
 		{
 			LOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			ret = false;
@@ -87,7 +87,7 @@ bool M_Window::CleanUp()
 	LOG("Destroying SDL window and quitting all SDL systems");
 
 	//Destroy window
-	if(window != NULL)
+	if(window != nullptr)
 	{
 		SDL_DestroyWindow(window);
 	}

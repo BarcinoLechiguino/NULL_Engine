@@ -160,7 +160,7 @@ void Cube::DirectRender() const
 
 	glBegin(GL_QUADS);
 	// ------------ QUAD ------------
-	glNormal3f(0.0f, 0.0f, 1.0f);			// ABDC
+	/*glNormal3f(0.0f, 0.0f, 1.0f);			// ABDC
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(-sx, -sy,  sz);				// A
 	glTexCoord2f(1.0f, 0.0f);
@@ -218,10 +218,10 @@ void Cube::DirectRender() const
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f( sx, -sy,  sz);				// B
 	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(-sx, -sy,  sz);				// A
+	glVertex3f(-sx, -sy,  sz);*/			// A
 
 	// ------------ TRIANGLES ------------
-	/*glBegin(GL_TRIANGLES);
+	glBegin(GL_TRIANGLES);
 
 	glTexCoord2f(0.0f, 0.0f);			// ABC
 	glVertex3f(-sx, -sy, sz);
@@ -305,7 +305,7 @@ void Cube::DirectRender() const
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f( sx, sy, -sz);
 	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(-sx, sy, -sz);*/
+	glVertex3f(-sx, sy, -sz);
 
 	glEnd();
 }
@@ -322,10 +322,10 @@ void Cube::ArrayRender()
 		uint normals	= 0;
 		uint tex_coords = 0;
 
-		const uint array_size = 108;										// 6 faces with 2 triangles per face --> 12 vertex with 3 coordinates and 3 vertices. TOTAL: 6 * 2 * 3 * 3 = 108
+		const uint vertex_array_size = 108;									// 6 faces with 2 triangles per face --> 12 vertex with 3 coordinates and 3 vertices. TOTAL: 6 * 2 * 3 * 3 = 108
 		const uint tex_coord_array_size = 72;								// Same as above but 2 coordinates instead of 3.
 
-		float cube_vertex_coords[array_size] =								// Being ABCDEFGH all the vertex in a Cube. Starting at the front bottom left and ending at the back top right.
+		float cube_vertex_coords[vertex_array_size] =						// Being ABCDEFGH all the vertex in a Cube. Starting at the front bottom left and ending at the back top right.
 		{
 			// --- (0.0f, 0.0f, 0.0f) AS THE CENTER
 			// -- FRONT --
@@ -347,12 +347,12 @@ void Cube::ArrayRender()
 			1.0f,  1.0f,  1.0f,
 			
 			// -- BACK --
-			-1.0f, -1.0f, -1.0f,	// EGH
-			-1.0f,  1.0f, -1.0f,
-			 1.0f,  1.0f, -1.0f,
-			
 			 1.0f, -1.0f, -1.0f,	// FEH
 			-1.0f, -1.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f,
+
+			-1.0f, -1.0f, -1.0f,	// EGH
+			-1.0f,  1.0f, -1.0f,
 			 1.0f,  1.0f, -1.0f,
 			
 			// -- LEFT --
@@ -441,26 +441,23 @@ void Cube::ArrayRender()
 			0.0f, 1.0f
 		};
 
-		int j = 0;
-		for (uint i = 0; i < array_size; ++i)					// Resizing the cube according to the size parameter.
+		for (uint i = 0, j = 0; i < vertex_array_size; ++i, ++j)				// Resizing the cube according to the size parameter.
 		{
 			if (j == 0)
 			{
 				//cube_vertex_coords[i] *= size.x;
 				cube_vertex_coords[i] *= size.x * 0.5f;
-				j++;
 			}
 			else if (j == 1)
 			{
 				//cube_vertex_coords[i] *= size.y;
 				cube_vertex_coords[i] *= size.y * 0.5f;
-				j++;
 			}
 			else if (j == 2)
 			{
 				//cube_vertex_coords[i] *= size.z;
 				cube_vertex_coords[i] *= size.z * 0.5f;
-				j = 0;
+				j = -1;
 			}
 		}
 
@@ -473,7 +470,7 @@ void Cube::ArrayRender()
 
 		glGenBuffers(1, (GLuint*)&position);
 		glBindBuffer(GL_ARRAY_BUFFER, position);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, cube_vertex_coords, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_array_size, cube_vertex_coords, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 		glEnableVertexAttribArray(0);
@@ -492,7 +489,7 @@ void Cube::ArrayRender()
 
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 	
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	glDisableClientState(GL_VERTEX_ARRAY);*/
@@ -567,9 +564,9 @@ void Cube::IndicesRender()
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -716,9 +713,9 @@ void Sphere::IndiceRender()
 	
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
-	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, nullptr);
 
 	glDisableClientState(GL_VERTEX_ARRAY);*/
 
@@ -1104,10 +1101,10 @@ void Pyramid::IndicesRender()
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 2);
-	glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, nullptr);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 

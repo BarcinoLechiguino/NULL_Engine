@@ -31,7 +31,7 @@ void R_Mesh::Draw(vec4 colour)
 	glBindVertexArray(VAO);
 
 	glColor4f(colour.r, colour.g, colour.b, colour.a);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 
 	glBindVertexArray(0);
 
