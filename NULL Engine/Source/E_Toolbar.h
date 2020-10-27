@@ -15,7 +15,10 @@ public:
 
 private:
 	bool FileMainMenuItem();
+	bool EditMainMenuItem();
 	bool WindowMainMenuItem();
+	bool ViewMainMenuItem();
+	bool GameObjectsMainMenuItem();
 	bool HelpMainMenuItem();
 
 	bool CloseAppPopup();

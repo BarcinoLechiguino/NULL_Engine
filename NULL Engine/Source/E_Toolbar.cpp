@@ -20,7 +20,10 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 	ImGui::BeginMainMenuBar();
 
 	FileMainMenuItem();
+	EditMainMenuItem();
 	WindowMainMenuItem();
+	ViewMainMenuItem();
+	GameObjectsMainMenuItem();
 	HelpMainMenuItem();
 
 	if (App->editor->show_close_app_popup)
@@ -47,7 +50,60 @@ bool E_Toolbar::FileMainMenuItem()
 	
 	if (ImGui::BeginMenu("File"))
 	{
-		ImGui::MenuItem("Quit Application", "ESC", &App->editor->show_close_app_popup);		// MenuItem(Item name string, shortcut string, bool to modify / get modified by)
+		ImGui::MenuItem("New Scene", "Ctrl+N", nullptr, false);
+		ImGui::MenuItem("Open Scene", "Ctrl+O", nullptr, false);
+
+		ImGui::Separator();
+
+		ImGui::MenuItem("Save", "Ctrl+S");
+		ImGui::MenuItem("Save As...", "Ctrl+Shift+S", nullptr, false);
+
+		ImGui::Separator();
+
+		ImGui::MenuItem("New Project", "Ctrl+Shift+N", nullptr, false);
+		ImGui::MenuItem("Open Project", "Ctrl+Shift+O", nullptr, false);
+		ImGui::MenuItem("Save Project", "Ctrl+Alt+S", nullptr, false);
+
+		ImGui::Separator();
+		
+		ImGui::MenuItem("Quit", "ESC", &App->editor->show_close_app_popup);		// MenuItem(Item name string, shortcut string, bool to modify / get modified by)
+
+		ImGui::EndMenu();
+	}
+
+	return ret;
+}
+
+bool E_Toolbar::EditMainMenuItem()
+{
+	bool ret = true;
+
+	if (ImGui::BeginMenu("Edit"))
+	{
+		ImGui::MenuItem("Undo", "Ctrl+Z", nullptr, false);
+		ImGui::MenuItem("Redo", "Ctrl+Y", nullptr, false);
+
+		ImGui::Separator();
+
+		ImGui::MenuItem("Select All", "Ctrl+A", nullptr, false);
+		ImGui::MenuItem("Deselect All", "Shift+D", nullptr, false);
+		ImGui::MenuItem("Select Children", "Shift+C", nullptr, false);
+		ImGui::MenuItem("Invert Selection", "Ctrl+I", nullptr, false);
+
+		ImGui::Separator();
+
+		ImGui::MenuItem("Duplicate", "Ctrl+D", nullptr, false);
+		ImGui::MenuItem("Delete", "Supr", nullptr, false);
+
+		ImGui::Separator();
+
+		ImGui::MenuItem("Play", "Ctrl+P", nullptr, false);
+		ImGui::MenuItem("Pause", "Ctrl+Shift+P", nullptr, false);
+		ImGui::MenuItem("Step", "Ctrl+Alt+P", nullptr, false);
+
+		ImGui::Separator();
+
+		ImGui::MenuItem("Settings");
 
 		ImGui::EndMenu();
 	}
@@ -65,8 +121,81 @@ bool E_Toolbar::WindowMainMenuItem()
 		ImGui::MenuItem("Inspector", "2", &App->editor->show_hierarchy);
 		ImGui::MenuItem("Hierarchy", "3", &App->editor->show_inspector);
 		ImGui::MenuItem("Console", "4", &App->editor->show_console);
+		ImGui::MenuItem("GuiDemo", "8", &App->editor->show_imgui_demo);
+		ImGui::MenuItem("About", "9", &App->editor->show_about_popup);
 
 		ImGui::EndMenu();
+	}
+
+	return ret;
+}
+
+bool E_Toolbar::ViewMainMenuItem()
+{
+	bool ret = true;
+
+	if (ImGui::BeginMenu("View"))
+	{
+		bool show_grid = App->editor->GetShowWorldGrid();
+		ImGui::MenuItem("World Grid", "F1", &show_grid);
+		App->editor->SetShowWorldGrid(show_grid);
+		
+		bool show_axis = App->editor->GetShowWorldAxis();
+		ImGui::MenuItem("World Axis", "F2", &show_axis);
+		App->editor->SetShowWorldAxis(show_axis);
+
+		ImGui::EndMenu();
+	}
+
+	return ret;
+}
+
+bool E_Toolbar::GameObjectsMainMenuItem()
+{
+	bool ret = true;
+
+	if (ImGui::BeginMenu("GameObject"))
+	{
+		ImGui::MenuItem("Create Empty");
+		ImGui::MenuItem("Create Empty x10");
+		
+		if (ImGui::BeginMenu("Primitives"))
+		{
+			ImGui::MenuItem("Cube");
+			ImGui::MenuItem("Sphere");
+			ImGui::MenuItem("Cylinder");
+			ImGui::MenuItem("Pyramid");
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::MenuItem("Camera");
+
+		ImGui::Separator();
+
+		if (ImGui::BeginMenu("Draw Mode", false))
+		{
+			bool mesh = true;
+			bool wire = false;
+			bool vert = false;
+
+			ImGui::Checkbox("Mesh", &mesh);
+			ImGui::Checkbox("Wireframe", &wire);
+			ImGui::Checkbox("Vertices", &vert);
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Show", false))
+		{
+			bool norm = false;
+
+			ImGui::Checkbox("Normals", &norm);
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::End();
 	}
 
 	return ret;
@@ -78,9 +207,13 @@ bool E_Toolbar::HelpMainMenuItem()
 
 	if (ImGui::BeginMenu("Help"))
 	{
-		ImGui::MenuItem("GuiDemo", "8", &App->editor->show_imgui_demo);
-		ImGui::MenuItem("About", "9", &App->editor->show_about_popup);
-
+		if (ImGui::Button("About NULL Engine"))
+		{
+			App->editor->show_about_popup = true;
+		}
+		
+		ImGui::Separator();
+		
 		if (ImGui::MenuItem("Documentation"))
 		{
 			App->RequestBrowser("https://github.com/BarcinoLechiguino/NULL_Engine");

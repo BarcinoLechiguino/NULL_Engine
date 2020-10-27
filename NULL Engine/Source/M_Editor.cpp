@@ -166,6 +166,31 @@ void M_Editor::AddGuiPanel(E_Panel* panel)
 	gui_panels.push_back(panel);
 }
 
+bool M_Editor::GetShowWorldGrid() const
+{
+	return App->renderer->GetDrawWorldGrid();
+}
+
+bool M_Editor::GetShowWorldAxis() const
+{
+	return App->renderer->GetDrawWorldAxis();
+}
+
+void M_Editor::SetShowWorldGrid(bool set_to)
+{
+	App->renderer->SetDrawWorldGrid(set_to);
+}
+
+void M_Editor::SetShowWorldAxis(bool set_to)
+{
+	App->renderer->SetDrawWorldAxis(set_to);
+}
+
+void M_Editor::UpdateFrameData(int frames, int ms)
+{
+	configuration->UpdateFrameData(frames, ms);
+}
+
 void M_Editor::AddConsoleLog(const char* log)
 {
 	if (gui_panels.size() > 0)
@@ -202,11 +227,6 @@ void M_Editor::AddInputLog(uint key, uint state)
 
 		configuration->AddInputLog(input);
 	}
-}
-
-void M_Editor::UpdateFrameData(int frames, int ms)
-{
-	configuration->UpdateFrameData(frames, ms);
 }
 
 void M_Editor::EditorShortcuts()

@@ -51,10 +51,15 @@ public:
 	bool			InitializeImGui() const;
 
 public:																				// --- Panel/Window Methods
-	void			AddConsoleLog(const char* log);
-	void			AddInputLog(uint key, uint state);
+	bool			GetShowWorldGrid() const;
+	bool			GetShowWorldAxis() const;
+	void			SetShowWorldGrid(bool set_to);
+	void			SetShowWorldAxis(bool set_to);
 
 	void			UpdateFrameData(int frames, int ms);
+
+	void			AddConsoleLog(const char* log);
+	void			AddInputLog(uint key, uint state);
 
 public:
 	std::vector<E_Panel*>	gui_panels;												//
