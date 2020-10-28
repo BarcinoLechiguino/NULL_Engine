@@ -77,11 +77,14 @@ public:																		// --- GET/SET METHODS
 	bool			GetShowWireframe() const;								//
 	bool			GetShowNormals() const;									// 
 	bool			GetShowTexCoords() const;								//
-	void			SetDrawWorldGrid(bool set_to);
-	void			SetDrawWorldAxis(bool set_to);
+	bool			GetDrawPrimitiveExamples() const;						// 
+	
+	void			SetDrawWorldGrid(bool set_to);							// 
+	void			SetDrawWorldAxis(bool set_to);							// 
 	void			SetShowWireframe(bool set_to);							//
 	void			SetShowNormals(bool set_to);							// 
 	void			SetShowTexCoords(bool set_to);							// 
+	void			SetDrawPrimtiveExamples(bool set_to);					//
 
 public:
 	Light					lights[MAX_LIGHTS];								// 
@@ -103,13 +106,12 @@ private:
 	bool					show_normals;									// 
 	bool					show_tex_coords;								// 
 
-	PrimitiveDrawExamples	OGL_draw_examples;								// REMOVE LATER
+	bool					draw_primitive_examples;
+	bool					draw_primitives_by_indices;
+
 	Cube					cube_direct;									// 
 	Cube					cube_array;										// 
 	Cube					cube_indices;									// 
-	//Sphere				sphere;											// 								
-	Pyramid					pyramid;										// 								
-	//Cylinder				cylinder;										// ------------
 };
 
 #endif // !__M_RENDERER_3D_H__

@@ -38,39 +38,17 @@ void Primitive::Render() const
 	glPushMatrix();
 	glMultMatrixf(transform.M);
 
-	if (axis == true)
-	{
-		// Draw Axis Grid
-		glLineWidth(2.0f);
-
-		glBegin(GL_LINES);
-
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);											// X Axis.
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
-		glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
-
-		glColor4f(0.0f, 1.0f, 0.0f, 1.0f);											// Y Axis.
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-		glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-		glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
-
-		glColor4f(0.0f, 0.0f, 1.0f, 1.0f);											// Z Axis.
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
-		glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
-		glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
-
-		glEnd();
-
-		glLineWidth(1.0f);
-	}
-
-
-	glColor3f(color.r, color.g, color.b);
-
 	InnerRender();
+
+	glPopMatrix();
+}
+
+void Primitive::RenderByIndices()
+{
+	glPushMatrix();
+	glMultMatrixf(transform.M);
+
+	IndicesRender();
 
 	glPopMatrix();
 }
@@ -109,6 +87,11 @@ void Primitive::InnerRender() const
 	glEnd();
 
 	glPointSize(1.0f);
+}
+
+void Primitive::IndicesRender()
+{
+	return;
 }
 
 // ------------------------------------------------------------
@@ -312,12 +295,8 @@ void Cube::DirectRender() const
 
 void Cube::ArrayRender()
 {	
-	static uint VAO = 0;
-	
 	if (!loaded_in_array)
-	{
-		//VAO = 0;
-		
+	{	
 		uint position	= 0;
 		uint normals	= 0;
 		uint tex_coords = 0;
@@ -465,6 +444,8 @@ void Cube::ArrayRender()
 		glBindBuffer(GL_ARRAY_BUFFER, position);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, cube_vertex_coords, GL_STATIC_DRAW);*/
 		
+		VAO = 0;
+
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
 
@@ -545,6 +526,9 @@ void Cube::IndicesRender()
 		uint my_id = 0;
 		uint my_indices = 0;
 
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
+
 		glGenBuffers(1, (GLuint*)&my_id);
 		glBindBuffer(GL_ARRAY_BUFFER, my_id);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, cube_vertex_coords, GL_STATIC_DRAW);
@@ -553,10 +537,19 @@ void Cube::IndicesRender()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 36, indices, GL_STATIC_DRAW);
 
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+		glBindVertexArray(0);
+
 		loaded_in_indices = true;
 	}
 
-	glMatrixMode(GL_MODELVIEW);
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+	glBindVertexArray(0);
+
+	/*glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
 	//glRotatef(angle, x, y, z);
@@ -570,7 +563,7 @@ void Cube::IndicesRender()
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	glPopMatrix();
+	glPopMatrix();*/
 }
 
 void Cube::ApplyTransform(float* coordinates, int array_size)
@@ -636,7 +629,7 @@ void Sphere::SetSectors(uint sectors)
 	loaded_buffers = false;
 }
 
-void Sphere::IndiceRender()
+void Sphere::IndicesRender()
 {	
 	if (!loaded_buffers)
 	{
@@ -1038,21 +1031,15 @@ Pyramid::Pyramid(vec3 size) : Primitive(), size(size), loaded_in_buffers(false)
 	type = PRIMITIVE_TYPES::PYRAMID;
 }
 
-void Pyramid::IndicesRender()
+void Pyramid::InnerRender() const
 {
+
+}
+
+void Pyramid::IndicesRender()
+{	
 	if (!loaded_in_buffers)
 	{
-		/*vertices.resize(15);
-		indices.resize(18);
-
-		// VERTICES ----------------
-		vertices.add();
-		// -------------------------
-
-		// INDICES ----------------
-
-		// ------------------------*/
-
 		float vertices_ex[15] =
 		{
 			 0.0f,  1.015f,  0.0f,		// A --- i = 0		// Height of a given equilateral pyramid: (sqrt(6) / 3) * a; where a is the length of the sides of the base.
@@ -1073,8 +1060,23 @@ void Pyramid::IndicesRender()
 			1, 4, 2						// BEC ---  -
 		};
 
-		/*uint my_vertices	= 0;
-		uint my_indices		= 1;
+		uint my_vertices	= 0;
+		uint my_indices		= 0;
+
+		/*for (uint i = 0; i < 15; ++i)
+		{
+			vertices.push_back(vertices_ex[i]);
+		}
+
+		for (uint i = 0; i < 18; ++i)
+		{
+			indices.push_back(indices_ex[i]);
+		}
+
+		LoadBuffersOnMemory();*/
+
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
 
 		glGenBuffers(1, (GLuint*)&my_vertices);
 		glBindBuffer(GL_ARRAY_BUFFER, my_vertices);
@@ -1082,33 +1084,34 @@ void Pyramid::IndicesRender()
 
 		glGenBuffers(1, (GLuint*)&my_indices);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, indices_ex, GL_STATIC_DRAW);*/
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 24, indices_ex, GL_STATIC_DRAW);
 
-		glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::VERTICES]);				// Generating a vertex buffer that will store the vertex positions of the primitives.
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::VERTICES]);			// --------
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 15, vertices_ex, GL_STATIC_DRAW);	// --------
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+		glEnableVertexAttribArray(0);
 
-		glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::INDICES]);					// Generating an index buffer that will store the indices of each of the primitives.
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::INDICES]);		// --------
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 18, indices_ex, GL_STATIC_DRAW);	// --------*/
+		glBindVertexArray(0);
 
 		loaded_in_buffers = true;
 	}
 
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
+	//glMatrixMode(GL_MODELVIEW);
+	//glPushMatrix();
+	//glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
 
-	glVertexPointer(3, GL_FLOAT, 0, nullptr);
+	//glEnableClientState(GL_VERTEX_ARRAY);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 2);
-	glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, nullptr);
+	//glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+	////glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 2);
+	//glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, nullptr);
 
-	glPopMatrix();
+	//glDisableClientState(GL_VERTEX_ARRAY);
+
+	//glPopMatrix();
 }
 
 // LINE ==================================================
@@ -1146,6 +1149,11 @@ void Line::InnerRender() const
 	glLineWidth(1.0f);
 }
 
+void Line::IndicesRender()
+{
+	InnerRender();
+}
+
 // PLANE ==================================================
 Plane::Plane(const vec3& _normal) : Primitive(), normal(_normal)
 {
@@ -1174,6 +1182,11 @@ void Plane::InnerRender() const
 	}
 
 	glEnd();
+}
+
+void Plane::IndicesRender()
+{
+	InnerRender();
 }
 
 PrimitiveDrawExamples::PrimitiveDrawExamples() : Primitive(), size(1.0f), origin(vec3(0.0f, 0.0f, 0.0f))

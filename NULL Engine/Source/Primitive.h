@@ -36,7 +36,7 @@ public:
 	void Update();
 
 	virtual void	Render() const;
-	//virtual void	IndicesRender();
+	virtual void	RenderByIndices();
 	void			LoadBuffersOnMemory();
 
 public:
@@ -62,6 +62,7 @@ public:
 
 protected:
 	virtual void InnerRender() const;
+	virtual void IndicesRender();
 
 protected:
 	PRIMITIVE_TYPES type;
@@ -78,12 +79,13 @@ public :
 public:
 	void DirectRender() const;
 	void ArrayRender();
-	void IndicesRender();
 
 	void ApplyTransform(float* coordinates, int array_size);
 	void ApplySize(float* coordinates, int array_size);
 
 protected:
+	void IndicesRender() override;
+
 	//void DirectRender() const;
 	//void ArrayRender();
 	//void IndicesRender();
@@ -112,11 +114,11 @@ public:
 	void SetRings(uint rings);
 	void SetSectors(uint sectors);
 
-	void IndiceRender();
 	//void IndiceRender(float radius, const uint rings, const uint sectors);
 
 protected:
 	void InnerRender() const;
+	void IndicesRender() override;
 
 protected:
 	bool loaded_buffers;
@@ -138,13 +140,9 @@ public:
 	uint GetSectors() const;
 	void SetSectors(uint sectors);
 
-	vec3 GetPosition() const;
-	void SetPosition(vec3 position);
-
 	void InnerRender() const;
 	
 	std::vector<float> GetCircularVertices();
-	void IndicesRender();
 
 	void ConstructCoverVertices(std::vector<float> circular_vertices);
 	void ConstructBaseAndTopVertices(std::vector<float> circular_vertices);
@@ -152,6 +150,7 @@ public:
 
 protected:
 	//void InnerRender() const;
+	void IndicesRender() override;
 
 private:
 	float radius;
@@ -167,11 +166,13 @@ class Pyramid : public Primitive
 public:
 	Pyramid(vec3 size = vec3(1.0f, 1.0f, 1.0f));
 
-	void IndicesRender();
+protected:
+	void InnerRender() const override;
+	void IndicesRender() override;
 
 protected:
-	std::vector<float> vertices;
-	std::vector<uint> indices;
+	//std::vector<float> vertices;
+	//std::vector<uint> indices;
 
 private:
 	vec3 size;
@@ -191,6 +192,8 @@ public:
 
 protected:
 	void InnerRender() const;
+	void IndicesRender() override;
+
 public:
 	vec3 origin;
 	vec3 destination;
@@ -205,6 +208,8 @@ public:
 	vec3 GetNormal() const;
 protected:
 	void InnerRender() const;
+	void IndicesRender() override;
+
 private:
 	vec3 normal;
 };

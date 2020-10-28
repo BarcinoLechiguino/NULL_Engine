@@ -161,10 +161,16 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 		
 		if (ImGui::BeginMenu("Primitives"))
 		{
-			ImGui::MenuItem("Cube");
-			ImGui::MenuItem("Sphere");
-			ImGui::MenuItem("Cylinder");
-			ImGui::MenuItem("Pyramid");
+			bool show_primitive_examples = App->editor->GetShowPrimitiveExamples();
+			ImGui::MenuItem("Show Examples", "", &show_primitive_examples);
+			App->editor->SetShowPrimitiveExamples(show_primitive_examples);
+
+			ImGui::Separator();
+
+			ImGui::MenuItem("Cube", "", nullptr, false);
+			ImGui::MenuItem("Sphere", "", nullptr, false);
+			ImGui::MenuItem("Cylinder", "", nullptr, false);
+			ImGui::MenuItem("Pyramid", "", nullptr, false);
 
 			ImGui::EndMenu();
 		}

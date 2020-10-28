@@ -176,6 +176,11 @@ bool M_Editor::GetShowWorldAxis() const
 	return App->renderer->GetDrawWorldAxis();
 }
 
+bool M_Editor::GetShowPrimitiveExamples() const
+{
+	return App->renderer->GetDrawPrimitiveExamples();
+}
+
 void M_Editor::SetShowWorldGrid(bool set_to)
 {
 	App->renderer->SetDrawWorldGrid(set_to);
@@ -184,6 +189,11 @@ void M_Editor::SetShowWorldGrid(bool set_to)
 void M_Editor::SetShowWorldAxis(bool set_to)
 {
 	App->renderer->SetDrawWorldAxis(set_to);
+}
+
+void M_Editor::SetShowPrimitiveExamples(bool set_to)
+{
+	App->renderer->SetDrawPrimtiveExamples(set_to);
 }
 
 void M_Editor::UpdateFrameData(int frames, int ms)

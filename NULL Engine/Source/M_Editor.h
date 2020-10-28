@@ -50,11 +50,13 @@ public:
 	bool			RenderGuiPanels() const;										//
 	bool			InitializeImGui() const;
 
-public:																				// --- Panel/Window Methods
+public:																				// --- Panel/Window Methods. Acts as an interface between other modules and the panels. Avoids dependencies.
 	bool			GetShowWorldGrid() const;
 	bool			GetShowWorldAxis() const;
+	bool			GetShowPrimitiveExamples() const;
 	void			SetShowWorldGrid(bool set_to);
 	void			SetShowWorldAxis(bool set_to);
+	void			SetShowPrimitiveExamples(bool set_to);
 
 	void			UpdateFrameData(int frames, int ms);
 

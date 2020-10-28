@@ -6,14 +6,14 @@
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Camera3D.h"
+#include "M_Input.h"
 #include "M_FileSystem.h"
 #include "M_Editor.h"
 #include "Primitive.h"
 
 #include "R_Model.h"
-#include "R_Mesh.h"
-#include "I_Meshes.h"
-#include "M_Input.h"																	//TMP
+#include "R_Material.h"
+#include "I_Materials.h"
 
 #include "M_Renderer3D.h"
 
@@ -33,6 +33,9 @@ M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), co
 	show_normals		= false;
 	show_tex_coords		= false;
 
+	draw_primitive_examples = false;
+	draw_primitives_by_indices = true;
+
 	debug_texture_id	= 0;
 }
 
@@ -51,6 +54,20 @@ bool M_Renderer3D::Init(Configuration& config)
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);										// Projection matrix recalculation to keep up with the resizing of the window.
 
 	InitGlew();																	// Initializing Glew.
+
+	Cube* cube			= new Cube();
+	Sphere* sphere		= new Sphere();
+	Cylinder* cylinder	= new Cylinder();
+	Pyramid* pyramid	= new Pyramid();
+
+	sphere->SetPos(2.0f, 0.0f, 0.0f);
+	cylinder->SetPos(4.0f, 0.0f, 0.0f);
+	pyramid->SetPos(12.0f, 0.0f, 0.0f);
+
+	primitives.push_back(cube);
+	primitives.push_back(sphere);
+	primitives.push_back(cylinder);
+	primitives.push_back(pyramid);
 
 	//LoadModel("Assets/Models/warrior/warrior.FBX");
 	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
@@ -114,9 +131,21 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 		}
 	}
 
-	for (uint i = 0; i < primitives.size(); ++i)
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	if (draw_primitive_examples)
 	{
-		primitives[i]->Render();
+		for (uint i = 0; i < primitives.size(); ++i)
+		{
+			if (!draw_primitives_by_indices)
+			{
+				primitives[i]->Render();
+			}
+			else
+			{
+				primitives[i]->RenderByIndices();
+			}
+		}
 	}
 
 	PrimitiveExamples();
@@ -583,6 +612,11 @@ bool M_Renderer3D::GetShowTexCoords() const
 	return show_tex_coords;
 }
 
+bool M_Renderer3D::GetDrawPrimitiveExamples() const
+{
+	return draw_primitive_examples;
+}
+
 void M_Renderer3D::SetDrawWorldGrid(bool set_to)
 {
 	if (set_to != draw_world_grid)
@@ -632,89 +666,28 @@ void M_Renderer3D::SetShowTexCoords(bool set_to)
 	}
 }
 
+void M_Renderer3D::SetDrawPrimtiveExamples(bool set_to)
+{
+	if (set_to != draw_primitive_examples)
+	{
+		draw_primitive_examples = set_to;
+	}
+}
+
 void M_Renderer3D::PrimitiveExamples()
 {	
-	//OGL_draw_examples.DrawAllExamples();
-
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
 	//cube_direct.DirectRender();
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glBindTexture(GL_TEXTURE_2D, debug_texture_id);
-	cube_array.ArrayRender();
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+	//cube_array.ArrayRender();
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-
-	/*vec3 position = cube_indices.GetPos();
-
-	if (App->input->GetKey(SDL_SCANCODE_U) == KEY_DOWN)
-	{
-		position += vec3(0.0f, 1.0f, 0.0f);
-
-		cube_indices.SetPos(position.x, position.y, position.z);
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
-	{
-		cube_indices.SetPos(position.x - 1.0f, position.y, position.z);
-	}
-	else if(App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
-	{
-		cube_indices.SetPos(position.x, position.y - 1.0f, position.z);
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN)
-	{
-		cube_indices.SetPos(position.x + 1.0f, position.y, position.z);
-	}
-
-	cube_indices.IndicesRender();*/
-
-	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-	//sphere.IndiceRender(1, 12, 24);
-	
-	/*if (App->input->GetKey(SDL_SCANCODE_U) == KEY_DOWN)
-	{
-		uint rings = sphere.GetRings();
-
-		sphere.SetRings(rings + 1);
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN)
-	{
-		uint rings = sphere.GetRings();
-
-		if (rings > 0)
-		{
-			sphere.SetRings(rings - 1);
-		}
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
-	{
-		uint sectors = sphere.GetSectors();
-
-		sphere.SetSectors(sectors + 1);
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN)
-	{
-		uint sectors = sphere.GetSectors();
-
-		if (sectors > 0)
-		{
-			sphere.SetSectors(sectors - 1);
-		}
-	}*/
-	
-	//sphere.IndiceRender();
-
-	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-	//pyramid.SetPos(5.0f, 0.0f, 0.0f);
-	//pyramid.IndicesRender();
-
-	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-	//cylinder.InnerRender();
-	//cylinder.SetPos(2.5f, 0.0f, 0.0f);
-	//cylinder.IndicesRender();
+	/*cube_indices.IndicesRender();*/
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
