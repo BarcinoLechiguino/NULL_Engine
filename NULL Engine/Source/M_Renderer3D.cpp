@@ -55,23 +55,13 @@ bool M_Renderer3D::Init(Configuration& config)
 
 	InitGlew();																	// Initializing Glew.
 
-	Cube* cube			= new Cube();
-	Sphere* sphere		= new Sphere();
-	Cylinder* cylinder	= new Cylinder();
-	Pyramid* pyramid	= new Pyramid();
-
-	sphere->SetPos(2.0f, 0.0f, 0.0f);
-	cylinder->SetPos(4.0f, 0.0f, 0.0f);
-	pyramid->SetPos(12.0f, 0.0f, 0.0f);
-
-	primitives.push_back(cube);
-	primitives.push_back(sphere);
-	primitives.push_back(cylinder);
-	primitives.push_back(pyramid);
+	Importer::Materials::DevIL::Init();											// Initializing DevIL.
+	
+	CreatePrimitiveExamples();													// Adding one of each available primitice to the primitives vector for later display.
 
 	//LoadModel("Assets/Models/warrior/warrior.FBX");
 	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
-	//LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
 
 	LoadDebugTexture();
@@ -380,6 +370,23 @@ void M_Renderer3D::DrawWorldAxis()
 void M_Renderer3D::AddPrimitive(Primitive* primitive)
 {
 	primitives.push_back(primitive);
+}
+
+void M_Renderer3D::CreatePrimitiveExamples()
+{
+	Cube* cube			= new Cube();
+	Sphere* sphere		= new Sphere();
+	Cylinder* cylinder	= new Cylinder();
+	Pyramid* pyramid	= new Pyramid();
+
+	sphere->SetPos(2.0f, 0.0f, 0.0f);
+	cylinder->SetPos(4.0f, 0.0f, 0.0f);
+	pyramid->SetPos(12.0f, 0.0f, 0.0f);
+
+	primitives.push_back(cube);
+	primitives.push_back(sphere);
+	primitives.push_back(cylinder);
+	primitives.push_back(pyramid);
 }
 
 void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)

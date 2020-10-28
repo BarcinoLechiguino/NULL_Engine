@@ -43,13 +43,19 @@ void Importer::Materials::DevIL::Init()
 {
 	if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION || ilGetInteger(ILU_VERSION_NUM) < ILU_VERSION  || ilGetInteger(ILUT_VERSION_NUM) < ILUT_VERSION)
 	{
-		LOG("[ERROR] DevIL version does not match with DevIL lib versions!");
+		LOG("[ERROR] DevIL version does not match with lib version!");
 	}
+
+	LOG("[STATUS] Initializing DevIL");
+	ilInit();																	// Initializing IL.			// DevIL is automatically initialized when it is loaded by the application.
+	iluInit();																	// Initializing ILU.		// However it is recommended to avoid any porting issues.
+	ilutInit();																	// Initializing ILUT.
+	ilutRenderer(ILUT_OPENGL);
 }
 
-void Importer::Materials::DevIL::Import(const char* buffer, uint size, R_Material* r_material)
+bool Importer::Materials::DevIL::Import(const char* buffer, uint size, R_Material* r_material)
 {
-
+	return ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);
 }
 
 uint64 Importer::Materials::DevIL::Save(const R_Material* r_material, char** buffer)

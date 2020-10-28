@@ -295,42 +295,72 @@ bool E_EngineConfiguration::HardwareMenu()
 {
 	bool ret = true;
 
-	if (ImGui::CollapsingHeader("Hardware"))
+	if (ImGui::CollapsingHeader("System"))
 	{
 		HardwareInfo hw_info = App->GetHardwareInfo();
 
-		// --- SDL INFO
-		ImGui::Text("SDL Version:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.SDL.sdl_version);
+		if (ImGui::CollapsingHeader("Software"))
+		{
+			// --- SDL INFO
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "SDL Info:");
 
-		// --- CPU INFO
-		ImGui::Separator();
-		ImGui::Text("CPUs:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u (Cache: %ukb)", hw_info.CPU.cpu_count, hw_info.CPU.cache_size);
-		ImGui::Text("RAM Size:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f GB", hw_info.CPU.ram_gb);
-		
-		ImGui::Text("Drivers:");		
-		ImGui::SameLine();	
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s%s", 
-			hw_info.CPU.has_RDTSC	? "RDTSC,"	: "",
-			hw_info.CPU.has_AltiVec ? "AltiVec,": "",
-			hw_info.CPU.has_3DNow	? "3DNow,"	: "",
-			hw_info.CPU.has_MMX		? "MMX,"	: "", 
-			hw_info.CPU.has_SSE		? "SSE,"	: "", 
-			hw_info.CPU.has_SSE2	? "SSE2,"	: "");
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s",
-			hw_info.CPU.has_SSE3	? "SSE3,"	: "", 
-			hw_info.CPU.has_SSE41	? "SSE4.1," : "", 
-			hw_info.CPU.has_SSE42	? "SSE4.2," : "", 
-			hw_info.CPU.has_RDTSC	? "AVX,"	: "", 
-			hw_info.CPU.has_RDTSC	? "AVX2,"	: "");
+			ImGui::Text("SDL Version:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.SDL.sdl_version);
 
-		// --- GPU INFO
-		ImGui::Separator();
-		ImGui::Text("GPU:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vendor %i Device %i", hw_info.GPU.vendor, hw_info.GPU.device_id);
-		ImGui::Text("Brand:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.GPU.brand);
-		ImGui::Text("VRAM Budget:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_budget);
-		ImGui::Text("VRAM Usage:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_usage);
-		ImGui::Text("VRAM Available:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_available);
-		ImGui::Text("VRAM Reserved:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_reserved);
+			ImGui::Separator();
+
+			// --- OPENGL INFO
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "OpenGL Info:");
+
+			ImGui::Text("Model:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.model_name);
+			ImGui::Text("Renderer:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.renderer_name);
+			ImGui::Text("Version:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.version);
+			ImGui::Text("Shading Language:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.shading_language_version);
+
+			ImGui::Separator();
+
+			// --- DEVIL INFO
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "DevIL Info:");
+
+			ImGui::Text("Vendor:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.DevIL.vendor);
+			ImGui::Text("Version:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.DevIL.version);
+		}
+
+		if (ImGui::CollapsingHeader("Hardware"))
+		{
+			// --- CPU INFO
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "CPU Info:");
+
+			ImGui::Text("CPUs:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u (Cache: %ukb)", hw_info.CPU.cpu_count, hw_info.CPU.cache_size);
+			ImGui::Text("RAM Size:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f GB", hw_info.CPU.ram_gb);
+
+			ImGui::Text("Drivers:");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s%s",
+				hw_info.CPU.has_RDTSC	? "RDTSC,"	: "",
+				hw_info.CPU.has_AltiVec ? "AltiVec,": "",
+				hw_info.CPU.has_3DNow	? "3DNow,"	: "",
+				hw_info.CPU.has_MMX		? "MMX,"	: "",
+				hw_info.CPU.has_SSE		? "SSE,"	: "",
+				hw_info.CPU.has_SSE2	? "SSE2,"	: "");
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s",
+				hw_info.CPU.has_SSE3	? "SSE3,"	: "",
+				hw_info.CPU.has_SSE41	? "SSE4.1," : "",
+				hw_info.CPU.has_SSE42	? "SSE4.2," : "",
+				hw_info.CPU.has_RDTSC	? "AVX,"	: "",
+				hw_info.CPU.has_RDTSC	? "AVX2,"	: "");
+
+			ImGui::Separator();
+
+			// --- GPU INFO
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "GPU Info:");
+
+			ImGui::Text("GPU:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vendor %i Device %i", hw_info.GPU.vendor, hw_info.GPU.device_id);
+			ImGui::Text("Brand:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.GPU.brand);
+			ImGui::Text("VRAM Budget:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_budget);
+			ImGui::Text("VRAM Usage:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_usage);
+			ImGui::Text("VRAM Available:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_available);
+			ImGui::Text("VRAM Reserved:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_reserved);
+		}
 	}
  
 	return ret;

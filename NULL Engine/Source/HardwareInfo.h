@@ -50,6 +50,12 @@ struct OpenGLInfo
 	std::vector<char*> extensions;
 };
 
+struct DevILInfo
+{
+	char* vendor;
+	char* version;
+};
+
 struct HardwareInfo
 {
 	HardwareInfo();								// Will initialize all Hardware variables. Preventive measure to avoid variables being used elsewhere while uninitialized.
@@ -62,6 +68,7 @@ struct HardwareInfo
 	GPU			GPU;							// Container for GPU Information.
 	SDLInfo		SDL;							// Container for SDL Information.
 	OpenGLInfo	OpenGL;							// Container for OpenGL Information.
+	DevILInfo	DevIL;
 };
 
 #endif // !__HARDWARE_INFO_H__

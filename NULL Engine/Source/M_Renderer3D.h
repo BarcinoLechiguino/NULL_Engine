@@ -56,7 +56,11 @@ public:
 	void			DrawWorldAxis();
 
 	void			AddPrimitive(Primitive* primitive);
+	void			CreatePrimitiveExamples();
+
 	void			LoadModel(const char* file_path, vec4 mat_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	void			LoadTexture(const char* file_path);
 	void			LoadDebugTexture();
 	void			CorrectAxisAlignment(aiScene* scene);
 

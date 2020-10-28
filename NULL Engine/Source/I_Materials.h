@@ -25,7 +25,7 @@ namespace Importer
 		{
 			void Init();
 
-			void Import(const char* buffer, uint size, R_Material* r_material);
+			bool Import(const char* buffer, uint size, R_Material* r_material);
 
 			uint64 Save(const R_Material* r_material, char** buffer);
 

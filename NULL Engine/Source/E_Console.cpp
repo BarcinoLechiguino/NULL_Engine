@@ -105,6 +105,11 @@ void E_Console::ConsoleOutput()
 			text_colour = { 1.0f, 1.0f, 0.0f, 1.0f };							// [WARNING] logs will be yellow.
 		}
 
+		if (strstr(logs[i], "[STATUS]") != nullptr)
+		{
+			text_colour = { 1.0f, 0.0f, 1.0f, 1.0f };
+		}
+
 		ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
 		ImGui::TextUnformatted(logs[i]);										// Raw text without formatting. Fast, without memory copies and no buffer size limits. For long chunks of txt.
 		ImGui::PopStyleColor();

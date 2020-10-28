@@ -7,6 +7,7 @@
 
 #include "Globals.h"
 #include "OpenGL.h"
+#include "DevIL.h"
 
 #include "HardwareInfo.h"
 
@@ -48,6 +49,10 @@ HardwareInfo::HardwareInfo()
 	OpenGL.version							= nullptr;
 	OpenGL.shading_language_version			= nullptr;
 	//OpenGL.extensions						= nullptr;
+
+	// ------ DevIL INFO ------
+	DevIL.vendor							= nullptr;
+	DevIL.version							= nullptr;
 }
 
 void HardwareInfo::InitializeInfo()
@@ -120,6 +125,10 @@ void HardwareInfo::InitializeInfo()
 
 		OpenGL.extensions.push_back(ext);
 	}
+
+	// ------ DevIL INFO ------
+	DevIL.vendor						= (char*)ilGetString(IL_VENDOR);
+	DevIL.version						= (char*)ilGetString(IL_VERSION_NUM);
 }
 
 void HardwareInfo::UpdateInfo()
