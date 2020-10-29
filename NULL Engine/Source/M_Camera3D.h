@@ -22,7 +22,7 @@ public:
 	bool			SaveConfiguration(Configuration& root) const override;
 
 public:
-	void			Look(const vec3 &position, const vec3 &reference, bool RotateAroundReference = false);
+	void			PointAt(const vec3 &position, const vec3 &reference, bool RotateAroundReference = false);
 	void			LookAt(const vec3 &Spot);
 	void			Move(const vec3 &Movement);
 
@@ -46,7 +46,7 @@ public:																											// Camera3D Getters and Setters.
 
 
 private:
-	void			CalculateViewMatrix();
+	void			CalculateViewMatrix();							// Calculates both the worldspace matrix and the viewspace matrix.
 
 	void			WASDMovement();									// Translates the camera along XYZ (Right, Up, Forward), which will act as the camera's axis.
 	void			FreeLookAround();								// Receives information about the mouse's motion values and rotates the camera on it's axis.

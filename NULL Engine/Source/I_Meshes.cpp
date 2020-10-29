@@ -63,7 +63,7 @@ void Importer::Meshes::Import(const aiScene* ai_scene, const aiMesh* ai_mesh, R_
 		{
 			vertex.tex_coords = vec2(0.0f, 0.0f);
 
-			LOG("Vertex %u tex coords: { %.1f, %.1f }", i, vertex.tex_coords.x, vertex.tex_coords.y);
+			LOG("[ERROR] Could not load Vertex %u tex coords.", i);
 		}
 
 		r_mesh->vertices[i] = vertex;

@@ -61,7 +61,7 @@ bool M_Renderer3D::Init(Configuration& config)
 
 	//LoadModel("Assets/Models/warrior/warrior.FBX");
 	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
-	//LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
 
 	LoadDebugTexture();
@@ -610,9 +610,9 @@ void M_Renderer3D::PrimitiveExamples()
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glBindTexture(GL_TEXTURE_2D, debug_texture_id);
-	cube_array.ArrayRender();
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+	//cube_array.ArrayRender();
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 	/*cube_indices.IndicesRender();*/

@@ -4,9 +4,6 @@
 #include "MathGeoLib/src/Geometry/AABB.h"
 #include "Resource.h"
 
-#define CHECKERS_WIDTH 64
-#define CHECKERS_HEIGHT 64
-
 enum class TEXTURE_TYPE									// The enum values are set according to the values of Assimp's aiTextureType enum.
 {
 	NONE		= 0x0,

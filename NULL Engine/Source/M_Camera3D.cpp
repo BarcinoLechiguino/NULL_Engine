@@ -7,7 +7,7 @@
 
 #define MOVEMENT_SPEED 6.0f
 #define ROTATION_SPEED 0.25f
-#define ZOOM_SPEED 10.0f
+#define ZOOM_SPEED 24.0f
 
 M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
 {
@@ -119,14 +119,14 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::Look(const vec3 &position, const vec3 &reference, bool RotateAroundReference)
+void M_Camera3D::PointAt(const vec3 &position, const vec3 &reference, bool RotateAroundReference)
 {
-	this->position = position;
-	this->reference = reference;
+	this->position = position;												// Updates the position to the given one.
+	this->reference = reference;											// Updates the reference to the given one.
 
 	Z = normalize(position - reference);									// Forward vector. Where the camera is looking.
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
+	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));						// The Right vector is reconstructed as Normal/Orthographic to Z. Cross product returns a vector perp to two others.
+	Y = cross(Z, X);														// The Up vector is reconstructed as the cross product of Z and X. This means that Y is perpendicular to both.
 
 	if(!RotateAroundReference)
 	{
@@ -136,9 +136,9 @@ void M_Camera3D::Look(const vec3 &position, const vec3 &reference, bool RotateAr
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::LookAt( const vec3 &Spot)
+void M_Camera3D::LookAt(const vec3 &spot)									// Almost identical to PointAt except only the reference and XYZ are updated. DOES NOT TRANSLATE.
 {
-	reference = Spot;
+	reference = spot;
 
 	Z = normalize(position - reference);
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
@@ -192,8 +192,7 @@ void M_Camera3D::WASDMovement()
 		new_position -= Y * mov_speed;
 	}
 
-	position += new_position;
-	reference += new_position;
+	Move(new_position);
 }
 
 void M_Camera3D::FreeLookAround()
@@ -283,8 +282,7 @@ void M_Camera3D::PanCamera()
 
 	vec3 new_position = new_X + new_Y;
 
-	position	+= (new_position);
-	reference	+= (new_position);
+	Move(new_position);
 }
 
 void M_Camera3D::Zoom()
@@ -292,10 +290,9 @@ void M_Camera3D::Zoom()
 	position -= Z * App->input->GetMouseZ() * zoom_speed * App->GetDt();						// The value is negated to make the zoom behave as it should (whl bck = bck / whl fwrd = fwrd).
 }
 
-
 void M_Camera3D::ReturnToWorldOrigin()
 {
-	Look(vec3(2.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), false);
+	PointAt(vec3(2.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), false);
 }
 
 // -----------------------------------------------------------------
@@ -314,7 +311,13 @@ mat4x4 M_Camera3D::GetViewMatrix()
 // -----------------------------------------------------------------
 void M_Camera3D::CalculateViewMatrix()
 {
-	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, position), -dot(Y, position), -dot(Z, position), 1.0f);
+	vec3 T = { -dot(X, position), -dot(Y, position), -dot(Z, position) };			// The camera's current transform is calculated.
+	
+	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, 
+						X.y, Y.y, Z.y, 0.0f, 
+						X.z, Y.z, Z.z, 0.0f, 
+						T.x, T.y, T.z, 1.0f);
+
 	ViewMatrixInverse = inverse(ViewMatrix);
 }
 
