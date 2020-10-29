@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Renderer3D.h"
+#include "M_FileSystem.h"
 #include "M_Editor.h"
 
 #include "M_Input.h"
@@ -166,7 +167,17 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 
 			case SDL_DROPFILE:
 				dropped_file_path = event.drop.file;
-				App->renderer->LoadModel(dropped_file_path);							// TMP. Use M_FileSystem later.
+
+				if (App->file_system->GetFileExtension(dropped_file_path) == "FBX"
+					|| App->file_system->GetFileExtension(dropped_file_path) == "fbx")
+				{
+					std::string norm_path = App->file_system->NormalizePath(dropped_file_path);
+
+					// App->file_system->SplitFilePath();
+
+					App->renderer->LoadModel(norm_path.c_str());										// TMP. Use M_FileSystem later.
+				}
+
 			break;
 		}
 	}

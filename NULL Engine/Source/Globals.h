@@ -77,7 +77,7 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 #define SCREEN_MAX_HEIGHT		2160
 #define SCREEN_SIZE				1
 
-#define WIN_MAXIMIZED			false
+#define WIN_MAXIMIZED			true
 #define WIN_FULLSCREEN			false
 #define WIN_RESIZABLE			true
 #define WIN_BORDERLESS			false

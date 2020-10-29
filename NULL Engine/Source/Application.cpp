@@ -462,7 +462,7 @@ void Application::AddEditorLog(const char* log)
 	{
 		std::string tmp_log		= log;
 
-		uint log_start_position = tmp_log.find_last_of("\\");									// Gets the position of the last "\" in the log string.
+		uint log_start_position = tmp_log.find_last_of("\\") + 1;								// Gets the position of the last "\" in the log string.
 		uint log_end_position	= tmp_log.size();												// The last position of the log will be equal to the size of it.
 
 		std::string short_log	= tmp_log.substr(log_start_position, log_end_position);			// Returns the string that is within the given positions.

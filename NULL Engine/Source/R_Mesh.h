@@ -41,6 +41,7 @@ public:
 	void LoadDebugTexture();
 
 	void LoadBuffers();
+	void LoadExBuffers();
 	void CreateAABB();									// Will create the bounding box that will encase the mesh.
 
 public:
@@ -48,6 +49,10 @@ public:
 	std::vector<Vertex>		vertices;
 	std::vector<uint>		indices;
 	std::vector<Texture>	textures;
+
+	std::vector<float>		vertices_ex;
+	std::vector<float>		normals_ex;
+	std::vector<float>		tex_coords_ex;
 
 	vec4 colour;
 
@@ -58,6 +63,10 @@ private:
 	uint VAO;											// Vertex Array Object.		-->		Will store all the buffer objects of the mesh.
 	uint VBO;											// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.
 	uint IBO;											// Index Buffer Object.		--> 	Will store all the buffer data of the indices of the mesh.
+
+	uint vertices_buffer;
+	uint normals_buffer;
+	uint tex_coords_buffer;
 
 	uint debug_texture_id;
 };

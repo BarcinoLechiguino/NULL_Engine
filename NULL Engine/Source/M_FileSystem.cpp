@@ -418,7 +418,7 @@ uint M_FileSystem::Load(const char* file, char** buffer) const
 
 			if (amount_read != size)
 			{
-				LOG("File Syste, error while reading from file %s: %s\n", file, PHYSFS_getLastError());
+				LOG(" [ERROR] File Syste, error while reading from file %s: %s\n", file, PHYSFS_getLastError());
 				RELEASE_ARRAY(buffer);
 			}
 			else
@@ -431,12 +431,12 @@ uint M_FileSystem::Load(const char* file, char** buffer) const
 
 		if (PHYSFS_close(fs_file) == (int)PHYSFS_RESULT::FAILURE)							// Method that closes a given file previously opened by PhysFS.
 		{
-			LOG("File System error while closing file %s: %s", file, PHYSFS_getLastError());
+			LOG(" [ERROR] File System error while closing file %s: %s", file, PHYSFS_getLastError());
 		}
 	}
 	else
 	{
-		LOG("File System error while opening file %s: %s", file, PHYSFS_getLastError());
+		LOG("[ERROR] File System error while opening file %s: %s", file, PHYSFS_getLastError());
 	}
 
 	return ret;
@@ -626,4 +626,21 @@ std::string M_FileSystem::GetUniqueName(const char* path, const char* name) cons
 	}
 
 	return final_name;
+}
+
+std::string M_FileSystem::GetFileExtension(const char* path)
+{
+	std::string full_path = path;
+	std::string extension = "";
+
+	size_t dot_position = full_path.find_last_of(".");
+
+	extension = full_path.substr(dot_position + 1);
+
+	if (extension == "")
+	{
+		LOG("[WARNING] Path %s does not have any file extension!", path);
+	}
+
+	return extension;
 }

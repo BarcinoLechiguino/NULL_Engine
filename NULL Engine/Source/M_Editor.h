@@ -63,6 +63,10 @@ public:																				// --- Panel/Window Methods. Acts as an interface bet
 	void			AddConsoleLog(const char* log);
 	void			AddInputLog(uint key, uint state);
 
+private:
+	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);
+	void BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNodeFlags docking_flags = ImGuiDockNodeFlags_None, ImVec2 size = { 0.0f, 0.0f });
+
 public:
 	std::vector<E_Panel*>	gui_panels;												//
 

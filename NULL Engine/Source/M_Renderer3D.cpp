@@ -59,7 +59,6 @@ bool M_Renderer3D::Init(Configuration& config)
 	
 	CreatePrimitiveExamples();													// Adding one of each available primitice to the primitives vector for later display.
 
-	//LoadModel("Assets/Models/warrior/warrior.FBX");
 	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
@@ -189,9 +188,27 @@ bool M_Renderer3D::InitOpenGL()
 	if (ret == true)
 	{
 		//Use Vsync
-		if (vsync && SDL_GL_SetSwapInterval(1) < 0)
+		if (vsync)
 		{
-			LOG("[WARNING] Unable to set Vsync! SDL Error: %s\n", SDL_GetError());
+			if (SDL_GL_SetSwapInterval(1) < 0)
+			{
+				LOG("[ERROR] Unable to set Vsync! SDL Error: %s\n", SDL_GetError());
+			}
+			else
+			{
+				LOG("[STATUS] Vsync is activated!");
+			}
+		}
+		else
+		{
+			if (SDL_GL_SetSwapInterval(0) < 0)
+			{
+				LOG("[ERROR] Unable to set frame update interval to immediate! SDL Error: %s\n", SDL_GetError());
+			}
+			else
+			{
+				LOG("[STATUS] Vsync is deactivated!")
+			}
 		}
 
 		//Initialize Projection Matrix
@@ -393,13 +410,11 @@ void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
 {
 	R_Model* model = new R_Model(file_path, mat_colour);
 
-	//const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
+	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
 
-	char* buffer = nullptr;
-	
-	uint file_size = App->file_system->Load(file_path, &buffer);
-	
-	const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+	//char* buffer = nullptr;
+	//uint file_size = App->file_system->Load(file_path, &buffer);
+	//const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
 	if (scene != nullptr)
 	{
@@ -469,6 +484,10 @@ void M_Renderer3D::SetVsync(bool set_to)
 		if (result < 0)																	// SDL_GL_SetSwapInterval() returns 0 on success and -1 on failure.
 		{
 			LOG("[WARNING] Unable to set Vsync! SDL Error: %s\n", SDL_GetError()); 
+		}
+		else
+		{
+			LOG("[STATUS] Vsync has been %s", vsync ? "activated" : "deactivated");
 		}
 	}
 }

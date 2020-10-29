@@ -104,20 +104,25 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 	ImGui_ImplSDL2_NewFrame(App->window->GetWindow());
 	ImGui::NewFrame();
 
-	bool draw = true;
-	for (uint i = 0; i < gui_panels.size(); ++i)
-	{	
-		if (gui_panels[i]->IsActive())
-		{	
-			draw = gui_panels[i]->Draw(io);
-
-			if (!draw)
+	if (BeginRootWindow(io, "Root window", true, ImGuiWindowFlags_MenuBar))
+	{
+		bool draw = true;
+		for (uint i = 0; i < gui_panels.size(); ++i)
+		{
+			if (gui_panels[i]->IsActive())
 			{
-				ret = UPDATE_STATUS::STOP;
-				LOG("[EDITOR] Exited through %s Panel", gui_panels[i]->GetName());
-				break;
+				draw = gui_panels[i]->Draw(io);
+
+				if (!draw)
+				{
+					ret = UPDATE_STATUS::STOP;
+					LOG("[EDITOR] Exited through %s Panel", gui_panels[i]->GetName());
+					break;
+				}
 			}
 		}
+		
+		ImGui::End();
 	}
 	
 	return ret;
@@ -340,6 +345,44 @@ void M_Editor::CheckShowHideFlags()
 	}
 }
 
+bool M_Editor::BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags)
+{
+	bool ret = true;
+	
+	ImGuiViewport* viewport = ImGui::GetWindowViewport();
+
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
+	ImGui::SetNextWindowViewport(viewport->ID);
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+					| ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus
+					| ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ret = ImGui::Begin(window_id, &ret, window_flags);
+	ImGui::PopStyleVar(3);
+
+	if (docking)
+	{	
+		BeginDockspace(io, window_id, ImGuiDockNodeFlags_PassthruCentralNode);
+	}
+
+	return ret;
+}	
+	
+void M_Editor::BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNodeFlags docking_flags, ImVec2 size)
+{
+	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	{
+		ImGuiID dckspace_id = ImGui::GetID(dockspace_id);
+		ImGui::DockSpace(dckspace_id, size, docking_flags);
+	}
+}
+
 bool M_Editor::RenderGuiPanels() const
 {
 	// Rendering all ImGui elements
@@ -353,7 +396,7 @@ bool M_Editor::RenderGuiPanels() const
 
 	// Updating and rendering additional platform windows
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
+	{	
 		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
 		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
 
@@ -378,13 +421,11 @@ bool M_Editor::InitializeImGui() const
 	(void)io;
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;		// Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;		// Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;			// Enable MultiViewport / Platform Windows
 
 	//Setting up Dear ImGui's style.
 	ImGui::StyleColorsDark();
-	/*ImGui::StyleColorsClassic();*/
 
 	// Tweaking the platform windows to look identical to regular ones.
 	ImGuiStyle& style = ImGui::GetStyle();

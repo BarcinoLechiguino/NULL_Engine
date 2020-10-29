@@ -338,16 +338,16 @@ vec3 M_Camera3D::GetSpot() const
 
 void M_Camera3D::SetPosition(vec3 position)
 {
-	position.x = position.x;
-	position.y = position.y;
-	position.z = position.z;
+	this->position.x = position.x;
+	this->position.y = position.y;
+	this->position.z = position.z;
 }
 
 void M_Camera3D::SetReference(vec3 reference)
 {
-	reference.x = reference.x;
-	reference.y = reference.y;
-	reference.z = reference.z;
+	this->reference.x = reference.x;
+	this->reference.y = reference.y;
+	this->reference.z = reference.z;
 }
 
 void M_Camera3D::SetSpot(vec3 spot)
