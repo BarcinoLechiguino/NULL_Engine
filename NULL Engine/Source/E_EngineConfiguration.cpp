@@ -128,9 +128,12 @@ bool E_EngineConfiguration::WindowMenu()
 		App->window->SetBrightness(brightness);
 
 		// --- WINDOW SIZE
-		int width	= (int)App->window->GetWidth();
-		int height	= (int)App->window->GetHeight();
-		uint min_width, min_height, max_width, max_height;
+		int width	= 0;
+		int height	= 0;
+
+		SDL_GetWindowSize(App->window->GetWindow(), &width, &height);
+
+		uint min_width, min_height, max_width, max_height = 0;
 		App->window->GetMinMaxSize(min_width, min_height, max_width, max_height);
 
 		ImGui::SliderInt("Width", &width, min_width, max_width, "%d", ImGuiSliderFlags_AlwaysClamp);
@@ -145,11 +148,17 @@ bool E_EngineConfiguration::WindowMenu()
 		ImGui::Separator();
 		ImGui::Text("Window Mode:");
 
+		bool maximized				= App->window->IsMaximized();
 		bool fullscreen				= App->window->IsFullscreen();
 		bool resizable				= App->window->IsResizable();
 		bool borderless				= App->window->IsBorderless();
 		bool fullscreen_desktop		= App->window->IsFullscreenDesktop();
 
+		if (ImGui::Checkbox("Maximized", &maximized))
+		{
+			App->window->SetMaximized(maximized);
+		}
+		
 		if (ImGui::Checkbox("Fullscreen", &fullscreen))
 		{
 			App->window->SetFullscreen(fullscreen);

@@ -38,11 +38,13 @@ public:
 	void		SetSize(uint width, uint height);
 	void		SetBrightness(float brightness);
 
+	bool		IsMaximized() const;
 	bool		IsFullscreen() const;
 	bool		IsResizable() const;
 	bool		IsBorderless() const;
 	bool		IsFullscreenDesktop() const;
 
+	void		SetMaximized(bool set_to);
 	void		SetFullscreen(bool set_to);
 	void		SetResizable(bool set_to);
 	void		SetBorderless(bool set_to);
@@ -57,6 +59,7 @@ private:
 	uint			screen_width;									// Width of the window in pixels.
 	uint			screen_height;									// Height of the window in pixels.
 
+	bool			is_maximized;
 	bool			is_fullscreen;
 	bool			is_resizable;
 	bool			is_borderless;
