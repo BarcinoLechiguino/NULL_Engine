@@ -15,6 +15,7 @@
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Component.cpp" />
     <ClCompile Include="Source\Configuration.cpp" />
+    <ClCompile Include="Source\C_Light.cpp" />
     <ClCompile Include="Source\C_Material.cpp" />
     <ClCompile Include="Source\C_Mesh.cpp" />
     <ClCompile Include="Source\C_Transform.cpp" />
@@ -99,6 +100,7 @@
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Component.h" />
     <ClInclude Include="Source\Configuration.h" />
+    <ClInclude Include="Source\C_Light.h" />
     <ClInclude Include="Source\C_Material.h" />
     <ClInclude Include="Source\C_Mesh.h" />
     <ClInclude Include="Source\C_Transform.h" />
