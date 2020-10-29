@@ -101,7 +101,7 @@ void M_SceneIntro::HandleDebugInput()
 void M_SceneIntro::DebugSpawnPrimitive(Primitive * p)
 {
 	primitives.push_back(p);
-	p->SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+	p->SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
 }
 
 // Update

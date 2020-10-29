@@ -77,6 +77,15 @@ float length2(const vec3 &u)
 	return u.x * u.x + u.y * u.y + u.z * u.z;
 }
 
+float distance(const vec3 &u, const vec3 &v)
+{
+	float dx = (v.x - u.x);
+	float dy = (v.y - u.y);
+	float dz = (v.z - u.z);
+	
+	return sqrt(dx*dx + dy*dy + dz*dz);
+}
+
 vec3 mix(const vec3 &u, const vec3 &v, float a)
 {
 	return u * (1.0f - a) + v * a;

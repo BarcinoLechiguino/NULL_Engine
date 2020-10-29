@@ -61,7 +61,7 @@ bool M_Renderer3D::Init(Configuration& config)
 
 	//LoadModel("Assets/Models/warrior/warrior.FBX");
 	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
-	LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	//LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
 
 	LoadDebugTexture();
@@ -80,7 +80,7 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 	glLoadMatrixf(App->camera->GetRawViewMatrix());
 
 	// light 0 on cam pos
-	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+	lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
 
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 	{
@@ -313,7 +313,7 @@ void M_Renderer3D::RendererShortcuts()
 
 	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_STATE::KEY_DOWN)
 	{
-		show_tex_coords = !show_tex_coords;
+		SetGLFlag(GL_TEXTURE_2D, !GetGLFlag(GL_TEXTURE_2D));
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_STATE::KEY_DOWN)
@@ -446,85 +446,6 @@ void M_Renderer3D::LoadDebugTexture()
 	//glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void M_Renderer3D::CorrectAxisAlignment(aiScene* scene)
-{
-	int upAxis			= 0;
-	int upAxisSign		= 1;
-	
-	int frontAxis		= 0;
-	int frontAxisSign	= 1;
-	
-	int coordAxis		= 0;
-	int coordAxisSign	= 1;
-
-	//scene->mMetaData->Get<int>("UpAxis",			upAxis);
-	//scene->mMetaData->Get<int>("UpAxisSign",		upAxisSign);
-	
-	//scene->mMetaData->Get<int>("FrontAxis",			frontAxis);
-	//scene->mMetaData->Get<int>("FrontAxisSign",		frontAxisSign);
-	
-	//scene->mMetaData->Get<int>("RightAxis",			coordAxis);
-	//scene->mMetaData->Get<int>("RightAxisSign",		coordAxisSign);
-
-	aiVector3D upVec		= upAxis	== 0 ? aiVector3D(upAxisSign, 0, 0) : upAxis == 1 ? aiVector3D(0, upAxisSign, 0) : aiVector3D(0, 0, upAxisSign);
-	aiVector3D forwardVec	= frontAxis == 0 ? aiVector3D(frontAxisSign, 0, 0) : frontAxis == 1 ? aiVector3D(0, frontAxisSign, 0) : aiVector3D(0, 0, frontAxisSign);
-	aiVector3D rightVec		= coordAxis == 0 ? aiVector3D(coordAxisSign, 0, 0) : coordAxis == 1 ? aiVector3D(0, coordAxisSign, 0) : aiVector3D(0, 0, coordAxisSign);
-
-	if (upAxis == 0)
-	{
-		upVec = aiVector3D(upAxisSign, 0, 0);
-	}
-	else
-	{
-		if (upAxis == 1)
-		{
-			upVec = aiVector3D(0, upAxisSign, 0);
-		}
-		else
-		{
-			upVec = aiVector3D(0, 0, upAxisSign);
-		}
-	}
-
-	if (frontAxis == 0)
-	{
-		forwardVec = aiVector3D(frontAxisSign, 0, 0);
-	}
-	else
-	{
-		if (frontAxis == 1)
-		{
-			forwardVec = aiVector3D(0, frontAxisSign, 0);
-		}
-		else
-		{
-			forwardVec = aiVector3D(0, 0, frontAxisSign);
-		}
-	}
-
-
-	if (coordAxis == 0)
-	{
-		rightVec = aiVector3D(coordAxisSign, 0, 0);
-	}
-	else
-	{
-		if (coordAxis == 1)
-		{
-			rightVec = aiVector3D(0, coordAxisSign, 0);
-		}
-		else
-		{
-			rightVec = aiVector3D(0, 0, coordAxisSign);
-		}
-	}
-
-	aiMatrix4x4 mat(rightVec.x,		rightVec.y,		rightVec.z,		0.0f,
-					upVec.x,		upVec.y,		upVec.z,		0.0f,
-					forwardVec.x,	forwardVec.y,	forwardVec.z,	0.0f,
-					0.0f,			0.0f,			0.0f,			1.0f);
 }
 
 const char* M_Renderer3D::GetDrivers() const
@@ -689,9 +610,9 @@ void M_Renderer3D::PrimitiveExamples()
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
-	//cube_array.ArrayRender();
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+	cube_array.ArrayRender();
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 	/*cube_indices.IndicesRender();*/

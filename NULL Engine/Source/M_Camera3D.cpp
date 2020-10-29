@@ -1,8 +1,13 @@
 #include "Globals.h"
 #include "Application.h"
+#include "M_Window.h"
 #include "M_Input.h"
 
 #include "M_Camera3D.h"
+
+#define MOVEMENT_SPEED 6.0f
+#define ROTATION_SPEED 0.25f
+#define ZOOM_SPEED 10.0f
 
 M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
 {
@@ -12,12 +17,14 @@ M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
 	Y				= vec3(0.0f, 1.0f, 0.0f);
 	Z				= vec3(0.0f, 0.0f, 1.0f);
 
-	Position		= vec3(0.0f, 0.0f, 5.0f);
-	Reference		= vec3(0.0f, 0.0f, 0.0f);
+	position		= vec3(2.0f, 2.0f, 5.0f);
+	reference		= vec3(0.0f, 0.0f, 0.0f);
 
-	movement_speed	= 10.0f;
-	rotation_speed	= 5.0f;
-	zoom_speed		= 2.5f;
+	LookAt(reference);
+
+	movement_speed	= MOVEMENT_SPEED;
+	rotation_speed	= ROTATION_SPEED;
+	zoom_speed		= ZOOM_SPEED;
 }
 
 M_Camera3D::~M_Camera3D()
@@ -78,111 +85,62 @@ bool M_Camera3D::SaveConfiguration(Configuration& root) const
 // -----------------------------------------------------------------
 UPDATE_STATUS M_Camera3D::Update(float dt)
 {
-	// Implement a debug camera with keys and mouse
-	// Now we can make this movememnt frame rate independant!
-
-	vec3 new_position(0,0,0);
-	float speed = 3.0f * dt;
-
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_STATE::KEY_REPEAT)
-	{
-		speed = 12.0f * dt;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position.y += speed;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position.y -= speed;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position -= Z * speed;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position += Z * speed;
-	}
-
-
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position -= X * speed;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position += X * speed;
-	}
-
-	Position += new_position;
-	Reference += new_position;
-
-	// Mouse motion ----------------
-
 	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_STATE::KEY_REPEAT)
 	{
-		int dx = -App->input->GetMouseXMotion();
-		int dy = -App->input->GetMouseYMotion();
+		WASDMovement();
 
-		float Sensitivity = 0.25f;
+		FreeLookAround();
+	}
 
-		Position -= Reference;
-
-		if(dx != 0)
+	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_STATE::KEY_REPEAT)
+	{	
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_REPEAT)
 		{
-			float DeltaX = (float)dx * Sensitivity;
-
-			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			RotateAroundReference();
 		}
+	}
 
-		if(dy != 0)
-		{
-			float DeltaY = (float)dy * Sensitivity;
+	if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_STATE::KEY_REPEAT)
+	{
+		PanCamera();
+	}
 
-			Y = rotate(Y, DeltaY, X);
-			Z = rotate(Z, DeltaY, X);
+	if (App->input->GetMouseZ() != 0)
+	{
+		Zoom();
+	}
 
-			if(Y.y < 0.0f)
-			{
-				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-				Y = cross(Z, X);
-			}
-		}
-
-		Position = Reference + Z * length(Position);
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_STATE::KEY_DOWN)
+	{
+		ReturnToWorldOrigin();
 	}
 
 	return UPDATE_STATUS::CONTINUE;
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
+void M_Camera3D::Look(const vec3 &position, const vec3 &reference, bool RotateAroundReference)
 {
-	this->Position = Position;
-	this->Reference = Reference;
+	this->position = position;
+	this->reference = reference;
 
-	Z = normalize(Position - Reference);
+	Z = normalize(position - reference);									// Forward vector. Where the camera is looking.
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
 
 	if(!RotateAroundReference)
 	{
-		this->Reference = this->Position;
-		this->Position += Z * 0.05f;
+		this->reference = this->position;
+		this->position += Z * 0.05f;
 	}
 }
 
 // -----------------------------------------------------------------
 void M_Camera3D::LookAt( const vec3 &Spot)
 {
-	Reference = Spot;
+	reference = Spot;
 
-	Z = normalize(Position - Reference);
+	Z = normalize(position - reference);
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
 }
@@ -191,8 +149,153 @@ void M_Camera3D::LookAt( const vec3 &Spot)
 // -----------------------------------------------------------------
 void M_Camera3D::Move(const vec3 &Movement)
 {
-	Position += Movement;
-	Reference += Movement;
+	position += Movement;
+	reference += Movement;
+}
+
+// -----------------------------------------------------------------
+void M_Camera3D::WASDMovement()
+{
+	vec3 new_position(0, 0, 0);
+	float mov_speed = movement_speed * App->GetUnpausableDt();
+	
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_STATE::KEY_REPEAT)
+	{
+		mov_speed = movement_speed * 2 * App->GetUnpausableDt();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
+	{	
+		new_position -= Z * mov_speed;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position += Z * mov_speed;
+	}
+
+
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position -= X * mov_speed;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position += X * mov_speed;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position += Y * mov_speed;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_STATE::KEY_REPEAT)
+	{
+		new_position -= Y * mov_speed;
+	}
+
+	position += new_position;
+	reference += new_position;
+}
+
+void M_Camera3D::FreeLookAround()
+{
+	// Free Look
+	int dx = -App->input->GetMouseXMotion();							// Motion value registered by the mouse in the X axis. Negated so the camera behaves like it should.
+	int dy = -App->input->GetMouseYMotion();							// Motion value registered by the mouse in the Y axis. Negated so the camera behaves like it should.
+
+	float sensitivity = rotation_speed;									// Factor that will be applied to dx before constructing the angle with which to rotate the vectors.
+
+	if (dx != 0)														// --- 
+	{
+		float delta_X = (float)dx * sensitivity;						// The value of the angle that we will rotate the camera by is very, very small, as it will be applied each frame.
+
+		X = rotate(X, delta_X, vec3(0.0f, 1.0f, 0.0f));					// All vectors of the camera (X = Right, Y = Up, Z = Forward), will be rotated by the value of the angle (delta_X)
+		Y = rotate(Y, delta_X, vec3(0.0f, 1.0f, 0.0f));					// The axis of rotation will be Y (yaw), not to confuse with the Y vector, which belongs to the camera.
+		Z = rotate(Z, delta_X, vec3(0.0f, 1.0f, 0.0f));					// Keep in mind that X(Right) will always remain axis aligned.
+	}
+
+	if (dy != 0)														// Same as above but only affecting the Y and Z vectors, as X will act as the pivot of the rotation.
+	{
+		float delta_Y = (float)dy * sensitivity;
+
+		Y = rotate(Y, delta_Y, X);										// As stated above, X(Right) will be used as the X axis (pitch) as, even if it is rotated, it will always be perfectly
+		Z = rotate(Z, delta_Y, X);										// axis aligned in space, at least for this case.
+
+		if (Y.y < 0.0f)													// If the y component of the Y(Up) vector is negative.
+		{
+			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);			// The y component of Z(Forward) will be recalculated.
+			Y = cross(Z, X);											// A new Y(Up) vector orthogonal to both Z(Forward) and X(Right) (cross product) will be calculated.
+		}
+	}
+}
+
+void M_Camera3D::RotateAroundReference()								// Almost identical to FreeLookAround(), but instead of only modifying XYZ, the position of the camera is also modified.
+{
+	int dx = -App->input->GetMouseXMotion();
+	int dy = -App->input->GetMouseYMotion();
+
+	float sensitivity = rotation_speed;
+
+	position -= reference;												// One of the two differences with FreeLookAround().
+
+	if (dx != 0)
+	{
+		float delta_X = (float)dx * sensitivity;
+
+		X = rotate(X, delta_X, vec3(0.0f, 1.0f, 0.0f));
+		Y = rotate(Y, delta_X, vec3(0.0f, 1.0f, 0.0f));
+		Z = rotate(Z, delta_X, vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	if (dy != 0)
+	{
+		float delta_Y = (float)dy * sensitivity;
+
+		Y = rotate(Y, delta_Y, X);
+		Z = rotate(Z, delta_Y, X);
+
+		if (Y.y < 0.0f)
+		{
+			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+			Y = cross(Z, X);
+		}
+	}
+
+	position = reference + Z * length(position);						// While FreeLookAround() rotates the camera on its axis, this method also translates the camera.
+}																		// This makes the camera rotate around the reference as the distance will be maintained but pos will be affected by Z.
+
+void M_Camera3D::PanCamera()
+{
+	vec3 new_X(0, 0, 0);
+	vec3 new_Y(0, 0, 0);
+
+	int dx = App->input->GetMouseXMotion();
+	int dy = App->input->GetMouseYMotion();
+
+	if (dx != 0)
+	{
+		new_X = -dx * X * App->GetDt();
+	}
+
+	if (dy != 0)
+	{
+		new_Y = dy * Y * App->GetDt();
+	}
+
+	vec3 new_position = new_X + new_Y;
+
+	position	+= (new_position);
+	reference	+= (new_position);
+}
+
+void M_Camera3D::Zoom()
+{	
+	position -= Z * App->input->GetMouseZ() * zoom_speed * App->GetDt();						// The value is negated to make the zoom behave as it should (whl bck = bck / whl fwrd = fwrd).
+}
+
+
+void M_Camera3D::ReturnToWorldOrigin()
+{
+	Look(vec3(2.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), false);
 }
 
 // -----------------------------------------------------------------
@@ -211,18 +314,18 @@ mat4x4 M_Camera3D::GetViewMatrix()
 // -----------------------------------------------------------------
 void M_Camera3D::CalculateViewMatrix()
 {
-	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
+	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, position), -dot(Y, position), -dot(Z, position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
 }
 
 vec3 M_Camera3D::GetPosition() const
 {
-	return Position;
+	return position;
 }
 
 vec3 M_Camera3D::GetReference() const
 {
-	return Reference;
+	return reference;
 }
 
 vec3 M_Camera3D::GetSpot() const
@@ -232,16 +335,16 @@ vec3 M_Camera3D::GetSpot() const
 
 void M_Camera3D::SetPosition(vec3 position)
 {
-	Position.x = position.x;
-	Position.y = position.y;
-	Position.z = position.z;
+	position.x = position.x;
+	position.y = position.y;
+	position.z = position.z;
 }
 
 void M_Camera3D::SetReference(vec3 reference)
 {
-	Reference.x = reference.x;
-	Reference.y = reference.y;
-	Reference.z = reference.z;
+	reference.x = reference.x;
+	reference.y = reference.y;
+	reference.z = reference.z;
 }
 
 void M_Camera3D::SetSpot(vec3 spot)

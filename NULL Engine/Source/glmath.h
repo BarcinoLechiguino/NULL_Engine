@@ -279,6 +279,7 @@ vec3 cross(const vec3 &u, const vec3 &v);
 float dot(const vec3 &u, const vec3 &v);
 float length(const vec3 &u);
 float length2(const vec3 &u);
+float distance(const vec3 &u, const vec3 &v);
 vec3 mix(const vec3 &u, const vec3 &v, float a);
 vec3 normalize(const vec3 &u);
 vec3 reflect(const vec3 &i, const vec3 &n);

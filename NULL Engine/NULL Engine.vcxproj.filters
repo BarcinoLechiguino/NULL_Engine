@@ -339,6 +339,12 @@
     <ClCompile Include="Source\GameObject.cpp">
       <Filter>SourceCode\5_GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Source\E_Scene.cpp">
+      <Filter>SourceCode\2_Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Viewport.cpp">
+      <Filter>SourceCode\2_Editor\Panels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -736,6 +742,12 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\Brofiler\include\Brofiler.h">
       <Filter>Dependencies\Brofiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Scene.h">
+      <Filter>SourceCode\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Viewport.h">
+      <Filter>SourceCode\2_Editor\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

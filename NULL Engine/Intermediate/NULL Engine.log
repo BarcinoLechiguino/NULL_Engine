@@ -1,3 +1,5 @@
-﻿  E_EngineConfiguration.cpp
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\E_EngineConfiguration.cpp(544,15): warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
+﻿  M_Camera3D.cpp
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Camera3D.cpp(276,11): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Camera3D.cpp(281,11): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Camera3D.cpp(292,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

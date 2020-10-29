@@ -210,12 +210,12 @@ bool E_EngineConfiguration::CameraMenu()
 		ImGui::Text("Is Active:"); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->camera->IsActive() ? "True" : "False");
 
 		// --- POSITION
-		float position[3] = { App->camera->Position.x, App->camera->Position.y, App->camera->Position.z };
+		float position[3] = { App->camera->position.x, App->camera->position.y, App->camera->position.z };
 		ImGui::DragFloat3("Position", position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
 		App->camera->SetPosition(vec3(position[0], position[1], position[2]));
 
 		// --- REFERENCE
-		float reference[3] = { App->camera->Reference.x, App->camera->Reference.y, App->camera->Reference.z };
+		float reference[3] = { App->camera->reference.x, App->camera->reference.y, App->camera->reference.z };
 		ImGui::DragFloat3("Reference", reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
 		App->camera->SetReference(vec3(reference[0], reference[1], reference[2]));
 

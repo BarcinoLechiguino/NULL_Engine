@@ -65,7 +65,9 @@
     <ClCompile Include="Source\E_Inspector.cpp" />
     <ClCompile Include="Source\E_Panel.cpp" />
     <ClCompile Include="Source\E_ImGuiDemo.cpp" />
+    <ClCompile Include="Source\E_Scene.cpp" />
     <ClCompile Include="Source\E_Toolbar.cpp" />
+    <ClCompile Include="Source\E_Viewport.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\HardwareInfo.cpp" />
     <ClCompile Include="Source\I_Materials.cpp" />
@@ -197,7 +199,9 @@
     <ClInclude Include="Source\E_Inspector.h" />
     <ClInclude Include="Source\E_Panel.h" />
     <ClInclude Include="Source\E_ImGuiDemo.h" />
+    <ClInclude Include="Source\E_Scene.h" />
     <ClInclude Include="Source\E_Toolbar.h" />
+    <ClInclude Include="Source\E_Viewport.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\HardwareInfo.h" />
     <ClInclude Include="Source\I_Materials.h" />
