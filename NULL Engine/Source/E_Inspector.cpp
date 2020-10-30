@@ -28,3 +28,15 @@ bool E_Inspector::CleanUp()
 	return ret;
 }
 
+void E_Inspector::SetSelectedGameObject(GameObject* game_object)
+{
+	if (game_object != selected_game_object)
+	{
+		selected_game_object = game_object;
+	}
+}
+
+GameObject* E_Inspector::GetSelectedGameObject() const
+{
+	return selected_game_object;
+}

@@ -26,6 +26,8 @@ public:
 	void			LookAt(const vec3 &Spot);
 	void			Move(const vec3 &Movement);
 
+	void			ReturnToWorldOrigin();
+
 public:																											// Camera3D Getters and Setters.
 	float*			GetRawViewMatrix();
 	mat4x4			GetViewMatrix();
@@ -54,13 +56,13 @@ private:
 	void			PanCamera();									// Will translate the camera along XY (Right, Up). The movement can be described as moving in the plane of the camera frame.
 	void			Zoom();											// Will translate the camera along the Z (Forward) axis. This means that the camera will move forwards and backwards. 
 
-	void			ReturnToWorldOrigin();
-
 public:
 	vec3 X;															// Right vector of the Camera. Will always remain axis aligned in this implementation.
 	vec3 Y;															// Up vector of the Camera.
 	vec3 Z;															// Forward Vector of the Camera. Represents where the camera is pointing to.
 
+	vec3 position_origin;											// 
+	vec3 reference_origin;
 	vec3 position;													// Position of the Camera in the World Space.
 	vec3 reference;													// Point where the camera will look at and rotate around.
 

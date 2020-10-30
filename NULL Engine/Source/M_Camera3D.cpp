@@ -13,12 +13,14 @@ M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
 {
 	CalculateViewMatrix();
 
-	X				= vec3(1.0f, 0.0f, 0.0f);
-	Y				= vec3(0.0f, 1.0f, 0.0f);
-	Z				= vec3(0.0f, 0.0f, 1.0f);
+	X					= vec3(1.0f, 0.0f, 0.0f);									//
+	Y					= vec3(0.0f, 1.0f, 0.0f);									//
+	Z					= vec3(0.0f, 0.0f, 1.0f);									//
 
-	position		= vec3(2.0f, 2.0f, 5.0f);
-	reference		= vec3(0.0f, 0.0f, 0.0f);
+	position_origin		= vec3(15.0f, 10.0f, 15.0f);								//
+	reference_origin	= vec3(0.0f, 0.0f, 0.0f);									//
+	position			= position_origin;											// 
+	reference			= reference_origin;											// 
 
 	LookAt(reference);
 
@@ -151,6 +153,12 @@ void M_Camera3D::Move(const vec3 &Movement)
 {
 	position += Movement;
 	reference += Movement;
+}
+
+// -----------------------------------------------------------------
+void M_Camera3D::ReturnToWorldOrigin()
+{
+	PointAt(position_origin, reference_origin, true);
 }
 
 // -----------------------------------------------------------------
@@ -288,11 +296,6 @@ void M_Camera3D::PanCamera()
 void M_Camera3D::Zoom()
 {	
 	position -= Z * App->input->GetMouseZ() * zoom_speed * App->GetDt();						// The value is negated to make the zoom behave as it should (whl bck = bck / whl fwrd = fwrd).
-}
-
-void M_Camera3D::ReturnToWorldOrigin()
-{
-	PointAt(vec3(2.0f, 2.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), false);
 }
 
 // -----------------------------------------------------------------

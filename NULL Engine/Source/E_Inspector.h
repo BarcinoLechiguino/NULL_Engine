@@ -3,6 +3,8 @@
 
 #include "E_Panel.h"
 
+class GameObject;
+
 class E_Inspector : public E_Panel
 {
 public:
@@ -13,8 +15,12 @@ public:
 
 	bool CleanUp() override;
 
+public:
+	void SetSelectedGameObject(GameObject* game_object);
+	GameObject* GetSelectedGameObject() const;
+
 private:
-	int a;
+	GameObject* selected_game_object;
 };
 
 #endif // !__E_INSPECTOR_H__

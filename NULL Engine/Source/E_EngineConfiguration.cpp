@@ -218,6 +218,13 @@ bool E_EngineConfiguration::CameraMenu()
 		// --- IS ACTIVE
 		ImGui::Text("Is Active:"); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->camera->IsActive() ? "True" : "False");
 
+		ImGui::SameLine(152.5f);
+
+		if (ImGui::Button("Return to Origin"))
+		{
+			App->camera->ReturnToWorldOrigin();
+		}
+
 		// --- POSITION
 		float position[3] = { App->camera->position.x, App->camera->position.y, App->camera->position.z };
 		ImGui::DragFloat3("Position", position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);

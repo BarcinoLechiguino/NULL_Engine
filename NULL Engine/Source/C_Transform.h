@@ -11,6 +11,6 @@ public:
 
 private:
 
-}
+};
 
 #endif // !_C_TRANSFORM_H__

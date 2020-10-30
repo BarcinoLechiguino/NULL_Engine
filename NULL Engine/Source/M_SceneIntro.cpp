@@ -6,11 +6,13 @@
 #include "M_Input.h"
 #include "Primitive.h"
 
+#include "GameObject.h"
+
 #include "M_SceneIntro.h"
 
 M_SceneIntro::M_SceneIntro(bool is_active) : Module("SceneManager", is_active)
 {
-
+	root_object = nullptr;
 }
 
 M_SceneIntro::~M_SceneIntro()
@@ -29,16 +31,83 @@ bool M_SceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
+	//App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
+	for (uint i = 0; i < 10; ++i)
+	{	
+		if (root_object == nullptr)
+		{
+			root_object = CreateGameObject("GameObject");
+		}
+		else
+		{
+			CreateGameObject("GameObject", root_object);
+		}
+	}
+
+	// Push and resize
+
+	for (uint i = 0; i < game_objects.size(); ++i)
+	{
+		if (i > 3 && i < 6)
+		{
+			game_objects[i - 1]->AddChild(game_objects[i]);
+		}
+	}
+
 	return ret;
+}
+
+// Update
+UPDATE_STATUS M_SceneIntro::Update(float dt)
+{
+	if (App->debug == true)
+	{
+		HandleDebugInput();
+	}
+
+	for (uint n = 0; n < primitives.size(); n++)
+	{
+		primitives[n]->Update();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_STATE::KEY_DOWN)
+	{
+		App->SaveConfiguration("Resources/Configuration/configuration.JSON");
+
+		//DebugSpawnPrimitive(new Sphere(1.0f, 1.0f));
+	}
+
+	return UPDATE_STATUS::CONTINUE;
+}
+
+UPDATE_STATUS M_SceneIntro::PostUpdate(float dt)
+{
+	for (uint i = 0; i < game_objects.size(); ++i)
+	{
+		game_objects[i]->Update();
+	}
+	
+	for (uint n = 0; n < primitives.size(); n++)
+	{
+		primitives[n]->Render();
+	}
+
+	return UPDATE_STATUS::CONTINUE;
 }
 
 // Load assets
 bool M_SceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
+
+	for (uint i = 0; i < game_objects.size(); ++i)
+	{
+		RELEASE(game_objects[i]);
+	}
+
+	game_objects.clear();
 
 	return true;
 }
@@ -58,10 +127,32 @@ bool M_SceneIntro::SaveConfiguration(Configuration& root) const
 }
 
 // -------------- SCENE METHODS --------------
+GameObject* M_SceneIntro::CreateGameObject(const char* name, GameObject* parent)
+{
+	std::string complete_name = name;
+	complete_name += std::to_string(game_objects.size());
+	
+	GameObject* game_object = new GameObject(game_objects.size(), complete_name.c_str());
+
+	
+	if (game_object != nullptr)
+	{
+		game_objects.push_back(game_object);
+		
+		if (parent != nullptr)
+		{
+			parent->AddChild(game_object);
+		}
+	}
+	
+
+	return game_object;
+}
+
 void M_SceneIntro::HandleDebugInput()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_STATE::KEY_DOWN)
-	{	
+	{
 		DebugSpawnPrimitive(new Sphere(1.0f, 12, 24));
 	}
 
@@ -90,7 +181,7 @@ void M_SceneIntro::HandleDebugInput()
 		float mouse_y_position = -((float)App->input->GetMouseY() / (float)App->window->GetHeight()) * 2.f + 1.f;
 
 		const vec2 mousePos(mouse_x_position, mouse_y_position);
-		
+
 		const vec4 rayEye = inverse(App->renderer->ProjectionMatrix) * vec4(mousePos.x, mousePos.y, -1.f, 1.f);
 		const vec4 rayWorld(inverse(App->camera->GetViewMatrix()) * vec4(rayEye.x, rayEye.y, -1.f, 0.f));
 
@@ -98,41 +189,8 @@ void M_SceneIntro::HandleDebugInput()
 	}
 }
 
-void M_SceneIntro::DebugSpawnPrimitive(Primitive * p)
+void M_SceneIntro::DebugSpawnPrimitive(Primitive* p)
 {
 	primitives.push_back(p);
 	p->SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
-}
-
-// Update
-UPDATE_STATUS M_SceneIntro::Update(float dt)
-{
-	if (App->debug == true)
-	{
-		HandleDebugInput();
-	}
-
-	for (uint n = 0; n < primitives.size(); n++)
-	{
-		primitives[n]->Update();
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_STATE::KEY_DOWN)
-	{	
-		App->SaveConfiguration("Resources/Configuration/configuration.JSON");
-
-		//DebugSpawnPrimitive(new Sphere(1.0f, 1.0f));
-	}
-
-	return UPDATE_STATUS::CONTINUE;
-}
-
-UPDATE_STATUS M_SceneIntro::PostUpdate(float dt)
-{
-	for (uint n = 0; n < primitives.size(); n++)
-	{
-		primitives[n]->Render();
-	}
-
-	return UPDATE_STATUS::CONTINUE;
 }
