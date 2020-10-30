@@ -39,7 +39,7 @@ void E_Hierarchy::PrintGameObjectsOnHierarchy()
 {
 	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	
-	ProcessGameObject(App->scene_intro->root_object, node_flags);
+	ProcessGameObject(App->scene_intro->root_object, node_flags); 
 }
 
 void E_Hierarchy::ProcessGameObject(GameObject* game_object, ImGuiTreeNodeFlags node_flags)

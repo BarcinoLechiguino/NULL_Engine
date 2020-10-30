@@ -448,29 +448,21 @@ void Application::SetOrganizationName(const char* name)
 	organization = name;
 }
 
-void Application::EngineShortcuts()
-{
-	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_STATE::KEY_DOWN)
-	{
-		renderer->SetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL, !renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL));
-	}
-}
-
 void Application::AddEditorLog(const char* log)
 {
-	if (editor != nullptr)
+	if (!quit && editor != nullptr)													// Second condition is not really necessary. It's more of a reminder to keep it in mind.
 	{
-		std::string tmp_log		= log;
+		std::string full_log = log;
 
-		uint log_start_position = tmp_log.find_last_of("\\") + 1;								// Gets the position of the last "\" in the log string.
-		uint log_end_position	= tmp_log.size();												// The last position of the log will be equal to the size of it.
+		uint log_start = full_log.find_last_of("\\") + 1;							// Gets the position of the last "\" in the log string.
+		uint log_end = full_log.size();												// The last position of the log will be equal to the size of it.
 
-		std::string short_log	= tmp_log.substr(log_start_position, log_end_position);			// Returns the string that is within the given positions.
-		
-		editor->AddConsoleLog(short_log.c_str());
+		std::string short_log = full_log.substr(log_start, log_end);				// Returns the string that is within the given positions.
 
-		tmp_log.clear();
+		editor->AddConsoleLog(short_log.c_str());									// Priorized readability over reducing to AddConsoleLog(full_log.substr(log_start, log_end)).
+
 		short_log.clear();
+		full_log.clear();
 	}
 }
 

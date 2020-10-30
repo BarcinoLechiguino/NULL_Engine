@@ -1,3 +1,5 @@
+#include "Globals.h"
+
 #include "Component.h"
 #include "C_Transform.h"
 #include "C_Mesh.h"
@@ -68,7 +70,12 @@ bool GameObject::AddChild(GameObject* child)
 
 	if (child->parent != nullptr)
 	{
-		child->parent->DeleteChild(child);
+		bool deleted = child->parent->DeleteChild(child);
+
+		if (!deleted)
+		{
+			LOG("[WARNING] Could not find child %s in parent %s", child->name.c_str(), child->parent->name.c_str());
+		}
 	}
 
 	child->parent = this;
@@ -101,7 +108,7 @@ bool GameObject::DeleteChild(GameObject* child)
 			break;
 		}
 	}
-
+	
 	return ret;
 }
 
@@ -140,9 +147,11 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 			{
 				if (type == components[i]->type)
 				{
+					LOG("[ERROR] %s Component could not be added to %s: No duplicates allowed!", component->name.c_str(), name.c_str());
+					
 					delete component;
 					component = nullptr;
-					
+
 					return nullptr;
 				}
 			}
@@ -152,6 +161,38 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	}
 
 	return component;
+}
+
+Component* GameObject::GetComponent(COMPONENT_TYPE type)
+{
+	for (uint i = 0; i < components.size(); ++i)
+	{
+		if (components[i]->type == type)
+		{
+			return components[i];
+		}
+	}
+
+	LOG("[WARNING] Could not find %s Component in %s", GetComponentNameFromType(type), name.c_str());
+
+	return nullptr;
+}
+
+const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
+{
+	switch (type)
+	{
+	case COMPONENT_TYPE::NONE:		{ return "None"; }		break;
+	case COMPONENT_TYPE::TRANSFORM: { return "Transform"; } break;
+	case COMPONENT_TYPE::MESH:		{ return "Mesh"; }		break;
+	case COMPONENT_TYPE::MATERIAL:	{ return "Material"; }	break;
+	case COMPONENT_TYPE::LIGHT:		{ return "Light"; }		break;
+	case COMPONENT_TYPE::UNKNOWN:	{ return "Unknown"; }	break;
+	}
+
+	LOG("[ERROR] Could Not Get Component Name From Type");
+
+	return "Invalid Component Type";
 }
 
 void GameObject::SetID(uint id)

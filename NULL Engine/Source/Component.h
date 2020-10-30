@@ -1,6 +1,8 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
+#include <string>
+
 enum class COMPONENT_TYPE
 {
 	NONE,
@@ -18,7 +20,8 @@ public:
 	~Component();
 
 public:
-	COMPONENT_TYPE type;
+	COMPONENT_TYPE	type;
+	std::string		name;
 
 private:
 
