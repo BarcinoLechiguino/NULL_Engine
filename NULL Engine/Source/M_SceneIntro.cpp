@@ -37,30 +37,12 @@ bool M_SceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	//App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
-	for (uint i = 0; i < 10; ++i)
-	{	
-		if (root_object == nullptr)
-		{
-			root_object = CreateGameObject("Scene");
-			App->editor->SetInspectedGameObject(root_object);
-		}
-		else
-		{
-			CreateGameObject("GameObject", root_object);
-		}
-	}
-
-	// Push and resize
-
-	for (uint i = 0; i < game_objects.size(); ++i)
+	if (root_object == nullptr)
 	{
-		if (i > 3 && i < 6)
-		{
-			game_objects[i - 1]->AddChild(game_objects[i]);
-		}
+		root_object = CreateGameObject("Main Scene");
+		App->editor->SetInspectedGameObject(root_object);
 	}
 
 	return ret;
@@ -171,30 +153,72 @@ GameObject* M_SceneIntro::CreateGameObject(const char* name, GameObject* parent)
 	return game_object;
 }
 
-GameObject* M_SceneIntro::CreateGameObjectFromModel(const char* path)
+bool M_SceneIntro::CreateGameObjectsFromModel(const char* path)
 {
-	GameObject* game_object = new GameObject();
+	bool ret = false;
 
+	std::string file				= path;															// Getting the file name and the game_object's name.
+	uint file_start					= file.find_last_of("//") + 1;									//
+	uint file_end					= file.find_last_of(".");										//
+	file							= file.substr(file_start, file_end); 							// -------------------------------------------------
+
+	
 	std::vector<R_Mesh*> meshes;
-	Importer::Meshes::Import(path, meshes);
+	Importer::Meshes::Import(path, meshes);															// Importing the model from the given path. The meshes will be returned in the vector.
+
+	ret = GenerateGameObjectsFromMeshes(file, meshes);
+
+	return ret;
+}
+
+bool M_SceneIntro::GenerateGameObjectsFromMeshes(std::string file_name, std::vector<R_Mesh*>& meshes)
+{
+	bool ret = true;
+	
+	GameObject* parent_mesh_object;																	// Will be kept to store all the sub-meshes inside.
 
 	for (uint i = 0; i < meshes.size(); ++i)
 	{
-		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
+		GameObject* game_object = new GameObject();
 
-		c_mesh->SetMesh(meshes[i]);
+		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);				// Creating the C_Mesh components of each mesh.
+		c_mesh->SetMesh(meshes[i]);																	// The name of the file will be added as the path of the mesh.
+		c_mesh->SetMeshPath(file_name.c_str());														// The mesh being iterated will be set as the component's mesh.
+
+		if (game_object != nullptr)
+		{
+			if (i == 0)																				// Adding the current game object as a child.
+			{																						// 
+				game_object->parent = root_object;													// 
+				root_object->AddChild(game_object);													// Depending on whether it's the first game object of the loop or not, 
+																									// it will be parented to the Scene's root_object or to the first game object
+				parent_mesh_object = game_object;													// to be iterated (See parent_mesh_object).
+				App->editor->SetInspectedGameObject(game_object);									// 
+			}																						// Moreover, this parent_mesh_object will be set as the inspected game object and
+			else																					// will be shown in the inspector window.
+			{																						// 
+				game_object->parent = parent_mesh_object;											// 
+				parent_mesh_object->AddChild(game_object);											// 
+			}																						// ---------------------------------------------------------
+
+			std::string game_object_name = file_name + "-" + std::to_string(i);						// Adding the index of iteration to the current game object.
+			game_object->SetName(game_object_name.c_str());											// ---------------------------------------------------------
+			
+			game_objects.push_back(game_object);													// The newly constructed game_object will be added to the game_objects vector.
+
+			//game_object_name.clear();
+
+			ret = true;
+		}
+		else																						// The created game object was not valid (nullptr).
+		{																							// 
+			delete game_object;																		// The game object will be deleted and set to null.
+			game_object = nullptr;																	// 
+			ret = false;																			// 
+		}																							// ------------------------------------------------
 	}
 
-	if (game_object != nullptr)
-	{
-		game_object->parent = root_object;
-		
-		root_object->AddChild(game_object);
-
-		game_objects.push_back(game_object);
-	}
-
-	return game_object;
+	return ret;
 }
 
 void M_SceneIntro::DeleteGameObject(GameObject* game_object)

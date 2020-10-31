@@ -45,6 +45,35 @@ void C_Mesh::SetMesh(R_Mesh* r_mesh)
 	mesh = r_mesh;
 }
 
+std::string C_Mesh::GetMeshPath() const
+{
+	if (mesh != nullptr)
+	{
+		return mesh->path;
+	}
+
+	return "NONE";
+}
+
+void C_Mesh::SetMeshPath(const char* path)
+{
+	if (mesh != nullptr)
+	{
+		mesh->path = path;
+	}
+}
+
+void C_Mesh::GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices)
+{
+	if (mesh != nullptr)
+	{
+		num_vertices	= mesh->vertices.size();
+		num_normals		= mesh->normals.size();
+		num_tex_coords	= mesh->tex_coords.size();
+		num_indices		= mesh->indices.size();
+	}
+}
+
 bool C_Mesh::GetDrawNormals() const
 {
 	if (mesh != nullptr)

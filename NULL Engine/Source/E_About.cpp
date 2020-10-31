@@ -33,8 +33,8 @@ bool E_About::Draw(ImGuiIO& io)
 		ImGui::Separator();
 
 		ImGui::Text("Libraries:");
-		ImGui::Text("OpenGL v2.1 ------------------------>");			ImGui::SameLine();		if (ImGui::Button("Get OpenGL v4.6"))			{ App->RequestBrowser("https://www.opengl.org/sdk/"); }
-		ImGui::Text("Glew v7.0 -------------------------->");			ImGui::SameLine();		if (ImGui::Button("Get Glew v2.1.0"))			{ App->RequestBrowser("http://glew.sourceforge.net/index.html"); }
+		ImGui::Text("OpenGL v4.6 ------------------------>");			ImGui::SameLine();		if (ImGui::Button("Get OpenGL v4.6"))			{ App->RequestBrowser("https://www.opengl.org/sdk/"); }
+		ImGui::Text("Glew v2.1.0 ------------------------>");			ImGui::SameLine();		if (ImGui::Button("Get Glew v2.1.0"))			{ App->RequestBrowser("http://glew.sourceforge.net/index.html"); }
 		ImGui::Text("ImGui v1.79 (Docking Branch) ------->");			ImGui::SameLine();		if (ImGui::Button("Get ImGui v1.79 Docking"))	{ App->RequestBrowser("https://github.com/ocornut/imgui/tree/docking"); }
 		ImGui::Text("ImGuizmo v1.61 --------------------->");			ImGui::SameLine();		if (ImGui::Button("Get ImGuizmo v1.61"))		{ App->RequestBrowser("https://github.com/CedricGuillemet/ImGuizmo"); }
 		ImGui::Text("MathGeoLib v1.5 -------------------->");			ImGui::SameLine();		if (ImGui::Button("Get MathGeoLib v1.5"))		{ App->RequestBrowser("https://github.com/juj/MathGeoLib/releases/tag/v1.5"); }

@@ -69,9 +69,14 @@ void E_Hierarchy::ProcessGameObject(GameObject* game_object)
 		node_flags |= ImGuiTreeNodeFlags_Leaf;
 	}
 
-	if (App->editor->GetInspectedGameObject() == game_object)
+	if (game_object == App->editor->GetInspectedGameObject())
 	{
 		node_flags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	if (game_object == App->scene_intro->root_object)
+	{
+		node_flags |= ImGuiTreeNodeFlags_DefaultOpen;
 	}
 
 	if (ImGui::TreeNodeEx(game_object->GetName(), node_flags))

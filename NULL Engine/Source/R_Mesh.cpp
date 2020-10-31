@@ -5,7 +5,9 @@
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
 
-R_Mesh::R_Mesh() : Resource()
+R_Mesh::R_Mesh() : Resource(),
+draw_normals(false),
+path("NONE")
 {
 	VAO = 0;																								// Initializing the buffers.
 	VBO = 0;																								// 
@@ -14,8 +16,6 @@ R_Mesh::R_Mesh() : Resource()
 	IBO = 0;																								// -----------------------------------
 
 	debug_texture_id = 0;
-
-	draw_normals = false;
 
 	LoadDebugTexture();
 }

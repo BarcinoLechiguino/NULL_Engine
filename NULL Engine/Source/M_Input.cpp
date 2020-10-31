@@ -178,7 +178,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 
 					//App->renderer->LoadModel(norm_path.c_str());										// TMP. Use M_FileSystem later.
 
-					App->scene_intro->CreateGameObjectFromModel(dropped_file_path);
+					App->scene_intro->CreateGameObjectsFromModel(norm_path.c_str());
 				}
 
 			break;

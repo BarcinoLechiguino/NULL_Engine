@@ -6,6 +6,7 @@
 class Configuration;
 class Primitive;
 class GameObject;
+class R_Mesh;
 
 class M_SceneIntro : public Module
 {
@@ -24,7 +25,8 @@ public:
 
 public:
 	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
-	GameObject*		CreateGameObjectFromModel(const char* path);
+	bool			CreateGameObjectsFromModel(const char* path);
+	bool			GenerateGameObjectsFromMeshes(std::string file_name, std::vector<R_Mesh*>& meshes);
 
 	void			DeleteGameObject(GameObject* game_object);
 	

@@ -87,32 +87,32 @@ void R_Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
 void R_Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type, R_Mesh* r_mesh)
 {
-	for (uint i = 0; i < material->GetTextureCount(type); ++i)
-	{
-		aiString path;
-		material->GetTexture(type, i, &path);
-
-		bool skip = false;
-
-		for (uint j = 0; j < loaded_textures.size(); ++j)
-		{
-			if (strcmp(path.C_Str(), loaded_textures[j]->path.c_str()) == 0)
-			{
-				r_mesh->textures.push_back(*loaded_textures[j]);
-				skip = true;
-				break;
-			}
-		}
-
-		if (!skip)
-		{
-			Texture texture;
-			texture.id = 0 /*TextureFromFile(path.C_Str(), directory)*/;
-			texture.type = (TEXTURE_TYPE)type;
-			texture.path = path.C_Str();
-
-			r_mesh->textures.push_back(texture);
-			loaded_textures.push_back(&texture);
-		}
-	}
+	//for (uint i = 0; i < material->GetTextureCount(type); ++i)
+	//{
+	//	aiString path;
+	//	material->GetTexture(type, i, &path);
+	//
+	//	bool skip = false;
+	//
+	//	for (uint j = 0; j < loaded_textures.size(); ++j)
+	//	{
+	//		if (strcmp(path.C_Str(), loaded_textures[j]->path.c_str()) == 0)
+	//		{
+	//			r_mesh->textures.push_back(*loaded_textures[j]);
+	//			skip = true;
+	//			break;
+	//		}
+	//	}
+	//
+	//	if (!skip)
+	//	{
+	//		Texture texture;
+	//		texture.id = 0 /*TextureFromFile(path.C_Str(), directory)*/;
+	//		texture.type = (TEXTURE_TYPE)type;
+	//		texture.path = path.C_Str();
+	//
+	//		r_mesh->textures.push_back(texture);
+	//		loaded_textures.push_back(&texture);
+	//	}
+	//}
 }
