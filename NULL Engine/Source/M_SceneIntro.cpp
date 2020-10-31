@@ -166,6 +166,24 @@ GameObject* M_SceneIntro::CreateGameObject(const char* name, GameObject* parent)
 	return game_object;
 }
 
+void M_SceneIntro::DeleteGameObject(GameObject* game_object)
+{
+	if (!game_objects.empty() && game_object != nullptr)
+	{
+		for (uint i = 0; i < game_objects.size(); ++i)
+		{
+			if (game_objects[i] == game_object)
+			{
+				game_objects.erase(game_objects.begin() + i);
+				game_object->CleanUp();
+				return;
+			}
+		}
+
+		LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
+	}
+}
+
 bool M_SceneIntro::NameHasDuplicate(const char* name)
 {
 	uint duplicates = 0;

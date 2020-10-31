@@ -42,3 +42,13 @@ void Component::SetName(const char* new_name)
 {
 	name = new_name;
 }
+
+bool Component::IsActive() const
+{
+	return is_active;
+}
+
+void Component::SetIsActive(const bool& set_to)
+{
+	is_active = true;
+}

@@ -69,11 +69,13 @@ GameObject* E_Inspector::GetSelectedGameObject() const
 void E_Inspector::DrawGameObjectInfo()
 {
 	// --- IS ACTIVE ---
-	bool is_active = selected_game_object->IsActive();
-	if (ImGui::Checkbox("Is Active", &is_active))
+	bool game_object_is_active = selected_game_object->IsActive();
+	if (ImGui::Checkbox("Is Active", &game_object_is_active))
 	{
-		selected_game_object->SetIsActive(is_active);
+		selected_game_object->SetIsActive(game_object_is_active);
 	}
+
+	
 
 	ImGui::SameLine();
 
@@ -143,16 +145,14 @@ void E_Inspector::DrawTransformComponent()
 		//C_Transform* transform = (C_Transform*)selected_game_object->GetComponent(COMPONENT_TYPE::TRANSFORM);
 		C_Transform* transform = selected_game_object->transform;
 
-		bool is_active = transform->is_active;
-		if (ImGui::Checkbox("Is Active", &is_active))
-		{
-			transform->is_active = is_active;
-		}
-
 		if (transform != nullptr)
 		{
 			// --- IS ACTIVE ---
-			
+			bool transform_is_active = transform->IsActive();
+			if (ImGui::Checkbox("Is Active", &transform_is_active))
+			{
+				transform->SetIsActive(transform_is_active);
+			}
 
 			ImGui::Separator();
 
@@ -199,10 +199,10 @@ void E_Inspector::DrawMeshComponent()
 
 		if (mesh != nullptr)
 		{
-			bool is_active = mesh->is_active;
-			if (ImGui::Checkbox("Is Active", &is_active))
+			bool mesh_is_active = mesh->IsActive();
+			if (ImGui::Checkbox("Is Active", &mesh_is_active))
 			{
-				mesh->is_active = is_active;
+				mesh->SetIsActive(mesh_is_active);
 			}
 
 			ImGui::Separator();
@@ -248,9 +248,11 @@ void E_Inspector::DrawMaterialComponent()
 
 		if (material != nullptr)
 		{
-			bool is_active = material->is_active;
-			ImGui::Checkbox("Is Active", &is_active);
-			material->is_active = is_active;
+			bool material_is_active = material->IsActive();
+			if (ImGui::Checkbox("Is Active", &material_is_active))
+			{
+				material->SetIsActive(material_is_active);
+			}
 			
 			ImGui::Separator();
 
@@ -291,11 +293,10 @@ void E_Inspector::DrawLightComponent()
 		
 		if (light != nullptr)
 		{
-			bool is_active = light->is_active
-				;
-			if (ImGui::Checkbox("Is Active", &is_active))
+			bool light_is_active = light->IsActive();
+			if (ImGui::Checkbox("Is Active", &light_is_active))
 			{
-				light->is_active = is_active;
+				light->SetIsActive(light_is_active);
 			}
 			
 			ImGui::Separator();

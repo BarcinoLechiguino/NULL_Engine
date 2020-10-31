@@ -6,7 +6,7 @@
 
 #include "E_Hierarchy.h"
 
-E_Hierarchy::E_Hierarchy() : E_Panel("Hierarchy"), dragged_game_object(nullptr)
+E_Hierarchy::E_Hierarchy() : E_Panel("Hierarchy"), dragged_game_object(nullptr), open_hierarchy_tools_popup(false)
 {
 	default_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 }
@@ -38,7 +38,15 @@ bool E_Hierarchy::CleanUp()
 
 void E_Hierarchy::PrintGameObjectsOnHierarchy()
 {	
-	ProcessGameObject(App->scene_intro->root_object); 
+	if (App->scene_intro->root_object != nullptr)
+	{
+		if (open_hierarchy_tools_popup)
+		{
+			HierarchyToolsPopup();
+		}
+		
+		ProcessGameObject(App->scene_intro->root_object);
+	}
 }
 
 void E_Hierarchy::ProcessGameObject(GameObject* game_object)
@@ -68,9 +76,15 @@ void E_Hierarchy::ProcessGameObject(GameObject* game_object)
 
 	if (ImGui::TreeNodeEx(game_object->GetName(), node_flags))
 	{
-		if (ImGui::IsItemClicked())														// IsItemClicked checks if the previous item was clicked. Arguments: 0 (Right Click), 1 (Left Click).
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Left))								// IsItemClicked checks if the previous item was clicked. Arguments: 0 (Right Click), 1 (Left Click).
 		{
 			App->editor->SetInspectedGameObject(game_object);
+		}
+
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+		{
+			App->editor->SetInspectedGameObject(game_object);
+			open_hierarchy_tools_popup = true;
 		}
 
 		if (ImGui::BeginDragDropSource())												// First, it is checked whether or not this node is part of a currently starting drag&drop operation.
@@ -106,4 +120,30 @@ void E_Hierarchy::ProcessGameObject(GameObject* game_object)
 	}
 
 	ImGui::PopStyleColor();
+}
+
+void E_Hierarchy::HierarchyToolsPopup()
+{
+	ImGui::OpenPopup("Hierarchy Tools");
+	if (ImGui::BeginPopup("Hierarchy Tools"))
+	{
+		if (ImGui::MenuItem("Delete Selected"))
+		{
+			App->scene_intro->DeleteGameObject(App->editor->GetInspectedGameObject());
+			open_hierarchy_tools_popup = false;
+		}
+
+		if (ImGui::MenuItem("Create Empty Child GameObject"))
+		{
+			App->scene_intro->CreateGameObject("Empty Child", App->editor->GetInspectedGameObject());
+			open_hierarchy_tools_popup = false;
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::IsMouseReleased(0))
+	{
+		open_hierarchy_tools_popup = false;
+	}
 }

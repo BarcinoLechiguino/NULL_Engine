@@ -21,22 +21,24 @@ public:
 	Component(GameObject* owner, COMPONENT_TYPE type, const char* name, bool is_active = true);
 	virtual ~Component();
 
-	virtual bool Update();
-	virtual bool CleanUp();
+	virtual bool	Update();
+	virtual bool	CleanUp();
 
 public:
-	const char* GetName() const;
-	void SetName(const char* new_name);
+	const char*		GetName() const;
+	void			SetName(const char* new_name);
+
+	bool			IsActive() const;
+	void			SetIsActive(const bool& is_active);
 
 public:
 	COMPONENT_TYPE	type;
 
 	GameObject* owner;
 
-	bool		is_active;
-
 private:
 	const char* name;
+	bool		is_active;
 };
 
 #endif // !__COMPONENT_H__

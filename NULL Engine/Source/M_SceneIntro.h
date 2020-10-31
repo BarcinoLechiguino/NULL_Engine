@@ -25,6 +25,7 @@ public:
 public:
 	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
 	GameObject*		CreateEmptyGameObject();
+	void			DeleteGameObject(GameObject* game_object);
 	
 	bool			NameHasDuplicate(const char* name);
 	void			AddDuplicateNumberToName(const char* name);

@@ -52,7 +52,7 @@ bool GameObject::Update()
 
 	for (uint i = 0; i < components.size(); ++i)
 	{
-		if (components[i]->is_active)
+		if (components[i]->IsActive())
 		{
 			components[i]->Update();
 		}
@@ -76,12 +76,16 @@ bool GameObject::CleanUp()
 	}
 
 	components.clear();
-
+	
 	for (uint i = 0; i < childs.size(); ++i)
 	{
+		childs[i]->CleanUp();
+		
 		delete childs[i];
 		childs[i] = nullptr;
 	}
+
+	parent->DeleteChild(this);
 
 	childs.clear();
 
