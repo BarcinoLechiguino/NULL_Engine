@@ -133,11 +133,11 @@ void R_Mesh::LoadDebugTexture()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void R_Mesh::CreateAABB()
+/*void R_Mesh::CreateAABB()
 {
-	aabb.SetNegativeInfinity();
-	aabb.Enclose((math::float3*)&vertices[0], vertices.size());
-}
+	//aabb.SetNegativeInfinity();
+	//aabb.Enclose((math::float3*)&vertices[0], vertices.size());
+}*/
 
 // VERTEX METHODS
 Vertex::Vertex()

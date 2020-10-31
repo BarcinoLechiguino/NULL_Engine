@@ -35,16 +35,16 @@ public:																											// Camera3D Getters and Setters.
 	vec3			GetPosition() const;
 	vec3			GetReference() const;
 	vec3			GetSpot() const;
-	void			SetPosition(vec3 position);
-	void			SetReference(vec3 reference);
-	void			SetSpot(vec3 spot);
+	void			SetPosition(const vec3& position);
+	void			SetReference(const vec3& reference);
+	void			SetSpot(const vec3& spot);
 
 	float			GetMovementSpeed() const;
 	float			GetRotationSpeed() const;
 	float			GetZoomSpeed() const;
-	void			SetMovementSpeed(float movement_speed);
-	void			SetRotationSpeed(float rotation_speed);
-	void			SetZoomSpeed(float zoom_speed);
+	void			SetMovementSpeed(const float& movement_speed);
+	void			SetRotationSpeed(const float& rotation_speed);
+	void			SetZoomSpeed(const float& zoom_speed);
 
 
 private:

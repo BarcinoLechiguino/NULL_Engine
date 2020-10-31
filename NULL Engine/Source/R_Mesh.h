@@ -42,7 +42,7 @@ public:
 
 	void LoadBuffers();
 	void LoadExBuffers();
-	void CreateAABB();									// Will create the bounding box that will encase the mesh.
+	//void CreateAABB();									// Will create the bounding box that will encase the mesh.
 
 public:
 	// Mesh data

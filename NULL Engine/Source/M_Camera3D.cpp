@@ -24,9 +24,9 @@ M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
 
 	LookAt(reference);
 
-	movement_speed	= MOVEMENT_SPEED;
-	rotation_speed	= ROTATION_SPEED;
-	zoom_speed		= ZOOM_SPEED;
+	movement_speed		= MOVEMENT_SPEED;
+	rotation_speed		= ROTATION_SPEED;
+	zoom_speed			= ZOOM_SPEED;
 }
 
 M_Camera3D::~M_Camera3D()
@@ -339,21 +339,25 @@ vec3 M_Camera3D::GetSpot() const
 	return vec3(0.0f, 0.0f, 0.0f);
 }
 
-void M_Camera3D::SetPosition(vec3 position)
+void M_Camera3D::SetPosition(const vec3& position)
 {
-	this->position.x = position.x;
-	this->position.y = position.y;
-	this->position.z = position.z;
+	//this->position.x = position.x;
+	//this->position.y = position.y;
+	//this->position.z = position.z;
+
+	this->position = position;
 }
 
-void M_Camera3D::SetReference(vec3 reference)
+void M_Camera3D::SetReference(const vec3& reference)
 {
-	this->reference.x = reference.x;
-	this->reference.y = reference.y;
-	this->reference.z = reference.z;
+	//this->reference.x = reference.x;
+	//this->reference.y = reference.y;
+	//this->reference.z = reference.z;
+
+	this->reference = reference;
 }
 
-void M_Camera3D::SetSpot(vec3 spot)
+void M_Camera3D::SetSpot(const vec3& spot)
 {
 
 }
@@ -373,17 +377,17 @@ float M_Camera3D::GetZoomSpeed() const
 	return zoom_speed;
 }
 
-void M_Camera3D::SetMovementSpeed(float movement_speed)
+void M_Camera3D::SetMovementSpeed(const float& movement_speed)
 {
 	this->movement_speed = movement_speed;
 }
 
-void M_Camera3D::SetRotationSpeed(float rotation_speed)
+void M_Camera3D::SetRotationSpeed(const float& rotation_speed)
 {
 	this->rotation_speed = rotation_speed;
 }
 
-void M_Camera3D::SetZoomSpeed(float zoom_speed)
+void M_Camera3D::SetZoomSpeed(const float& zoom_speed)
 {
 	this->zoom_speed = zoom_speed;
 }

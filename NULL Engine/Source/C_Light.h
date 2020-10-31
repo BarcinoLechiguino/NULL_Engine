@@ -3,11 +3,16 @@
 
 #include "Component.h"
 
+class GameObject;
+
 class C_Light : public Component
 {
 public:
-	C_Light();
+	C_Light(GameObject* owner);
 	~C_Light();
+
+	bool Update() override;
+	bool CleanUp() override;
 
 private:
 

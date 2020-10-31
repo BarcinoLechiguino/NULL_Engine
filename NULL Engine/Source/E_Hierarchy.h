@@ -17,11 +17,11 @@ public:
 
 public:
 	void PrintGameObjectsOnHierarchy();
-	void ProcessGameObject(GameObject* game_object, ImGuiTreeNodeFlags node_flags);
-	void ProcessChilds(GameObject* game_object);
+	void ProcessGameObject(GameObject* game_object);
 
 private:
-	int a;
+	ImGuiTreeNodeFlags	default_flags;								// Will define the base configuration of the tree nodes.
+	GameObject*			dragged_game_object;						// Used for the dragging and dropping of game objects withing the hierarchy.
 };
 
 #endif // !__E_HIERARCHY_H__

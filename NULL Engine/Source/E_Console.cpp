@@ -110,6 +110,11 @@ void E_Console::ConsoleOutput()
 			text_colour = { 1.0f, 0.0f, 1.0f, 1.0f };
 		}
 
+		if (strstr(logs[i], "[SCENE]") != nullptr)
+		{
+			text_colour = { 0.0f, 1.0f, 1.0f, 1.0f };
+		}
+
 		ImGui::PushStyleColor(ImGuiCol_Text, text_colour);
 		ImGui::TextUnformatted(logs[i]);										// Raw text without formatting. Fast, without memory copies and no buffer size limits. For long chunks of txt.
 		ImGui::PopStyleColor();

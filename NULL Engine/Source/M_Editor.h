@@ -6,6 +6,8 @@
 
 class Configuration;
 
+class GameObject;
+
 class E_Panel;
 class E_Toolbar;
 class E_EngineConfiguration;
@@ -62,6 +64,9 @@ public:																				// --- Panel/Window Methods. Acts as an interface bet
 
 	void			AddConsoleLog(const char* log);
 	void			AddInputLog(uint key, uint state);
+
+	void			SetInspectedGameObject(GameObject* game_object);
+	GameObject*		GetInspectedGameObject() const;
 
 private:
 	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);

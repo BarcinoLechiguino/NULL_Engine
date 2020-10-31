@@ -20,6 +20,14 @@ public:
 	GameObject* GetSelectedGameObject() const;
 
 private:
+	void DrawGameObjectInfo();
+	void DrawComponents();
+	void DrawTransformComponent();
+	void DrawMeshComponent();
+	void DrawMaterialComponent();
+	void DrawLightComponent();
+
+private:
 	GameObject* selected_game_object;
 };
 

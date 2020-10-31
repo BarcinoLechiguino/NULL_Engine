@@ -1,19 +1,44 @@
+#include "Globals.h"
+
+#include "GameObject.h"
+
 #include "Component.h"
 
-Component::Component(COMPONENT_TYPE type) : type(type)
+Component::Component(GameObject* owner, COMPONENT_TYPE type, const char* name, bool is_active) :
+type(type),
+owner(owner),
+name(name),
+is_active(is_active)
 {
-	switch (type)														// REVISE: move it to the constructor so each Component can set the name instead of having this chunk of code here.
-	{
-	case COMPONENT_TYPE::NONE:		{ name = "None"; }		break;
-	case COMPONENT_TYPE::TRANSFORM: { name = "Transform"; } break;
-	case COMPONENT_TYPE::MESH:		{ name = "Mesh"; }		break;
-	case COMPONENT_TYPE::MATERIAL:	{ name = "Material"; }	break;
-	case COMPONENT_TYPE::LIGHT:		{ name = "Light"; }		break;
-	case COMPONENT_TYPE::UNKNOWN:	{ name = "Unknown"; }	break;
-	}
+
 }
 
 Component::~Component()
 {
 
+}
+
+bool Component::Update()
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool Component::CleanUp()
+{
+	bool ret = true;
+
+	return ret;
+}
+
+// --- COMPONENT METHODS ---
+const char* Component::GetName() const
+{
+	return name;
+}
+
+void Component::SetName(const char* new_name)
+{
+	name = new_name;
 }

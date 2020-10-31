@@ -86,7 +86,7 @@ void Importer::Meshes::Import(const aiScene* ai_scene, const aiMesh* ai_mesh, R_
 		aiMaterial* material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
 	}
 
-	r_mesh->CreateAABB();
+	//r_mesh->CreateAABB();
 	r_mesh->LoadBuffers();
 }
 

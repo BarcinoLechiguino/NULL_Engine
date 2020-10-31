@@ -6,6 +6,7 @@
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
+#include "GameObject.h"
 
 #include "E_Panel.h"
 #include "E_Toolbar.h"
@@ -239,6 +240,16 @@ void M_Editor::AddInputLog(uint key, uint state)
 
 		configuration->AddInputLog(input);
 	}
+}
+
+void M_Editor::SetInspectedGameObject(GameObject* game_object)
+{
+	inspector->SetSelectedGameObject(game_object);
+}
+
+GameObject* M_Editor::GetInspectedGameObject() const
+{
+	return inspector->GetSelectedGameObject();
 }
 
 void M_Editor::EditorShortcuts()

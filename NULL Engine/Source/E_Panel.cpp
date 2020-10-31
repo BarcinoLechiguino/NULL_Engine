@@ -50,3 +50,17 @@ const char* E_Panel::GetName() const
 {
 	return name;
 }
+
+void E_Panel::HelpMarker(const char* description)
+{
+	ImGui::TextDisabled("(?)");
+
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(description);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}

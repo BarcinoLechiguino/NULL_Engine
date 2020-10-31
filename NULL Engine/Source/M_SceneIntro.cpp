@@ -4,6 +4,7 @@
 #include "M_Camera3D.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
+#include "M_Editor.h"
 #include "Primitive.h"
 
 #include "GameObject.h"
@@ -38,7 +39,8 @@ bool M_SceneIntro::Start()
 	{	
 		if (root_object == nullptr)
 		{
-			root_object = CreateGameObject("GameObject");
+			root_object = CreateGameObject("Scene");
+			App->editor->SetInspectedGameObject(root_object);
 		}
 		else
 		{
@@ -86,7 +88,10 @@ UPDATE_STATUS M_SceneIntro::PostUpdate(float dt)
 {
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
-		game_objects[i]->Update();
+		if (game_objects[i]->IsActive())
+		{
+			game_objects[i]->Update();
+		}
 	}
 	
 	for (uint n = 0; n < primitives.size(); n++)
@@ -129,31 +134,66 @@ bool M_SceneIntro::SaveConfiguration(Configuration& root) const
 // -------------- SCENE METHODS --------------
 GameObject* M_SceneIntro::CreateGameObject(const char* name, GameObject* parent)
 {
+	/*if (NameHasDuplicate(name))
+	{
+		AddDuplicateNumberToName(game_object);
+	}*/
+	
 	std::string complete_name = name;
-	complete_name += std::to_string(game_objects.size());
-	
-	GameObject* game_object = new GameObject(game_objects.size(), complete_name.c_str());
 
+	if (!game_objects.empty())
+	{
+		complete_name += std::to_string(game_objects.size());
+	}
 	
+	GameObject* game_object = new GameObject(game_objects.size(), complete_name);
+
 	if (game_object != nullptr)
 	{
-		game_objects.push_back(game_object);
+		if (game_objects.empty())
+		{
+			game_object->is_root_object = true;
+		}
 		
+		game_objects.push_back(game_object);
+
 		if (parent != nullptr)
 		{
 			parent->AddChild(game_object);
 		}
 	}
-	
 
 	return game_object;
+}
+
+bool M_SceneIntro::NameHasDuplicate(const char* name)
+{
+	uint duplicates = 0;
+	
+	for (uint i = 0; i < game_objects.size(); ++i)
+	{
+		if (strcmp(name, game_objects[i]->GetName()) == 0)
+		{
+			return true;
+			++duplicates;
+		}
+	}
+
+	return duplicates;
+
+	return false;
+}
+
+void M_SceneIntro::ChangeSceneName(const char* name)
+{
+	root_object->SetName(name);
 }
 
 void M_SceneIntro::HandleDebugInput()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_STATE::KEY_DOWN)
 	{
-		DebugSpawnPrimitive(new Sphere(1.0f, 12, 24));
+		//DebugSpawnPrimitive(new Sphere(1.0f, 12, 24));
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_STATE::KEY_DOWN)
@@ -163,7 +203,7 @@ void M_SceneIntro::HandleDebugInput()
 
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_STATE::KEY_DOWN)
 	{
-		DebugSpawnPrimitive(new Cylinder());
+		//DebugSpawnPrimitive(new Cylinder());
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_STATE::KEY_DOWN)

@@ -19,11 +19,17 @@ public:
 	UPDATE_STATUS	PostUpdate(float dt) override;
 	bool			CleanUp() override;
 
-	bool LoadConfiguration(Configuration& root) override;
-	bool SaveConfiguration(Configuration& root) const override;
+	bool			LoadConfiguration(Configuration& root) override;
+	bool			SaveConfiguration(Configuration& root) const override;
 
 public:
-	GameObject* CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
+	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
+	GameObject*		CreateEmptyGameObject();
+	
+	bool			NameHasDuplicate(const char* name);
+	void			AddDuplicateNumberToName(const char* name);
+
+	void			ChangeSceneName(const char* new_name);
 
 private:
 	void HandleDebugInput();

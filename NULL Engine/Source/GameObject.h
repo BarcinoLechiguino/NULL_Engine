@@ -5,10 +5,12 @@
 #include <map>
 #include <string>
 
+#include"MathGeoLib/src/Math/float4x4.h"
+
 typedef unsigned int uint;
 
 class Component;
-
+class C_Transform;
 enum class COMPONENT_TYPE;
 
 class GameObject
@@ -31,21 +33,35 @@ public:
 
 	void		SetID(uint id);
 
+public:																					// --- GETTERS AND SETTERS
+	const char* GetName() const;
+	bool		IsActive() const;
+	bool		IsStatic() const;
+
+	void		SetName(const char* new_name);
+	void		SetIsActive(const bool& set_to);
+	void		SetIsStatic(const bool& set_to);
+
+	void		SetChildsIsActive(const bool& set_to, GameObject* parent);
+	void		SetChildsIsStatic(const bool& set_to, GameObject* parent);
+
 public:
 	std::vector<Component*>		components;
 	std::vector<GameObject*>	childs;
 
-	GameObject* parent;
+	GameObject*					parent;
 
-	std::string name;
+	float4x4					matrix;
+	C_Transform*				transform;
 
-	bool is_active;
-	bool is_static;
-
-	//mat4x4 transform;
+	bool						is_root_object;
 
 private:
-	uint id;
+	uint						id;
+	std::string					name;
+
+	bool						is_active;
+	bool						is_static;
 };
 
 #endif // !__GAME_OBJECT_H__

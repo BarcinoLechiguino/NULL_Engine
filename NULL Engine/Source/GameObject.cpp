@@ -8,7 +8,14 @@
 
 #include "GameObject.h"
 
-GameObject::GameObject() : id(0), name("GameObject"), is_active(true), is_static(false), parent (nullptr)
+GameObject::GameObject() :
+id(0),
+name("GameObject"),
+is_active(true),
+is_static(false),
+parent(nullptr),
+matrix(matrix.identity),
+is_root_object(false)
 {
 
 }
@@ -18,12 +25,20 @@ id(id),
 name(name),
 is_active(is_active),
 is_static(is_static),
-parent(nullptr)
+parent(nullptr),
+matrix(matrix.identity),
+is_root_object(false)
 {
 	if (name.empty())
 	{
 		name = "GameObject";
 	}
+
+	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
+	//TMP
+	CreateComponent(COMPONENT_TYPE::MESH);
+	CreateComponent(COMPONENT_TYPE::MATERIAL);
+	CreateComponent(COMPONENT_TYPE::LIGHT);
 }
 
 GameObject::~GameObject()
@@ -35,7 +50,13 @@ bool GameObject::Update()
 {
 	bool ret = true;
 
-	//for (components)
+	for (uint i = 0; i < components.size(); ++i)
+	{
+		if (components[i]->is_active)
+		{
+			components[i]->Update();
+		}
+	}
 
 	return ret;
 }
@@ -44,8 +65,12 @@ bool GameObject::CleanUp()
 {
 	bool ret = true;
 
+	transform = nullptr;
+	
 	for (uint i = 0; i < components.size(); ++i)
 	{
+		components[i]->CleanUp();
+
 		delete components[i];
 		components[i] = nullptr;
 	}
@@ -67,7 +92,14 @@ bool GameObject::CleanUp()
 bool GameObject::AddChild(GameObject* child)
 {
 	bool ret = true;
+	
+	if (child->is_root_object)
+	{
+		LOG("[ERROR] Could not add child %s to %s: %s is current root object!", child->name.c_str(), name.c_str(), child->name.c_str());
 
+		return false;
+	}
+	
 	if (child->parent != nullptr)
 	{
 		bool deleted = child->parent->DeleteChild(child);
@@ -78,19 +110,13 @@ bool GameObject::AddChild(GameObject* child)
 		}
 	}
 
+	C_Transform* child_transform = (C_Transform*)child->GetComponent(COMPONENT_TYPE::TRANSFORM);
+	
+	child_transform->recalculate_local_transform = true;
+
 	child->parent = this;
 
 	childs.push_back(child);
-
-	if (!child->childs.empty())
-	{
-		for (uint i = 0; i < child->childs.size(); ++i)
-		{
-			AddChild(child->childs[i]);
-		}
-
-		child->childs.clear();
-	}
 
 	return ret;
 }
@@ -121,21 +147,21 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	switch(type)
 	{
 	case COMPONENT_TYPE::TRANSFORM:
-		component = new C_Transform();
+		component = new C_Transform(this);
 		check_for_duplicates = true;
 		break;
 
 	case COMPONENT_TYPE::MESH:
-		component = new C_Mesh();
+		component = new C_Mesh(this);
 		break;
 
 	case COMPONENT_TYPE::MATERIAL:
-		component = new C_Material();
+		component = new C_Material(this);
 		check_for_duplicates = true;
 		break;
 
 	case COMPONENT_TYPE::LIGHT:
-		component = new C_Light();
+		component = new C_Light(this);
 		break;
 	}
 
@@ -147,7 +173,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 			{
 				if (type == components[i]->type)
 				{
-					LOG("[ERROR] %s Component could not be added to %s: No duplicates allowed!", component->name.c_str(), name.c_str());
+					LOG("[ERROR] %s Component could not be added to %s: No duplicates allowed!", component->GetName(), name.c_str());
 					
 					delete component;
 					component = nullptr;
@@ -198,4 +224,65 @@ const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
 void GameObject::SetID(uint id)
 {
 
+}
+
+// --- GAME OBJECT GETTERS AND SETTERS ---
+const char* GameObject::GetName() const
+{
+	return name.c_str();
+}
+
+bool GameObject::IsActive() const
+{
+	return is_active;
+}
+
+bool GameObject::IsStatic() const
+{
+	return is_static;
+}
+
+void GameObject::SetName(const char* new_name)
+{
+	name = new_name;
+}
+
+void GameObject::SetIsActive(const bool& set_to)
+{
+	is_active = set_to;
+
+	SetChildsIsActive(set_to, this);
+}
+
+void GameObject::SetIsStatic(const bool& set_to)
+{
+	is_static = set_to;
+
+	SetChildsIsStatic(set_to, this);
+}
+
+void GameObject::SetChildsIsActive(const bool& set_to, GameObject* parent)
+{
+	if (parent != nullptr)
+	{
+		for (uint i = 0; i < parent->childs.size(); ++i)
+		{
+			parent->childs[i]->is_active = set_to;
+
+			SetChildsIsActive(set_to, parent->childs[i]);
+		}
+	}
+}
+
+void GameObject::SetChildsIsStatic(const bool& set_to, GameObject* parent)
+{
+	if (parent != nullptr)
+	{
+		for (uint i = 0; i < parent->childs.size(); ++i)
+		{
+			parent->childs[i]->is_static = set_to;
+
+			SetChildsIsStatic(set_to, parent->childs[i]);
+		}
+	}
 }

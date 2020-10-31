@@ -1,6 +1,18 @@
+#include "MathGeoLib/src/Math/float3.h"
+
+#include "GameObject.h"
+#include "Component.h"
+#include "C_Transform.h"
+#include "C_Mesh.h"
+#include "C_Material.h"
+#include "C_Light.h"
+
 #include "E_Inspector.h"
 
-E_Inspector::E_Inspector() : E_Panel("Inspector")
+#define MAX_VALUE 100000
+#define MIN_VALUE -100000
+
+E_Inspector::E_Inspector() : E_Panel("Inspector"), selected_game_object(nullptr)
 {
 
 }
@@ -16,6 +28,18 @@ bool E_Inspector::Draw(ImGuiIO& io)
 
 	ImGui::Begin("Inspector");
 
+	if (selected_game_object != nullptr)
+	{
+		DrawGameObjectInfo();
+		DrawComponents();
+	}
+
+	ImGui::Text("WantCaptureMouse: %d", io.WantCaptureMouse);
+	ImGui::Text("WantCaptureKeyboard: %d", io.WantCaptureKeyboard);
+	ImGui::Text("WantTextInput: %d", io.WantTextInput);
+	ImGui::Text("WantSetMousePos: %d", io.WantSetMousePos);
+	ImGui::Text("NavActive: %d, NavVisible: %d", io.NavActive, io.NavVisible);
+
 	ImGui::End();
 
 	return ret;
@@ -28,6 +52,7 @@ bool E_Inspector::CleanUp()
 	return ret;
 }
 
+// --- INSPECTOR METHODS ---
 void E_Inspector::SetSelectedGameObject(GameObject* game_object)
 {
 	if (game_object != selected_game_object)
@@ -39,4 +64,245 @@ void E_Inspector::SetSelectedGameObject(GameObject* game_object)
 GameObject* E_Inspector::GetSelectedGameObject() const
 {
 	return selected_game_object;
+}
+
+void E_Inspector::DrawGameObjectInfo()
+{
+	// --- IS ACTIVE ---
+	bool is_active = selected_game_object->IsActive();
+	if (ImGui::Checkbox("Is Active", &is_active))
+	{
+		selected_game_object->SetIsActive(is_active);
+	}
+
+	ImGui::SameLine();
+
+	// --- GAME OBJECT'S NAME ---
+	ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
+	static char buffer[64];
+	strcpy(buffer, selected_game_object->GetName());
+	if (ImGui::InputText("Name", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		selected_game_object->SetName(buffer);
+	}
+
+	ImGui::SameLine(); HelpMarker("Press ENTER to Rename");
+
+	ImGui::SameLine();
+
+	// --- IS STATIC ---
+	bool is_static = selected_game_object->IsStatic();
+	ImGui::Checkbox("Is Static", &is_static);
+	selected_game_object->SetIsStatic(is_static);
+
+	// --- TAG ---
+	ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
+	static char tag_combo[64] = { "Untagged\0Work\0In\0Progress" };
+	static int current_tag = 0;
+	ImGui::Combo("Tag", &current_tag, tag_combo);
+
+	ImGui::SameLine(218.0f);
+
+	// --- LAYER ---
+	ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
+	static char layer_combo[64] = { "Default\0Work\0In\0Progress" };
+	static int current_layer = 0;
+	ImGui::Combo("Layer", &current_layer, layer_combo);
+
+	ImGui::Separator();
+}
+
+void E_Inspector::DrawComponents()
+{
+	for (uint i = 0; i < selected_game_object->components.size(); ++i)
+	{
+		Component* component = selected_game_object->components[i];
+		
+		if (component != nullptr)
+		{
+			switch (component->type)
+			{
+			case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent(); }	break;
+			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent(); }		break;
+			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent(); }	break;
+			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent(); }		break;
+			}
+
+			if (component->type == COMPONENT_TYPE::NONE || component->type == COMPONENT_TYPE::UNKNOWN)
+			{
+				LOG("[WARNING] Selected Object %s has invalid component: %s", selected_game_object->GetName(), component->GetName());
+			}
+		}
+	}
+}
+
+void E_Inspector::DrawTransformComponent()
+{
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		//C_Transform* transform = (C_Transform*)selected_game_object->GetComponent(COMPONENT_TYPE::TRANSFORM);
+		C_Transform* transform = selected_game_object->transform;
+
+		bool is_active = transform->is_active;
+		if (ImGui::Checkbox("Is Active", &is_active))
+		{
+			transform->is_active = is_active;
+		}
+
+		if (transform != nullptr)
+		{
+			// --- IS ACTIVE ---
+			
+
+			ImGui::Separator();
+
+			// --- POSITION ---
+			ImGui::Text("Position");
+
+			ImGui::SameLine(100.0f);
+
+			float3 position = transform->GetPosition();
+			float pos[3] = { position.x, position.y, position.z };
+			ImGui::DragFloat3("", pos, 0.1f, MIN_VALUE, MAX_VALUE, "%.3f", NULL);
+			transform->SetPosition(float3(pos[0], pos[1], pos[2]));
+
+			// --- ROTATION ---
+			ImGui::Text("Rotation");
+
+			ImGui::SameLine(100.0f);
+
+			float3 rotation = transform->GetRotation();
+			float rot[3] = { rotation.x, rotation.y, rotation.z };
+			ImGui::DragFloat3("", rot, 0.1f, MIN_VALUE, MAX_VALUE, "%.3f", NULL);
+			transform->SetPosition(float3(rot[0], rot[1], rot[2]));
+
+			// --- SCALE ---
+			ImGui::Text("Scale");
+
+			ImGui::SameLine(100.0f);
+
+			float3 scale = transform->GetScale();
+			float scl[3] = { scale.x, scale.y, scale.z };
+			ImGui::DragFloat3("", scl, 0.1f, MIN_VALUE, MAX_VALUE, "%.3f", NULL);
+			transform->SetPosition(float3(scl[0], scl[1], scl[2]));
+		}
+	}
+}
+
+void E_Inspector::DrawMeshComponent()
+{
+	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		// --- IS ACTIVE ---
+
+		C_Mesh* mesh = (C_Mesh*)selected_game_object->GetComponent(COMPONENT_TYPE::MESH);
+
+		if (mesh != nullptr)
+		{
+			bool is_active = mesh->is_active;
+			if (ImGui::Checkbox("Is Active", &is_active))
+			{
+				mesh->is_active = is_active;
+			}
+
+			ImGui::Separator();
+
+			// --- FILE PATH ---
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Put path here.");
+
+			ImGui::Separator();
+
+			// --- MESH DATA ---
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Mesh Data:");
+			
+			ImGui::Text("Vertices:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "  Put Verts here.");
+			ImGui::Text("Normals:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "   Put Normals here.");
+			ImGui::Text("Tex Coords:"); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Put TexCoords here.");
+			ImGui::Text("Indices:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "   Put Indices here.");
+
+			ImGui::Separator();
+
+			// --- DRAW MODE ---
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Draw Mode:");
+			
+			bool draw_vert_normals = false;
+			ImGui::Checkbox("Draw Vertex Normals", &draw_vert_normals);
+
+			bool draw_face_normals = false;
+			ImGui::Checkbox("Draw Face Normals (WIP)", &draw_face_normals);
+		}
+		else
+		{
+			LOG("[ERROR] Could not get the Mesh Component from %s Game Object!", selected_game_object->GetName());
+		}
+
+		ImGui::Separator();
+	}
+}
+
+void E_Inspector::DrawMaterialComponent()
+{
+	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		C_Material* material = (C_Material*)selected_game_object->GetComponent(COMPONENT_TYPE::MATERIAL);
+
+		if (material != nullptr)
+		{
+			bool is_active = material->is_active;
+			ImGui::Checkbox("Is Active", &is_active);
+			material->is_active = is_active;
+			
+			ImGui::Separator();
+
+			// --- TEXTURE PATH ---
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Put path here.");
+
+			ImGui::Separator();
+
+			// --- TEXTURE DATA ---
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Texture Data:");
+			ImGui::Text("Width:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Put Width here.");
+			ImGui::Text("Height:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Put Height here.");
+
+			ImGui::Separator();
+
+			// --- CHECKER TEX ---
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Main Maps:");
+			bool use_albedo_tex = false;
+			ImGui::Checkbox("Albedo Texture (WIP)", &use_albedo_tex);
+
+			bool use_checkered_tex = false;
+			ImGui::Checkbox("Default Texture", &use_checkered_tex);
+		}
+		else
+		{
+			LOG("[ERROR] Could not get the Material Component from %s Game Object!", selected_game_object->GetName());
+		}
+
+		ImGui::Separator();
+	}
+}
+
+void E_Inspector::DrawLightComponent()
+{
+	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		C_Light* light = (C_Light*)selected_game_object->GetComponent(COMPONENT_TYPE::LIGHT);
+		
+		if (light != nullptr)
+		{
+			bool is_active = light->is_active
+				;
+			if (ImGui::Checkbox("Is Active", &is_active))
+			{
+				light->is_active = is_active;
+			}
+			
+			ImGui::Separator();
+			
+			ImGui::Text("WORK IN PROGRESS");
+		}
+
+		ImGui::Separator();
+	}
 }

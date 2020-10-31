@@ -1,10 +1,2 @@
-﻿  C_Light.cpp
-  C_Material.cpp
-  C_Mesh.cpp
-  C_Transform.cpp
-  Component.cpp
-  E_Hierarchy.cpp
-  GameObject.cpp
-  M_SceneIntro.cpp
-  Generating Code...
+﻿  GameObject.cpp
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

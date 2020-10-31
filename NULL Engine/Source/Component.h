@@ -3,6 +3,8 @@
 
 #include <string>
 
+class GameObject;
+
 enum class COMPONENT_TYPE
 {
 	NONE,
@@ -16,15 +18,25 @@ enum class COMPONENT_TYPE
 class Component
 {
 public:
-	Component(COMPONENT_TYPE type);
-	~Component();
+	Component(GameObject* owner, COMPONENT_TYPE type, const char* name, bool is_active = true);
+	virtual ~Component();
+
+	virtual bool Update();
+	virtual bool CleanUp();
+
+public:
+	const char* GetName() const;
+	void SetName(const char* new_name);
 
 public:
 	COMPONENT_TYPE	type;
-	std::string		name;
+
+	GameObject* owner;
+
+	bool		is_active;
 
 private:
-
+	const char* name;
 };
 
 #endif // !__COMPONENT_H__
