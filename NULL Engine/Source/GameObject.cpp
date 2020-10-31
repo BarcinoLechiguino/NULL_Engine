@@ -76,13 +76,15 @@ bool GameObject::CleanUp()
 	}
 
 	components.clear();
-	
+
 	for (uint i = 0; i < childs.size(); ++i)
 	{
-		childs[i]->CleanUp();
+		//childs[i]->CleanUp();
 		
-		delete childs[i];
-		childs[i] = nullptr;
+		childs[i]->parent = parent;
+
+		//delete childs[i];
+		//childs[i] = nullptr;
 	}
 
 	parent->DeleteChild(this);

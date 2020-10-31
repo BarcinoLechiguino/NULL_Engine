@@ -50,5 +50,5 @@ bool Component::IsActive() const
 
 void Component::SetIsActive(const bool& set_to)
 {
-	is_active = true;
+	is_active = set_to;
 }

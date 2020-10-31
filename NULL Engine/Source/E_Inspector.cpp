@@ -149,8 +149,9 @@ void E_Inspector::DrawTransformComponent()
 		{
 			// --- IS ACTIVE ---
 			bool transform_is_active = transform->IsActive();
-			if (ImGui::Checkbox("Is Active", &transform_is_active))
+			if (ImGui::Checkbox("Transform Is Active", &transform_is_active))
 			{
+				//transform->SetIsActive(transform_is_active);
 				transform->SetIsActive(transform_is_active);
 			}
 
@@ -200,7 +201,7 @@ void E_Inspector::DrawMeshComponent()
 		if (mesh != nullptr)
 		{
 			bool mesh_is_active = mesh->IsActive();
-			if (ImGui::Checkbox("Is Active", &mesh_is_active))
+			if (ImGui::Checkbox("Mesh Is Active", &mesh_is_active))
 			{
 				mesh->SetIsActive(mesh_is_active);
 			}
@@ -249,7 +250,7 @@ void E_Inspector::DrawMaterialComponent()
 		if (material != nullptr)
 		{
 			bool material_is_active = material->IsActive();
-			if (ImGui::Checkbox("Is Active", &material_is_active))
+			if (ImGui::Checkbox("Material Is Active", &material_is_active))
 			{
 				material->SetIsActive(material_is_active);
 			}
@@ -294,7 +295,7 @@ void E_Inspector::DrawLightComponent()
 		if (light != nullptr)
 		{
 			bool light_is_active = light->IsActive();
-			if (ImGui::Checkbox("Is Active", &light_is_active))
+			if (ImGui::Checkbox("Light Is Active", &light_is_active))
 			{
 				light->SetIsActive(light_is_active);
 			}
