@@ -1,5 +1,7 @@
 #include "Application.h"
+#include "M_Renderer3D.h"
 #include "M_Editor.h"
+#include "M_SceneIntro.h"
 
 #include "E_Toolbar.h"
 
@@ -156,8 +158,22 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 
 	if (ImGui::BeginMenu("GameObject"))
 	{
-		ImGui::MenuItem("Create Empty");
-		ImGui::MenuItem("Create Empty x10");
+		if (ImGui::MenuItem("Create Empty"))
+		{
+			App->scene_intro->CreateGameObject("EmptyGameObject", App->scene_intro->root_object);
+
+			LOG("[SCENE] Created An Empty Object. Root Object defaults as parent.")
+		}
+		
+		if (ImGui::MenuItem("Create Empty x10"))
+		{
+			for (uint i = 0; i < 10; ++i)
+			{
+				App->scene_intro->CreateGameObject("EmptyGameObject", App->scene_intro->root_object);
+			}
+
+			LOG("[SCENE] Created 10 Empty Objects. Root Object defaults as parent.")
+		}
 		
 		if (ImGui::BeginMenu("Primitives"))
 		{
@@ -179,15 +195,26 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 
 		ImGui::Separator();
 
-		if (ImGui::BeginMenu("Draw Mode", false))
+		if (ImGui::BeginMenu("Draw Mode"))
 		{
-			bool mesh = true;
-			bool wire = false;
+			bool mesh = !App->renderer->GetShowWireframe();
+			bool wire = App->renderer->GetShowWireframe();
 			bool vert = false;
 
-			ImGui::MenuItem("Mesh", "TBD", &mesh);
-			ImGui::MenuItem("Wireframe", "F3", &wire);
-			ImGui::MenuItem("Vertices", "TBD", &vert);
+			if (ImGui::MenuItem("Mesh", "TBD", &mesh))
+			{
+				if (wire)
+				{
+					App->renderer->SetShowWireframe(false);
+				}
+			}
+			
+			if (ImGui::MenuItem("Wireframe", "F3", &wire))
+			{
+				App->renderer->SetShowWireframe(wire);
+			}
+			
+			ImGui::MenuItem("Vertices", "TBD", &vert, false);
 
 			ImGui::EndMenu();
 		}

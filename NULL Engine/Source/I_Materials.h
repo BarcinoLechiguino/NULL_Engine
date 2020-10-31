@@ -10,8 +10,6 @@ namespace Importer
 {
 	namespace Materials
 	{
-		R_Material* Create();														// Generates an empty Material resource. Will use the default R_Material constructor.
-
 		namespace Assimp
 		{
 			void Import(const aiMaterial* ai_material, R_Material* r_material);		// Processes aiMaterial data into a ready-to-use R_Material. Returns nullptr on error.

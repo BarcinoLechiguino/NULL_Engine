@@ -17,7 +17,7 @@ class GameObject
 {
 public:
 	GameObject();
-	GameObject(uint id = 0, std::string name = "GameObject", bool is_active = true, bool is_static = false);
+	GameObject(uint id, std::string name = "GameObject", bool is_active = true, bool is_static = false);
 	~GameObject();
 
 	bool		Update();

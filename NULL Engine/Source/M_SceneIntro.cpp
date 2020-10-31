@@ -7,7 +7,12 @@
 #include "M_Editor.h"
 #include "Primitive.h"
 
+#include "I_Meshes.h"
+#include "R_Mesh.h"
+
 #include "GameObject.h"
+#include "Component.h"
+#include "C_Mesh.h"
 
 #include "M_SceneIntro.h"
 
@@ -161,6 +166,32 @@ GameObject* M_SceneIntro::CreateGameObject(const char* name, GameObject* parent)
 		{
 			parent->AddChild(game_object);
 		}
+	}
+
+	return game_object;
+}
+
+GameObject* M_SceneIntro::CreateGameObjectFromModel(const char* path)
+{
+	GameObject* game_object = new GameObject();
+
+	std::vector<R_Mesh*> meshes;
+	Importer::Meshes::Import(path, meshes);
+
+	for (uint i = 0; i < meshes.size(); ++i)
+	{
+		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
+
+		c_mesh->SetMesh(meshes[i]);
+	}
+
+	if (game_object != nullptr)
+	{
+		game_object->parent = root_object;
+		
+		root_object->AddChild(game_object);
+
+		game_objects.push_back(game_object);
 	}
 
 	return game_object;

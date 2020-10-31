@@ -49,18 +49,21 @@ public:
 	bool			InitOpenGL();
 	bool			InitGlew();
 	void			OnResize(int width, int height);
-	
+
 	void			RendererShortcuts();
 
 	void			DrawWorldGrid(int size);
 	void			DrawWorldAxis();
 
-	void			AddPrimitive(Primitive* primitive);
-	void			CreatePrimitiveExamples();
-
+public:																		// --- RENDER GEOMETRY
 	void			LoadModel(const char* file_path, vec4 mat_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	void			GenerateBuffers(R_Mesh* mesh);
+	void			DrawMesh(R_Mesh* mesh);
 
 	void			LoadDebugTexture();
+
+	void			AddPrimitive(Primitive* primitive);
+	void			CreatePrimitiveExamples();
 
 	void			PrimitiveExamples();									// REMOVE LATER
 

@@ -24,7 +24,8 @@ public:
 
 public:
 	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
-	GameObject*		CreateEmptyGameObject();
+	GameObject*		CreateGameObjectFromModel(const char* path);
+
 	void			DeleteGameObject(GameObject* game_object);
 	
 	bool			NameHasDuplicate(const char* name);

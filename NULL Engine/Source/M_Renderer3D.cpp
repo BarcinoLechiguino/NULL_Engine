@@ -1,4 +1,3 @@
-
 #include "Assimp.h"
 #include "OpenGL.h"
 
@@ -12,6 +11,7 @@
 #include "Primitive.h"
 
 #include "R_Model.h"
+#include "R_Mesh.h"
 #include "R_Material.h"
 #include "I_Materials.h"
 
@@ -60,7 +60,7 @@ bool M_Renderer3D::Init(Configuration& config)
 	CreatePrimitiveExamples();													// Adding one of each available primitice to the primitives vector for later display.
 
 	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
-	LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	//LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
 	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
 
 	LoadDebugTexture();
@@ -424,6 +424,74 @@ void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
 	}
 
 	models.push_back(model);
+}
+
+void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
+{
+	if (!mesh->vertices.empty())
+	{
+		glGenBuffers(1, (GLuint*)&mesh->VBO);																			// Generates the Vertex Buffer Object
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);																		// Binds VBO with the GL_ARRAY_BUFFER biding point (target):
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vertices.size(), &mesh->vertices[0], GL_STATIC_DRAW);		// Inits the data stored inside VBO and specifies how the data will be accessed.
+	}
+
+	if (!mesh->normals.empty())
+	{
+		glGenBuffers(1, (GLuint*)&mesh->NBO);
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->NBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->normals.size(), &mesh->normals[0], GL_STATIC_DRAW);
+	}
+
+	if (!mesh->tex_coords.empty())
+	{
+		glGenBuffers(1, (GLuint*)&mesh->TBO);
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->TBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->tex_coords.size(), &mesh->tex_coords[0], GL_STATIC_DRAW);
+	}
+
+	if (!mesh->indices.empty())
+	{
+		glGenBuffers(1, (GLuint*)&mesh->IBO);																			// Generates the Index Buffer Object
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);																// Binds IBO with the GL_ARRAY_BUFFER biding point (target):
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->indices.size(), &mesh->indices[0], GL_STATIC_DRAW);	// Inits the data stored inside IBO and specifies how the data will be accessed.
+	}
+}
+
+void M_Renderer3D::DrawMesh(R_Mesh* mesh)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		//LOG("[ERRROR] GL Error: %s", gluErrorString(error));
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->TBO);
+	glVertexPointer(2, GL_FLOAT, 0, nullptr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);																// The vertex buffer is bound so the vertex positions can be interpreted correctly.
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Here the size and the type of the vertex is defined.
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
+	//glColor4f(colour.r, colour.g, colour.b, colour.a);
+	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, nullptr);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	// --- DEBUG DRAW ---
+	if (mesh->draw_normals)
+	{
+		mesh->DrawNormals();
+	}
 }
 
 void M_Renderer3D::LoadDebugTexture()

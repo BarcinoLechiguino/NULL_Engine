@@ -32,8 +32,10 @@ private:
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
 	void LoadMaterialTextures(aiMaterial* material, aiTextureType type, R_Mesh* r_mesh);
 
-private:
+public:
 	std::vector<R_Mesh*> meshes;
+
+private:
 	std::vector<Texture*> loaded_textures;
 	
 	std::string full_path;

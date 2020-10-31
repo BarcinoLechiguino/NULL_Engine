@@ -34,11 +34,11 @@ bool E_Inspector::Draw(ImGuiIO& io)
 		DrawComponents();
 	}
 
-	ImGui::Text("WantCaptureMouse: %d", io.WantCaptureMouse);
-	ImGui::Text("WantCaptureKeyboard: %d", io.WantCaptureKeyboard);
-	ImGui::Text("WantTextInput: %d", io.WantTextInput);
-	ImGui::Text("WantSetMousePos: %d", io.WantSetMousePos);
-	ImGui::Text("NavActive: %d, NavVisible: %d", io.NavActive, io.NavVisible);
+	//ImGui::Text("WantCaptureMouse: %d", io.WantCaptureMouse);
+	//ImGui::Text("WantCaptureKeyboard: %d", io.WantCaptureKeyboard);
+	//ImGui::Text("WantTextInput: %d", io.WantTextInput);
+	//ImGui::Text("WantSetMousePos: %d", io.WantSetMousePos);
+	//ImGui::Text("NavActive: %d, NavVisible: %d", io.NavActive, io.NavVisible);
 
 	ImGui::End();
 
@@ -225,9 +225,12 @@ void E_Inspector::DrawMeshComponent()
 
 			// --- DRAW MODE ---
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Draw Mode:");
-			
-			bool draw_vert_normals = false;
-			ImGui::Checkbox("Draw Vertex Normals", &draw_vert_normals);
+
+			bool draw_vert_normals = mesh->GetDrawNormals();
+			if (ImGui::Checkbox("Draw Vertex Normals", &draw_vert_normals))
+			{
+				mesh->SetDrawNormals(draw_vert_normals);
+			}
 
 			bool draw_face_normals = false;
 			ImGui::Checkbox("Draw Face Normals (WIP)", &draw_face_normals);

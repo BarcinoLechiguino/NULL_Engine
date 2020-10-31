@@ -17,7 +17,7 @@ parent(nullptr),
 matrix(matrix.identity),
 is_root_object(false)
 {
-
+	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
 }
 
 GameObject::GameObject(uint id, std::string name, bool is_active, bool is_static) :

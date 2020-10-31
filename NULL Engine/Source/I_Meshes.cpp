@@ -5,80 +5,151 @@
 
 #include "Assimp.h"
 
+#include "Application.h"
+#include "M_FileSystem.h"
 #include "R_Mesh.h"
 
 #include "I_Meshes.h"
 
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
 
-R_Mesh* Importer::Meshes::Create()
+using namespace Importer::Meshes;																	// Not a good thing to do but it will be employed sparsely and only inside this .cpp
+
+void Importer::Meshes::Import(const char* path, std::vector<R_Mesh*>& meshes)
 {
-	return new R_Mesh();
-}
+	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 
-void Importer::Meshes::Import(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
-{	
-	// Allocating the required memory for each vector
-	uint size = ai_mesh->mNumVertices;
-	r_mesh->vertices.resize(size);															// Allocating in advance the required memory to store all the vertices.
+	//char* buffer = nullptr;
+	//uint file_size = App->file_system->Load(file_path, &buffer);
+	//const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
-	size = ai_mesh->mNumFaces * 3;															// The size of the indices vector will be equal to the amount of faces times 3 (triangles).
-	r_mesh->indices.resize(size);															// Allocating in advance the required memory to store all the indices.
-
-	// Constructing all the vertices of the mesh
-	for (uint i = 0; i < ai_mesh->mNumVertices; ++i)
+	if (scene == nullptr || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		Vertex vertex;
+		LOG("[ERROR] Error loading scene %s", aiGetErrorString());
 
-		if (ai_mesh->HasPositions())
-		{
-			vertex.position.x = ai_mesh->mVertices[i].x;
-			vertex.position.y = ai_mesh->mVertices[i].y;
-			vertex.position.z = ai_mesh->mVertices[i].z;
-		}
-		else
-		{
-			LOG("[WARNING] Vertex %d has no position vector!", i);
-		}
-
-		if (ai_mesh->HasNormals())
-		{
-			vertex.normal.x = ai_mesh->mNormals[i].x;
-			vertex.normal.y = ai_mesh->mNormals[i].y;
-			vertex.normal.z = ai_mesh->mNormals[i].z;
-		}
-		else
-		{
-			LOG("[WARNING] Vertex %d has no position vector!", i);
-		}
-
-		if (ai_mesh->HasTextureCoords(0))
-		{
-			vertex.tex_coords.x = ai_mesh->mTextureCoords[0][i].x;
-			vertex.tex_coords.y = ai_mesh->mTextureCoords[0][i].y;
-
-			LOG("Vertex %u tex coords: { %.1f, %.1f }", i, vertex.tex_coords.x, vertex.tex_coords.y);
-		}
-		else
-		{
-			vertex.tex_coords = vec2(0.0f, 0.0f);
-
-			LOG("[ERROR] Could not load Vertex %u tex coords.", i);
-		}
-
-		r_mesh->vertices[i] = vertex;
+		return;
 	}
 
-	uint ind = 0;
-	for (uint i = 0; i < ai_mesh->mNumFaces; ++i)
-	{
-		aiFace face = ai_mesh->mFaces[i];													// Getting the face that is currently being iterated.
+	Utilities::ProcessNode(scene, scene->mRootNode, meshes);
+}
 
-		for (uint j = 0; j < face.mNumIndices; ++j)
+void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Mesh*>& meshes)		// Shortened with the use of used namespaces, otherwise it would be a bad idea.
+{
+	for (uint i = 0; i < node->mNumMeshes; ++i)														// The loop is run for as many meshes that the node has registered it has.
+	{
+		aiMesh* ai_mesh = scene->mMeshes[node->mMeshes[i]];											// Gets the mesh specifiec by the mesh index stored in the node's mMeshes array.
+
+		if (ai_mesh != nullptr && ai_mesh->HasFaces())												// Checks that the aiMesh is valid.
 		{
-			r_mesh->indices[ind] = face.mIndices[j];
-			++ind;
+			R_Mesh* r_mesh = new R_Mesh();															// Generates a new R_Mesh.
+
+			Utilities::GenerateMesh(scene, ai_mesh, r_mesh);										// Sets the given r_mesh with the data stored in ai_mesh.
+
+			if (r_mesh != nullptr)																	// Checks that the R_Mesh* is valid/stores data.
+			{
+				meshes.push_back(r_mesh);															// Adds the R_Mesh* to the given meshes vector.
+			}
+			else
+			{
+				delete r_mesh;
+				r_mesh = nullptr;
+
+				LOG("[ERROR] Could not generate a mesh during Import: R_Mesh* was nullptr!")
+			}
 		}
+		else
+		{
+			LOG("[ERROR] Could not generate a mesh during Import: aiMesh* was nullptr and/or did not have any faces!")
+		}
+	}
+
+	for (uint i = 0; i < node->mNumChildren; ++i)
+	{
+		Utilities::ProcessNode(scene, node->mChildren[i], meshes);
+	}
+}
+
+void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
+{	
+	// Allocating the required memory for each vector
+	uint vertices_size = ai_mesh->mNumVertices * 3;											// There will be 3 coordinates per vertex, hence the size will be numVertices * 3.
+	r_mesh->vertices.resize(vertices_size);													// Allocating in advance the required memory to store all the verts.
+
+	uint normals_size = ai_mesh->mNumVertices * 3;											// There will be 3 normal coordinates per vertex.
+	r_mesh->normals.resize(normals_size);
+
+	uint tex_coords_size = ai_mesh->mNumVertices * 2;										// There will be 2 tex coordinates per vertex.
+	r_mesh->tex_coords.resize(tex_coords_size);
+
+	uint indices_size = ai_mesh->mNumFaces * 3;												// The size of the indices vector will be equal to the amount of faces times 3 (triangles).
+	r_mesh->indices.resize(indices_size);													// Allocating in advance the required memory to store all the indices.
+
+	// Loading the data from the mesh into the corresponding vectors
+	// --- POSITIONS ---
+	if (ai_mesh->HasPositions())
+	{
+		memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * vertices_size);	// &r_mesh->vertices[0] gets a pointer to the beginning of the vector. mVertices is a 3D vector.
+		
+		LOG("[STATUS] Imported %u position vertices!", vertices_size)
+	}
+	else
+	{
+		LOG("[ERROR] Imported Mesh has no position vertices!");
+	}
+
+	// --- NORMALS ---
+	if (ai_mesh->HasNormals())
+	{
+		memcpy(&r_mesh->normals[0], ai_mesh->mNormals, sizeof(float) * normals_size);
+		
+		LOG("[STATUS] Imported %u normals!", normals_size);
+	}
+	else
+	{
+		LOG("[ERROR] Imported Mesh has no normals!");
+	}
+
+	// --- TEX COORDS ---
+	if (ai_mesh->HasTextureCoords(0))
+	{
+		for (uint i = 0; i < ai_mesh->mNumVertices; ++i)
+		{
+			r_mesh->tex_coords[i * 2]		= ai_mesh->mTextureCoords[0][i].x;
+			r_mesh->tex_coords[i * 2 + 1]	= ai_mesh->mTextureCoords[0][i].y;
+		}
+
+		LOG("[STATUS] Imported %u texture coordinates!", tex_coords_size)
+	}
+	else
+	{
+		LOG("[ERROR] Imported Mesh has no tex coords!");
+	}
+
+	// --- INDICES ---
+	if (ai_mesh->HasFaces())																	// Double checked if for whatever reason Generate Mesh is called independently.
+	{
+		uint ind = 0;
+		for (uint i = 0; i < ai_mesh->mNumFaces; ++i)
+		{
+			aiFace face = ai_mesh->mFaces[i];													// Getting the face that is currently being iterated.
+
+			if (face.mNumIndices == 3)
+			{
+				//memcpy(&r_mesh->indices[i * 3], face.mIndices, sizeof(uint) * 3);
+				
+				for (uint j = 0; j < face.mNumIndices; ++j)
+				{
+					r_mesh->indices[ind] = face.mIndices[j];
+					++ind;
+				}
+			}
+			else
+			{
+				LOG("[WARNING] Geometry face %u with != 3 indices!", i);
+			}
+		}
+
+		LOG("[STATUS] Imported %u mesh indices!", indices_size);
 	}
 
 	if (ai_mesh->mMaterialIndex >= 0)
@@ -86,7 +157,6 @@ void Importer::Meshes::Import(const aiScene* ai_scene, const aiMesh* ai_mesh, R_
 		aiMaterial* material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
 	}
 
-	//r_mesh->CreateAABB();
 	r_mesh->LoadBuffers();
 }
 
@@ -103,3 +173,94 @@ void Importer::Meshes::Load(const char* buffer, R_Mesh* mesh)
 {
 
 }
+
+//void Importer::Meshes::Import(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
+//{
+//	// Allocating the required memory for each vector
+//	uint vertices_size = ai_mesh->mNumVertices * 3;											// There will be 3 coordinates per vertex, hence the size will be numVertices * 3.
+//	r_mesh->vertices.resize(vertices_size);													// Allocating in advance the required memory to store all the verts.
+//
+//	uint normals_size = ai_mesh->mNumVertices * 3;											// There will be 3 normal coordinates per vertex.
+//	r_mesh->normals.resize(normals_size);
+//
+//	uint tex_coords_size = ai_mesh->mNumVertices * 2;										// There will be 2 tex coordinates per vertex.
+//	r_mesh->tex_coords.resize(tex_coords_size);
+//
+//	uint indices_size = ai_mesh->mNumFaces * 3;												// The size of the indices vector will be equal to the amount of faces times 3 (triangles).
+//	r_mesh->indices.resize(indices_size);													// Allocating in advance the required memory to store all the indices.
+//
+//	// Loading the data from the mesh into the corresponding vectors
+//	// --- POSITIONS ---
+//	if (ai_mesh->HasPositions())
+//	{
+//		memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * vertices_size);	// &r_mesh->vertices[0] gets a pointer to the beginning of the vector. mVertices is a 3D vector.
+//
+//		LOG("[STATUS] Imported %u position vertices!", vertices_size)
+//	}
+//	else
+//	{
+//		LOG("[ERROR] Imported Mesh has no position vertices!");
+//	}
+//
+//	// --- NORMALS ---
+//	if (ai_mesh->HasNormals())
+//	{
+//		memcpy(&r_mesh->normals[0], ai_mesh->mNormals, sizeof(float) * normals_size);
+//
+//		LOG("[STATUS] Imported %u normals!", normals_size);
+//	}
+//	else
+//	{
+//		LOG("[ERROR] Imported Mesh has no normals!");
+//	}
+//
+//	// --- TEX COORDS ---
+//	if (ai_mesh->HasTextureCoords(0))
+//	{
+//		for (uint i = 0; i < ai_mesh->mNumVertices; ++i)
+//		{
+//			r_mesh->tex_coords[i * 2] = ai_mesh->mTextureCoords[0][i].x;
+//			r_mesh->tex_coords[i * 2 + 1] = ai_mesh->mTextureCoords[0][i].y;
+//		}
+//
+//		LOG("[STATUS] Imported %u texture coordinates!", tex_coords_size)
+//	}
+//	else
+//	{
+//		LOG("[ERROR] Imported Mesh has no tex coords!");
+//	}
+//
+//	// --- INDICES ---
+//	if (ai_mesh->HasFaces())
+//	{
+//		uint ind = 0;
+//		for (uint i = 0; i < ai_mesh->mNumFaces; ++i)
+//		{
+//			aiFace face = ai_mesh->mFaces[i];													// Getting the face that is currently being iterated.
+//
+//			if (face.mNumIndices == 3)
+//			{
+//				//memcpy(&r_mesh->indices[i * 3], face.mIndices, sizeof(uint) * 3);
+//
+//				for (uint j = 0; j < face.mNumIndices; ++j)
+//				{
+//					r_mesh->indices[ind] = face.mIndices[j];
+//					++ind;
+//				}
+//			}
+//			else
+//			{
+//				LOG("[WARNING] Geometry face %u with != 3 indices!", i);
+//			}
+//		}
+//
+//		LOG("[STATUS] Imported %u mesh indices!", indices_size);
+//	}
+//
+//	if (ai_mesh->mMaterialIndex >= 0)
+//	{
+//		aiMaterial* material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
+//	}
+//
+//	r_mesh->LoadBuffers();
+//}

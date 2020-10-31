@@ -9,8 +9,15 @@ public:
 	R_Material();
 	~R_Material();
 
+public:
+	const char* path;
+	uint width;
+	uint height;
+
+	uint id;
+
 private:
-	int a;
+	
 };
 
 #endif // !__R_MATERIAL_H__

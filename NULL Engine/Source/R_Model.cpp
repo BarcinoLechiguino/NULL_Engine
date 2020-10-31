@@ -3,6 +3,9 @@
 #include "R_Mesh.h"
 #include "I_Meshes.h"
 
+#include "Application.h"
+#include "M_Renderer3D.h"
+
 #include "R_Model.h"
 
 R_Model::R_Model(std::string full_path, vec4 colour) : Resource(), full_path(full_path), colour(colour)
@@ -19,7 +22,9 @@ void R_Model::Draw()
 {
 	for (uint i = 0; i < meshes.size(); ++i)
 	{
-		meshes[i]->Draw(colour);
+		App->renderer->DrawMesh(meshes[i]);
+		
+		//meshes[i]->Draw(colour);
 	}
 }
 
@@ -75,7 +80,7 @@ void R_Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
 	R_Mesh* r_mesh = new R_Mesh();
 
-	Importer::Meshes::Import(scene, mesh, r_mesh);
+	//Importer::Meshes::Import(scene, mesh, r_mesh);
 
 	meshes.push_back(r_mesh);
 }

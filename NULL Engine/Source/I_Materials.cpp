@@ -15,11 +15,6 @@
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILU.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILUT.lib")
 
-R_Material* Importer::Materials::Create()
-{	
-	return new R_Material();
-}
-
 // Importing, saving and loading aiMaterials with Assimp.
 void Importer::Materials::Assimp::Import(const aiMaterial* ai_material, R_Material* r_material)
 {
@@ -55,7 +50,9 @@ void Importer::Materials::DevIL::Init()
 
 bool Importer::Materials::DevIL::Import(const char* buffer, uint size, R_Material* r_material)
 {
-	return ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);
+	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);
+	
+	return true;
 }
 
 uint64 Importer::Materials::DevIL::Save(const R_Material* r_material, char** buffer)

@@ -4,6 +4,7 @@
 #include "M_Renderer3D.h"
 #include "M_FileSystem.h"
 #include "M_Editor.h"
+#include "M_SceneIntro.h"
 
 #include "M_Input.h"
 
@@ -175,7 +176,9 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 
 					// App->file_system->SplitFilePath();
 
-					App->renderer->LoadModel(norm_path.c_str());										// TMP. Use M_FileSystem later.
+					//App->renderer->LoadModel(norm_path.c_str());										// TMP. Use M_FileSystem later.
+
+					App->scene_intro->CreateGameObjectFromModel(dropped_file_path);
 				}
 
 			break;

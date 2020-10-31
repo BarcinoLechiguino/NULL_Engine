@@ -1,4 +1,3 @@
-#include "MathGeoLib/src/MathGeoLib.h"
 #include "OpenGL.h"
 
 #include "R_Mesh.h"
@@ -10,9 +9,13 @@ R_Mesh::R_Mesh() : Resource()
 {
 	VAO = 0;																								// Initializing the buffers.
 	VBO = 0;																								// 
+	NBO = 0;
+	TBO = 0;
 	IBO = 0;																								// -----------------------------------
 
 	debug_texture_id = 0;
+
+	draw_normals = false;
 
 	LoadDebugTexture();
 }
@@ -29,26 +32,42 @@ void R_Mesh::Draw(vec4 colour)
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}*/
 
-	glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glBindVertexArray(VAO);
-	glColor4f(colour.r, colour.g, colour.b, colour.a);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
-	glBindVertexArray(0);
+	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, TBO);
+	//glVertexPointer(2, GL_FLOAT, 0, nullptr);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);																// The vertex buffer is bound so the vertex positions can be interpreted correctly.
+	//glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Here the size and the type of the vertex is defined.
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	////glColor4f(colour.r, colour.g, colour.b, colour.a);
+	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
+	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	//glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void R_Mesh::DrawNormals()
 {
 	glBegin(GL_LINES);
 
-	for (uint i = 0; i < vertices.size(); ++i)																
+	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+
+	for (uint i = 0; i < vertices.size(); i += 3)																
 	{
-		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-		glVertex3f(vertices[i].position.x, vertices[i].position.y, vertices[i].position.z);
-		glVertex3f(vertices[i].position.x + vertices[i].normal.x, vertices[i].position.y + vertices[i].normal.y, vertices[i].position.z + vertices[i].normal.z);
+		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+		glVertex3f(vertices[i] + normals[i], vertices[i + 1] + normals[i + 1], vertices[i + 2] + normals[i + 2]);
 	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnd();
 }
@@ -60,38 +79,41 @@ void R_Mesh::DrawTexCoords()
 	for (uint i = 0; i < vertices.size(); ++i)
 	{
 		glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-		glVertex3f(vertices[i].position.x + vertices[i].tex_coords.x, vertices[i].position.y + vertices[i].tex_coords.y, vertices[i].position.z);
+		//glVertex3f(vertices[i].position.x + vertices[i].tex_coords.x, vertices[i].position.y + vertices[i].tex_coords.y, vertices[i].position.z);
 	}
 
 	glEnd();
 }
 
 void R_Mesh::LoadBuffers()
-{	
-	glGenVertexArrays(1, (GLuint*)&VAO);																	// Generates the Vertex Array Object.
-	glBindVertexArray(VAO);																					// Binds VAO.
+{
+	if (!vertices.empty())
+	{
+		glGenBuffers(1, (GLuint*)&VBO);																			// Generates the Vertex Buffer Object
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);																		// Binds VBO with the GL_ARRAY_BUFFER biding point (target):
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);			// Inits the data stored inside VBO and specifies how the data will be accessed.
+	}
 
-	glGenBuffers(1, (GLuint*)&VBO);																			// Generates the Vertex Buffer Object
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);																		// Binds VBO with the GL_ARRAY_BUFFER biding point (target):
- 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);			// Inits the data stored inside VBO and specifies how the data will be accessed.
+	if (!normals.empty())
+	{
+		glGenBuffers(1, (GLuint*)&NBO);
+		glBindBuffer(GL_ARRAY_BUFFER, NBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * normals.size(), &normals[0], GL_STATIC_DRAW);
+	}
 
-	glGenBuffers(1, (GLuint*)&IBO);																			// Generates the Index Buffer Object
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);																// Binds IBO with the GL_ARRAY_BUFFER biding point (target):
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);		// Inits the data stored inside IBO and specifies how the data will be accessed.
+	if (!tex_coords.empty())
+	{
+		glGenBuffers(1, (GLuint*)&TBO);
+		glBindBuffer(GL_ARRAY_BUFFER, TBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * tex_coords.size(), &tex_coords[0], GL_STATIC_DRAW);
+	}
 
-	//Vertices
-	glEnableVertexAttribArray(0);																			// Uses the currently bound VAO to enable the specified generic vertex attrib array.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);								// Defines an array of generic vertex attribute data. (Size, type...)
-
-	// Normals
-	glEnableVertexAttribArray(1);																			// Uses the currently bound VAO to enable the specified generic vertex attrib array.
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));		// offsetof() sets the byte offsets of: normal vec offset = normal attribute offset.
-
-	// Texture coordinates
-	glEnableVertexAttribArray(2);																			// Uses the currently bound VAO to enable the specified generic vertex attrib array.
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coords));	// The byte offset of the tex_coord vector = byte offset tex_coord attrib offset.
-
-	glBindVertexArray(0);																					// Breaks the existing VAO binding.
+	if (!indices.empty())
+	{
+		glGenBuffers(1, (GLuint*)&IBO);																			// Generates the Index Buffer Object
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);																// Binds IBO with the GL_ARRAY_BUFFER biding point (target):
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);		// Inits the data stored inside IBO and specifies how the data will be accessed.
+	}
 }
 
 void R_Mesh::LoadDebugTexture()
@@ -133,16 +155,27 @@ void R_Mesh::LoadDebugTexture()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-/*void R_Mesh::CreateAABB()
-{
-	//aabb.SetNegativeInfinity();
-	//aabb.Enclose((math::float3*)&vertices[0], vertices.size());
-}*/
-
 // VERTEX METHODS
-Vertex::Vertex()
-{
-	position	= { 0.0f, 0.0f, 0.0f };
-	normal		= { 0.0f, 0.0f, 0.0f };
-	tex_coords	= { 0.0f, 0.0f };
-}
+//Vertex::Vertex()
+//{
+//	position	= { 0.0f, 0.0f, 0.0f };
+//	normal		= { 0.0f, 0.0f, 0.0f };
+//	tex_coords	= { 0.0f, 0.0f };
+//}
+
+//glGenVertexArrays(1, (GLuint*)&VAO);																	// Generates the Vertex Array Object.
+//glBindVertexArray(VAO);																					// Binds VAO.
+
+//Vertices
+//glEnableVertexAttribArray(0);																			// Uses the currently bound VAO to enable the specified generic vertex attrib array.
+//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);								// Defines an array of generic vertex attribute data. (Size, type...)
+
+// Normals
+//glEnableVertexAttribArray(1);																			// Uses the currently bound VAO to enable the specified generic vertex attrib array.
+//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float), (void*)offsetof(Vertex, normal));		// offsetof() sets the byte offsets of: normal vec offset = normal attribute offset.
+
+// Texture coordinates
+//glEnableVertexAttribArray(2);																			// Uses the currently bound VAO to enable the specified generic vertex attrib array.
+//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coords));	// The byte offset of the tex_coord vector = byte offset tex_coord attrib offset.
+
+//glBindVertexArray(0);																					// Breaks the existing VAO binding.
