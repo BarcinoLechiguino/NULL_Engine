@@ -4,6 +4,7 @@
 #include "Component.h"
 
 class GameObject;
+class R_Material;
 
 class C_Material : public Component
 {
@@ -14,8 +15,16 @@ public:
 	bool Update() override;
 	bool CleanUp() override;
 
-private:
+public:
+	R_Material*		GetMaterial() const;
+	void			SetMaterial(R_Material* material);
 
+	std::string		GetTexturePath() const;
+	uint			GetTextureId() const;
+	void			GetTextureSize(uint& width, uint& height);
+
+private:
+	R_Material* material;
 };
 
 #endif // !__C_MATERIAL_H__

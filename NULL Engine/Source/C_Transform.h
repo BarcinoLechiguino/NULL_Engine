@@ -17,6 +17,9 @@ public:
 	bool CleanUp() override;
 
 public:
+	void RecalculateGlobalTransform();
+	void RecalculateLocalTransform();
+	
 	float3 GetPosition() const;
 	float3 GetRotation() const;
 	float3 GetScale() const;
@@ -26,20 +29,18 @@ public:
 	void SetScale(const float3& scale);
 
 public:
-	bool	recalculate_local_transform;					// Set to true if the parent of the owner object has been changed. That would mean recalculating the local position.
+	float4x4	matrix;
+	
+	bool		recalculate_global_transform;			// Set to true if the parent of the owner object has been changed. That would mean recalculating the local position.
 
 private:
-	float3	position;
-	float3	rotation;
-	float3	scale;
+	float3		position;
+	float3		rotation;
+	float3		scale;
 
-	float3	local_position;
-	float3	local_rotation;
-	float3	local_scale;
-
-	bool	needs_translation;
-	bool	needs_rotation;
-	bool	needs_scaling;
+	float3		local_position;
+	float3		local_rotation;
+	float3		local_scale;
 };
 
 #endif // !_C_TRANSFORM_H__

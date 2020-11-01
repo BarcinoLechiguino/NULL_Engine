@@ -137,6 +137,7 @@ void E_Hierarchy::HierarchyToolsPopup()
 			if (App->editor->GetInspectedGameObject() != App->scene_intro->root_object)
 			{
 				App->scene_intro->DeleteGameObject(App->editor->GetInspectedGameObject());
+				App->editor->SetInspectedGameObject(nullptr);
 				open_hierarchy_tools_popup = false;
 			}
 			else

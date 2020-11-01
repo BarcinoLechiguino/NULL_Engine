@@ -69,10 +69,10 @@ protected:
 };
 
 // ============================================
-class Cube : public Primitive
+class P_Cube : public Primitive
 {
 public :
-	Cube(const vec3& size = vec3(1.f, 1.f, 1.f), float mass = 1.f);
+	P_Cube(const vec3& size = vec3(1.f, 1.f, 1.f), float mass = 1.f);
 
 	vec3 GetSize() const;
 
@@ -100,11 +100,11 @@ private:
 };
 
 // ============================================
-class Sphere : public Primitive
+class P_Sphere : public Primitive
 {
 public:
 	//Sphere(float radius = 1.f, float mass = 1.f);
-	Sphere(float radius = 1.f, uint rings = 12, uint sectors = 24);
+	P_Sphere(float radius = 1.f, uint rings = 12, uint sectors = 24);
 
 public:
 	float GetRadius() const;
@@ -130,10 +130,10 @@ private:
 };
 
 // ============================================
-class Cylinder : public Primitive
+class P_Cylinder : public Primitive
 {
 public:
-	Cylinder(float radius = 1.f, float height = 2.f, uint sectors = 6, float mass = 1.f);
+	P_Cylinder(float radius = 1.f, float height = 2.f, uint sectors = 6, float mass = 1.f);
 
 	float GetRadius() const;
 	float GetHeight() const;
@@ -161,10 +161,10 @@ private:
 };
 
 // ============================================
-class Pyramid : public Primitive
+class P_Pyramid : public Primitive
 {
 public:
-	Pyramid(vec3 size = vec3(1.0f, 1.0f, 1.0f));
+	P_Pyramid(vec3 size = vec3(1.0f, 1.0f, 1.0f));
 
 protected:
 	void InnerRender() const override;
@@ -181,11 +181,11 @@ private:
 };
 
 // ============================================
-class Line : public Primitive
+class P_Line : public Primitive
 {
 public:
-	Line();
-	Line(const vec3& A, const vec3& B);
+	P_Line();
+	P_Line(const vec3& A, const vec3& B);
 
 	vec3 GetOrigin() const;
 	vec3 GetDestination() const;
@@ -200,10 +200,10 @@ public:
 };
 
 // ============================================
-class Plane : public Primitive
+class P_Plane : public Primitive
 {
 public:
-	Plane(const vec3& normal = vec3(0,1,0));
+	P_Plane(const vec3& normal = vec3(0,1,0));
 
 	vec3 GetNormal() const;
 protected:

@@ -5,8 +5,6 @@
 #include <map>
 #include <string>
 
-#include"MathGeoLib/src/Math/float4x4.h"
-
 typedef unsigned int uint;
 
 class Component;
@@ -51,7 +49,6 @@ public:
 
 	GameObject*					parent;
 
-	float4x4					matrix;
 	C_Transform*				transform;
 
 	bool						is_root_object;
@@ -62,6 +59,7 @@ private:
 
 	bool						is_active;
 	bool						is_static;
+
 };
 
 #endif // !__GAME_OBJECT_H__

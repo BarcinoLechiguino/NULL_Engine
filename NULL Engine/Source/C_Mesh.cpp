@@ -32,6 +32,14 @@ bool C_Mesh::CleanUp()
 {
 	bool ret = true;
 
+	if (mesh != nullptr)
+	{
+		mesh->CleanUp();
+
+		delete mesh;
+		mesh = nullptr;
+	}
+
 	return ret;
 }
 

@@ -1,4 +1,2 @@
-﻿  M_Renderer3D.cpp
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.h(22,14): warning C4099: 'aiScene': type name first seen using 'struct' now seen using 'class'
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\I_Materials.h(4): message : see declaration of 'aiScene'
+﻿  I_Meshes.cpp
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

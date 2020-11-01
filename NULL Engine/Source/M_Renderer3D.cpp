@@ -15,6 +15,8 @@
 #include "R_Material.h"
 #include "I_Materials.h"
 
+#include "Primitive.h"
+
 #include "M_Renderer3D.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
@@ -34,7 +36,6 @@ M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), co
 	show_tex_coords		= false;
 
 	draw_primitive_examples = false;
-	draw_primitives_by_indices = true;
 
 	debug_texture_id	= 0;
 }
@@ -121,18 +122,9 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 	{
 		for (uint i = 0; i < primitives.size(); ++i)
 		{
-			if (!draw_primitives_by_indices)
-			{
-				primitives[i]->Render();
-			}
-			else
-			{
-				primitives[i]->RenderByIndices();
-			}
+			primitives[i]->RenderByIndices();
 		}
 	}
-
-	PrimitiveExamples();
 
 	App->editor->RenderGuiPanels();
 
@@ -386,10 +378,10 @@ void M_Renderer3D::AddPrimitive(Primitive* primitive)
 
 void M_Renderer3D::CreatePrimitiveExamples()
 {
-	Cube* cube			= new Cube();
-	Sphere* sphere		= new Sphere();
-	Cylinder* cylinder	= new Cylinder();
-	Pyramid* pyramid	= new Pyramid();
+	P_Cube* cube			= new P_Cube();
+	P_Sphere* sphere		= new P_Sphere();
+	P_Cylinder* cylinder	= new P_Cylinder();
+	P_Pyramid* pyramid		= new P_Pyramid();
 
 	sphere->SetPos(2.0f, 0.0f, 0.0f);
 	cylinder->SetPos(4.0f, 0.0f, 0.0f);
@@ -452,28 +444,36 @@ void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 	}
 }
 
-void M_Renderer3D::DrawMesh(R_Mesh* mesh)
+void M_Renderer3D::DrawMesh(R_Mesh* mesh, uint texture_id)
 {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
 
-	glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+	if (texture_id == 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, texture_id);
+	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->TBO);
-	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->TBO);														// Will bind the buffer object with the mesh->TBO identifyer for rendering.
+	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of tex coords to use when rendering.
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);																// The vertex buffer is bound so the vertex positions can be interpreted correctly.
-	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Here the size and the type of the vertex is defined.
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);														// The vertex buffer is bound so the vertex positions can be interpreted correctly.
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of vert coords to use when rendering.
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);												// Will bind the buffer object with the mesh->IBO identifyer for rendering.
 	//glColor4f(colour.r, colour.g, colour.b, colour.a);
-	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, nullptr);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, nullptr);					// 
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);														// Clearing the buffers.
+	glBindBuffer(GL_ARRAY_BUFFER, 0);																// 												
+	glBindTexture(GL_TEXTURE_2D, 0);																// ---------------------
 
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);													// Disabling the client-side capabilities enabled at the beginning.
+	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY and GL_VERTEX_ARRAY.
 
 	// --- DEBUG DRAW ---
 	if (mesh->draw_normals)
@@ -509,13 +509,13 @@ void M_Renderer3D::LoadDebugTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);				// Set texture parameters. WRAP_S: Set the wrap parameters for texture coordinate s. GL_REPEAT is the default.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);				// WRAP_T: Set the wrap parameters for the texture coordinate r
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);			// MAG_FILTER: Sets the texture magnification process parameters. GL_NEAREST rets the val. of nearest tex elem.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);			// MIN_FILTER: Sets the texture minimization process parameters. " ".
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);			// MIN_FILTER: Sets the texture minimization process parameters. " ".
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
 	// --->																				// handle the process of resizing a tex. Takes the mipmap that most closely matches the size of the px.
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, checker_image);
 
-	//glGenerateMipmap(GL_TEXTURE_2D);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -676,22 +676,4 @@ void M_Renderer3D::SetDrawPrimtiveExamples(bool set_to)
 	{
 		draw_primitive_examples = set_to;
 	}
-}
-
-void M_Renderer3D::PrimitiveExamples()
-{	
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
-	//cube_direct.DirectRender();
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
-	//cube_array.ArrayRender();
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	/*cube_indices.IndicesRender();*/
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }

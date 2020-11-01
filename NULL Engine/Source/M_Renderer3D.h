@@ -1,14 +1,13 @@
 #ifndef __M_RENDERER_3D_H__
 #define __M_RENDERER_3D_H__
 
+#include "MathGeoLib/src/Math/float4x4.h"
+#include "ImGui/imgui.h"														// REMOVE?
+
 #include "Module.h"
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
-
-#include "Primitive.h"															// REMOVE LATER
-
-#include "ImGui/imgui.h"
 
 #define MAX_LIGHTS 8
 #define WORLD_GRID_SIZE 200
@@ -18,6 +17,8 @@
 class Configuration;
 class R_Mesh;
 class R_Model;
+
+class Primitive;
 
 class aiScene;
 typedef unsigned int GLenum;
@@ -58,14 +59,13 @@ public:
 public:																		// --- RENDER GEOMETRY
 	void			LoadModel(const char* file_path, vec4 mat_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	void			GenerateBuffers(R_Mesh* mesh);
-	void			DrawMesh(R_Mesh* mesh);
+	void			DrawMesh(R_Mesh* mesh, uint texture_id = 0/*, float4x4 transform*/);
+	//void			RenderGameObject(GameObject* game_object);
 
 	void			LoadDebugTexture();
 
 	void			AddPrimitive(Primitive* primitive);
 	void			CreatePrimitiveExamples();
-
-	void			PrimitiveExamples();									// REMOVE LATER
 
 public:																		// --- GET/SET METHODS
 	const char*		GetDrivers() const;										// 
@@ -112,11 +112,6 @@ private:
 	bool					show_tex_coords;								// 
 
 	bool					draw_primitive_examples;
-	bool					draw_primitives_by_indices;
-
-	Cube					cube_direct;									// 
-	Cube					cube_array;										// 
-	Cube					cube_indices;									// 
 };
 
 #endif // !__M_RENDERER_3D_H__

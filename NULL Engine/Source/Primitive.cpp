@@ -125,17 +125,17 @@ void Primitive::Scale(float x, float y, float z)
 
 // CUBE ============================================
 
-Cube::Cube(const vec3& _size, float mass) : Primitive(), size(_size), loaded_in_array(false), loaded_in_indices(false)
+P_Cube::P_Cube(const vec3& _size, float mass) : Primitive(), size(_size), loaded_in_array(false), loaded_in_indices(false)
 {
 	type = PRIMITIVE_TYPES::CUBE;
 }
 
-vec3 Cube::GetSize() const
+vec3 P_Cube::GetSize() const
 {
 	return size;
 }
 
-void Cube::DirectRender() const
+void P_Cube::DirectRender() const
 {	
 	float sx = size.x * 0.5f;
 	float sy = size.y * 0.5f;
@@ -293,7 +293,7 @@ void Cube::DirectRender() const
 	glEnd();
 }
 
-void Cube::ArrayRender()
+void P_Cube::ArrayRender()
 {	
 	if (!loaded_in_array)
 	{	
@@ -480,7 +480,7 @@ void Cube::ArrayRender()
 	glBindVertexArray(0);
 }
 
-void Cube::IndicesRender()
+void P_Cube::IndicesRender()
 {	
 	if (!loaded_in_indices)
 	{
@@ -566,7 +566,7 @@ void Cube::IndicesRender()
 	glPopMatrix();*/
 }
 
-void Cube::ApplyTransform(float* coordinates, int array_size)
+void P_Cube::ApplyTransform(float* coordinates, int array_size)
 {
 	vec3 position = GetPos();
 
@@ -578,7 +578,7 @@ void Cube::ApplyTransform(float* coordinates, int array_size)
 	}
 }
 
-void Cube::ApplySize(float* coordinates, int array_size)
+void P_Cube::ApplySize(float* coordinates, int array_size)
 {
 	for (int i = 0; i < array_size; ++i)					// Resizing the cube according to the size parameter.
 	{
@@ -595,41 +595,41 @@ void Cube::ApplySize(float* coordinates, int array_size)
 	type = PRIMITIVE_TYPES::SPHERE;
 }*/
 
-Sphere::Sphere(float radius, uint rings, uint sectors) : Primitive(), radius(radius), rings(rings), sectors(sectors), loaded_buffers(false)
+P_Sphere::P_Sphere(float radius, uint rings, uint sectors) : Primitive(), radius(radius), rings(rings), sectors(sectors), loaded_buffers(false)
 {
 	type = PRIMITIVE_TYPES::SPHERE;
 }
 
-float Sphere::GetRadius() const
+float P_Sphere::GetRadius() const
 {
 	return radius;
 }
 
-uint Sphere::GetRings() const
+uint P_Sphere::GetRings() const
 {
 	return rings;
 }
 
-uint Sphere::GetSectors() const
+uint P_Sphere::GetSectors() const
 {
 	return sectors;
 }
 
-void Sphere::SetRings(uint rings)
+void P_Sphere::SetRings(uint rings)
 {
 	this->rings = rings;
 
 	loaded_buffers = false;
 }
 
-void Sphere::SetSectors(uint sectors)
+void P_Sphere::SetSectors(uint sectors)
 {
 	this->sectors = sectors;
 
 	loaded_buffers = false;
 }
 
-void Sphere::IndicesRender()
+void P_Sphere::IndicesRender()
 {	
 	if (!loaded_buffers)
 	{
@@ -719,39 +719,39 @@ void Sphere::IndicesRender()
 	glPopMatrix();
 }
 
-void Sphere::InnerRender() const
+void P_Sphere::InnerRender() const
 {
 	//glutSolidSphere(radius, 25, 25);
 }
 
 // CYLINDER ============================================
-Cylinder::Cylinder(float radius, float height, uint sectors, float mass) : Primitive(), radius(radius), height(height), sectors(sectors), loaded_in_buffers(false)
+P_Cylinder::P_Cylinder(float radius, float height, uint sectors, float mass) : Primitive(), radius(radius), height(height), sectors(sectors), loaded_in_buffers(false)
 {
 	type = PRIMITIVE_TYPES::CYLINDER;
 }
 
-float Cylinder::GetRadius() const
+float P_Cylinder::GetRadius() const
 {
 	return radius;
 }
 
-float Cylinder::GetHeight() const
+float P_Cylinder::GetHeight() const
 {
 	return height;
 }
 
-uint Cylinder::GetSectors() const
+uint P_Cylinder::GetSectors() const
 {
 	return sectors;
 }
 
-void Cylinder::SetSectors(uint sectors)
+void P_Cylinder::SetSectors(uint sectors)
 {
 	this->sectors = sectors;
 	loaded_in_buffers = false;
 }
 
-std::vector<float> Cylinder::GetCircularVertices()
+std::vector<float> P_Cylinder::GetCircularVertices()
 {
 	float sector_step = 2 * PI / sectors;			// The angle between cylinder sectors is: a = 2*PI * (current_sector / total_sectors). To get the step: (2 * PI) / total_sectors.
 	float sector_angle;
@@ -778,7 +778,7 @@ std::vector<float> Cylinder::GetCircularVertices()
 	return vertices;
 }
 
-void Cylinder::IndicesRender()
+void P_Cylinder::IndicesRender()
 {
 	if (!loaded_in_buffers)
 	{
@@ -841,7 +841,7 @@ void Cylinder::IndicesRender()
 	glPopMatrix();
 }
 
-void Cylinder::ConstructCoverVertices(std::vector<float> circular_vertices)
+void P_Cylinder::ConstructCoverVertices(std::vector<float> circular_vertices)
 {
 	// CONSTRUCTING COVER VERTICES
 	for (int ring = 0; ring < 2; ++ring)													// Goes from -h/2 to h/2. Maybe change it so it goes from 0 to 2 directly.
@@ -872,7 +872,7 @@ void Cylinder::ConstructCoverVertices(std::vector<float> circular_vertices)
 	}
 }
 
-void Cylinder::ConstructBaseAndTopVertices(std::vector<float> circular_vertices)
+void P_Cylinder::ConstructBaseAndTopVertices(std::vector<float> circular_vertices)
 {
 	// CONSTRUCTING BASE AND TOP VERTICES
 	for (int ring = 0; ring < 2; ++ring)
@@ -911,7 +911,7 @@ void Cylinder::ConstructBaseAndTopVertices(std::vector<float> circular_vertices)
 	}
 }
 
-void Cylinder::ConstructIndices(uint base_center_index, uint top_center_index)
+void P_Cylinder::ConstructIndices(uint base_center_index, uint top_center_index)
 {
 	uint base_index = 0;														// First vertex index at base.
 	uint top_index = sectors /*+ 1*/;											// First vertex index at top.
@@ -978,7 +978,7 @@ void Cylinder::ConstructIndices(uint base_center_index, uint top_center_index)
 	}
 }
 
-void Cylinder::InnerRender() const
+void P_Cylinder::InnerRender() const
 {
 	glPushMatrix();
 	mat4x4 rotateMat = IdentityMatrix;
@@ -1026,17 +1026,17 @@ void Cylinder::InnerRender() const
 }
 
 // PYRAMID ============================================
-Pyramid::Pyramid(vec3 size) : Primitive(), size(size), loaded_in_buffers(false)
+P_Pyramid::P_Pyramid(vec3 size) : Primitive(), size(size), loaded_in_buffers(false)
 {
 	type = PRIMITIVE_TYPES::PYRAMID;
 }
 
-void Pyramid::InnerRender() const
+void P_Pyramid::InnerRender() const
 {
 
 }
 
-void Pyramid::IndicesRender()
+void P_Pyramid::IndicesRender()
 {	
 	if (!loaded_in_buffers)
 	{
@@ -1115,27 +1115,27 @@ void Pyramid::IndicesRender()
 }
 
 // LINE ==================================================
-Line::Line() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
+P_Line::P_Line() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
 {
 	type = PRIMITIVE_TYPES::LINE;
 }
 
-Line::Line(const vec3& A, const vec3& B) : Primitive(), origin(A), destination(B)
+P_Line::P_Line(const vec3& A, const vec3& B) : Primitive(), origin(A), destination(B)
 {
 	type = PRIMITIVE_TYPES::LINE;
 }
 
-vec3 Line::GetOrigin() const
+vec3 P_Line::GetOrigin() const
 {
 	return origin;
 }
 
-vec3 Line::GetDestination() const
+vec3 P_Line::GetDestination() const
 {
 	return destination;
 }
 
-void Line::InnerRender() const
+void P_Line::InnerRender() const
 {
 	glLineWidth(2.0f);
 
@@ -1149,23 +1149,23 @@ void Line::InnerRender() const
 	glLineWidth(1.0f);
 }
 
-void Line::IndicesRender()
+void P_Line::IndicesRender()
 {
 	InnerRender();
 }
 
 // PLANE ==================================================
-Plane::Plane(const vec3& _normal) : Primitive(), normal(_normal)
+P_Plane::P_Plane(const vec3& _normal) : Primitive(), normal(_normal)
 {
 	type = PRIMITIVE_TYPES::PLANE;
 }
 
-vec3 Plane::GetNormal() const
+vec3 P_Plane::GetNormal() const
 {
 	return normal;
 }
 
-void Plane::InnerRender() const
+void P_Plane::InnerRender() const
 {
 	glLineWidth(1.0f);
 
@@ -1184,7 +1184,7 @@ void Plane::InnerRender() const
 	glEnd();
 }
 
-void Plane::IndicesRender()
+void P_Plane::IndicesRender()
 {
 	InnerRender();
 }

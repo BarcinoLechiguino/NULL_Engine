@@ -274,7 +274,7 @@ void M_SceneIntro::HandleDebugInput()
 
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_STATE::KEY_DOWN)
 	{
-		DebugSpawnPrimitive(new Cube());
+		DebugSpawnPrimitive(new P_Cube());
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_STATE::KEY_DOWN)

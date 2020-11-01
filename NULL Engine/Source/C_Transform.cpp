@@ -5,11 +5,12 @@
 #include "C_Transform.h"
 
 C_Transform::C_Transform(GameObject* owner) : Component(owner, COMPONENT_TYPE::TRANSFORM, "Transform"),
-recalculate_local_transform(false)
+matrix(matrix.identity),
+recalculate_global_transform(false)
 {
 	float4x4 rotation_mat;
 	
-	owner->matrix.Decompose(position, rotation_mat, scale);
+	matrix.Decompose(position, rotation_mat, scale);
 
 	rotation = rotation_mat.ToEulerXYZ();
 
@@ -30,24 +31,17 @@ bool C_Transform::Update()
 {
 	bool ret = true;
 
-	if (needs_translation)
+	if (recalculate_global_transform)
 	{
-		owner->matrix.Translate(position);
-		needs_translation = false;
-	}
+		matrix.Translate(position);
 
-	if (needs_rotation)
-	{
-		owner->matrix.RotateX(rotation.x);
-		owner->matrix.RotateY(rotation.y);
-		owner->matrix.RotateZ(rotation.z);
-		needs_rotation = false;
-	}
+		matrix.RotateX(rotation.x);
+		matrix.RotateY(rotation.y);
+		matrix.RotateZ(rotation.z);
 
-	if (needs_scaling)
-	{
-		owner->matrix.Scale(scale);
-		needs_scaling = false;
+		matrix.Scale(scale);
+
+		recalculate_global_transform = false;
 	}
 
 	return ret;
@@ -80,19 +74,19 @@ void C_Transform::SetPosition(const float3& position)
 {
 	this->position = position;
 
-	needs_translation = true;
+	recalculate_global_transform = true;
 }
 
 void C_Transform::SetRotation(const float3& rotation)
 {
 	this->rotation = rotation;
 
-	needs_rotation = true;
+	recalculate_global_transform = true;
 }
 
 void C_Transform::SetScale(const float3& scale)
 {
 	this->scale = scale; 
 
-	needs_scaling = true;
+	recalculate_global_transform = true;
 }

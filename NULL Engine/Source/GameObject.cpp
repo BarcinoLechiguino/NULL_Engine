@@ -1,4 +1,6 @@
 #include "Globals.h"
+#include "Application.h"
+#include "M_Renderer3D.h"
 
 #include "Component.h"
 #include "C_Transform.h"
@@ -14,7 +16,6 @@ name("GameObject"),
 is_active(true),
 is_static(false),
 parent(nullptr),
-matrix(matrix.identity),
 is_root_object(false)
 {
 	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
@@ -26,7 +27,6 @@ name(name),
 is_active(is_active),
 is_static(is_static),
 parent(nullptr),
-matrix(matrix.identity),
 is_root_object(false)
 {
 	if (name.empty())
@@ -58,6 +58,13 @@ bool GameObject::Update()
 		}
 	}
 
+	/*C_Mesh* mesh = (C_Mesh*)GetComponent(COMPONENT_TYPE::MESH);
+
+	if (mesh != nullptr)
+	{
+		//App->renderer->
+	}*/
+
 	return ret;
 }
 
@@ -77,17 +84,25 @@ bool GameObject::CleanUp()
 
 	components.clear();
 
-	for (uint i = 0; i < childs.size(); ++i)
+	if (parent != nullptr)
 	{
-		//childs[i]->CleanUp();
-		
-		childs[i]->parent = parent;
-
-		//delete childs[i];
-		//childs[i] = nullptr;
+		parent->DeleteChild(this);
 	}
 
-	parent->DeleteChild(this);
+	for (uint i = 0; i < childs.size(); ++i)
+	{
+		if (childs[i] != nullptr)
+		{
+			childs[i]->CleanUp();
+			
+			/*if (i < childs.size())
+			{
+				childs.erase(childs.begin() + i);
+			}*/
+			//delete childs[i];
+			//childs[i] = nullptr;
+		}
+	}
 
 	childs.clear();
 
@@ -118,7 +133,7 @@ bool GameObject::AddChild(GameObject* child)
 
 	C_Transform* child_transform = (C_Transform*)child->GetComponent(COMPONENT_TYPE::TRANSFORM);
 	
-	child_transform->recalculate_local_transform = true;
+	child_transform->recalculate_global_transform = true;
 
 	child->parent = this;
 

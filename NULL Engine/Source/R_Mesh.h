@@ -12,9 +12,9 @@ public:
 	void Draw(vec4 colour);
 	void DrawNormals();
 
-	void LoadDebugTexture();
-
 	void LoadBuffers();
+
+	bool CleanUp();
 
 public:
 	std::vector<float>		vertices;
@@ -22,16 +22,15 @@ public:
 	std::vector<float>		tex_coords;
 	std::vector<uint>		indices;
 
+	std::vector<const char*> tex_paths;
+
 	vec4 colour;
 
 	// Buffer data
-	uint VAO;											// Vertex Array Object.		-->		Will store all the buffer objects of the mesh.
 	uint VBO;											// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.
 	uint NBO;											// Normals Buffer Object.	-->		Will store all the buffer data of the normals of the mesh.
 	uint TBO;											// Tex Coord Buffer Object. -->		Will store all the buffer data of the tex coords of the mesh.
 	uint IBO;											// Index Buffer Object.		--> 	Will store all the buffer data of the indices of the mesh.
-
-	uint debug_texture_id;
 
 	bool draw_normals;
 	std::string path;
