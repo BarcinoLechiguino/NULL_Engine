@@ -1,2 +1,7 @@
-﻿  C_Transform.cpp
+﻿  E_Toolbar.cpp
+  Generating code
+  1 of 3685 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    82 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

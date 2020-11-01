@@ -29,11 +29,11 @@ It has been coded from scratch in C and C++ along with the following libraries:
 * Library Integration (All o the stated in the introduction).
 * ImGui UI Display & Structure
 * Configuration & Console
-* 3D Model Loading
-* Image Loading
-* Drag & Drop Models and textures from a directory.
 * GameObject and Components
 * Hierarchy & Inspector
+* 3D Model Loading (W/ Support for .fbx files)
+* Image Loading (W/ Support for .png and .dds files)
+* Drag & Drop Models and textures from a directory.
 
 
 
@@ -42,12 +42,36 @@ It has been coded from scratch in C and C++ along with the following libraries:
 ### Engine Features
 
 * **Main Menu Toolbar:** Placed at the top of the window. It has various menu items that allow to exit the engine, open/close editor panels and show some primitive examples.
+
+  ****
+
 * **Configuration Panel:** Placed at the right side of the window. It has multiple collapsing headers that display different values and parameters of each existing module.
+
+  ****
+
 * **Hierarchy Panel:** Placed at the left side of the window. It shows all the game objects that are currently placed in the current scene. Upon clicking any of them the Inspector panel will show all the components the selected game object has.
-* **Inspector Panel:** Placed at the right side of the window (along with Configuration). It shows the components of a selected game object. The components are Transform, Mesh and Material.
+
+  ****
+
+* **Inspector Panel:** Placed at the right side of the window (along with Configuration). It shows the components of a selected game object. The components are Transform, Mesh and Material. 
+
+  Disclaimer: To see all the possible components that a game object can have create an empty game object. Otherwise if a game object was created with an imported model it will only have the components it needs.
+
+  ****
+
 * **Console Panel: ** Placed at the bottom of the window. It outputs information about the state of the engine: Loading&Saving, Importing models and textures...
 
-### Innovation
+  ****
+
+* **Drag&Drop:** In this version of the engine models and textures can be dropped from a directory into the engine. For models this creates a new game object per individual mesh in the model. Moreover, the first mesh to be processed will be set as the parent of the rest. Textures will also be loaded onto the model.
+
+  For textures, if a texture is dropped and a game object is currently being selected/inspected, that texture will be added to it. To try out this feature just go to the Textures folder in Assets and drag and drop the test image (it's a classic).
+
+  ****
+
+  
+
+### Innovations
 
 Currently there are no innovations to speak of.
 

@@ -120,8 +120,8 @@ bool E_Toolbar::WindowMainMenuItem()
 	if (ImGui::BeginMenu("Window"))
 	{
 		ImGui::MenuItem("Configuration", "1", &App->editor->show_configuration);
-		ImGui::MenuItem("Inspector", "2", &App->editor->show_hierarchy);
-		ImGui::MenuItem("Hierarchy", "3", &App->editor->show_inspector);
+		ImGui::MenuItem("Hierarchy", "2", &App->editor->show_hierarchy);
+		ImGui::MenuItem("Inspector", "3", &App->editor->show_inspector);
 		ImGui::MenuItem("Console", "4", &App->editor->show_console);
 		ImGui::MenuItem("GuiDemo", "8", &App->editor->show_imgui_demo);
 		ImGui::MenuItem("About", "9", &App->editor->show_about_popup);
