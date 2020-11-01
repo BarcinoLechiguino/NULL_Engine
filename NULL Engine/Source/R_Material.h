@@ -28,6 +28,8 @@ public:
 	R_Material();
 	~R_Material();
 
+	bool CleanUp();
+
 public:
 	Texture tex_data;
 

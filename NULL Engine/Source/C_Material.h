@@ -6,6 +6,8 @@
 class GameObject;
 class R_Material;
 
+struct Texture;
+
 class C_Material : public Component
 {
 public:
@@ -23,8 +25,13 @@ public:
 	uint			GetTextureId() const;
 	void			GetTextureSize(uint& width, uint& height);
 
+	void			SetTextureId(const uint& texture_id);
+
+public:
+	std::vector<R_Material*> textures;								// Will store all the textures that this component can have.
+
 private:
-	R_Material* material;
+	R_Material* material;											// Currently used material.
 };
 
 #endif // !__C_MATERIAL_H__

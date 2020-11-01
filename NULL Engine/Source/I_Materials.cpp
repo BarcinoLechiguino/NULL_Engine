@@ -3,10 +3,13 @@
 // Interface class between engine and Assimp + DevIL.
 // ----------------------------------------------------
 
+#include "OpenGL.h"
 #include "Assimp.h"
 #include "DevIL.h"
 
 #include "Globals.h"
+#include "Application.h"
+#include "M_FileSystem.h"
 #include "R_Material.h"
 
 #include "I_Materials.h"
@@ -14,6 +17,8 @@
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/DevIL.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILU.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILUT.lib")
+
+using namespace Importer::Materials;																	// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
 // Importing, saving and loading aiMaterials with Assimp.
 void Importer::Materials::Assimp::Import(const aiMaterial* ai_material, R_Material* r_material)
@@ -48,11 +53,141 @@ void Importer::Materials::DevIL::Init()
 	ilutRenderer(ILUT_OPENGL);
 }
 
-bool Importer::Materials::DevIL::Import(const char* buffer, uint size, R_Material* r_material)
+void Importer::Materials::DevIL::CleanUp()
 {
-	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);
+	LOG("[STATUS] Freeing all the buffers related with textures.");
+
+
+
+	LOG("[STATUS] Shutting down DevIL.");
+	ilShutDown();
+}
+
+bool Importer::Materials::DevIL::Import(const char* path, R_Material* r_material)
+{
+	bool ret = true;
 	
-	return true;
+	LOG("[STATUS] Loading %s", path);
+	
+	uint	tex_buffer;
+	uint	tex_id;
+
+	if (path != nullptr)
+	{
+		ilGenImages(1, (ILuint*)&tex_buffer);												// DevIL's buffers work pretty much the same way as OpenGL's do.
+		ilBindImage(tex_buffer);															// The first step is to generate a buffer and then bind it.
+
+		char* data = nullptr;
+		uint file_size = App->file_system->Load(path, &data);
+
+		if (file_size > 0)
+		{
+			ILenum type = IL_TYPE_UNKNOWN;														// When type is IL_TYPE_UNKNOWN, it tells DevIL to try to determine the type on its own.
+			
+			if (App->file_system->GetFileExtension(path) == "png"								// Checking for the .png extension. Also checking caps just in case.
+				|| App->file_system->GetFileExtension(path) == "PNG")
+			{
+				type = IL_PNG;																	// Changing the type to IL_PNG so it tells DevIL that it is loading a .png file.
+			}
+			
+			if (App->file_system->GetFileExtension(path) == "dds"								// Checking for the .dds extension. Also checking caps just in case.
+				|| App->file_system->GetFileExtension(path) == "DDS")
+			{
+				type = IL_DDS;																	// Changing the type to IL_DDS so it tells DevIL that it is loading a .dds file.
+			}
+			
+			bool success = ilLoadL(type, (const void*)data, file_size);							// ilLoadL() loads an image from buffer data. If size = 0 then then no bounds-checking is done.
+			if (success)
+			{
+				tex_id = ilutGLBindTexImage();													// Gets the corresponding OpenGL texture for the one that was just loaded. Use OGL from now on.
+
+				success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+				if (success)																	// It is checked that the currently loaded image's pixel data is in RGBA format.
+				{
+					tex_id = DevIL::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH),	// Loading a texture into OpenGL buffers. Use data, for now it does not work though.
+														ilGetInteger(IL_IMAGE_HEIGHT), 
+														ilGetInteger(IL_IMAGE_FORMAT), 
+														ilGetInteger(IL_IMAGE_FORMAT),
+														GL_TEXTURE_2D, GL_NEAREST, GL_REPEAT);
+
+					if (tex_id != 0)
+					{
+						r_material->tex_data.path	= path;											// Filling the Texture struct in R_Material* with the data from the loaded texture.
+						r_material->tex_data.type	= TEXTURE_TYPE::DIFFUSE;						// For now only diffuse textures will be used.
+						r_material->tex_data.id		= tex_id;
+						r_material->tex_data.width	= ilGetInteger(IL_IMAGE_WIDTH);
+						r_material->tex_data.height = ilGetInteger(IL_IMAGE_HEIGHT);
+					}
+					else
+					{
+						LOG("[ERROR] Could not get texture Id! Path: %s", path);	
+						ret = false;
+					}
+				}
+				else
+				{
+					ILenum error = ilGetError();
+					LOG("[ERROR] Could not convert texture to the correct pixel format! DevIL Error: %s", iluErrorString(error));
+					ret = false;
+				}
+			}
+			else
+			{
+				ILenum error = ilGetError();
+				LOG("[ERROR] Could not load texture from data buffer! DevIL Error: %s", iluErrorString(error));
+				ret = false;
+			}
+		}
+		else
+		{
+			LOG("[ERROR] The loaded file size was %u! Path: %s", path)
+			ilDeleteImages(1, &tex_buffer);
+			ret = false;
+		}
+	}
+
+	return ret;
+}
+
+uint Importer::Materials::DevIL::CreateTexture(const void* data, uint width, uint height, int internal_format, uint format, uint target, int filter_type, int filling_type)
+{
+	uint texture_id = 0;
+	
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	glGenTextures(1, (GLuint*)&texture_id);
+	glBindTexture(target, texture_id);
+
+	glTexParameteri(target, GL_TEXTURE_WRAP_S, filling_type);
+	glTexParameteri(target, GL_TEXTURE_WRAP_T, filling_type);
+
+	if (filter_type == GL_NEAREST)
+	{
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	}
+	else if (filter_type == GL_LINEAR)
+	{
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);											// Anisotropy goes here too?
+	}
+	else
+	{
+		LOG("[ERROR] Invalid filter type! Supported filters: GL_LINEAR and GL_NEAREST");
+	}
+
+	glTexImage2D(target, 0, internal_format, width, height, 0, format, GL_UNSIGNED_BYTE, data); 
+
+	glGenerateMipmap(target);
+
+	glBindTexture(target, 0);
+
+	if (texture_id != 0)
+	{
+		LOG("[STATUS] Texture succesfully loaded! Id: %u, Size: %u x %u", texture_id, width, height);
+	}
+
+	return texture_id;
 }
 
 uint64 Importer::Materials::DevIL::Save(const R_Material* r_material, char** buffer)

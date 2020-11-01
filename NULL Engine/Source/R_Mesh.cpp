@@ -89,5 +89,7 @@ bool R_Mesh::CleanUp()
 	tex_coords.clear();
 	indices.clear();
 
+	tex_paths.clear();
+
 	return true;
 }

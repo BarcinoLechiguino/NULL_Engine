@@ -25,6 +25,21 @@ bool C_Material::CleanUp()
 {
 	bool ret = true;
 
+	if (material != nullptr)
+	{
+		material->CleanUp();
+	}
+
+	for (uint i = 0; i < textures.size(); ++i)
+	{
+		textures[i]->CleanUp();
+
+		delete textures[i];
+		textures[i] = nullptr;
+	}
+
+	textures.clear();
+
 	return ret;
 }
 
@@ -57,6 +72,14 @@ uint C_Material::GetTextureId() const
 	}
 
 	return 0;
+}
+
+void C_Material::SetTextureId(const uint& texture_id)
+{
+	if (material != nullptr)
+	{
+		material->tex_data.id = texture_id;
+	}
 }
 
 void C_Material::GetTextureSize(uint& width, uint& height)

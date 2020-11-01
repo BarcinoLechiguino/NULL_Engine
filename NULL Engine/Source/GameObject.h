@@ -31,6 +31,8 @@ public:
 
 	void		SetID(uint id);
 
+	void		Render();
+
 public:																					// --- GETTERS AND SETTERS
 	const char* GetName() const;
 	bool		IsActive() const;

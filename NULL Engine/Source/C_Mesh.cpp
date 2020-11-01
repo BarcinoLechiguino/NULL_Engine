@@ -21,8 +21,8 @@ bool C_Mesh::Update()
 	bool ret = true;
 
 	if (mesh != nullptr)
-	{
-		App->renderer->DrawMesh(mesh);
+	{	
+		//App->renderer->DrawMesh(mesh);
 	}
 
 	return ret;

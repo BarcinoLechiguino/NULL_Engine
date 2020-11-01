@@ -26,7 +26,10 @@ public:
 public:
 	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
 	bool			CreateGameObjectsFromModel(const char* path);
-	bool			GenerateGameObjectsFromMeshes(std::string file_name, std::vector<R_Mesh*>& meshes);
+	bool			GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes);
+	bool			GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh);			
+
+	bool			ApplyNewTextureToSelectedGameObject(const char* path);
 
 	void			DeleteGameObject(GameObject* game_object);
 	

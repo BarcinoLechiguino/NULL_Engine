@@ -58,12 +58,7 @@ bool GameObject::Update()
 		}
 	}
 
-	/*C_Mesh* mesh = (C_Mesh*)GetComponent(COMPONENT_TYPE::MESH);
-
-	if (mesh != nullptr)
-	{
-		//App->renderer->
-	}*/
+	Render();
 
 	return ret;
 }
@@ -220,7 +215,7 @@ Component* GameObject::GetComponent(COMPONENT_TYPE type)
 		}
 	}
 
-	LOG("[WARNING] Could not find %s Component in %s", GetComponentNameFromType(type), name.c_str());
+	//LOG("[WARNING] Could not find %s Component in %s", GetComponentNameFromType(type), name.c_str());
 
 	return nullptr;
 }
@@ -245,6 +240,42 @@ const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
 void GameObject::SetID(uint id)
 {
 
+}
+
+void GameObject::Render()
+{
+	C_Transform* transform	= (C_Transform*)GetComponent(COMPONENT_TYPE::TRANSFORM);
+	C_Mesh* mesh			= (C_Mesh*)GetComponent(COMPONENT_TYPE::MESH);
+	C_Material* material	= (C_Material*)GetComponent(COMPONENT_TYPE::MATERIAL);
+
+	uint tex_id = 0;
+
+	if (transform != nullptr)
+	{
+
+	}
+	
+	if (material != nullptr)
+	{
+		if (material->IsActive())
+		{
+			if (material->GetMaterial() != nullptr)
+			{
+				tex_id = material->GetTextureId();
+			}
+		}
+	}
+
+	if (mesh != nullptr)
+	{
+		if (mesh->IsActive())
+		{
+			if (mesh->GetMesh() != nullptr)
+			{
+				App->renderer->DrawMesh(mesh->GetMesh(), tex_id);
+			}
+		}
+	}
 }
 
 // --- GAME OBJECT GETTERS AND SETTERS ---

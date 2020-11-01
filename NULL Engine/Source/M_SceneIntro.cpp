@@ -8,11 +8,14 @@
 #include "Primitive.h"
 
 #include "I_Meshes.h"
+#include "I_Materials.h"
 #include "R_Mesh.h"
+#include "R_Material.h"
 
 #include "GameObject.h"
 #include "Component.h"
 #include "C_Mesh.h"
+#include "C_Material.h"
 
 #include "M_SceneIntro.h"
 
@@ -168,24 +171,22 @@ bool M_SceneIntro::CreateGameObjectsFromModel(const char* path)
 	std::vector<R_Mesh*> meshes;
 	Importer::Meshes::Import(path, meshes);															// Importing the model from the given path. The meshes will be returned in the vector.
 
-	ret = GenerateGameObjectsFromMeshes(file, meshes);
+	ret = GenerateGameObjectsFromMeshes(path, file, meshes);
 
 	return ret;
 }
 
-bool M_SceneIntro::GenerateGameObjectsFromMeshes(std::string file_name, std::vector<R_Mesh*>& meshes)
+bool M_SceneIntro::GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes)
 {
 	bool ret = true;
-	
+
 	GameObject* parent_mesh_object;																	// Will be kept to store all the sub-meshes inside.
 
 	for (uint i = 0; i < meshes.size(); ++i)
 	{
 		GameObject* game_object = new GameObject();
 
-		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);				// Creating the C_Mesh components of each mesh.
-		c_mesh->SetMesh(meshes[i]);																	// The name of the file will be added as the path of the mesh.
-		c_mesh->SetMeshPath(file_name.c_str());														// The mesh being iterated will be set as the component's mesh.
+		GenerateGameObjectComponents(path, file_name, game_object, meshes[i]);						// 
 
 		if (game_object != nullptr)
 		{
@@ -209,8 +210,6 @@ bool M_SceneIntro::GenerateGameObjectsFromMeshes(std::string file_name, std::vec
 			
 			game_objects.push_back(game_object);													// The newly constructed game_object will be added to the game_objects vector.
 
-			//game_object_name.clear();
-
 			ret = true;
 		}
 		else																						// The created game object was not valid (nullptr).
@@ -219,6 +218,94 @@ bool M_SceneIntro::GenerateGameObjectsFromMeshes(std::string file_name, std::vec
 			game_object = nullptr;																	// 
 			ret = false;																			// 
 		}																							// ------------------------------------------------
+	}
+
+	return ret;
+}
+
+bool M_SceneIntro::GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh)
+{
+	bool ret = true;
+	
+	C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);				// Creating the C_Mesh components of each mesh.
+	c_mesh->SetMesh(mesh);																		// The name of the file will be added as the path of the mesh.
+	c_mesh->SetMeshPath(file_name.c_str());														// The mesh being iterated will be set as the component's mesh.
+
+	if (!mesh->tex_paths.empty())
+	{
+		C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
+
+		for (uint i = 0; i < mesh->tex_paths.size(); ++i)
+		{
+			R_Material* material = new R_Material();
+
+			std::string path_str = path;														// Getting the correct path to the texture.
+			uint file_start = path_str.find_last_of("/") + 1;									// 
+			path_str = path_str.substr(0, file_start);											// 
+																								// 
+			path_str += mesh->tex_paths[i];														// ----------------------------------------
+
+			Importer::Materials::DevIL::Import(path_str.c_str(), material);						// Importing the data o the texture in the given path.
+
+			if (material->tex_data.id != 0)
+			{
+				if (c_material->GetMaterial() == nullptr)										// If the component material does not have a R_Material* yet.
+				{
+					c_material->SetMaterial(material);											// The material that will be used to bind the texture (id, width, height...)
+				}
+
+				c_material->textures.push_back(material);										// Vector that will contain all the materials that a single mesh has.
+			}
+		}
+	}
+	else
+	{
+		LOG("[WARNING] Mesh did not have any paths to textures! Mesh path: %s", path);
+		ret = false;
+	}
+
+	return ret;
+}
+
+bool M_SceneIntro::ApplyNewTextureToSelectedGameObject(const char* path)
+{
+	bool ret = true;
+
+	GameObject* selected_game_object = App->editor->GetInspectedGameObject();
+	
+	if (selected_game_object != nullptr)
+	{
+		C_Material* c_material	= (C_Material*)selected_game_object->GetComponent(COMPONENT_TYPE::MATERIAL);
+		R_Material* material	= new R_Material();
+
+		bool imported = Importer::Materials::DevIL::Import(path, material);										// Should check for duplicates.
+
+		if (imported)																							// If the import was successful
+		{
+			if (c_material != nullptr)																			// If the C_Material* component already exists.
+			{
+				c_material->SetMaterial(material);																// Just reset the material with the new one.
+				c_material->textures.push_back(material);														// Add the material to the materials loaded in the component.
+			}
+			else
+			{
+				c_material = (C_Material*)selected_game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);		// Creates a new C_Material* to accomodate the imported texture.
+
+				if (c_material != nullptr)																		// Checks that the newly created C_Material* is not nullptr.
+				{
+					c_material->SetMaterial(material);															// 
+					c_material->textures.push_back(material);
+				}
+			}
+		}
+		else
+		{
+			LOG("[ERROR] Could not import the dropped texture! Path: %s", path)
+		}
+	}
+	else
+	{
+		LOG("[ERROR] No game object was being selected! Try again after selecting one from the hierarchy.")
 	}
 
 	return ret;

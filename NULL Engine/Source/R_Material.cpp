@@ -2,12 +2,22 @@
 
 R_Material::R_Material() : Resource()
 {
-
+	//tex_data = { "NONE", TEXTURE_TYPE::NONE, 0, 0, 0 };
 }
 
 R_Material::~R_Material()
 {
 
+}
+
+bool R_Material::CleanUp()
+{
+	bool ret = true;
+
+	// Free texture buffers.
+	// glDeleteTextures()
+
+	return ret;
 }
 
 Texture::Texture()

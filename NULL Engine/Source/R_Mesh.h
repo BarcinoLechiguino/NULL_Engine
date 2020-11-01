@@ -22,7 +22,7 @@ public:
 	std::vector<float>		tex_coords;
 	std::vector<uint>		indices;
 
-	std::vector<const char*> tex_paths;
+	std::vector<std::string> tex_paths;
 
 	vec4 colour;
 

@@ -9,6 +9,7 @@
 #include "M_Input.h"
 
 #define MAX_KEYS 300
+#define MAX_DIR_LENGTH 300
 
 M_Input::M_Input(bool is_active) : Module("Input", is_active)
 {
@@ -174,20 +175,27 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 				uint directory_path_start	= norm_path.find_last_of("A");										// Dirty fix to get the correct path to pass to the FileSystem.
 				uint directory_path_end		= norm_path.size();
 
-				if (directory_path_start < 300 && directory_path_end < 300)
+				if (directory_path_start < MAX_DIR_LENGTH && directory_path_end < MAX_DIR_LENGTH)				// Checking that the directory path is not extremely long.
 				{
 					norm_path = norm_path.substr(directory_path_start, directory_path_end);
 
-					if (App->file_system->GetFileExtension(dropped_file_path) == "FBX"
+					if (App->file_system->GetFileExtension(dropped_file_path) == "FBX"							// If the file extension is .fbx or .FBX, then it is a model.
 						|| App->file_system->GetFileExtension(dropped_file_path) == "fbx")
 					{
 						App->scene_intro->CreateGameObjectsFromModel(norm_path.c_str());
 					}
 
-					if (App->file_system->GetFileExtension(dropped_file_path) == "png")
+					if (App->file_system->GetFileExtension(dropped_file_path) == "png"							// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.
+						|| App->file_system->GetFileExtension(dropped_file_path) == "PNG"
+						|| App->file_system->GetFileExtension(dropped_file_path) == "dds"
+						|| App->file_system->GetFileExtension(dropped_file_path) == "DDS")
 					{
-
+						App->scene_intro->ApplyNewTextureToSelectedGameObject(norm_path.c_str());
 					}
+				}
+				else
+				{
+					LOG("[ERROR] Directory path from drop event object is too long! Max Characters: %u", MAX_DIR_LENGTH);
 				}
 
 				SDL_free(event.drop.file);

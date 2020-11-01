@@ -15,8 +15,6 @@
 #include "R_Material.h"
 #include "I_Materials.h"
 
-#include "Primitive.h"
-
 #include "M_Renderer3D.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
@@ -139,6 +137,8 @@ bool M_Renderer3D::CleanUp()
 	LOG("Destroying 3D Renderer");
 
 	models.clear();
+
+	Importer::Materials::DevIL::CleanUp();
 
 	SDL_GL_DeleteContext(context);
 

@@ -17,7 +17,7 @@
 class Configuration;
 class R_Mesh;
 class R_Model;
-
+class GameObject;
 class Primitive;
 
 class aiScene;
