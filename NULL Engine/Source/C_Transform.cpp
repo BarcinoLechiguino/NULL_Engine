@@ -7,19 +7,10 @@
 C_Transform::C_Transform(GameObject* owner) : Component(owner, COMPONENT_TYPE::TRANSFORM, "Transform"),
 matrix(matrix.identity),
 recalculate_global_transform(false)
-{
-	float4x4 rotation_mat;
-	
-	matrix.Decompose(position, rotation_mat, scale);
+{	
+	matrix.Decompose(position, rotation, scale);
 
-	rotation = rotation_mat.ToEulerXYZ();
-
-	int a = 0;
-
-	if (owner->parent != nullptr)
-	{
-		//owner->parent->transform->position
-	}
+	euler_rotation = rotation.ToEulerXYZ();
 }
 
 C_Transform::~C_Transform()
@@ -33,13 +24,15 @@ bool C_Transform::Update()
 
 	if (recalculate_global_transform)
 	{
-		matrix.Translate(position);
+		//matrix.TransformPos(position);
 
-		matrix.RotateX(rotation.x);
-		matrix.RotateY(rotation.y);
-		matrix.RotateZ(rotation.z);
+		//matrix.RotateX(rotation.x);
+		//matrix.RotateY(rotation.y);
+		//matrix.RotateZ(rotation.z);
 
-		matrix.Scale(scale);
+		//matrix.Scale(scale);
+
+		//matrix = rotation;
 
 		recalculate_global_transform = false;
 	}
@@ -62,7 +55,7 @@ float3 C_Transform::GetPosition() const
 
 float3 C_Transform::GetRotation() const
 {
-	return rotation;
+	return euler_rotation;
 }
 
 float3 C_Transform::GetScale() const
@@ -79,7 +72,11 @@ void C_Transform::SetPosition(const float3& position)
 
 void C_Transform::SetRotation(const float3& rotation)
 {
-	this->rotation = rotation;
+	euler_rotation = rotation;
+
+	this->rotation.RotateX(euler_rotation.x);
+	this->rotation.RotateY(euler_rotation.y);
+	this->rotation.RotateZ(euler_rotation.z);
 
 	recalculate_global_transform = true;
 }

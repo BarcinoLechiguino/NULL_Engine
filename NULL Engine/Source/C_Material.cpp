@@ -108,3 +108,13 @@ void C_Material::GetTextureSize(uint& width, uint& height)
 		height	= material->tex_data.height;
 	}
 }
+
+bool C_Material::UseDefaultTexture() const
+{
+	return use_default_tex;
+}
+
+void C_Material::SetUseDefaultTexture(const bool& set_to)
+{
+	use_default_tex = set_to;
+}

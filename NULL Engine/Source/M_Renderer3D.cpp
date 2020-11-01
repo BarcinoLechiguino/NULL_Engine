@@ -444,10 +444,19 @@ void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 	}
 }
 
-void M_Renderer3D::DrawMesh(R_Mesh* mesh, uint texture_id)
+void M_Renderer3D::DrawMesh(float4x4 transform, R_Mesh* mesh, uint texture_id, bool tex_is_active)
 {
+	//glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glMultMatrixf((float*)&transform);
+	
 	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
+
+	if (!tex_is_active)
+	{
+		SetGLFlag(GL_TEXTURE_2D, false);
+	}
 
 	if (texture_id == 0)
 	{
@@ -467,10 +476,15 @@ void M_Renderer3D::DrawMesh(R_Mesh* mesh, uint texture_id)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);												// Will bind the buffer object with the mesh->IBO identifyer for rendering.
 	//glColor4f(colour.r, colour.g, colour.b, colour.a);
 	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, nullptr);					// 
-	
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);														// Clearing the buffers.
 	glBindBuffer(GL_ARRAY_BUFFER, 0);																// 												
 	glBindTexture(GL_TEXTURE_2D, 0);																// ---------------------
+
+	if (!tex_is_active)
+	{
+		SetGLFlag(GL_TEXTURE_2D, true);
+	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);													// Disabling the client-side capabilities enabled at the beginning.
 	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY and GL_VERTEX_ARRAY.
@@ -480,6 +494,8 @@ void M_Renderer3D::DrawMesh(R_Mesh* mesh, uint texture_id)
 	{
 		mesh->DrawNormals();
 	}
+
+	glPopMatrix();
 }
 
 void M_Renderer3D::LoadDebugTexture()

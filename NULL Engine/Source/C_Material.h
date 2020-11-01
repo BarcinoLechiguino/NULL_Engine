@@ -28,6 +28,9 @@ public:
 
 	void			SetTextureId(const uint& texture_id);
 
+	bool			UseDefaultTexture() const;
+	void			SetUseDefaultTexture(const bool& set_to);
+
 public:
 	std::vector<R_Material*> textures;								// Will store all the textures that this component can have.
 

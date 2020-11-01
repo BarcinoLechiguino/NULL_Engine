@@ -19,6 +19,7 @@ public:
 	~GameObject();
 
 	bool		Update();
+	void		Render();
 	bool		CleanUp();
 
 public:
@@ -30,8 +31,6 @@ public:
 	const char* GetComponentNameFromType(COMPONENT_TYPE type);							// Returns a string matching the given type. Mainly used for debug purposes (LOG).
 
 	void		SetID(uint id);
-
-	void		Render();
 
 public:																					// --- GETTERS AND SETTERS
 	const char* GetName() const;

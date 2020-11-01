@@ -22,7 +22,7 @@ void R_Model::Draw()
 {
 	for (uint i = 0; i < meshes.size(); ++i)
 	{
-		App->renderer->DrawMesh(meshes[i]);
+		//App->renderer->DrawMesh(meshes[i]);
 		
 		//meshes[i]->Draw(colour);
 	}

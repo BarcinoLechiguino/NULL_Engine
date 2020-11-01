@@ -93,9 +93,12 @@ void E_Inspector::DrawGameObjectInfo()
 	ImGui::SameLine();
 
 	// --- IS STATIC ---
-	bool is_static = selected_game_object->IsStatic();
-	ImGui::Checkbox("Is Static", &is_static);
-	selected_game_object->SetIsStatic(is_static);
+	//bool is_static = selected_game_object->IsStatic();
+	bool is_static = true;
+	if (ImGui::Checkbox("Is Static", &is_static))
+	{
+		selected_game_object->SetIsStatic(is_static);
+	}
 
 	// --- TAG ---
 	ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
@@ -164,8 +167,10 @@ void E_Inspector::DrawTransformComponent()
 
 			float3 position = transform->GetPosition();
 			float pos[3] = { position.x, position.y, position.z };
-			ImGui::DragFloat3("", pos, 0.1f, MIN_VALUE, MAX_VALUE, "%.3f", NULL);
-			transform->SetPosition(float3(pos[0], pos[1], pos[2]));
+			if (ImGui::DragFloat3("P", pos, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				transform->SetPosition(float3(pos[0], pos[1], pos[2]));
+			}
 
 			// --- ROTATION ---
 			ImGui::Text("Rotation");
@@ -174,8 +179,10 @@ void E_Inspector::DrawTransformComponent()
 
 			float3 rotation = transform->GetRotation();
 			float rot[3] = { rotation.x, rotation.y, rotation.z };
-			ImGui::DragFloat3("", rot, 0.1f, MIN_VALUE, MAX_VALUE, "%.3f", NULL);
-			transform->SetPosition(float3(rot[0], rot[1], rot[2]));
+			if (ImGui::DragFloat3("R", rot, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				transform->SetRotation(float3(rot[0], rot[1], rot[2]));
+			}
 
 			// --- SCALE ---
 			ImGui::Text("Scale");
@@ -184,8 +191,10 @@ void E_Inspector::DrawTransformComponent()
 
 			float3 scale = transform->GetScale();
 			float scl[3] = { scale.x, scale.y, scale.z };
-			ImGui::DragFloat3("", scl, 0.1f, MIN_VALUE, MAX_VALUE, "%.3f", NULL);
-			transform->SetPosition(float3(scl[0], scl[1], scl[2]));
+			if (ImGui::DragFloat3("S", scl, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				transform->SetScale(float3(scl[0], scl[1], scl[2]));
+			}
 		}
 	}
 }
@@ -290,8 +299,12 @@ void E_Inspector::DrawMaterialComponent()
 			bool use_albedo_tex = false;
 			ImGui::Checkbox("Albedo Texture (WIP)", &use_albedo_tex);
 
-			bool use_checkered_tex = false;
-			ImGui::Checkbox("Default Texture", &use_checkered_tex);
+			bool use_checkered_tex = material->UseDefaultTexture();
+			if (ImGui::Checkbox("Use Default Texture", &use_checkered_tex))
+			{
+				material->SetUseDefaultTexture(use_checkered_tex);
+			}
+
 		}
 		else
 		{

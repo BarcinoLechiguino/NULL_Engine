@@ -35,8 +35,10 @@ public:
 
 private:
 	float3		position;
-	float3		rotation;
+	float4x4	rotation;
 	float3		scale;
+
+	float3		euler_rotation;
 
 	float3		local_position;
 	float3		local_rotation;
