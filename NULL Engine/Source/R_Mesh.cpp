@@ -27,32 +27,7 @@ R_Mesh::~R_Mesh()
 
 void R_Mesh::Draw(vec4 colour)
 {	
-	/*for (uint i = 0; i < textures.size(); ++i)
-	{	
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
-	}*/
 
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, TBO);
-	//glVertexPointer(2, GL_FLOAT, 0, nullptr);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);																// The vertex buffer is bound so the vertex positions can be interpreted correctly.
-	//glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Here the size and the type of the vertex is defined.
-
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	////glColor4f(colour.r, colour.g, colour.b, colour.a);
-	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void R_Mesh::DrawNormals()
@@ -68,19 +43,6 @@ void R_Mesh::DrawNormals()
 	}
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	glEnd();
-}
-
-void R_Mesh::DrawTexCoords()
-{
-	glBegin(GL_POINTS);
-
-	for (uint i = 0; i < vertices.size(); ++i)
-	{
-		glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-		//glVertex3f(vertices[i].position.x + vertices[i].tex_coords.x, vertices[i].position.y + vertices[i].tex_coords.y, vertices[i].position.z);
-	}
 
 	glEnd();
 }
@@ -179,3 +141,30 @@ void R_Mesh::LoadDebugTexture()
 //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tex_coords));	// The byte offset of the tex_coord vector = byte offset tex_coord attrib offset.
 
 //glBindVertexArray(0);																					// Breaks the existing VAO binding.
+
+/*for (uint i = 0; i < textures.size(); ++i)
+	{
+		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}*/
+
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	//glBindTexture(GL_TEXTURE_2D, debug_texture_id);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, TBO);
+	//glVertexPointer(2, GL_FLOAT, 0, nullptr);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);																// The vertex buffer is bound so the vertex positions can be interpreted correctly.
+	//glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Here the size and the type of the vertex is defined.
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	////glColor4f(colour.r, colour.g, colour.b, colour.a);
+	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
+	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	//glDisableClientState(GL_VERTEX_ARRAY);

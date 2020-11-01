@@ -17,20 +17,24 @@ using namespace Importer::Meshes;																	// Not a good thing to do but 
 
 void Importer::Meshes::Import(const char* path, std::vector<R_Mesh*>& meshes)
 {
-	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
+	//const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 
-	//char* buffer = nullptr;
-	//uint file_size = App->file_system->Load(file_path, &buffer);
-	//const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
-
-	if (scene == nullptr || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	char* buffer = nullptr;
+	uint file_size = App->file_system->Load(path, &buffer);
+	
+	if (file_size > 0)
 	{
-		LOG("[ERROR] Error loading scene %s", aiGetErrorString());
+		const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
-		return;
+		if (scene == nullptr || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			LOG("[ERROR] Error loading scene %s", aiGetErrorString());
+
+			return;
+		}
+
+		Utilities::ProcessNode(scene, scene->mRootNode, meshes);
 	}
-
-	Utilities::ProcessNode(scene, scene->mRootNode, meshes);
 }
 
 void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Mesh*>& meshes)		// Shortened with the use of used namespaces, otherwise it would be a bad idea.

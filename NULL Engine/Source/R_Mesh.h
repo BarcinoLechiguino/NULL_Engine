@@ -11,23 +11,16 @@ public:
 
 	void Draw(vec4 colour);
 	void DrawNormals();
-	void DrawTexCoords();
 
 	void LoadDebugTexture();
 
 	void LoadBuffers();
 
 public:
-	// Mesh data
-	//std::vector<Vertex>		vertices;
-	//std::vector<uint>		indices;
-	//std::vector<Texture>	textures;
-
 	std::vector<float>		vertices;
 	std::vector<float>		normals;
 	std::vector<float>		tex_coords;
 	std::vector<uint>		indices;
-	//std::vector<Texture>	textures;
 
 	vec4 colour;
 
@@ -49,14 +42,6 @@ private:
 
 #endif // !__R_MESH_H__
 
-//enum class TEXTURE_TYPE									// The enum values are set according to the values of Assimp's aiTextureType enum.
-//{
-//	NONE = 0x0,
-//	DIFFUSE = 0x1,
-//	SPECULAR = 0x2,
-//	UNKNOWN = 0xC
-//};
-
 //struct Vertex
 //{
 //	Vertex();
@@ -66,9 +51,8 @@ private:
 //	vec2 tex_coords;									// Texture coordinates of the vertex.		Ex:	(0.5f, 1.0f)			(u, v)			From 0 to 1.
 //};
 
-//struct Texture
-//{
-//	uint			id;									// Id of the texture.
-//	TEXTURE_TYPE	type;								// Diffuse or Specular.
-//	std::string		path;								// Path of the file in the directory. Will be used to avoid making duplicates.
-//};
+// Mesh data
+//std::vector<Vertex>		vertices;
+//std::vector<uint>		indices;
+//std::vector<Texture>	textures;
+//std::vector<Texture>	textures;

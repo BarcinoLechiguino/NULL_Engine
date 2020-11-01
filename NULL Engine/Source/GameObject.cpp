@@ -112,7 +112,7 @@ bool GameObject::AddChild(GameObject* child)
 
 		if (!deleted)
 		{
-			LOG("[WARNING] Could not find child %s in parent %s", child->name.c_str(), child->parent->name.c_str());
+			//LOG("[WARNING] Could not find child %s in parent %s", child->name.c_str(), child->parent->name.c_str());
 		}
 	}
 

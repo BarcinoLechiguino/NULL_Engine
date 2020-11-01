@@ -169,17 +169,25 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			case SDL_DROPFILE:
 				dropped_file_path = event.drop.file;
 
+				std::string norm_path = App->file_system->NormalizePath(dropped_file_path);
+
+				uint directory_path_start	= norm_path.find_last_of("A");										// Dirty fix to get the correct path to pass to the FileSystem.
+				uint directory_path_end		= norm_path.size();
+
+				norm_path = norm_path.substr(directory_path_start, directory_path_end);
+
 				if (App->file_system->GetFileExtension(dropped_file_path) == "FBX"
 					|| App->file_system->GetFileExtension(dropped_file_path) == "fbx")
 				{
-					std::string norm_path = App->file_system->NormalizePath(dropped_file_path);
-
-					// App->file_system->SplitFilePath();
-
-					//App->renderer->LoadModel(norm_path.c_str());										// TMP. Use M_FileSystem later.
-
 					App->scene_intro->CreateGameObjectsFromModel(norm_path.c_str());
 				}
+
+				if (App->file_system->GetFileExtension(dropped_file_path) == "png")
+				{
+
+				}
+
+				SDL_free(event.drop.file);
 
 			break;
 		}

@@ -134,8 +134,15 @@ void E_Hierarchy::HierarchyToolsPopup()
 	{
 		if (ImGui::MenuItem("Delete Selected"))
 		{
-			App->scene_intro->DeleteGameObject(App->editor->GetInspectedGameObject());
-			open_hierarchy_tools_popup = false;
+			if (App->editor->GetInspectedGameObject() != App->scene_intro->root_object)
+			{
+				App->scene_intro->DeleteGameObject(App->editor->GetInspectedGameObject());
+				open_hierarchy_tools_popup = false;
+			}
+			else
+			{
+				LOG("[WARNING] The Scene's Root Object cannot be deleted!");
+			}
 		}
 
 		if (ImGui::MenuItem("Create Empty Child GameObject"))

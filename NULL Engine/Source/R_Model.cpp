@@ -36,14 +36,6 @@ void R_Model::DrawNormals()
 	}
 }
 
-void R_Model::DrawTexCoords()
-{
-	for (uint i = 0; i < meshes.size(); ++i)
-	{
-		meshes[i]->DrawTexCoords();
-	}
-}
-
 void R_Model::SetMaterialColour(vec4 colour)
 {
 	this->colour = colour;

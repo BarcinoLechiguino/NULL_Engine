@@ -45,6 +45,8 @@ bool M_SceneIntro::Start()
 		App->editor->SetInspectedGameObject(root_object);
 	}
 
+	CreateGameObjectsFromModel("Assets/Models/baker_house/BakerHouse.fbx");
+
 	return ret;
 }
 
@@ -202,6 +204,7 @@ bool M_SceneIntro::GenerateGameObjectsFromMeshes(std::string file_name, std::vec
 			}																						// ---------------------------------------------------------
 
 			std::string game_object_name = file_name + "-" + std::to_string(i);						// Adding the index of iteration to the current game object.
+			game_object_name += "(" + std::to_string(game_objects.size()) + ")";
 			game_object->SetName(game_object_name.c_str());											// ---------------------------------------------------------
 			
 			game_objects.push_back(game_object);													// The newly constructed game_object will be added to the game_objects vector.

@@ -21,7 +21,6 @@ public:
 
 	void Draw();
 	void DrawNormals();
-	void DrawTexCoords();
 
 	void SetMaterialColour(vec4 colour);
 
