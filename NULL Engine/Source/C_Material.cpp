@@ -4,7 +4,8 @@
 #include "C_Material.h"
 
 C_Material::C_Material(GameObject* owner) : Component(owner, COMPONENT_TYPE::MATERIAL, "Material"),
-material(nullptr)
+material(nullptr),
+use_default_tex(false)
 {
 
 }
@@ -59,6 +60,23 @@ std::string C_Material::GetTexturePath() const
 	if (material != nullptr)
 	{
 		return material->tex_data.path;
+	}
+
+	return "NONE";
+}
+
+std::string C_Material::GetTextureFile() const
+{
+	if (material != nullptr)
+	{
+		std::string file = material->tex_data.path;
+
+		uint file_start = file.find_last_of("/") + 1;
+		uint file_end	= file.size();
+
+		file = file.substr(file_start, file_end);
+
+		return file;
 	}
 
 	return "NONE";

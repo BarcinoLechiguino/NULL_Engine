@@ -268,14 +268,20 @@ void E_Inspector::DrawMaterialComponent()
 			ImGui::Separator();
 
 			// --- TEXTURE PATH ---
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Put path here.");
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", material->GetTextureFile().c_str());
 
 			ImGui::Separator();
 
 			// --- TEXTURE DATA ---
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Texture Data:");
-			ImGui::Text("Width:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " Put Width here.");
-			ImGui::Text("Height:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Put Height here.");
+
+			uint width	= 0;
+			uint height = 0;
+
+			material->GetTextureSize(width, height);
+
+			ImGui::Text("Width:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " %u", width);
+			ImGui::Text("Height:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u", height);
 
 			ImGui::Separator();
 

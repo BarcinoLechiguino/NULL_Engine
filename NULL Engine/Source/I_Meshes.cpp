@@ -200,7 +200,25 @@ void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const
 			aiString path;
 			material->GetTexture(aiTextureType_DIFFUSE, i, &path);
 
-			r_mesh->tex_paths.push_back(path.C_Str());
+			std::string file_path = path.C_Str();
+			file_path = App->file_system->NormalizePath(file_path.c_str());
+
+			uint file_start = file_path.find_last_of("/");
+
+			if (file_start == file_path.npos)													// If no "/" could be found.
+			{
+				r_mesh->tex_paths.push_back(file_path.c_str());
+			}
+			else
+			{
+				uint file_end	= file_path.size();
+				file_path		= file_path.substr(file_start, file_end);
+
+				r_mesh->tex_paths.push_back(file_path.c_str());
+			}
+
+
+			//r_mesh->tex_paths.push_back(path.C_Str());
 
 			LOG("[STATUS] Mesh texture file name %u is %s", i, path.C_Str());
 		}
