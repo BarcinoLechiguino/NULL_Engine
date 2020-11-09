@@ -24,6 +24,8 @@ bool E_About::Draw(ImGuiIO& io)
 
 	ImGui::OpenPopup("About");
 
+	SetIsHovered();
+	
 	if (ImGui::BeginPopupModal("About", &App->editor->show_about_popup))
 	{	
 		ImGui::Text("NULL Engine v0.3 - By Angel Gonzalez (CITM UPC)");

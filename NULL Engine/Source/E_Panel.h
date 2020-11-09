@@ -20,14 +20,17 @@ public:
 	void			Enable();
 	void			Disable();
 
-	bool			IsActive() const;
 	const char*		GetName() const;
+	bool			IsActive() const;
+	bool			IsHovered() const;
+	void			SetIsHovered();													// Trying out having a Set() function without any parameters.
 
 	void			HelpMarker(const char* description);
 
 private:
 	const char*		name;
 	bool			is_active;
+	bool			is_hovered;
 };
 
 #endif // !__E_PANEL_H__

@@ -213,65 +213,25 @@ void M_Editor::EditorShortcuts()
 
 void M_Editor::CheckShowHideFlags()
 {
-	// --- ENGINE CONFIGRUATION ---
-	if (show_configuration)
+	show_configuration	?	configuration->Enable()	: configuration->Disable();					// Engine Configuration
+	show_hierarchy		?	hierarchy->Enable()		: hierarchy->Disable();						// Hierarchy
+	show_inspector		?	inspector->Enable()		: inspector->Disable();						// Inspector
+	show_console		?	console->Enable()		: console->Disable();						// Console
+	show_imgui_demo		?	imgui_demo->Enable()	: imgui_demo->Disable();					// ImGui Demo
+	show_about_popup	?	about->Enable()			: about->Disable();							// About Popup
+}
+
+bool M_Editor::EditorIsBeingHovered() const
+{
+	for (uint i = 0; i < gui_panels.size(); ++i)
 	{
-		configuration->Enable();
-	}
-	else
-	{
-		configuration->Disable();
+		if (gui_panels[i]->IsHovered())
+		{
+			return true;
+		}
 	}
 
-	// --- HIERARCHY ---
-	if (show_hierarchy)
-	{
-		hierarchy->Enable();
-	}
-	else
-	{
-		hierarchy->Disable();
-	}
-
-	// --- INSPECTOR ---
-	if (show_inspector)
-	{
-		inspector->Enable();
-	}
-	else
-	{
-		inspector->Disable();
-	}
-
-	// --- CONSOLE ---
-	if (show_console)
-	{
-		console->Enable();
-	}
-	else
-	{
-		console->Disable();
-	}
-
-	// --- IMGUI DEMO ---
-	if (show_imgui_demo)
-	{
-		imgui_demo->Enable();
-	}
-	else
-	{
-		imgui_demo->Disable();
-	}
-
-	// --- ABOUT POPUP ---
-	if (show_about_popup)
-	{
-		about->Enable();
-	}
-	else
-	{
-		about->Disable();
-	}
+	return false;
 }
 
 bool M_Editor::RenderGuiPanels() const

@@ -21,6 +21,8 @@ bool E_Toolbar::Draw(ImGuiIO& io)
 
 	ImGui::BeginMainMenuBar();
 
+	SetIsHovered();
+	
 	FileMainMenuItem();
 	EditMainMenuItem();
 	WindowMainMenuItem();

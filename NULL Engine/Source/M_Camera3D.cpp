@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Input.h"
+#include "M_Editor.h"
 
 #include "M_Camera3D.h"
 
@@ -87,34 +88,37 @@ bool M_Camera3D::SaveConfiguration(Configuration& root) const
 // -----------------------------------------------------------------
 UPDATE_STATUS M_Camera3D::Update(float dt)
 {
-	if(App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_STATE::KEY_REPEAT)
+	if (!App->editor->EditorIsBeingHovered())
 	{
-		WASDMovement();
-
-		FreeLookAround();
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_STATE::KEY_REPEAT)
-	{	
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_REPEAT)
+		if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_STATE::KEY_REPEAT)
 		{
-			RotateAroundReference();
+			WASDMovement();
+
+			FreeLookAround();
 		}
-	}
 
-	if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_STATE::KEY_REPEAT)
-	{
-		PanCamera();
-	}
+		if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_STATE::KEY_REPEAT)
+		{
+			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_REPEAT)
+			{
+				RotateAroundReference();
+			}
+		}
 
-	if (App->input->GetMouseZ() != 0)
-	{
-		Zoom();
-	}
+		if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_STATE::KEY_REPEAT)
+		{
+			PanCamera();
+		}
 
-	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_STATE::KEY_DOWN)
-	{
-		ReturnToWorldOrigin();
+		if (App->input->GetMouseZ() != 0)
+		{
+			Zoom();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_O) == KEY_STATE::KEY_DOWN)
+		{
+			ReturnToWorldOrigin();
+		}
 	}
 
 	return UPDATE_STATUS::CONTINUE;

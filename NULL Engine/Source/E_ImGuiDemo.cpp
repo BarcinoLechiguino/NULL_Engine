@@ -34,6 +34,8 @@ bool E_ImGuiDemo::Draw(ImGuiIO& io)
 	{
 		ImGui::Begin("Hello world!");								// Will create a window with "Hello World!" as the title. Until ImGui::End() all elements will be appended to this window.
 
+		SetIsHovered();
+		
 		if (ImGui::Button("SHOW ME THE DATA"))
 		{
 			//return UPDATE_STATUS::STOP;

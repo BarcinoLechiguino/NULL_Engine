@@ -1,6 +1,6 @@
 #include "E_Panel.h"
 
-E_Panel::E_Panel(const char* name, bool is_active) : name(name), is_active(is_active)
+E_Panel::E_Panel(const char* name, bool is_active) : name(name), is_active(is_active), is_hovered(false)
 {
 
 }
@@ -44,6 +44,23 @@ void E_Panel::Disable()
 bool E_Panel::IsActive() const
 {
 	return is_active;
+}
+
+bool E_Panel::IsHovered() const
+{
+	return is_hovered;
+}
+
+void E_Panel::SetIsHovered()
+{	
+	if (ImGui::IsWindowHovered())												// Checks if the last generated ImGui window is being hovered.
+	{
+		is_hovered = true;
+	}
+	else
+	{
+		is_hovered = false;
+	}
 }
 
 const char* E_Panel::GetName() const

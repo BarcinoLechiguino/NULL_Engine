@@ -21,10 +21,10 @@ bool E_Console::Draw(ImGuiIO& io)
 
 	ImGui::Begin(GetName(), NULL, ImGuiWindowFlags_MenuBar);
 	
+	SetIsHovered();
+
 	ConsoleMenuBar();													// Constructs the menu bar of the Console panel. It has an Options menu that allows to Clear or Close the console.
-
 	ConsoleOutput();													// Prints all the logs in the console and formats them according to their type ([ERROR], [WARNING]...)
-
 	ConsoleScrollToBottom();											// If a new log has been added, the console will be automatically scrolled to the bottommost position.
 
 	ImGui::End();

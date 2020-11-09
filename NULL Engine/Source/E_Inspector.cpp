@@ -31,6 +31,8 @@ bool E_Inspector::Draw(ImGuiIO& io)
 
 	ImGui::Begin("Inspector");
 
+	SetIsHovered();
+	
 	GameObject* selected_game_object = App->editor->GetSelectedGameObjectThroughEditor();
 	
 	if (selected_game_object != nullptr)

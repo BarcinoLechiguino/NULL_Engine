@@ -34,6 +34,8 @@ bool E_EngineConfiguration::Draw(ImGuiIO& io)
 
 	ImGui::Begin(GetName(), nullptr, ImGuiWindowFlags_MenuBar);
 
+	SetIsHovered();
+	
 	ConfigurationMenuBar();
 
 	ApplicationMenu();

@@ -446,6 +446,11 @@ void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 
 void M_Renderer3D::DrawMesh(float4x4 transform, R_Mesh* mesh, uint texture_id, bool tex_is_active)
 {
+	if (show_wireframe)
+	{
+		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+	}
+	
 	//glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
@@ -496,6 +501,8 @@ void M_Renderer3D::DrawMesh(float4x4 transform, R_Mesh* mesh, uint texture_id, b
 	}
 
 	glPopMatrix();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void M_Renderer3D::LoadDebugTexture()
@@ -662,10 +669,12 @@ void M_Renderer3D::SetShowWireframe(bool set_to)
 		if (show_wireframe)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			SetGLFlag(GL_TEXTURE_2D, false);
 		}
 		else
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			SetGLFlag(GL_TEXTURE_2D, true);
 		}
 	}
 }

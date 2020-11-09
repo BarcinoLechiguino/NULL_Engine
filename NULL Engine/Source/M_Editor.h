@@ -49,6 +49,7 @@ public:
 	void			EditorShortcuts();												// All the shortcuts related to the editor have been gathered here.
 	void			CheckShowHideFlags();											// Will check whether or not each of the panels must be enabled or disabled.
 
+	bool			EditorIsBeingHovered() const;									// Will check whether or not any of the editor panels is being hovered.
 	bool			RenderGuiPanels() const;										// Will call ImGui::Render() to render all the panels on the screen.
 	bool			InitializeImGui() const;										// Creates an ImGui Context and sets an initial configuration for it.
 
@@ -60,7 +61,6 @@ public:																				// --- Panel/Window Methods. Acts as an interface bet
 	void			SetShowWorldAxis(bool set_to);									// Will Enable or Disable the depending on the passed argument.
 	void			SetShowPrimitiveExamples(bool set_to);							// Will Enable or Disable the depending on the passed argument.
 
-	// ------ MODULE-PANEL INTERFACE METHODS -------								// These methods have been created to avoid as many dependencies as possible.
 	void			UpdateFrameData(int frames, int ms);							// Configuration: Passing the received frame data to the configuration editor module.
 	void			AddInputLog(uint key, uint state);								// Configuration: Receives an input key and a state and passes a log to the configuration editor module.
 
@@ -69,9 +69,9 @@ public:																				// --- Panel/Window Methods. Acts as an interface bet
 	GameObject*		GetRootGameObjectThroughEditor() const;							// Hierarchy & inspector: Will return the current root GameObjcect.
 	void			SetRootGameObjectThroughEditor(GameObject* game_object);		// Hierarchy & inspector: Will set the scene's root GameObject with the one passed as argument.
 	GameObject*		GetSelectedGameObjectThroughEditor() const;						// Hierarchy & Inspector: Will return the currently selected GameObject.
-	void			SetSelectedGameObjectThroughEditor(GameObject* game_object);					// Hierarchy & Inspector: Will set the scene's selected GameObject with the one passed as argument.
-	void			DeleteSelectedGameObject();										// 
-	void			CreateGameObject(const char* name, GameObject* parent);			// 
+	void			SetSelectedGameObjectThroughEditor(GameObject* game_object);	// Hierarchy & Inspector: Will set the scene's selected GameObject with the one passed as argument.
+	void			DeleteSelectedGameObject();										// Hierarchy & Inspector: Will call the Module Scene's delete selected GameObject method.
+	void			CreateGameObject(const char* name, GameObject* parent);			// Hierarchy & Inspector: Will call the Module Scene's create GameObject method.
 
 private:
 	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);							// Generates a root window for dock.

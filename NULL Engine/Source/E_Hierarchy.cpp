@@ -21,6 +21,8 @@ bool E_Hierarchy::Draw(ImGuiIO& io)
 
 	ImGui::Begin("Hierarchy");
 
+	SetIsHovered();
+
 	PrintGameObjectsOnHierarchy();
 
 	ImGui::End();
