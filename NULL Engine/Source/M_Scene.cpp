@@ -288,7 +288,7 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 
 	if (selected_game_object != nullptr)
 	{
-		C_Material* c_material	= (C_Material*)selected_game_object->GetComponent(COMPONENT_TYPE::MATERIAL);
+		C_Material* c_material	= selected_game_object->GetMaterialComponent();
 		R_Material* material	= new R_Material();
 
 		bool imported = Importer::Materials::DevIL::Import(path, material);										// Should check for duplicates.

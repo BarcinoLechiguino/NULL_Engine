@@ -12,20 +12,22 @@ public:
 	C_Mesh(GameObject* owner);
 	~C_Mesh();
 
-	bool Update() override;
-	bool CleanUp() override;
+	bool			Update() override;
+	bool			CleanUp() override;
 
 public:
-	R_Mesh* GetMesh() const;
-	void SetMesh(R_Mesh* r_mesh);
+	bool			Render();														// Will render the mesh along with the corresponding textures and transform.
 
-	std::string GetMeshPath() const;
-	void SetMeshPath(const char* path);
+	R_Mesh*			GetMesh() const;												// Returns the R_Mesh* variable of the component. If there is no mesh the default value will be nullptr.
+	void			SetMesh(R_Mesh* r_mesh);										// Sets the R_Mesh* variable of the component. Will be normally set when a model is imported.
 
-	void GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices);
+	std::string		GetMeshPath() const;
+	void			SetMeshPath(const char* path);
 
-	bool GetDrawNormals() const;
-	void SetDrawNormals(const bool& set_to);
+	void			GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices);
+
+	bool			GetDrawNormals() const;
+	void			SetDrawNormals(const bool& set_to);
 
 private:
 	R_Mesh* mesh;

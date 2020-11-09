@@ -123,6 +123,7 @@ void E_Inspector::DrawComponents(GameObject* selected_game_object)
 			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent(selected_game_object); }		break;
 			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent(selected_game_object); }	break;
 			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent(selected_game_object); }		break;
+			case COMPONENT_TYPE::CAMERA:	{ DrawCameraComponent(selected_game_object); }		break;
 			}
 
 			if (component->type == COMPONENT_TYPE::NONE || component->type == COMPONENT_TYPE::UNKNOWN)
@@ -137,8 +138,8 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		//C_Transform* transform = (C_Transform*)selected_game_object->GetComponent(COMPONENT_TYPE::TRANSFORM);
-		C_Transform* transform = selected_game_object->transform;
+		//C_Transform* transform = selected_game_object->transform;
+		C_Transform* transform = selected_game_object->GetTransformComponent();
 
 		if (transform != nullptr)
 		{
@@ -197,7 +198,7 @@ void E_Inspector::DrawMeshComponent(GameObject* selected_game_object)
 	{
 		// --- IS ACTIVE ---
 
-		C_Mesh* mesh = (C_Mesh*)selected_game_object->GetComponent(COMPONENT_TYPE::MESH);
+		C_Mesh* mesh = selected_game_object->GetMeshComponent();
 
 		if (mesh != nullptr)
 		{
@@ -256,7 +257,7 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		C_Material* material = (C_Material*)selected_game_object->GetComponent(COMPONENT_TYPE::MATERIAL);
+		C_Material* material = selected_game_object->GetMaterialComponent();
 
 		if (material != nullptr)
 		{
@@ -311,7 +312,7 @@ void E_Inspector::DrawLightComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		C_Light* light = (C_Light*)selected_game_object->GetComponent(COMPONENT_TYPE::LIGHT);
+		C_Light* light = selected_game_object->GetLightComponent();
 		
 		if (light != nullptr)
 		{
@@ -328,4 +329,9 @@ void E_Inspector::DrawLightComponent(GameObject* selected_game_object)
 
 		ImGui::Separator();
 	}
+}
+
+void E_Inspector::DrawCameraComponent(GameObject* selected_game_object)
+{
+
 }

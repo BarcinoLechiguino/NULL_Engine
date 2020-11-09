@@ -22,6 +22,7 @@ private:
 	void DrawMeshComponent(GameObject* selected_game_object);
 	void DrawMaterialComponent(GameObject* selected_game_object);
 	void DrawLightComponent(GameObject* selected_game_object);
+	void DrawCameraComponent(GameObject* selected_game_object);
 
 	// ------- DRAW COMPONENT METHODS -------
 

@@ -59,7 +59,7 @@ public:
 public:																		// --- RENDER GEOMETRY
 	void			LoadModel(const char* file_path, vec4 mat_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	void			GenerateBuffers(R_Mesh* mesh);
-	void			DrawMesh(float4x4 transform, R_Mesh* mesh, uint texture_id = 0, bool tex_is_active = true);
+	void			RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id = 0, bool tex_is_active = true);
 	//void			RenderGameObject(GameObject* game_object);
 
 	void			LoadDebugTexture();

@@ -7,6 +7,7 @@
 #include "C_Mesh.h"
 #include "C_Material.h"
 #include "C_Light.h"
+#include "C_Camera.h"
 
 #include "GameObject.h"
 
@@ -58,60 +59,25 @@ bool GameObject::Update()
 		}
 	}
 
-	Render();
-
 	return ret;
-}
-
-void GameObject::Render()
-{
-	C_Transform* transform = (C_Transform*)GetComponent(COMPONENT_TYPE::TRANSFORM);
-	C_Mesh* mesh = (C_Mesh*)GetComponent(COMPONENT_TYPE::MESH);
-	C_Material* material = (C_Material*)GetComponent(COMPONENT_TYPE::MATERIAL);
-
-	uint tex_id = 0;
-	bool tex_is_active = true;
-
-	if (material != nullptr)
-	{
-		if (material->IsActive())
-		{	
-			if (material->GetMaterial() != nullptr)
-			{
-				if (material->UseDefaultTexture())
-				{
-					tex_id = 0;
-				}
-				else
-				{
-					tex_id = material->GetTextureId();
-				}
-			}
-		}
-		else
-		{
-			tex_is_active = false;
-		}
-	}
-
-	if (mesh != nullptr)
-	{
-		if (mesh->IsActive())
-		{
-			if (mesh->GetMesh() != nullptr)
-			{
-				App->renderer->DrawMesh(transform->matrix, mesh->GetMesh(), tex_id, tex_is_active);
-			}
-		}
-	}
 }
 
 bool GameObject::CleanUp()
 {
 	bool ret = true;
 
+	FreeComponents();
+
+	FreeChilds();
+
+	return ret;
+}
+
+// --- GAMEOBJECT METHODS ---
+void GameObject::FreeComponents()
+{
 	transform = nullptr;
-	
+
 	for (uint i = 0; i < components.size(); ++i)
 	{
 		components[i]->CleanUp();
@@ -121,18 +87,21 @@ bool GameObject::CleanUp()
 	}
 
 	components.clear();
+}
 
+void GameObject::FreeChilds()
+{
 	if (parent != nullptr)
 	{
-		parent->DeleteChild(this);
+		parent->DeleteChild(this);											// Deleting this GameObject from the childs list of its parent.
 	}
 
 	for (uint i = 0; i < childs.size(); ++i)
 	{
 		if (childs[i] != nullptr)
 		{
-			childs[i]->CleanUp();
-			
+			childs[i]->CleanUp();											// Recursively cleaning up the the childs.
+
 			/*if (i < childs.size())
 			{
 				childs.erase(childs.begin() + i);
@@ -143,11 +112,8 @@ bool GameObject::CleanUp()
 	}
 
 	childs.clear();
-
-	return ret;
 }
 
-// --- GAMEOBJECT METHODS ---
 bool GameObject::AddChild(GameObject* child)
 {
 	bool ret = true;
@@ -159,8 +125,16 @@ bool GameObject::AddChild(GameObject* child)
 		return false;
 	}
 	
-	if (child->parent != nullptr)
+	if (NewParentIsOwnChild(child))
 	{
+		for (uint i = 0; i < child->childs.size(); ++i)				// Iterating all the childs of the child.
+		{
+			child->parent->AddChild(child->childs[i]);				// Re-setting the parent of the childs to the parent of the passed child (root->GO->childs => root->childs->GO)
+		}
+	}
+
+	if (child->parent != nullptr)
+	{	
 		bool deleted = child->parent->DeleteChild(child);
 
 		if (!deleted)
@@ -169,13 +143,36 @@ bool GameObject::AddChild(GameObject* child)
 		}
 	}
 
-	C_Transform* child_transform = (C_Transform*)child->GetComponent(COMPONENT_TYPE::TRANSFORM);
+	C_Transform* child_transform = child->GetTransformComponent();
 	
 	child_transform->recalculate_global_transform = true;
 
 	child->parent = this;
 
 	childs.push_back(child);
+
+	return ret;
+}
+
+bool GameObject::NewParentIsOwnChild(GameObject* child)
+{
+	bool ret = false;
+
+	GameObject* par = this->parent;											// Will set the parent of this object as the starting point of the search.
+	
+	if (par != nullptr)														// Will check if the child is the parent or parent of the parents of the one who called AddChild()
+	{
+		while (!par->is_root_object)										// Iterate back up to the root object, as it is the parent of everything in the scene.
+		{
+			if (par == child)												// Child is the parent of one of the parent objects of this object (the one which called AddChild())
+			{
+				ret = true;													// A parent of this object that had the passed child as the parent has been found.
+				break;
+			}
+
+			par = par->parent;												// Setting the next parent GameObject to iterate.
+		}
+	}
 
 	return ret;
 }
@@ -278,6 +275,31 @@ const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
 	LOG("[ERROR] Could Not Get Component Name From Type");
 
 	return "Invalid Component Type";
+}
+
+C_Transform* GameObject::GetTransformComponent()
+{
+	return (C_Transform*)GetComponent(COMPONENT_TYPE::TRANSFORM);					// The component is returned directly without any checks as the checks will be done in GetComponent().
+}
+
+C_Mesh* GameObject::GetMeshComponent()
+{
+	return (C_Mesh*)GetComponent(COMPONENT_TYPE::MESH);
+}
+
+C_Material* GameObject::GetMaterialComponent()
+{
+	return (C_Material*)GetComponent(COMPONENT_TYPE::MATERIAL);
+}
+
+C_Light* GameObject::GetLightComponent()
+{
+	return (C_Light*)GetComponent(COMPONENT_TYPE::LIGHT);
+}
+
+C_Camera* GameObject::GetCameraComponent()
+{
+	return (C_Camera*)GetComponent(COMPONENT_TYPE::CAMERA);
 }
 
 void GameObject::SetID(uint id)

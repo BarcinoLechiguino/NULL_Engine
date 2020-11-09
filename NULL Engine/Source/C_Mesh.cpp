@@ -3,6 +3,8 @@
 #include "R_Mesh.h"
 
 #include "GameObject.h"
+#include "C_Transform.h"
+#include "C_Material.h"
 
 #include "C_Mesh.h"
 
@@ -22,7 +24,7 @@ bool C_Mesh::Update()
 
 	if (mesh != nullptr)
 	{	
-		//App->renderer->DrawMesh(mesh);
+		Render();
 	}
 
 	return ret;
@@ -38,6 +40,50 @@ bool C_Mesh::CleanUp()
 
 		delete mesh;
 		mesh = nullptr;
+	}
+
+	return ret;
+}
+
+// ------ C_MESH METHODS ------
+bool C_Mesh::Render()
+{
+	bool ret = true;
+
+	C_Transform* transform	= owner->GetTransformComponent();
+	C_Material* material	= owner->GetMaterialComponent();
+
+	uint tex_id				= 0;
+	bool tex_is_active		= true;
+
+	if (material != nullptr)
+	{
+		if (material->IsActive())
+		{
+			if (material->GetMaterial() != nullptr)
+			{
+				if (material->UseDefaultTexture())
+				{
+					tex_id = 0;
+				}
+				else
+				{
+					tex_id = material->GetTextureId();
+				}
+			}
+		}
+		else
+		{
+			tex_is_active = false;
+		}
+	}
+
+	if (this->IsActive())																				// Added this-> to further clarify that IsActive() refers to this C_Mesh component.
+	{
+		if (mesh != nullptr)
+		{
+			App->renderer->RenderMesh(transform->matrix, mesh, tex_id, tex_is_active);
+		}
 	}
 
 	return ret;

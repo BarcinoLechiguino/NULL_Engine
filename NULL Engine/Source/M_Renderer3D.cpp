@@ -444,7 +444,7 @@ void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 	}
 }
 
-void M_Renderer3D::DrawMesh(float4x4 transform, R_Mesh* mesh, uint texture_id, bool tex_is_active)
+void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id, bool tex_is_active)
 {
 	if (show_wireframe)
 	{

@@ -12,6 +12,7 @@ enum class COMPONENT_TYPE
 	MESH,
 	MATERIAL,
 	LIGHT,
+	CAMERA,
 	UNKNOWN = -1
 };
 

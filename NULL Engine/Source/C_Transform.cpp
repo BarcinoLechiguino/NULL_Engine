@@ -22,6 +22,8 @@ bool C_Transform::Update()
 {
 	bool ret = true;
 
+	//matrix = matrix.SetTranslatePart(float3(i, i, i));
+
 	if (recalculate_global_transform)
 	{
 		//matrix.TransformPos(position);

@@ -348,6 +348,9 @@
     <ClCompile Include="Source\M_Scene.cpp">
       <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Source\C_Camera.cpp">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -754,6 +757,9 @@
     </ClInclude>
     <ClInclude Include="Source\M_Scene.h">
       <Filter>SourceCode\1_Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\C_Camera.h">
+      <Filter>SourceCode\5_GameObjects\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
