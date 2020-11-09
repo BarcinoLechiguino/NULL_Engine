@@ -58,9 +58,11 @@ void E_Panel::HelpMarker(const char* description)
 	if (ImGui::IsItemHovered())
 	{
 		ImGui::BeginTooltip();
+
 		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
 		ImGui::TextUnformatted(description);
 		ImGui::PopTextWrapPos();
+
 		ImGui::EndTooltip();
 	}
 }

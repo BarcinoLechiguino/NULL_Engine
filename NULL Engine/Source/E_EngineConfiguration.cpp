@@ -10,6 +10,8 @@
 
 #include "E_EngineConfiguration.h"
 
+#define MAX_INPUT_LOG_SIZE 100000
+
 E_EngineConfiguration::E_EngineConfiguration() : E_Panel("Configuration")
 {
 	for (int i = 0; i < MAX_HISTOGRAM_SIZE; ++i)
@@ -123,61 +125,18 @@ bool E_EngineConfiguration::WindowMenu()
 		ImGui::Text("Icon:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "None (WIP)");
 
 		// --- WINDOW BRIGHTNESS
-		float brightness = App->window->GetBrightness();
-		ImGui::SliderFloat("Brightness", &brightness, 0.250f, 1.0f, "%.3f", 0);
-		App->window->SetBrightness(brightness);
+		GenerateBrightnessSlider();
 
 		// --- WINDOW SIZE
-		int width	= 0;
-		int height	= 0;
-
-		SDL_GetWindowSize(App->window->GetWindow(), &width, &height);
-
-		uint min_width, min_height, max_width, max_height = 0;
-		App->window->GetMinMaxSize(min_width, min_height, max_width, max_height);
-
-		ImGui::SliderInt("Width", &width, min_width, max_width, "%d", ImGuiSliderFlags_AlwaysClamp);
-		ImGui::SliderInt("Height", &height, min_height, max_height, "%d", ImGuiSliderFlags_AlwaysClamp);
-
-		App->window->SetSize(width, height);
+		GenerateSizeSliders();
 
 		// --- REFRESH RATE
 		ImGui::Text("Refresh Rate:");  ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%d", App->window->GetRefreshRate());
 
-		// --- WINDOW MODE/FLAGS
 		ImGui::Separator();
-		ImGui::Text("Window Mode:");
 
-		bool maximized				= App->window->IsMaximized();
-		bool fullscreen				= App->window->IsFullscreen();
-		bool resizable				= App->window->IsResizable();
-		bool borderless				= App->window->IsBorderless();
-		bool fullscreen_desktop		= App->window->IsFullscreenDesktop();
-
-		if (ImGui::Checkbox("Maximized", &maximized))
-		{
-			App->window->SetMaximized(maximized);
-		}
-		
-		if (ImGui::Checkbox("Fullscreen", &fullscreen))
-		{
-			App->window->SetFullscreen(fullscreen);
-		}
-
-		if (ImGui::Checkbox("Resizable", &resizable))
-		{
-			App->window->SetResizable(resizable);
-		}
-
-		if (ImGui::Checkbox("Borderless", &borderless))
-		{
-			App->window->SetBorderless(borderless);
-		}
-
-		if (ImGui::Checkbox("Fullscreen Desktop", &fullscreen_desktop))
-		{
-			App->window->SetFullscreenDesktop(fullscreen_desktop);
-		}
+		// --- WINDOW MODE/FLAGS
+		WindowModeFlags();
 	}
 
 	return ret;
@@ -194,11 +153,7 @@ bool E_EngineConfiguration::RendererMenu()
 		ImGui::Text("Driver:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->renderer->GetDrivers());
 
 		// --- VSYNC
-		bool vsync = App->renderer->GetVsync();
-		if (ImGui::Checkbox("Vsync", &vsync))
-		{
-			App->renderer->SetVsync(vsync);
-		}
+		VsyncMode();
 
 		ImGui::Separator();
 
@@ -226,27 +181,13 @@ bool E_EngineConfiguration::CameraMenu()
 		}
 
 		// --- POSITION
-		float position[3] = { App->camera->position.x, App->camera->position.y, App->camera->position.z };
-		ImGui::DragFloat3("Position", position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-		App->camera->SetPosition(vec3(position[0], position[1], position[2]));
+		GenerateCameraPositionSlider();
 
 		// --- REFERENCE
-		float reference[3] = { App->camera->reference.x, App->camera->reference.y, App->camera->reference.z };
-		ImGui::DragFloat3("Reference", reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-		App->camera->SetReference(vec3(reference[0], reference[1], reference[2]));
+		GenerateCameraReferenceSlider();
 
 		// --- MOVEMENT, ROTATION & ZOOM SPEED
-		float movement_speed	= App->camera->GetMovementSpeed();
-		float rotation_speed	= App->camera->GetRotationSpeed();
-		float zoom_speed		= App->camera->GetZoomSpeed();
-
-		ImGui::DragFloat("Movement Speed", &movement_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
-		ImGui::DragFloat("Rotation Speed", &rotation_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
-		ImGui::DragFloat("Zoom Speed", &zoom_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
-
-		App->camera->SetMovementSpeed(movement_speed);
-		App->camera->SetRotationSpeed(rotation_speed);
-		App->camera->SetZoomSpeed(zoom_speed);
+		GenerateCameraSpeedSliders();
 	}
 
 	return ret;
@@ -262,12 +203,11 @@ bool E_EngineConfiguration::InputMenu()
 		ImGui::Text("Is Active:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->input->IsActive() ? "True" : "False");
 		
 		// --- MOUSE POSITION, MOTION & WHEEL
-		ImGui::Text("Mouse Position:"); ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseX(), App->input->GetMouseY());
-		ImGui::Text("Mouse Motion:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
-		ImGui::Text("Mouse Wheel:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseXWheel(), App->input->GetMouseYWheel());
+		MouseInputData();
+
+		ImGui::Separator();
 
 		// --- INPUT LOG
-		ImGui::Separator();
 		ImGui::BeginChild("Input Log");
 
 		InputLogOutput();
@@ -288,20 +228,9 @@ bool E_EngineConfiguration::FileSystemMenu()
 	{
 		ImGui::Text("Is Active:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), App->file_system->IsActive() ? "True" : "False");
 
-		ImGui::Text("Base Directory:");
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-		ImGui::TextWrapped(App->file_system->GetBaseDirectory());
-		ImGui::PopStyleColor();
-
-		ImGui::Text("Read Directories:");
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-		ImGui::TextWrapped(App->file_system->GetReadDirectories());
-		ImGui::PopStyleColor();
-
-		ImGui::Text("Write Directory:");
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-		ImGui::TextWrapped(App->file_system->GetWriteDirectory());
-		ImGui::PopStyleColor();
+		GenerateBaseDirectoryText();
+		GenerateReadDirectoriesText();
+		GenerateWriteDirectoryText();
 	}
 
 	return ret;
@@ -317,65 +246,24 @@ bool E_EngineConfiguration::HardwareMenu()
 
 		if (ImGui::CollapsingHeader("Software"))
 		{
-			// --- SDL INFO
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "SDL Info:");
-
-			ImGui::Text("SDL Version:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.SDL.sdl_version);
+			SDLInfo(&hw_info);
 
 			ImGui::Separator();
 
-			// --- OPENGL INFO
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "OpenGL Info:");
-
-			ImGui::Text("Model:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.model_name);
-			ImGui::Text("Renderer:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.renderer_name);
-			ImGui::Text("Version:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.version);
-			ImGui::Text("Shading Language:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.OpenGL.shading_language_version);
+			OpenGLInfo(&hw_info);
 
 			ImGui::Separator();
 
-			// --- DEVIL INFO
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "DevIL Info:");
-
-			ImGui::Text("Vendor:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.DevIL.vendor);
-			ImGui::Text("Version:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.DevIL.version);
+			DevILInfo(&hw_info);
 		}
 
 		if (ImGui::CollapsingHeader("Hardware"))
 		{
-			// --- CPU INFO
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "CPU Info:");
-
-			ImGui::Text("CPUs:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u (Cache: %ukb)", hw_info.CPU.cpu_count, hw_info.CPU.cache_size);
-			ImGui::Text("RAM Size:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f GB", hw_info.CPU.ram_gb);
-
-			ImGui::Text("Drivers:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s%s",
-				hw_info.CPU.has_RDTSC	? "RDTSC,"	: "",
-				hw_info.CPU.has_AltiVec ? "AltiVec,": "",
-				hw_info.CPU.has_3DNow	? "3DNow,"	: "",
-				hw_info.CPU.has_MMX		? "MMX,"	: "",
-				hw_info.CPU.has_SSE		? "SSE,"	: "",
-				hw_info.CPU.has_SSE2	? "SSE2,"	: "");
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s",
-				hw_info.CPU.has_SSE3	? "SSE3,"	: "",
-				hw_info.CPU.has_SSE41	? "SSE4.1," : "",
-				hw_info.CPU.has_SSE42	? "SSE4.2," : "",
-				hw_info.CPU.has_RDTSC	? "AVX,"	: "",
-				hw_info.CPU.has_RDTSC	? "AVX2,"	: "");
+			CPUInfo(&hw_info);
 
 			ImGui::Separator();
 
-			// --- GPU INFO
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "GPU Info:");
-
-			ImGui::Text("GPU:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vendor %i Device %i", hw_info.GPU.vendor, hw_info.GPU.device_id);
-			ImGui::Text("Brand:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info.GPU.brand);
-			ImGui::Text("VRAM Budget:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_budget);
-			ImGui::Text("VRAM Usage:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_usage);
-			ImGui::Text("VRAM Available:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_available);
-			ImGui::Text("VRAM Reserved:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info.GPU.vram_mb_reserved);
+			GPUInfo(&hw_info);
 		}
 	}
  
@@ -469,6 +357,74 @@ void E_EngineConfiguration::GenerateFrameCapSlider()
 	}
 }
 
+void E_EngineConfiguration::GenerateBrightnessSlider()
+{
+	float brightness = App->window->GetBrightness();
+	ImGui::SliderFloat("Brightness", &brightness, 0.250f, 1.0f, "%.3f", 0);
+	App->window->SetBrightness(brightness);
+}
+
+void E_EngineConfiguration::GenerateSizeSliders()
+{
+	int width = 0;
+	int height = 0;
+
+	SDL_GetWindowSize(App->window->GetWindow(), &width, &height);
+
+	uint min_width, min_height, max_width, max_height = 0;
+	App->window->GetMinMaxSize(min_width, min_height, max_width, max_height);
+
+	ImGui::SliderInt("Width", &width, min_width, max_width, "%d", ImGuiSliderFlags_AlwaysClamp);
+	ImGui::SliderInt("Height", &height, min_height, max_height, "%d", ImGuiSliderFlags_AlwaysClamp);
+
+	App->window->SetSize(width, height);
+}
+
+void E_EngineConfiguration::WindowModeFlags()
+{
+	ImGui::Text("Window Mode:");
+
+	bool maximized			= App->window->IsMaximized();
+	bool fullscreen			= App->window->IsFullscreen();
+	bool resizable			= App->window->IsResizable();
+	bool borderless			= App->window->IsBorderless();
+	bool fullscreen_desktop	= App->window->IsFullscreenDesktop();
+
+	if (ImGui::Checkbox("Maximized", &maximized))
+	{
+		App->window->SetMaximized(maximized);
+	}
+
+	if (ImGui::Checkbox("Fullscreen", &fullscreen))
+	{
+		App->window->SetFullscreen(fullscreen);
+	}
+
+	if (ImGui::Checkbox("Resizable", &resizable))
+	{
+		App->window->SetResizable(resizable);
+	}
+
+	if (ImGui::Checkbox("Borderless", &borderless))
+	{
+		App->window->SetBorderless(borderless);
+	}
+
+	if (ImGui::Checkbox("Fullscreen Desktop", &fullscreen_desktop))
+	{
+		App->window->SetFullscreenDesktop(fullscreen_desktop);
+	}
+}
+
+void E_EngineConfiguration::VsyncMode()
+{
+	bool vsync = App->renderer->GetVsync();
+	if (ImGui::Checkbox("Vsync", &vsync))
+	{
+		App->renderer->SetVsync(vsync);
+	}
+}
+
 void E_EngineConfiguration::RendererFlags()
 {
 	ImGui::Text("Renderer flags: ");
@@ -554,6 +510,35 @@ void E_EngineConfiguration::RendererFlags()
 	}
 }
 
+void E_EngineConfiguration::GenerateCameraPositionSlider()
+{
+	float position[3] = { App->camera->position.x, App->camera->position.y, App->camera->position.z };
+	ImGui::DragFloat3("Position", position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+	App->camera->SetPosition(vec3(position[0], position[1], position[2]));
+}
+
+void E_EngineConfiguration::GenerateCameraReferenceSlider()
+{
+	float reference[3] = { App->camera->reference.x, App->camera->reference.y, App->camera->reference.z };
+	ImGui::DragFloat3("Reference", reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+	App->camera->SetReference(vec3(reference[0], reference[1], reference[2]));
+}
+
+void E_EngineConfiguration::GenerateCameraSpeedSliders()
+{
+	float movement_speed = App->camera->GetMovementSpeed();
+	float rotation_speed = App->camera->GetRotationSpeed();
+	float zoom_speed = App->camera->GetZoomSpeed();
+
+	ImGui::DragFloat("Movement Speed", &movement_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
+	ImGui::DragFloat("Rotation Speed", &rotation_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
+	ImGui::DragFloat("Zoom Speed", &zoom_speed, 0.01f, 0.0f, 0.0f, "%.3f", NULL);
+
+	App->camera->SetMovementSpeed(movement_speed);
+	App->camera->SetRotationSpeed(rotation_speed);
+	App->camera->SetZoomSpeed(zoom_speed);
+}
+
 void E_EngineConfiguration::AddInputLog(const char* log)
 {
 	if (log != nullptr)
@@ -574,6 +559,13 @@ void E_EngineConfiguration::ReduceInputLog()
 
 		LOG("[WARNING] Cleared Input Log: Exceeded maximum input log size!");
 	}
+}
+
+void E_EngineConfiguration::MouseInputData()
+{
+	ImGui::Text("Mouse Position:"); ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseX(), App->input->GetMouseY());
+	ImGui::Text("Mouse Motion:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
+	ImGui::Text("Mouse Wheel:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "x: %i y: %i", App->input->GetMouseXWheel(), App->input->GetMouseYWheel());
 }
 
 void E_EngineConfiguration::InputLogOutput()
@@ -616,4 +608,90 @@ void E_EngineConfiguration::ClearInputLog()
 	}
 
 	input_logs.clear();
+}
+
+void E_EngineConfiguration::GenerateBaseDirectoryText()
+{
+	ImGui::Text("Base Directory:");
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+	ImGui::TextWrapped(App->file_system->GetBaseDirectory());
+	ImGui::PopStyleColor();
+}
+
+void E_EngineConfiguration::GenerateReadDirectoriesText()
+{
+	ImGui::Text("Read Directories:");
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+	ImGui::TextWrapped(App->file_system->GetReadDirectories());
+	ImGui::PopStyleColor();
+}
+
+void E_EngineConfiguration::GenerateWriteDirectoryText()
+{
+	ImGui::Text("Write Directory:");
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+	ImGui::TextWrapped(App->file_system->GetWriteDirectory());
+	ImGui::PopStyleColor();
+}
+
+
+void E_EngineConfiguration::SDLInfo(HardwareInfo* hw_info)
+{
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "SDL Info:");
+
+	ImGui::Text("SDL Version:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->SDL.sdl_version);
+}
+
+void E_EngineConfiguration::OpenGLInfo(HardwareInfo* hw_info)
+{
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "OpenGL Info:");
+
+	ImGui::Text("Model:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->OpenGL.model_name);
+	ImGui::Text("Renderer:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->OpenGL.renderer_name);
+	ImGui::Text("Version:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->OpenGL.version);
+	ImGui::Text("Shading Language:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->OpenGL.shading_language_version);
+}
+
+void E_EngineConfiguration::DevILInfo(HardwareInfo* hw_info)
+{
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "DevIL Info:");
+
+	ImGui::Text("Vendor:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->DevIL.vendor);
+	ImGui::Text("Version:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->DevIL.version);
+}
+
+void E_EngineConfiguration::CPUInfo(HardwareInfo* hw_info)
+{
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "CPU Info:");
+
+	ImGui::Text("CPUs:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u (Cache: %ukb)", hw_info->CPU.cpu_count, hw_info->CPU.cache_size);
+	ImGui::Text("RAM Size:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f GB", hw_info->CPU.ram_gb);
+
+	ImGui::Text("Drivers:");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s%s",
+		hw_info->CPU.has_RDTSC		?	"RDTSC,"	: "",
+		hw_info->CPU.has_AltiVec	?	"AltiVec,"	: "",
+		hw_info->CPU.has_3DNow		?	"3DNow,"	: "",
+		hw_info->CPU.has_MMX		?	"MMX,"		: "",
+		hw_info->CPU.has_SSE		?	"SSE,"		: "",
+		hw_info->CPU.has_SSE2		?	"SSE2,"		: "");
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s%s%s%s%s",
+		hw_info->CPU.has_SSE3		?	"SSE3,"		: "",
+		hw_info->CPU.has_SSE41		?	"SSE4.1,"	: "",
+		hw_info->CPU.has_SSE42		?	"SSE4.2,"	: "",
+		hw_info->CPU.has_RDTSC		?	"AVX,"		: "",
+		hw_info->CPU.has_RDTSC		?	"AVX2,"		: "");
+}
+
+void E_EngineConfiguration::GPUInfo(HardwareInfo* hw_info)
+{
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "GPU Info:");
+
+	ImGui::Text("GPU:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Vendor %i Device %i", hw_info->GPU.vendor, hw_info->GPU.device_id);
+	ImGui::Text("Brand:");				ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", hw_info->GPU.brand);
+	ImGui::Text("VRAM Budget:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info->GPU.vram_mb_budget);
+	ImGui::Text("VRAM Usage:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info->GPU.vram_mb_usage);
+	ImGui::Text("VRAM Available:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info->GPU.vram_mb_available);
+	ImGui::Text("VRAM Reserved:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.1f MB", hw_info->GPU.vram_mb_reserved);
 }

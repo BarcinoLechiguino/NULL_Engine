@@ -3,8 +3,9 @@
 
 #include "E_Panel.h"
 
+struct HardwareInfo;
+
 #define MAX_HISTOGRAM_SIZE 100
-#define MAX_INPUT_LOG_SIZE 100000
 
 class E_EngineConfiguration : public E_Panel
 {
@@ -38,12 +39,32 @@ private:
 	void PlotFrameDataHistogram();										// Application menu: Will plot the frame data histogram according to the current frame data values.
 	void GenerateFrameCapSlider();										// Application menu: Will generate a slider that will modify the frame cap value. From 0 (no cap) to 60.
 
+	void GenerateBrightnessSlider();									// Window menu: Will generate a slider that will modify the brightness of the whole window.
+	void GenerateSizeSliders();											// Window menu: Will generate 2 sliders. One will modify the width of the window and the other will modify the size.
+	void WindowModeFlags();												// Window menu: Will generate the checkboxes that will modify the window mode. Ex: Maximized, Borderless, Fullscreen...
+
+	void VsyncMode();													// Renderer menu: Will generate a checkbox that will enable/disable the Vsync mode.
 	void RendererFlags();												// Renderer menu: Will generate the checkboxes that will modify the renderer flags.
 
+	void GenerateCameraPositionSlider();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's position (XYZ).
+	void GenerateCameraReferenceSlider();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's reference (XYZ).
+	void GenerateCameraSpeedSliders();									// Camera menu: Will generate 3 sliders that will modify the camera's movement, rotation and zoom speed.
+
+	void MouseInputData();												// Input menu: Will generate 3 pairs of two texts, one of the pair with the type of data and the second with its value.
 	void InputLogOutput();												// Input menu: Will generate the text of the Log. The logs are stored in the input_logs std::vector.
 	void ReduceInputLog();												// Input menu: Will reduce the size of the input_logs vector down to a more manageable size, memory and framerate wise.
 	void InputLogScrollToBottom();										// Input menu: Will scroll down to the bottommost part of the Log text whenever it is called.
 	void ClearInputLog();												// Input menu: Will delete every log and empty the input_logs std::vector.
+
+	void GenerateBaseDirectoryText();									// FileSystem menu: Will generate the texts that will display the Base Directory path.
+	void GenerateReadDirectoriesText();									// FileSystem menu: Will generate the texts that will display the Read Directory path.
+	void GenerateWriteDirectoryText();									// FileSystem menu: Will generate the texts that will display the Write Directory path.
+
+	void SDLInfo(HardwareInfo* hw_info);								// Hardware menu: Will generate the texts that will display information related with the SDL library.
+	void OpenGLInfo(HardwareInfo* hw_info);								// Hardware menu: Will generate the texts that will display information related with the OpenGL library.
+	void DevILInfo(HardwareInfo* hw_info);								// Hardware menu: Will generate the texts that will display information related with the DevIL library.
+	void CPUInfo(HardwareInfo* hw_info);								// Hardware menu: Will generate the texts that will display information related with the CPU.
+	void GPUInfo(HardwareInfo* hw_info);								// Hardware menu: Will generate the texts that will display information related with the GPU.
 
 private:
 	float FPS_data[MAX_HISTOGRAM_SIZE];
