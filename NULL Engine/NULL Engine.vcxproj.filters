@@ -252,9 +252,6 @@
     <ClCompile Include="Source\M_Renderer3D.cpp">
       <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Source\M_SceneIntro.cpp">
-      <Filter>SourceCode\1_Modules</Filter>
-    </ClCompile>
     <ClCompile Include="Source\M_Window.cpp">
       <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
@@ -347,6 +344,9 @@
     </ClCompile>
     <ClCompile Include="Source\C_Material.cpp">
       <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\M_Scene.cpp">
+      <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -614,9 +614,6 @@
     <ClInclude Include="Source\M_Renderer3D.h">
       <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Source\M_SceneIntro.h">
-      <Filter>SourceCode\1_Modules</Filter>
-    </ClInclude>
     <ClInclude Include="Source\M_Window.h">
       <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
@@ -754,6 +751,9 @@
     </ClInclude>
     <ClInclude Include="Source\C_Material.h">
       <Filter>SourceCode\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_Scene.h">
+      <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -86,7 +86,7 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 #define FRAMES_ARE_CAPPED		true
 
 #define TITLE					"NULL Engine"
-#define ORGANIZATION			"UPC - CITM - TTC"
+#define ORGANIZATION			"Angel Gonzalez // UPC - CITM - TTC"
 
 // File Directories ---------------------------------					// Necessary as a global definition?
 #define LIBRARY_PATH			"Library/"

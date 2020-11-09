@@ -4,7 +4,7 @@
 #include "M_Renderer3D.h"
 #include "M_FileSystem.h"
 #include "M_Editor.h"
-#include "M_SceneIntro.h"
+#include "M_Scene.h"
 
 #include "M_Input.h"
 
@@ -182,7 +182,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 					if (App->file_system->GetFileExtension(dropped_file_path) == "FBX"							// If the file extension is .fbx or .FBX, then it is a model.
 						|| App->file_system->GetFileExtension(dropped_file_path) == "fbx")
 					{
-						App->scene_intro->CreateGameObjectsFromModel(norm_path.c_str());
+						App->scene->CreateGameObjectsFromModel(norm_path.c_str());
 					}
 
 					if (App->file_system->GetFileExtension(dropped_file_path) == "png"							// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.
@@ -190,7 +190,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 						|| App->file_system->GetFileExtension(dropped_file_path) == "dds"
 						|| App->file_system->GetFileExtension(dropped_file_path) == "DDS")
 					{
-						App->scene_intro->ApplyNewTextureToSelectedGameObject(norm_path.c_str());
+						App->scene->ApplyNewTextureToSelectedGameObject(norm_path.c_str());
 					}
 				}
 				else

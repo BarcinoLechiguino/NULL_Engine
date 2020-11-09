@@ -5,7 +5,7 @@
 #include "Module.h"
 #include "M_Window.h"
 #include "M_Input.h"
-#include "M_SceneIntro.h"
+#include "M_Scene.h"
 #include "M_Renderer3D.h"
 #include "M_Editor.h"
 #include "M_Camera3D.h"
@@ -21,7 +21,7 @@ dt(0.0f),
 hardware_info(),
 window(nullptr),
 input(nullptr),
-scene_intro(nullptr),
+scene(nullptr),
 editor(nullptr),
 renderer(nullptr),
 camera(nullptr),
@@ -32,7 +32,7 @@ file_system(nullptr)
 	// Modules -----------------------------------
 	window			= new M_Window();
 	input			= new M_Input();
-	scene_intro		= new M_SceneIntro();
+	scene		= new M_Scene();
 	editor			= new M_Editor();
 	renderer		= new M_Renderer3D();
 	camera			= new M_Camera3D();
@@ -49,7 +49,7 @@ file_system(nullptr)
 	AddModule(file_system);
 
 	// Scenes
-	AddModule(scene_intro);
+	AddModule(scene);
 	AddModule(editor);
 
 	// Renderer last!

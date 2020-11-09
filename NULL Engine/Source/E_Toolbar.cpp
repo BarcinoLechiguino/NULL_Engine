@@ -1,7 +1,7 @@
 #include "Application.h"
 #include "M_Renderer3D.h"
 #include "M_Editor.h"
-#include "M_SceneIntro.h"
+#include "M_Scene.h"
 
 #include "E_Toolbar.h"
 
@@ -160,7 +160,7 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 	{
 		if (ImGui::MenuItem("Create Empty"))
 		{
-			App->scene_intro->CreateGameObject("EmptyGameObject", App->scene_intro->root_object);
+			App->scene->CreateGameObject("EmptyGameObject", App->scene->GetRootGameObject());
 
 			LOG("[SCENE] Created An Empty Object. Root Object defaults as parent.")
 		}
@@ -169,7 +169,7 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 		{
 			for (uint i = 0; i < 10; ++i)
 			{
-				App->scene_intro->CreateGameObject("EmptyGameObject", App->scene_intro->root_object);
+				App->scene->CreateGameObject("EmptyGameObject", App->scene->GetRootGameObject());
 			}
 
 			LOG("[SCENE] Created 10 Empty Objects. Root Object defaults as parent.")

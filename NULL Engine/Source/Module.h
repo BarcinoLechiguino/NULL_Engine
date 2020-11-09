@@ -31,14 +31,14 @@ public:
 	virtual UPDATE_STATUS	PostUpdate(float dt);								// Called every frame.
 	virtual bool			CleanUp();											// Called after the last frame.
 
-	virtual bool SaveConfiguration(Configuration& root) const;					// Will save the current configuration of the calling module in a JSON file.
-	virtual bool LoadConfiguration(Configuration& root);						// Will load the configuration of the calling module from a JSON file.
+	virtual bool			SaveConfiguration(Configuration& root) const;		// Will save the current configuration of the calling module in a JSON file.
+	virtual bool			LoadConfiguration(Configuration& root);				// Will load the configuration of the calling module from a JSON file.
 
 public:
-	bool IsActive() const;
-	bool SetModuleState(bool is_active);										// Will modify the state of the module. Will call Start() or CleanUp().
+	bool					IsActive() const;
+	bool					SetModuleState(bool is_active);						// Will modify the state of the module. Will call Start() or CleanUp().
 
-	const char* GetName() const;												// Will return the name of the module.
+	const char*				GetName() const;									// Will return the name of the module.
 
 private:
 	bool is_active;																// State in which the module is currently in. If it is active the module will be looped each frame.

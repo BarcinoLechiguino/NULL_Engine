@@ -1,5 +1,8 @@
 #include "MathGeoLib/src/Math/float3.h"
 
+#include "Application.h"
+#include "M_Editor.h"
+
 #include "GameObject.h"
 #include "Component.h"
 #include "C_Transform.h"
@@ -12,7 +15,7 @@
 #define MAX_VALUE 100000
 #define MIN_VALUE -100000
 
-E_Inspector::E_Inspector() : E_Panel("Inspector"), selected_game_object(nullptr)
+E_Inspector::E_Inspector() : E_Panel("Inspector") /*, selected_game_object(nullptr)*/
 {
 
 }
@@ -28,10 +31,12 @@ bool E_Inspector::Draw(ImGuiIO& io)
 
 	ImGui::Begin("Inspector");
 
+	GameObject* selected_game_object = App->editor->GetSelectedGameObjectThroughEditor();
+	
 	if (selected_game_object != nullptr)
 	{
-		DrawGameObjectInfo();
-		DrawComponents();
+		DrawGameObjectInfo(selected_game_object);
+		DrawComponents(selected_game_object);
 	}
 
 	//ImGui::Text("WantCaptureMouse: %d", io.WantCaptureMouse);
@@ -53,20 +58,7 @@ bool E_Inspector::CleanUp()
 }
 
 // --- INSPECTOR METHODS ---
-void E_Inspector::SetSelectedGameObject(GameObject* game_object)
-{
-	if (game_object != selected_game_object)
-	{
-		selected_game_object = game_object;
-	}
-}
-
-GameObject* E_Inspector::GetSelectedGameObject() const
-{
-	return selected_game_object;
-}
-
-void E_Inspector::DrawGameObjectInfo()
+void E_Inspector::DrawGameObjectInfo(GameObject* selected_game_object)
 {
 	// --- IS ACTIVE ---
 	bool game_object_is_active = selected_game_object->IsActive();
@@ -74,8 +66,6 @@ void E_Inspector::DrawGameObjectInfo()
 	{
 		selected_game_object->SetIsActive(game_object_is_active);
 	}
-
-	
 
 	ImGui::SameLine();
 
@@ -117,7 +107,7 @@ void E_Inspector::DrawGameObjectInfo()
 	ImGui::Separator();
 }
 
-void E_Inspector::DrawComponents()
+void E_Inspector::DrawComponents(GameObject* selected_game_object)
 {
 	for (uint i = 0; i < selected_game_object->components.size(); ++i)
 	{
@@ -127,10 +117,10 @@ void E_Inspector::DrawComponents()
 		{
 			switch (component->type)
 			{
-			case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent(); }	break;
-			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent(); }		break;
-			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent(); }	break;
-			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent(); }		break;
+			case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent(selected_game_object); }	break;
+			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent(selected_game_object); }		break;
+			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent(selected_game_object); }	break;
+			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent(selected_game_object); }		break;
 			}
 
 			if (component->type == COMPONENT_TYPE::NONE || component->type == COMPONENT_TYPE::UNKNOWN)
@@ -141,7 +131,7 @@ void E_Inspector::DrawComponents()
 	}
 }
 
-void E_Inspector::DrawTransformComponent()
+void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -199,7 +189,7 @@ void E_Inspector::DrawTransformComponent()
 	}
 }
 
-void E_Inspector::DrawMeshComponent()
+void E_Inspector::DrawMeshComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -260,7 +250,7 @@ void E_Inspector::DrawMeshComponent()
 	}
 }
 
-void E_Inspector::DrawMaterialComponent()
+void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -315,7 +305,7 @@ void E_Inspector::DrawMaterialComponent()
 	}
 }
 
-void E_Inspector::DrawLightComponent()
+void E_Inspector::DrawLightComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
 	{

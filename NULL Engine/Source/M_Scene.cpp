@@ -17,25 +17,27 @@
 #include "C_Mesh.h"
 #include "C_Material.h"
 
-#include "M_SceneIntro.h"
+#include "M_Scene.h"
 
-M_SceneIntro::M_SceneIntro(bool is_active) : Module("SceneManager", is_active)
-{
-	root_object = nullptr;
-}
-
-M_SceneIntro::~M_SceneIntro()
+M_Scene::M_Scene(bool is_active) : Module("SceneManager", is_active),
+root_object(nullptr),
+selected_game_object(nullptr)
 {
 
 }
 
-bool M_SceneIntro::Init(Configuration& config)
+M_Scene::~M_Scene()
+{
+
+}
+
+bool M_Scene::Init(Configuration& config)
 {
 	return true;
 }
 
 // Load assets
-bool M_SceneIntro::Start()
+bool M_Scene::Start()
 {
 	LOG("Loading Intro assets");
 	bool ret = true;
@@ -45,7 +47,8 @@ bool M_SceneIntro::Start()
 	if (root_object == nullptr)
 	{
 		root_object = CreateGameObject("Main Scene");
-		App->editor->SetInspectedGameObject(root_object);
+
+		selected_game_object = root_object;
 	}
 
 	CreateGameObjectsFromModel("Assets/Models/baker_house/BakerHouse.fbx");
@@ -54,7 +57,7 @@ bool M_SceneIntro::Start()
 }
 
 // Update
-UPDATE_STATUS M_SceneIntro::Update(float dt)
+UPDATE_STATUS M_Scene::Update(float dt)
 {
 	if (App->debug == true)
 	{
@@ -76,7 +79,7 @@ UPDATE_STATUS M_SceneIntro::Update(float dt)
 	return UPDATE_STATUS::CONTINUE;
 }
 
-UPDATE_STATUS M_SceneIntro::PostUpdate(float dt)
+UPDATE_STATUS M_Scene::PostUpdate(float dt)
 {
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
@@ -95,7 +98,7 @@ UPDATE_STATUS M_SceneIntro::PostUpdate(float dt)
 }
 
 // Load assets
-bool M_SceneIntro::CleanUp()
+bool M_Scene::CleanUp()
 {
 	LOG("Unloading Intro scene");
 
@@ -109,14 +112,14 @@ bool M_SceneIntro::CleanUp()
 	return true;
 }
 
-bool M_SceneIntro::LoadConfiguration(Configuration& root)
+bool M_Scene::LoadConfiguration(Configuration& root)
 {
 	bool ret = true;
 
 	return ret;
 }
 
-bool M_SceneIntro::SaveConfiguration(Configuration& root) const
+bool M_Scene::SaveConfiguration(Configuration& root) const
 {
 	bool ret = true;
 
@@ -124,7 +127,7 @@ bool M_SceneIntro::SaveConfiguration(Configuration& root) const
 }
 
 // -------------- SCENE METHODS --------------
-GameObject* M_SceneIntro::CreateGameObject(const char* name, GameObject* parent)
+GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 {
 	/*if (NameHasDuplicate(name))
 	{
@@ -158,7 +161,25 @@ GameObject* M_SceneIntro::CreateGameObject(const char* name, GameObject* parent)
 	return game_object;
 }
 
-bool M_SceneIntro::CreateGameObjectsFromModel(const char* path)
+void M_Scene::DeleteGameObject(GameObject* game_object)
+{
+	if (!game_objects.empty() && game_object != nullptr)
+	{
+		for (uint i = 0; i < game_objects.size(); ++i)
+		{
+			if (game_objects[i] == game_object)
+			{
+				game_objects.erase(game_objects.begin() + i);
+				game_object->CleanUp();
+				return;
+			}
+		}
+
+		LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
+	}
+}
+
+bool M_Scene::CreateGameObjectsFromModel(const char* path)
 {
 	bool ret = false;
 
@@ -176,36 +197,30 @@ bool M_SceneIntro::CreateGameObjectsFromModel(const char* path)
 	return ret;
 }
 
-bool M_SceneIntro::GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes)
+bool M_Scene::GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes)
 {
 	bool ret = true;
-
-	GameObject* parent_mesh_object;																	// Will be kept to store all the sub-meshes inside.
 
 	for (uint i = 0; i < meshes.size(); ++i)
 	{
 		GameObject* game_object = new GameObject();
 
-		GenerateGameObjectComponents(path, file_name, game_object, meshes[i]);						// 
+		GenerateGameObjectComponents(path, file_name, game_object, meshes[i]);						// Will generate the created game_object components with the passed data.
 
 		if (game_object != nullptr)
 		{
 			if (i == 0)																				// Adding the current game object as a child.
 			{																						// 
-				game_object->parent = root_object;													// 
 				root_object->AddChild(game_object);													// Depending on whether it's the first game object of the loop or not, 
-																									// it will be parented to the Scene's root_object or to the first game object
-				parent_mesh_object = game_object;													// to be iterated (See parent_mesh_object).
-				App->editor->SetInspectedGameObject(game_object);									// 
-			}																						// Moreover, this parent_mesh_object will be set as the inspected game object and
-			else																					// will be shown in the inspector window.
-			{																						// 
-				game_object->parent = parent_mesh_object;											// 
-				parent_mesh_object->AddChild(game_object);											// 
+				selected_game_object = game_object;													// it will be parented to the Scene's root_object and set as the selected GameObject.
+			}																						// 
+			else																					// In any other case, the created game object will be set as the child of the parent
+			{																						// mesh's GameObject, which will be the selected GameObject.
+				selected_game_object->AddChild(game_object);										// 
 			}																						// ---------------------------------------------------------
 
 			std::string game_object_name = file_name + "-" + std::to_string(i);						// Adding the index of iteration to the current game object.
-			game_object_name += "(" + std::to_string(game_objects.size()) + ")";
+			game_object_name += "(" + std::to_string(game_objects.size()) + ")";					//
 			game_object->SetName(game_object_name.c_str());											// ---------------------------------------------------------
 			
 			game_objects.push_back(game_object);													// The newly constructed game_object will be added to the game_objects vector.
@@ -223,7 +238,7 @@ bool M_SceneIntro::GenerateGameObjectsFromMeshes(const char* path, std::string f
 	return ret;
 }
 
-bool M_SceneIntro::GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh)
+bool M_Scene::GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh)
 {
 	bool ret = true;
 	
@@ -267,12 +282,10 @@ bool M_SceneIntro::GenerateGameObjectComponents(const char* path, std::string fi
 	return ret;
 }
 
-bool M_SceneIntro::ApplyNewTextureToSelectedGameObject(const char* path)
+bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 {
 	bool ret = true;
 
-	GameObject* selected_game_object = App->editor->GetInspectedGameObject();
-	
 	if (selected_game_object != nullptr)
 	{
 		C_Material* c_material	= (C_Material*)selected_game_object->GetComponent(COMPONENT_TYPE::MATERIAL);
@@ -311,25 +324,44 @@ bool M_SceneIntro::ApplyNewTextureToSelectedGameObject(const char* path)
 	return ret;
 }
 
-void M_SceneIntro::DeleteGameObject(GameObject* game_object)
+GameObject* M_Scene::GetRootGameObject() const
 {
-	if (!game_objects.empty() && game_object != nullptr)
-	{
-		for (uint i = 0; i < game_objects.size(); ++i)
-		{
-			if (game_objects[i] == game_object)
-			{
-				game_objects.erase(game_objects.begin() + i);
-				game_object->CleanUp();
-				return;
-			}
-		}
+	return root_object;
+}
 
-		LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
+void M_Scene::SetRootGameObject(GameObject* game_object)
+{
+	if (game_object != root_object)
+	{
+		root_object = game_object;
 	}
 }
 
-bool M_SceneIntro::NameHasDuplicate(const char* name)
+void M_Scene::ChangeSceneName(const char* name)
+{
+	root_object->SetName(name);
+}
+
+GameObject* M_Scene::GetSelectedGameObject() const
+{
+	return selected_game_object;
+}
+
+void M_Scene::SetSelectedGameObject(GameObject* game_object)
+{
+	if (game_object != selected_game_object)
+	{
+		selected_game_object = game_object;
+	}
+}
+
+void M_Scene::DeleteSelectedGameObject()
+{
+	DeleteGameObject(selected_game_object);
+	selected_game_object = nullptr;
+}
+
+/*bool M_Scene::NameHasDuplicate(const char* name)
 {
 	uint duplicates = 0;
 	
@@ -345,14 +377,9 @@ bool M_SceneIntro::NameHasDuplicate(const char* name)
 	return duplicates;
 
 	return false;
-}
+}*/
 
-void M_SceneIntro::ChangeSceneName(const char* name)
-{
-	root_object->SetName(name);
-}
-
-void M_SceneIntro::HandleDebugInput()
+void M_Scene::HandleDebugInput()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_STATE::KEY_DOWN)
 	{
@@ -392,7 +419,7 @@ void M_SceneIntro::HandleDebugInput()
 	}
 }
 
-void M_SceneIntro::DebugSpawnPrimitive(Primitive* p)
+void M_Scene::DebugSpawnPrimitive(Primitive* p)
 {
 	primitives.push_back(p);
 	p->SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);

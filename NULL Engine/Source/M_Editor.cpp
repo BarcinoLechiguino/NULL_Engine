@@ -6,6 +6,7 @@
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
+#include "M_Scene.h"
 #include "GameObject.h"
 
 #include "E_Panel.h"
@@ -172,88 +173,8 @@ void M_Editor::AddGuiPanel(E_Panel* panel)
 	gui_panels.push_back(panel);
 }
 
-bool M_Editor::GetShowWorldGrid() const
-{
-	return App->renderer->GetDrawWorldGrid();
-}
-
-bool M_Editor::GetShowWorldAxis() const
-{
-	return App->renderer->GetDrawWorldAxis();
-}
-
-bool M_Editor::GetShowPrimitiveExamples() const
-{
-	return App->renderer->GetDrawPrimitiveExamples();
-}
-
-void M_Editor::SetShowWorldGrid(bool set_to)
-{
-	App->renderer->SetDrawWorldGrid(set_to);
-}
-
-void M_Editor::SetShowWorldAxis(bool set_to)
-{
-	App->renderer->SetDrawWorldAxis(set_to);
-}
-
-void M_Editor::SetShowPrimitiveExamples(bool set_to)
-{
-	App->renderer->SetDrawPrimtiveExamples(set_to);
-}
-
-void M_Editor::UpdateFrameData(int frames, int ms)
-{
-	configuration->UpdateFrameData(frames, ms);
-}
-
-void M_Editor::AddConsoleLog(const char* log)
-{
-	if (gui_panels.size() > 0)
-	{
-		if (console != nullptr)
-		{
-			console->AddLog(log);
-		}
-	}
-}
-
-void M_Editor::AddInputLog(uint key, uint state)
-{
-	char input[128];
-	const char* states[] = { "IDLE", "DOWN", "REPEAT", "UP" };										// We add the 4 main key states. In practice "IDLE" will not be displayed.
-	
-	if (configuration != nullptr)
-	{
-		if (key < App->input->GetMaxNumScancodes())
-		{
-			const char* key_name = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)key));			// Through the scancode it is possible to get a string with the name of the key.
-
-			sprintf_s(input, 128, "[KEY] %02u %s - %s\n", key, key_name, states[state]);
-		}
-		else
-		{
-			uint mouse_button = key - App->input->GetMaxNumScancodes();
-
-			sprintf_s(input, 128, "[MOUSE] %02u - %s\n", mouse_button, states[state]);
-		}
-
-		configuration->AddInputLog(input);
-	}
-}
-
-void M_Editor::SetInspectedGameObject(GameObject* game_object)
-{
-	inspector->SetSelectedGameObject(game_object);
-}
-
-GameObject* M_Editor::GetInspectedGameObject() const
-{
-	return inspector->GetSelectedGameObject();
-}
-
 void M_Editor::EditorShortcuts()
-{	
+{
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_STATE::KEY_DOWN)
 	{
 		show_configuration = !show_configuration;
@@ -273,7 +194,7 @@ void M_Editor::EditorShortcuts()
 	{
 		show_console = !show_console;
 	}
-	
+
 	if (App->input->GetKey(SDL_SCANCODE_8) == KEY_STATE::KEY_DOWN)
 	{
 		show_imgui_demo = !show_imgui_demo;
@@ -353,6 +274,162 @@ void M_Editor::CheckShowHideFlags()
 	}
 }
 
+bool M_Editor::RenderGuiPanels() const
+{
+	// Rendering all ImGui elements
+	ImGuiIO& io = ImGui::GetIO();
+
+	ImGui::Render();
+	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	// Updating and rendering additional platform windows
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+
+		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+	}
+
+	return true;
+}
+
+bool M_Editor::InitializeImGui() const
+{
+	bool ret = true;
+
+	// Setting up Dear ImGui's context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	ImGuiIO& io = ImGui::GetIO();																// Needs to be called multiple times during a frame to update IO correctly.
+	(void)io;
+
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;										// Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;											// Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;											// Enable MultiViewport / Platform Windows
+
+	ImGui::StyleColorsDark();																	// Setting up Dear ImGui's style.
+	ImGuiStyle& style = ImGui::GetStyle();														// Tweaking the platform windows to look identical to regular ones.
+
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)										// Setting some configuration parameters in case the ViewportsEnable flag is enabled. 
+	{																							// 
+		style.WindowRounding = 0.0f;															// Setting the windows to have no rounding on their corners.
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;												// Setting the windows Alpha to 255, making them completely opaque.
+	}																							// -----------------------------------------------
+
+	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->context);				// Setting up Platform/Renderer bindings
+	ImGui_ImplOpenGL3_Init(0);																	// -------------------------------------
+
+	return ret;
+}
+
+bool M_Editor::GetShowWorldGrid() const
+{
+	return App->renderer->GetDrawWorldGrid();
+}
+
+bool M_Editor::GetShowWorldAxis() const
+{
+	return App->renderer->GetDrawWorldAxis();
+}
+
+bool M_Editor::GetShowPrimitiveExamples() const
+{
+	return App->renderer->GetDrawPrimitiveExamples();
+}
+
+void M_Editor::SetShowWorldGrid(bool set_to)
+{
+	App->renderer->SetDrawWorldGrid(set_to);
+}
+
+void M_Editor::SetShowWorldAxis(bool set_to)
+{
+	App->renderer->SetDrawWorldAxis(set_to);
+}
+
+void M_Editor::SetShowPrimitiveExamples(bool set_to)
+{
+	App->renderer->SetDrawPrimtiveExamples(set_to);
+}
+
+void M_Editor::UpdateFrameData(int frames, int ms)
+{
+	configuration->UpdateFrameData(frames, ms);
+}
+
+void M_Editor::AddConsoleLog(const char* log)
+{
+	if (gui_panels.size() > 0)
+	{
+		if (console != nullptr)
+		{
+			console->AddLog(log);
+		}
+	}
+}
+
+void M_Editor::AddInputLog(uint key, uint state)
+{
+	char input[128];
+	const char* states[] = { "IDLE", "DOWN", "REPEAT", "UP" };										// We add the 4 main key states. In practice "IDLE" will not be displayed.
+	
+	if (configuration != nullptr)
+	{
+		if (key < App->input->GetMaxNumScancodes())
+		{
+			const char* key_name = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)key));			// Through the scancode it is possible to get a string with the name of the key.
+
+			sprintf_s(input, 128, "[KEY] %02u %s - %s\n", key, key_name, states[state]);
+		}
+		else
+		{
+			uint mouse_button = key - App->input->GetMaxNumScancodes();
+
+			sprintf_s(input, 128, "[MOUSE] %02u - %s\n", mouse_button, states[state]);
+		}
+
+		configuration->AddInputLog(input);
+	}
+}
+
+GameObject* M_Editor::GetRootGameObjectThroughEditor() const
+{
+	return App->scene->GetRootGameObject();
+}
+
+void M_Editor::SetRootGameObjectThroughEditor(GameObject* game_object)
+{
+	App->scene->SetRootGameObject(game_object);
+}
+
+GameObject* M_Editor::GetSelectedGameObjectThroughEditor() const
+{
+	return App->scene->GetSelectedGameObject();
+}
+
+void M_Editor::SetSelectedGameObjectThroughEditor(GameObject* game_object)
+{
+	App->scene->SetSelectedGameObject(game_object);
+}
+
+void M_Editor::DeleteSelectedGameObject()
+{
+	App->scene->DeleteSelectedGameObject();
+}
+
+void M_Editor::CreateGameObject(const char* name, GameObject* parent)
+{
+	App->scene->CreateGameObject(name, parent);
+}
+
 bool M_Editor::BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags)
 {
 	bool ret = true;
@@ -389,64 +466,4 @@ void M_Editor::BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNo
 		ImGuiID dckspace_id = ImGui::GetID(dockspace_id);
 		ImGui::DockSpace(dckspace_id, size, docking_flags);
 	}
-}
-
-bool M_Editor::RenderGuiPanels() const
-{
-	// Rendering all ImGui elements
-	ImGuiIO& io = ImGui::GetIO();
-	
-	ImGui::Render();
-	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-	glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-	//glClear(GL_COLOR_BUFFER_BIT);
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-	// Updating and rendering additional platform windows
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{	
-		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-
-		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
-	}
-
-	return true;
-}
-
-bool M_Editor::InitializeImGui() const
-{
-	bool ret = true;
-
-	// Setting up Dear ImGui's context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-
-	ImGuiIO& io = ImGui::GetIO();								// Needs to be called multiple times during a frame to update IO correctly.
-	(void)io;
-
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;		// Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;			// Enable MultiViewport / Platform Windows
-
-	//Setting up Dear ImGui's style.
-	ImGui::StyleColorsDark();
-
-	// Tweaking the platform windows to look identical to regular ones.
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
-
-	// Setting up Platfor/Renderer bindings
-	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->context);
-	ImGui_ImplOpenGL3_Init(0);
-
-	return ret;
 }

@@ -44,58 +44,59 @@ public:
 public:
 	bool			GetEvent(SDL_Event* event) const;								// Will return false if there was no event to read.
 
-	void			AddGuiPanel(E_Panel* panel);									//
+	void			AddGuiPanel(E_Panel* panel);									// Will add the E_Panel* passed as argument to the gui_panels vector.
 
-	void			EditorShortcuts();
-	void			CheckShowHideFlags();
+	void			EditorShortcuts();												// All the shortcuts related to the editor have been gathered here.
+	void			CheckShowHideFlags();											// Will check whether or not each of the panels must be enabled or disabled.
 
-	bool			RenderGuiPanels() const;										//
-	bool			InitializeImGui() const;
+	bool			RenderGuiPanels() const;										// Will call ImGui::Render() to render all the panels on the screen.
+	bool			InitializeImGui() const;										// Creates an ImGui Context and sets an initial configuration for it.
 
 public:																				// --- Panel/Window Methods. Acts as an interface between other modules and the panels. Avoids dependencies.
-	bool			GetShowWorldGrid() const;
-	bool			GetShowWorldAxis() const;
-	bool			GetShowPrimitiveExamples() const;
-	void			SetShowWorldGrid(bool set_to);
-	void			SetShowWorldAxis(bool set_to);
-	void			SetShowPrimitiveExamples(bool set_to);
+	bool			GetShowWorldGrid() const;										// Will return true if the World Grid is being currently shown.
+	bool			GetShowWorldAxis() const;										// Will return true if the World Axis is being currently shown.
+	bool			GetShowPrimitiveExamples() const;								// Will return true if the Primitive Examples are being currently shown.
+	void			SetShowWorldGrid(bool set_to);									// Will Enable or Disable the World Grid depending on the passed argument.
+	void			SetShowWorldAxis(bool set_to);									// Will Enable or Disable the depending on the passed argument.
+	void			SetShowPrimitiveExamples(bool set_to);							// Will Enable or Disable the depending on the passed argument.
 
-	void			UpdateFrameData(int frames, int ms);
+	// ------ MODULE-PANEL INTERFACE METHODS -------								// These methods have been created to avoid as many dependencies as possible.
+	void			UpdateFrameData(int frames, int ms);							// Configuration: Passing the received frame data to the configuration editor module.
+	void			AddInputLog(uint key, uint state);								// Configuration: Receives an input key and a state and passes a log to the configuration editor module.
 
-	void			AddConsoleLog(const char* log);
-	void			AddInputLog(uint key, uint state);
+	void			AddConsoleLog(const char* log);									// Console: Passing the received console log to the console editor module.
 
-	void			SetInspectedGameObject(GameObject* game_object);
-	GameObject*		GetInspectedGameObject() const;
-
-private:
-	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);
-	void BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNodeFlags docking_flags = ImGuiDockNodeFlags_None, ImVec2 size = { 0.0f, 0.0f });
-
-public:
-	std::vector<E_Panel*>	gui_panels;												//
-
-	E_Toolbar*				toolbar;												// 
-	E_EngineConfiguration*	configuration;											// 
-	E_Hierarchy*			hierarchy;												// 
-	E_Inspector*			inspector;												// 
-	E_Console*				console;												// 
-	E_ImGuiDemo*			imgui_demo;												// 
-	E_About*				about;													// 
-
-public:
-	ImVec4 clear_color;																//
-
-	bool show_configuration;														// 
-	bool show_hierarchy;															// 
-	bool show_inspector;															// 
-	bool show_console;																// 
-	bool show_imgui_demo;															// 
-	bool show_about_popup;															// 
-	bool show_close_app_popup;														// 
+	GameObject*		GetRootGameObjectThroughEditor() const;							// Hierarchy & inspector: Will return the current root GameObjcect.
+	void			SetRootGameObjectThroughEditor(GameObject* game_object);		// Hierarchy & inspector: Will set the scene's root GameObject with the one passed as argument.
+	GameObject*		GetSelectedGameObjectThroughEditor() const;						// Hierarchy & Inspector: Will return the currently selected GameObject.
+	void			SetSelectedGameObjectThroughEditor(GameObject* game_object);					// Hierarchy & Inspector: Will set the scene's selected GameObject with the one passed as argument.
+	void			DeleteSelectedGameObject();										// 
+	void			CreateGameObject(const char* name, GameObject* parent);			// 
 
 private:
-	int b;
+	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);							// Generates a root window for dock.
+	void BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNodeFlags docking_flags = ImGuiDockNodeFlags_None, ImVec2 size = { 0.0f, 0.0f });	// Generates a new dockspace.
+
+public:
+	std::vector<E_Panel*>	gui_panels;												// Will store all the editor modules. Will be iterated for drawing all the panels.
+
+	E_Toolbar*				toolbar; 
+	E_EngineConfiguration*	configuration;
+	E_Hierarchy*			hierarchy;
+	E_Inspector*			inspector;
+	E_Console*				console;
+	E_ImGuiDemo*			imgui_demo;
+	E_About*				about;
+
+	ImVec4					clear_color;											// Will be used to set the clear color of the rendering environment.
+
+	bool					show_configuration;										// Will keep track of whether or not to show the Configuration window.
+	bool					show_hierarchy;											// Will keep track of whether or not to show the Hierarchy window.
+	bool					show_inspector;											// Will keep track of whether or not to show the Inspector window.
+	bool					show_console;											// Will keep track of whether or not to show the Console window.
+	bool					show_imgui_demo;										// Will keep track of whether or not to show the ImGui Demo window.
+	bool					show_about_popup;										// Will keep track of whether or not to show the About window popup.
+	bool					show_close_app_popup;									// Will keep track of whether or not to show the Close App windowwindow.
 };
 
 #endif // !__M_EDITOR_H__
