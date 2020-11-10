@@ -25,7 +25,7 @@ public:
 
 public:
 	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
-	void			DeleteGameObject(GameObject* game_object);
+	void			DeleteGameObject(GameObject* game_object, uint index = -1);
 
 	bool			CreateGameObjectsFromModel(const char* path);
 	bool			GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes);

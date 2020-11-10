@@ -17,7 +17,8 @@ name("GameObject"),
 is_active(true),
 is_static(false),
 parent(nullptr),
-is_root_object(false)
+is_root_object(false),
+to_delete(false)
 {
 	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
 }
@@ -28,7 +29,8 @@ name(name),
 is_active(is_active),
 is_static(is_static),
 parent(nullptr),
-is_root_object(false)
+is_root_object(false),
+to_delete(false)
 {
 	if (name.empty())
 	{
@@ -86,6 +88,8 @@ void GameObject::FreeComponents()
 		components[i] = nullptr;
 	}
 
+	LOG("[STATUS] FREE COMPONENT CALL");
+
 	components.clear();
 }
 
@@ -100,14 +104,8 @@ void GameObject::FreeChilds()
 	{
 		if (childs[i] != nullptr)
 		{
-			childs[i]->CleanUp();											// Recursively cleaning up the the childs.
-
-			/*if (i < childs.size())
-			{
-				childs.erase(childs.begin() + i);
-			}*/
-			//delete childs[i];
-			//childs[i] = nullptr;
+			childs[i]->to_delete = true;									// Will set the children of the GameObject being deleted to be deleted too in M_Scene's game_objects vector.
+			//childs[i]->CleanUp();											// Recursively cleaning up the the childs.
 		}
 	}
 
@@ -144,11 +142,9 @@ bool GameObject::AddChild(GameObject* child)
 	}
 
 	C_Transform* child_transform = child->GetTransformComponent();
-	
 	child_transform->recalculate_global_transform = true;
 
 	child->parent = this;
-
 	childs.push_back(child);
 
 	return ret;

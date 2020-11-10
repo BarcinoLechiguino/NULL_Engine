@@ -83,6 +83,13 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 {
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
+		if (game_objects[i]->to_delete)
+		{
+			DeleteGameObject(game_objects[i], i);
+			
+			continue;
+		}
+		
 		if (game_objects[i]->IsActive())
 		{
 			game_objects[i]->Update();
@@ -161,17 +168,31 @@ GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 	return game_object;
 }
 
-void M_Scene::DeleteGameObject(GameObject* game_object)
+void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 {
+	if (selected_game_object == game_object)
+	{
+		selected_game_object = nullptr;
+	}
+	
 	if (!game_objects.empty() && game_object != nullptr)
 	{
-		for (uint i = 0; i < game_objects.size(); ++i)
+		if (index != -1)														// If an index was given.
 		{
-			if (game_objects[i] == game_object)
+			game_object->CleanUp();												// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
+			game_objects.erase(game_objects.begin() + index);					// Delete game object at index.
+			return;
+		}
+		else
+		{
+			for (uint i = 0; i < game_objects.size(); ++i)						// If no index was given.
 			{
-				game_objects.erase(game_objects.begin() + i);
-				game_object->CleanUp();
-				return;
+				if (game_objects[i] == game_object)								// Iterate game_objects until a match is found.
+				{
+					game_object->CleanUp();
+					game_objects.erase(game_objects.begin() + i);				// Delete the game_object at the current loop index.
+					return;
+				}
 			}
 		}
 
@@ -357,8 +378,11 @@ void M_Scene::SetSelectedGameObject(GameObject* game_object)
 
 void M_Scene::DeleteSelectedGameObject()
 {
-	DeleteGameObject(selected_game_object);
-	selected_game_object = nullptr;
+	if (selected_game_object != nullptr)
+	{
+		DeleteGameObject(selected_game_object);
+		//selected_game_object = nullptr;
+	}
 }
 
 /*bool M_Scene::NameHasDuplicate(const char* name)

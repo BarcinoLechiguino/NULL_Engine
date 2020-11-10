@@ -66,6 +66,7 @@ public:
 	C_Transform*				transform;												// Don't know what to do with this. Maybe keeping it like Unity? Or have it like the rest of components?
 
 	bool						is_root_object;											// Will be set to true if this GameObject is M_Scene's root_object.
+	bool						to_delete;												// Will determine whether or not this GameObject should be deleted. See M_Scene's DeleteGameObject().
 
 private:
 	uint						id;
