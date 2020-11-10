@@ -43,7 +43,7 @@ bool E_Console::CleanUp()
 
 void E_Console::AddLog(const char* log)
 {	
-	char* tmp = strdup(log);											// strdup() duplicates the log string. This is necessary so when log is modified the console strings remain the same.
+	char* tmp = _strdup(log);											// strdup() duplicates the log string. This is necessary so when log is modified the console strings remain the same.
 
 	logs.push_back(tmp);
 
@@ -91,7 +91,7 @@ void E_Console::ConsoleOutput()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
 
-	for (int i = 0; i < logs.size(); ++i)
+	for (uint i = 0; i < logs.size(); ++i)
 	{
 		ImVec4 text_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 

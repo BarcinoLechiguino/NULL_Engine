@@ -1,4 +1,4 @@
-#include "MathGeoLib/src/Math/float3.h"
+#include "MathGeoLib/include/Math/float3.h"
 
 #include "Application.h"
 #include "M_Editor.h"
@@ -74,7 +74,7 @@ void E_Inspector::DrawGameObjectInfo(GameObject* selected_game_object)
 	// --- GAME OBJECT'S NAME ---
 	ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
 	static char buffer[64];
-	strcpy(buffer, selected_game_object->GetName());
+	strcpy_s(buffer, selected_game_object->GetName());
 	if (ImGui::InputText("Name", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 		selected_game_object->SetName(buffer);

@@ -279,8 +279,8 @@ void M_Camera3D::PanCamera()
 	vec3 new_X(0, 0, 0);
 	vec3 new_Y(0, 0, 0);
 
-	int dx = App->input->GetMouseXMotion();
-	int dy = App->input->GetMouseYMotion();
+	float dx = (float)App->input->GetMouseXMotion();
+	float dy = (float)App->input->GetMouseYMotion();
 
 	if (dx != 0)
 	{
@@ -299,7 +299,7 @@ void M_Camera3D::PanCamera()
 
 void M_Camera3D::Zoom()
 {	
-	position -= Z * App->input->GetMouseZ() * zoom_speed * App->GetDt();						// The value is negated to make the zoom behave as it should (whl bck = bck / whl fwrd = fwrd).
+	position -= Z * (float)App->input->GetMouseZ() * zoom_speed * App->GetDt();				// The value is negated to make the zoom behave as it should (wheel bck = bck / wheel fwrd = fwrd).
 }
 
 // -----------------------------------------------------------------

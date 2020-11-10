@@ -4,9 +4,9 @@
 #include <vector>
 #include <string>
 
-#include "Globals.h"
+#include "parson/include/parson.h"
 
-#include "parson/parson.h"
+#include "Globals.h"
 
 class Configuration_Array;
 

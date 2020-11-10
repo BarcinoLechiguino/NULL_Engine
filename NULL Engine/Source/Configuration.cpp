@@ -83,6 +83,8 @@ Configuration_Array Configuration::GetArray(const char* name) const
 	{
 		return Configuration_Array(json_object_get_array(root_node, name));
 	}
+
+	return Configuration_Array();															// If an empty configuration array is returned then check that json_array == nullptr and size == 0.
 }
 
 Configuration Configuration::GetNode(const char* name) const
@@ -134,6 +136,8 @@ JSON_Value* Configuration::FindValue(const char* name, int index)
 			return json_array_get_value(json_array, index);
 		}
 	}
+
+	return nullptr;
 }
 
 uint Configuration::SerializeToBuffer(char** buffer)

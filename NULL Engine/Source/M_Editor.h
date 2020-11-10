@@ -1,7 +1,7 @@
 #ifndef __M_EDITOR_H__
 #define __M_EDITOR_H__
 
-#include "ImGui/imgui.h"
+#include "ImGui/include/imgui.h"
 #include "Module.h"
 
 class Configuration;

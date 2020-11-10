@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "Globals.h"
 
-#include "mmgr/mmgr.h"
+#include "mmgr/include/mmgr.h"
 
 #include "Dependencies/SDL/include/SDL.h"
 #include "Dependencies/Brofiler/include/Brofiler.h"

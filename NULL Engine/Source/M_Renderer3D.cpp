@@ -22,6 +22,9 @@
 
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
 
+#define WORLD_GRID_SIZE 200
+#define CHECKERS_WIDTH 64
+#define CHECKERS_HEIGHT 64
 
 M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), context()
 {

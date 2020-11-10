@@ -3,7 +3,7 @@
 
 #include "SDL/include/SDL_version.h"
 #include "SDL/include/SDL_cpuinfo.h"
-#include "gpudetect/includes/DeviceId.h"
+#include "gpudetect/include/DeviceId.h"
 
 #include "Globals.h"
 #include "OpenGL.h"
@@ -33,7 +33,7 @@ HardwareInfo::HardwareInfo()
 	// ------ GPU INFO ------
 	GPU.vendor								= 0;
 	GPU.device_id							= 0;
-	strcpy(GPU.brand, "NONE");
+	strcpy_s(GPU.brand, "NONE");
 
 	GPU.vram_mb_budget						= 0;
 	GPU.vram_mb_usage						= 0;
@@ -41,7 +41,7 @@ HardwareInfo::HardwareInfo()
 	GPU.vram_mb_reserved					= 0;
 
 	// ------ SDL INFO ------
-	strcpy(SDL.sdl_version, "0");
+	strcpy_s(SDL.sdl_version, "0");
 
 	// ------ OPENGL INFO ------
 	OpenGL.model_name						= nullptr;

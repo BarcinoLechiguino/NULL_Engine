@@ -1,6 +1,6 @@
 #include "ImGui.h"
 #include "OpenGL.h"
-#include "ImGui/imgui_internal.h"
+#include "ImGui/include/imgui_internal.h"
 
 #include "Application.h"
 #include "M_Window.h"

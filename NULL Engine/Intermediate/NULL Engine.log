@@ -1,8 +1,5 @@
-﻿  M_Input.cpp
-  M_Scene.cpp
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\I_Meshes.h(6,15): warning C4099: 'aiScene': type name first seen using 'class' now seen using 'struct'
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\M_Renderer3D.h(23): message : see declaration of 'aiScene'
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\I_Materials.h(4,15): warning C4099: 'aiScene': type name first seen using 'class' now seen using 'struct'
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\I_Meshes.h(6): message : see declaration of 'aiScene'
-  Generating Code...
+﻿  pcg_basic.c
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\PCG\include\pcg_basic.c(66,55): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\PCG\include\pcg_basic.c(64,1): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\PCG\include\pcg_basic.c(95,33): warning C4146: unary minus operator applied to unsigned type, result still unsigned
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

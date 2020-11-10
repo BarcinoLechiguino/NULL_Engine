@@ -2,8 +2,8 @@
 #define __C_TRANSFORM_H__
 
 #include "Component.h"
-#include "MathGeoLib/src/Math/float4x4.h"
-#include "MathGeoLib/src/Math/float3.h"
+#include "MathGeoLib/include/Math/float4x4.h"
+#include "MathGeoLib/include/Math/float3.h"
 
 class GameObject;
 

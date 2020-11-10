@@ -1,8 +1,8 @@
 #ifndef __M_RENDERER_3D_H__
 #define __M_RENDERER_3D_H__
 
-#include "MathGeoLib/src/Math/float4x4.h"
-#include "ImGui/imgui.h"														// REMOVE?
+#include "MathGeoLib/include/Math/float4x4.h"
+#include "ImGui/include/imgui.h"														// REMOVE?
 
 #include "Module.h"
 #include "Globals.h"
@@ -10,9 +10,6 @@
 #include "Light.h"
 
 #define MAX_LIGHTS 8
-#define WORLD_GRID_SIZE 200
-#define CHECKERS_WIDTH 64
-#define CHECKERS_HEIGHT 64
 
 class Configuration;
 class R_Mesh;
@@ -20,7 +17,8 @@ class R_Model;
 class GameObject;
 class Primitive;
 
-class aiScene;
+struct aiScene;
+
 typedef unsigned int GLenum;
 
 enum class RENDERER_FLAGS

@@ -545,7 +545,7 @@ void E_EngineConfiguration::AddInputLog(const char* log)
 {
 	if (log != nullptr)
 	{
-		char* tmp = strdup(log);
+		char* tmp = _strdup(log);
 		
 		input_logs.push_back(tmp);
 
