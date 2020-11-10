@@ -28,6 +28,9 @@ M_Input::M_Input(bool is_active) : Module("Input", is_active)
 	mouse_x_wheel	= 0;
 	mouse_y_wheel	= 0;
 
+	prev_x_mouse_pos = 0;
+	prev_y_mouse_pos = 0;
+
 	dropped_file_path = nullptr;
 }
 
@@ -217,6 +220,14 @@ UPDATE_STATUS M_Input::Update(float dt)
 	return UPDATE_STATUS::CONTINUE;
 }
 
+UPDATE_STATUS M_Input::PostUpdate(float dt)
+{
+	prev_x_mouse_pos = GetMouseX();										// Will update the previous mouse position with the current one.
+	prev_y_mouse_pos = GetMouseY();										// Placed in the PostUpdate() as the Camera controls are called in M_Camera3D's Update().
+
+	return UPDATE_STATUS::CONTINUE;
+}
+
 // Called before quitting
 bool M_Input::CleanUp()
 {
@@ -272,10 +283,20 @@ int M_Input::GetMouseZ() const
 
 int M_Input::GetMouseXMotion() const
 {
-	return mouse_x_motion;
+	return GetMouseX() - prev_x_mouse_pos;
 }
 
 int M_Input::GetMouseYMotion() const
+{
+	return GetMouseY() - prev_y_mouse_pos;
+}
+
+int M_Input::GetMouseXMotionFromSDL() const
+{
+	return mouse_x_motion;
+}
+
+int M_Input::GetMouseYMotionFromSDL() const
 {
 	return mouse_y_motion;
 }

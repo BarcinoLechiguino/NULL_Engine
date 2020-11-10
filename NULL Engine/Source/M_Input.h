@@ -26,6 +26,7 @@ public:
 	bool			Init(Configuration& config) override;
 	UPDATE_STATUS	PreUpdate(float dt) override;
 	UPDATE_STATUS	Update(float dt) override;
+	UPDATE_STATUS	PostUpdate(float dt) override;
 	bool			CleanUp() override;
 
 	bool			LoadConfiguration(Configuration& root) override;
@@ -41,6 +42,8 @@ public:
 	int				GetMouseZ() const;
 	int				GetMouseXMotion() const;
 	int				GetMouseYMotion() const;
+	int				GetMouseXMotionFromSDL() const;
+	int				GetMouseYMotionFromSDL() const;
 	int				GetMouseXWheel() const;
 	int				GetMouseYWheel() const;
 
@@ -59,6 +62,9 @@ private:
 	//int mouse_z_motion;
 	int mouse_x_wheel;
 	int mouse_y_wheel;
+
+	int prev_x_mouse_pos;
+	int prev_y_mouse_pos;
 
 	const char* dropped_file_path;
 };
