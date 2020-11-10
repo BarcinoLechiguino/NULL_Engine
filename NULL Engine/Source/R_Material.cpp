@@ -1,3 +1,5 @@
+#include "OpenGL.h"
+
 #include "R_Material.h"
 
 R_Material::R_Material() : Resource()
@@ -14,8 +16,9 @@ bool R_Material::CleanUp()
 {
 	bool ret = true;
 
-	// Free texture buffers.
-	// glDeleteTextures()
+	tex_data.path.clear();
+
+	glDeleteTextures(1, (GLuint*)&tex_data.id);													// Free texture buffers.
 
 	return ret;
 }
