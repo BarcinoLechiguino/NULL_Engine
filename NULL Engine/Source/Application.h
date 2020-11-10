@@ -5,8 +5,8 @@
 #include <string>
 
 #include "Globals.h"
-#include "Timer.h"
-#include "PerfectTimer.h"
+#include "T_Timer.h"
+#include "T_PerfectTimer.h"
 #include "Configuration.h"
 #include "HardwareInfo.h"
 
@@ -108,14 +108,14 @@ private:
 
 	// --- FRAMERATE
 	uint64					frame_count;								// Will keep track of the amount of frames that have been processed since application start.
-	Timer					startup_timer;								// Will keep track of the time that has elapsed since application start.
-	Timer					frame_timer;								// Will keep track of the amount of milliseconds that have elapsed since last frame. dt comes from here.
-	PerfectTimer			perf_timer;									// Will keep track of the time that different functions of Application take to process. High precision.
-	PerfectTimer			last_second_timer;							// Will keep track of whether or not a second has elapsed since last FPS check.
+	T_Timer					startup_timer;								// Will keep track of the time that has elapsed since application start.
+	T_Timer					frame_timer;								// Will keep track of the amount of milliseconds that have elapsed since last frame. dt comes from here.
+	T_PerfectTimer			perf_timer;									// Will keep track of the time that different functions of Application take to process. High precision.
+	T_PerfectTimer			last_second_timer;							// Will keep track of whether or not a second has elapsed since last FPS check.
 	uint32					frames_last_second;							// Will keep track of the amount of frames that have been processed in the last second.
 	uint32					prev_sec_frame_count;						// Will keep track of the frame count of the last second. Stores frames_last_second for an extra frame.
 
-	PerfectTimer			precise_delay_timer;						// Will keep track of the amount of time spent delaying the processing of the next frame.
+	T_PerfectTimer			precise_delay_timer;						// Will keep track of the amount of time spent delaying the processing of the next frame.
 	float					dt;											// Equivalent to the amount of milliseconds that have elapsed in a frame. Keeps everything in the same timestep.
 
 	// --- HARDWARE INFO

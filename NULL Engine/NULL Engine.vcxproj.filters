@@ -126,12 +126,6 @@
     <ClCompile Include="Source\Configuration.cpp">
       <Filter>SourceCode\6_Containers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\PerfectTimer.cpp">
-      <Filter>SourceCode\7_Tools\Timers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Timer.cpp">
-      <Filter>SourceCode\7_Tools\Timers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\M_Input.cpp">
       <Filter>SourceCode\1_Modules</Filter>
     </ClCompile>
@@ -357,6 +351,15 @@
     <ClCompile Include="Source\Dependencies\PCG\include\pcg_basic.c">
       <Filter>Dependencies\PCG</Filter>
     </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\T_Timer.cpp">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\T_PerfectTimer.cpp">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -394,12 +397,6 @@
     </ClInclude>
     <ClInclude Include="Source\Configuration.h">
       <Filter>SourceCode\6_Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PerfectTimer.h">
-      <Filter>SourceCode\7_Tools\Timers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Timer.h">
-      <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClInclude>
     <ClInclude Include="Source\ImGui.h">
       <Filter>SourceCode\7_Tools</Filter>
@@ -769,6 +766,15 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\PCG\include\pcg_basic.h">
       <Filter>Dependencies\PCG</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\T_Timer.h">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\T_PerfectTimer.h">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

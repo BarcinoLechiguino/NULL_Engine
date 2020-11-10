@@ -1,5 +1,32 @@
-﻿  pcg_basic.c
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\PCG\include\pcg_basic.c(66,55): warning C4146: unary minus operator applied to unsigned type, result still unsigned
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\PCG\include\pcg_basic.c(64,1): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
-C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\PCG\include\pcg_basic.c(95,33): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+﻿  Application.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\SDL\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
+  C_Mesh.cpp
+  E_About.cpp
+  E_EngineConfiguration.cpp
+  E_Console.cpp
+  E_Hierarchy.cpp
+  E_Inspector.cpp
+  E_ImGuiDemo.cpp
+  E_Toolbar.cpp
+  GameObject.cpp
+  I_Materials.cpp
+  I_Meshes.cpp
+  Log.cpp
+  M_Editor.cpp
+  Main.cpp
+  M_Camera3D.cpp
+  M_Input.cpp
+  M_Renderer3D.cpp
+  M_Scene.cpp
+  M_Window.cpp
+  Generating Code...
+  Compiling...
+  M_FileSystem.cpp
+  The contents of <filesystem> are available only with C++17 or later.
+  Primitive.cpp
+  R_Model.cpp
+  T_Timer.cpp
+  Time.cpp
+  Generating Code...
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe
