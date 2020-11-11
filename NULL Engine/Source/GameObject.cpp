@@ -142,7 +142,7 @@ bool GameObject::AddChild(GameObject* child)
 	}
 
 	C_Transform* child_transform = child->GetTransformComponent();
-	child_transform->recalculate_global_transform = true;
+	child_transform->update_world_transform = true;
 
 	child->parent = this;
 	childs.push_back(child);

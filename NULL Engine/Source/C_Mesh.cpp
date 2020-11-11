@@ -82,7 +82,7 @@ bool C_Mesh::Render()
 	{
 		if (mesh != nullptr)
 		{
-			App->renderer->RenderMesh(transform->matrix, mesh, tex_id, tex_is_active);
+			App->renderer->RenderMesh(transform->world_transform, mesh, tex_id, tex_is_active);
 		}
 	}
 
