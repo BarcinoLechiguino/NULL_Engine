@@ -1,7 +1,2 @@
-﻿  C_Mesh.cpp
-  C_Transform.cpp
-  E_Inspector.cpp
-  GameObject.cpp
-  M_Renderer3D.cpp
-  Generating Code...
+﻿  M_Renderer3D.cpp
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

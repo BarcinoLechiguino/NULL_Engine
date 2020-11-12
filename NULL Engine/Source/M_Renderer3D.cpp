@@ -17,6 +17,8 @@
 
 #include "M_Renderer3D.h"
 
+#include "mmgr/include/mmgr.h"
+
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
@@ -106,16 +108,6 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 	{
 		DrawWorldAxis();
 	}
-	
-	for (uint i = 0; i < models.size(); ++i)
-	{
-		models[i]->Draw();
-
-		if (show_normals)
-		{
-			models[i]->DrawNormals();
-		}
-	}
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -139,7 +131,13 @@ bool M_Renderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
-	models.clear();
+	for (uint i = 0; i < primitives.size(); ++i)
+	{
+		delete primitives[i];
+		primitives[i] = nullptr;
+	}
+	
+	primitives.clear();
 
 	Importer::Materials::DevIL::CleanUp();
 
@@ -396,7 +394,7 @@ void M_Renderer3D::CreatePrimitiveExamples()
 	primitives.push_back(pyramid);
 }
 
-void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
+/*void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
 {
 	R_Model* model = new R_Model(file_path, mat_colour);
 
@@ -414,7 +412,7 @@ void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
 	}
 
 	models.push_back(model);
-}
+}*/
 
 void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 {

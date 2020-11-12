@@ -11,6 +11,8 @@
 
 #include "I_Meshes.h"
 
+#include "mmgr/include/mmgr.h"
+
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
 
 using namespace Importer::Meshes;																	// Not a good thing to do but it will be employed sparsely and only inside this .cpp

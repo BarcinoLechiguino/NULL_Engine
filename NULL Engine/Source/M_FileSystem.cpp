@@ -418,7 +418,7 @@ uint M_FileSystem::Load(const char* file, char** buffer) const
 
 			if (amount_read != size)
 			{
-				LOG(" [ERROR] File Syste, error while reading from file %s: %s\n", file, PHYSFS_getLastError());
+				LOG(" [ERROR] File System, error while reading from file %s: %s\n", file, PHYSFS_getLastError());
 				RELEASE_ARRAY(buffer);
 			}
 			else

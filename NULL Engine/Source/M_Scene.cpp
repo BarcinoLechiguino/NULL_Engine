@@ -19,6 +19,8 @@
 
 #include "M_Scene.h"
 
+#include "mmgr/include/mmgr.h"
+
 M_Scene::M_Scene(bool is_active) : Module("SceneManager", is_active),
 root_object(nullptr),
 selected_game_object(nullptr)
@@ -85,8 +87,7 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 	{
 		if (game_objects[i]->to_delete)
 		{
-			DeleteGameObject(game_objects[i], i);
-			
+			DeleteGameObject(game_objects[i], i);	
 			continue;
 		}
 		
@@ -111,6 +112,7 @@ bool M_Scene::CleanUp()
 
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
+		game_objects[i]->CleanUp();
 		RELEASE(game_objects[i]);
 	}
 

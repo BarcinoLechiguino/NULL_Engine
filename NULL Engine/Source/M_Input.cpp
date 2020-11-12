@@ -182,19 +182,22 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 				{
 					norm_path = norm_path.substr(directory_path_start, directory_path_end);
 
-					if (App->file_system->GetFileExtension(dropped_file_path) == "FBX"							// If the file extension is .fbx or .FBX, then it is a model.
-						|| App->file_system->GetFileExtension(dropped_file_path) == "fbx")
+					std::string extension = App->file_system->GetFileExtension(dropped_file_path);
+
+					if (extension == "fbx" || extension == "FBX"												// If the file extension is .fbx or .FBX, then it is a model.
+						|| extension == "obj" || extension == "OBJ")
 					{
 						App->scene->CreateGameObjectsFromModel(norm_path.c_str());
 					}
 
-					if (App->file_system->GetFileExtension(dropped_file_path) == "png"							// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.
-						|| App->file_system->GetFileExtension(dropped_file_path) == "PNG"
-						|| App->file_system->GetFileExtension(dropped_file_path) == "dds"
-						|| App->file_system->GetFileExtension(dropped_file_path) == "DDS")
+					if (extension == "png" || extension == "PNG"												// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.
+						|| extension == "tga" || extension == "TGA"
+						|| extension == "dds" || extension == "DDS")
 					{
 						App->scene->ApplyNewTextureToSelectedGameObject(norm_path.c_str());
 					}
+
+					extension.clear();
 				}
 				else
 				{

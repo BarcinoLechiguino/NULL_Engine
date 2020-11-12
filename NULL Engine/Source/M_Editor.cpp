@@ -20,6 +20,8 @@
 
 #include "M_Editor.h"
 
+#include "mmgr/include/mmgr.h"
+
 #pragma comment (lib, "Source/Dependencies/glew/libx86/glew32.lib")
 
 M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),

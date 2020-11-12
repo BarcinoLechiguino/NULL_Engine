@@ -14,6 +14,8 @@
 
 #include "I_Materials.h"
 
+#include "mmgr/include/mmgr.h"
+
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/DevIL.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILU.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILUT.lib")
@@ -84,16 +86,19 @@ bool Importer::Materials::DevIL::Import(const char* path, R_Material* r_material
 		{
 			ILenum type = IL_TYPE_UNKNOWN;														// When type is IL_TYPE_UNKNOWN, it tells DevIL to try to determine the type on its own.
 			
-			if (App->file_system->GetFileExtension(path) == "png"								// Checking for the .png extension. Also checking caps just in case.
-				|| App->file_system->GetFileExtension(path) == "PNG")
+			std::string extension = App->file_system->GetFileExtension(path);
+			
+			if (extension == "png" || extension == "PNG")										// Checking for the .png extension. Also checking caps just in case.
 			{
 				type = IL_PNG;																	// Changing the type to IL_PNG so it tells DevIL that it is loading a .png file.
-			}
-			
-			if (App->file_system->GetFileExtension(path) == "dds"								// Checking for the .dds extension. Also checking caps just in case.
-				|| App->file_system->GetFileExtension(path) == "DDS")
+			}																					
+			else if (extension == "dds" || extension == "DDS")									// Checking for the .dds extension. Also checking caps just in case.
 			{
 				type = IL_DDS;																	// Changing the type to IL_DDS so it tells DevIL that it is loading a .dds file.
+			}
+			else if (extension == "tga" || extension == "TGA")
+			{																					
+				type = IL_TGA;
 			}
 			
 			bool success = ilLoadL(type, (const void*)data, file_size);							// ilLoadL() loads an image from buffer data. If size = 0 then then no bounds-checking is done.
