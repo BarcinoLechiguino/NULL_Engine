@@ -30,7 +30,7 @@ public:
 	void			FreeChilds();
 
 	bool			AddChild(GameObject* child);										// Adds the given child to the GO's childs vector. Also deletes it from the previous parent's childs.
-	bool			NewParentIsOwnChild(GameObject* child);								// Rets. true if the passed child is being added as a child of one of it's children or ch of chs.
+	bool			NewChildIsOwnParent(GameObject* child);								// Rets. true if the passed child is being added as a child of one of it's children or ch of chs.
 	bool			DeleteChild(GameObject* child);										// Deletes the given child from the childs vector. Returns false upon not finding the child.
 	
 	Component*		CreateComponent(COMPONENT_TYPE type);								// Creates a component of the given type and adds it to the components vector.

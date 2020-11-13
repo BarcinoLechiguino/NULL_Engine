@@ -20,8 +20,8 @@ using namespace Importer::Meshes;																	// Not a good thing to do but 
 uint64 Importer::Meshes::Save(const R_Mesh* mesh, char** buffer)
 {
 	uint64 buffer_size = 0;
-	
 
+	aiNode* node = nullptr;
 
 	return buffer_size;
 }

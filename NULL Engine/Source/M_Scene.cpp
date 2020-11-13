@@ -1,3 +1,5 @@
+#include "Brofiler/include/Brofiler.h"
+
 #include "Globals.h"
 #include "Application.h"
 #include "M_Window.h"
@@ -14,6 +16,7 @@
 
 #include "GameObject.h"
 #include "Component.h"
+#include "C_Transform.h"
 #include "C_Mesh.h"
 #include "C_Material.h"
 
@@ -83,6 +86,8 @@ UPDATE_STATUS M_Scene::Update(float dt)
 
 UPDATE_STATUS M_Scene::PostUpdate(float dt)
 {
+	BROFILER_CATEGORY("M_Scene PostUpdate", Profiler::Color::Yellow)
+	
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
 		if (game_objects[i]->to_delete)
@@ -204,6 +209,8 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 
 bool M_Scene::CreateGameObjectsFromModel(const char* path)
 {
+	BROFILER_CATEGORY("CreateGameObjectsFromModel()", Profiler::Color::LawnGreen)
+
 	bool ret = false;
 
 	std::string file				= path;															// Getting the file name and the game_object's name.
@@ -307,6 +314,8 @@ bool M_Scene::GenerateGameObjectComponents(const char* path, std::string file_na
 
 bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 {
+	BROFILER_CATEGORY("ApplyNewTextureToSelectedGameObject()", Profiler::Color::Magenta)
+	
 	bool ret = true;
 
 	if (selected_game_object != nullptr)

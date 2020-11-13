@@ -454,8 +454,11 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 	
 	//glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	glMultMatrixf((float*)&transform);
-	
+	glMultMatrixf((GLfloat*)&transform.Transposed());
+	//glTranslatef(transform.TranslatePart().x, transform.TranslatePart().y, transform.TranslatePart().z);
+	//glRotatef(0.0f, 0.0f, 0.0f, 0.0f);
+	//glScalef(1.0f, 1.0f, 1.0f);
+
 	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
 

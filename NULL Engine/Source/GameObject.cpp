@@ -123,12 +123,14 @@ bool GameObject::AddChild(GameObject* child)
 		return false;
 	}
 	
-	if (NewParentIsOwnChild(child))
+	if (NewChildIsOwnParent(child))
 	{
 		for (uint i = 0; i < child->childs.size(); ++i)				// Iterating all the childs of the child.
 		{
 			child->parent->AddChild(child->childs[i]);				// Re-setting the parent of the childs to the parent of the passed child (root->GO->childs => root->childs->GO)
 		}
+
+		child->childs.clear();
 	}
 
 	if (child->parent != nullptr)
@@ -142,7 +144,7 @@ bool GameObject::AddChild(GameObject* child)
 	}
 
 	C_Transform* child_transform = child->GetTransformComponent();
-	child_transform->update_world_transform = true;
+	child_transform->update_local_transform = true;
 
 	child->parent = this;
 	childs.push_back(child);
@@ -150,23 +152,23 @@ bool GameObject::AddChild(GameObject* child)
 	return ret;
 }
 
-bool GameObject::NewParentIsOwnChild(GameObject* child)
+bool GameObject::NewChildIsOwnParent(GameObject* child)
 {
 	bool ret = false;
 
-	GameObject* par = this->parent;											// Will set the parent of this object as the starting point of the search.
+	GameObject* parent_item = this->parent;									// Will set the parent of this object as the starting point of the search.
 	
-	if (par != nullptr)														// Will check if the child is the parent or parent of the parents of the one who called AddChild()
+	if (parent_item != nullptr)												// Will check if the child is the parent or parent of the parents of the one who called AddChild()
 	{
-		while (!par->is_root_object)										// Iterate back up to the root object, as it is the parent of everything in the scene.
+		while (!parent_item->is_root_object)								// Iterate back up to the root object, as it is the parent of everything in the scene.
 		{
-			if (par == child)												// Child is the parent of one of the parent objects of this object (the one which called AddChild())
+			if (parent_item == child)										// Child is the parent of one of the parent objects of this object (the one which called AddChild())
 			{
 				ret = true;													// A parent of this object that had the passed child as the parent has been found.
 				break;
 			}
 
-			par = par->parent;												// Setting the next parent GameObject to iterate.
+			parent_item = parent_item->parent;								// Setting the next parent GameObject to iterate.
 		}
 	}
 

@@ -158,11 +158,13 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 
 			ImGui::SameLine(100.0f);
 
-			float3 position = transform->GetPosition();
+			float3 position = transform->GetWorldPosition();
 			float pos[3] = { position.x, position.y, position.z };
 			if (ImGui::DragFloat3("P", pos, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
 			{
 				transform->SetPosition(float3(pos[0], pos[1], pos[2]));
+
+				//transform->Translate(float3(pos[0], pos[1], pos[2]) - position);
 				//transform->Translate(float3(0.00001f, 0.0f, 0.0f));
 			}
 
@@ -171,11 +173,11 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 
 			ImGui::SameLine(100.0f);
 
-			float3 rotation = transform->GetRotation();
+			float3 rotation = transform->GetWorldRotation() * RADTODEG;
 			float rot[3] = { rotation.x, rotation.y, rotation.z };
-			if (ImGui::DragFloat3("R", rot, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+			if (ImGui::DragFloat3("R", rot, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
 			{
-				transform->SetRotation(float3(rot[0], rot[1], rot[2]));
+				transform->SetRotation(float3(rot[0], rot[1], rot[2]) * DEGTORAD);
 			}
 
 			// --- SCALE ---
@@ -183,7 +185,7 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 
 			ImGui::SameLine(100.0f);
 
-			float3 scale = transform->GetScale();
+			float3 scale = transform->GetWorldScale();
 			float scl[3] = { scale.x, scale.y, scale.z };
 			if (ImGui::DragFloat3("S", scl, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
 			{
