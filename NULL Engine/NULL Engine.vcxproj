@@ -214,6 +214,7 @@
     <ClInclude Include="Source\I_Materials.h" />
     <ClInclude Include="Source\I_Meshes.h" />
     <ClInclude Include="Source\Log.h" />
+    <ClInclude Include="Source\MathStructures.h" />
     <ClInclude Include="Source\MemoryManager.h" />
     <ClInclude Include="Source\M_Editor.h" />
     <ClInclude Include="Source\glmath.h" />

@@ -1,6 +1,8 @@
 #ifndef __I_MATERIALS_H__
 #define __I_MATERIALS_H__
 
+#include "VarTypedefs.h"
+
 struct aiScene;
 struct aiMaterial;
 

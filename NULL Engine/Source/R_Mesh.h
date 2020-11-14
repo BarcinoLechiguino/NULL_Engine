@@ -35,6 +35,9 @@ public:
 	bool						draw_normals;
 	std::string					path;
 
+	// Add a transform here?
+
+
 private:
 
 };

@@ -21,6 +21,8 @@ private:
 
 	void HierarchyToolsPopup();										// Will generate a modal window with the hierarchy tools in it.
 
+	bool NodeIsRootObject(GameObject* node);
+
 private:
 	ImGuiTreeNodeFlags	default_flags;								// Will define the base configuration of the tree nodes.
 	GameObject*			dragged_game_object;						// Used for the dragging and dropping of game objects withing the hierarchy.

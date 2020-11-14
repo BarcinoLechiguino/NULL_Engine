@@ -791,6 +791,9 @@
     <ClInclude Include="Source\VarTypedefs.h">
       <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Source\MathStructures.h">
+      <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Configuration\configuration.JSON">

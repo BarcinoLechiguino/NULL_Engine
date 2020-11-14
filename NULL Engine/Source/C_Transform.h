@@ -1,18 +1,18 @@
 #ifndef __C_TRANSFORM_H__
 #define __C_TRANSFORM_H__
 
+#include "MathStructures.h"
+
 #include "Component.h"
-#include "MathGeoLib/include/Math/float4x4.h"
-#include "MathGeoLib/include/Math/float3.h"
 
 class GameObject;
 
-struct Transform											// Maybe use this struct instead of having 3 separate variables? Would be useful to optimize glPushMatrix()/glPopMatrix() calls.
-{
-	float3 postion;
-	float3 rotation;
-	float3 scale;
-};
+//struct Transform											// Maybe use this struct instead of having 3 separate variables? Would be useful to optimize glPushMatrix()/glPopMatrix() calls.
+//{
+//	float3 postion;
+//	float3 rotation;
+//	float3 scale;
+//};
 
 class C_Transform : public Component
 {
@@ -24,8 +24,8 @@ public:
 	bool CleanUp() override;
 
 public:																// --------------------------------------------------------- TRANSFORM METHODS
-	void		UpdateLocalTransform();								// Update, change, refresh, recalculate
-	void		UpdateWorldTransform();								// Using glLoadIdentiy() along with glTranslate() glRotate() glScale() is faster than using glLoadMatrix and glMultMatrix().
+	void		UpdateLocalTransform();								// Updates the local_transform matrix.
+	void		UpdateWorldTransform();								// Updates the world_transform matrix.
 
 	float4x4	GetLocalTransform() const;							// Returns the local transform.
 	float4x4	GetWorldTransform() const;							// Returns the world transform.

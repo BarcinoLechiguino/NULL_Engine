@@ -3,11 +3,23 @@
 
 #include <vector>
 
+#include "Assimp/include/vector3.h"
+#include "Assimp/include/quaternion.h"
+
+#include "VarTypedefs.h"
+
 struct aiScene;
 struct aiNode;
 struct aiMesh;
 
 class R_Mesh;
+
+struct aiTransform
+{
+	aiVector3D		position;
+	aiQuaternion	rotation;
+	aiVector3D		scale;
+};
 
 namespace Importer
 {

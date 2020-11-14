@@ -82,36 +82,39 @@ void E_Hierarchy::ProcessGameObject(GameObject* game_object)
 
 	if (ImGui::TreeNodeEx(game_object->GetName(), node_flags))
 	{
-		if (ImGui::IsItemClicked(ImGuiMouseButton_Left))								// IsItemClicked checks if the previous item was clicked. Arguments: 0 (Right Click), 1 (Left Click).
+		if (!NodeIsRootObject(game_object))													// If the game_object being processed is the root object, do not allow any interaction.
 		{
-			App->editor->SetSelectedGameObjectThroughEditor(game_object);
-		}
-
-		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
-		{
-			App->editor->SetSelectedGameObjectThroughEditor(game_object);
-			open_hierarchy_tools_popup = true;
-		}
-
-		if (ImGui::BeginDragDropSource())												// First, it is checked whether or not this node is part of a currently starting drag&drop operation.
-		{
-			ImGui::SetDragDropPayload("DRAGGED_NODE", game_object, sizeof(GameObject));	// Here the payload is being constructed. It can be later identified through the given string.
-			ImGui::Text("Dragging %s", game_object->GetName());							// This specific text, as it is within the DragDropSource, will accompany the dragged node.
-			dragged_game_object = game_object;											// The game object that will be dragged needs to be saved to be later re-integrated into the hierarchy.
-
-			ImGui::EndDragDropSource();
-		}
-
-		if (ImGui::BeginDragDropTarget())												// Here it is checked whether or not an element is being dropped into this specific node/item.
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAGGED_NODE"))	// First, the payload that is being dropped needs to be checked to make sure its the correct one.
-			{	
-				game_object->AddChild(dragged_game_object);								// (GameObject*)payload->Data would also work. However, it easily breaks, at least in my case.
-
-				dragged_game_object = nullptr;
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Left))								// IsItemClicked checks if the previous item was clicked. Arguments: 0 (Right Click), 1 (Left Click).
+			{
+				App->editor->SetSelectedGameObjectThroughEditor(game_object);
 			}
-			
-			ImGui::EndDragDropTarget();
+
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+			{
+				App->editor->SetSelectedGameObjectThroughEditor(game_object);
+				open_hierarchy_tools_popup = true;
+			}
+
+			if (ImGui::BeginDragDropSource())												// First, it is checked whether or not this node is part of a currently starting drag&drop operation.
+			{
+				ImGui::SetDragDropPayload("DRAGGED_NODE", game_object, sizeof(GameObject));	// Here the payload is being constructed. It can be later identified through the given string.
+				ImGui::Text("Dragging %s", game_object->GetName());							// This specific text, as it is within the DragDropSource, will accompany the dragged node.
+				dragged_game_object = game_object;											// The game object that will be dragged needs to be saved to be later re-integrated into the hierarchy.
+
+				ImGui::EndDragDropSource();
+			}
+
+			if (ImGui::BeginDragDropTarget())												// Here it is checked whether or not an element is being dropped into this specific node/item.
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAGGED_NODE"))	// First, the payload that is being dropped needs to be checked to make sure its the correct one.
+				{
+					game_object->AddChild(dragged_game_object);								// (GameObject*)payload->Data would also work. However, it easily breaks, at least in my case.
+
+					dragged_game_object = nullptr;
+				}
+
+				ImGui::EndDragDropTarget();
+			}
 		}
 
 		if (!game_object->childs.empty())
@@ -159,4 +162,9 @@ void E_Hierarchy::HierarchyToolsPopup()
 	{
 		open_hierarchy_tools_popup = false;
 	}
+}
+
+bool E_Hierarchy::NodeIsRootObject(GameObject* node)
+{
+	return node == App->editor->GetRootGameObjectThroughEditor();
 }

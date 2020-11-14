@@ -66,6 +66,8 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 
 			Utilities::GenerateMesh(scene, ai_mesh, r_mesh);										// Sets the given r_mesh with the data stored in ai_mesh.
 
+			/*node->mTransformation.Decompose()*/
+
 			if (r_mesh != nullptr)																	// Checks that the R_Mesh* is valid/stores data.
 			{
 				meshes.push_back(r_mesh);															// Adds the R_Mesh* to the given meshes vector.

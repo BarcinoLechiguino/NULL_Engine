@@ -1,4 +1,5 @@
 #include "Profiler.h"
+#include "MathStructures.h"
 
 #include "Application.h"														// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
@@ -219,9 +220,13 @@ bool M_Scene::CreateGameObjectsFromModel(const char* path)
 
 	
 	std::vector<R_Mesh*> meshes;
+	//std::map<R_Mesh*, Transform> meshes;
+
 	Importer::Meshes::Import(path, meshes);															// Importing the model from the given path. The meshes will be returned in the vector.
 
 	ret = GenerateGameObjectsFromMeshes(path, file, meshes);
+
+	meshes.clear();
 
 	return ret;
 }

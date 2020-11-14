@@ -1,5 +1,5 @@
-#include "MathGeoLib/include/Math/TransformOps.h"
-#include "MathGeoLib/include/Math/Quat.h"
+#include "Application.h"
+#include "E_Scene.h"
 
 #include "GameObject.h"
 
@@ -12,7 +12,8 @@ local_position(float3::zero),
 local_rotation(float3::zero),
 local_scale(float3::one),
 update_local_transform(true),
-update_world_transform(false)
+update_world_transform(false),
+update_childs(false)
 {	
 	if (owner == nullptr)															// Safety check in case an ownerless transform is created.
 	{
@@ -20,6 +21,9 @@ update_world_transform(false)
 	}
 	else
 	{
+		//UpdateLocalTransform();
+		//UpdateWorldTransform();
+		
 		/*if (owner->parent != nullptr)
 		{
 			C_Transform* parent = owner->parent->GetTransformComponent();
@@ -45,7 +49,7 @@ C_Transform::~C_Transform()
 bool C_Transform::Update()
 {
 	bool ret = true;
-
+	
 	if (update_local_transform)										//Skip updating static elements. Truly static elements will not vary in any way, neither position, rotation or scale.
 	{
 		UpdateLocalTransform();
@@ -262,8 +266,12 @@ void C_Transform::Rotate(const float3& rotation, const bool& is_local)
 	}
 	else
 	{
+		Quat X_rotation = Quat::RotateX(rotation.x);
+		Quat Y_rotation = Quat::RotateY(rotation.y);
+		Quat Z_rotation = Quat::RotateZ(rotation.z);
 		
-		
+		world_transform = world_transform * X_rotation * Y_rotation * Z_rotation;
+
 		update_local_transform = true;
 	}
 }
@@ -272,13 +280,14 @@ void C_Transform::Scale(const float3& scale, const bool& is_local)
 {
 	if (is_local)
 	{
-		local_scale += scale;
+		local_transform.Scale(scale);
+		local_scale = local_transform.GetScale();
 
 		update_world_transform = true;
 	}
 	else
 	{
-
+		world_transform.Scale(scale);
 
 		update_local_transform = true;
 	}

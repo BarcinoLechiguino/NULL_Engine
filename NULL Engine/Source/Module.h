@@ -10,6 +10,7 @@
 #include "SDL/include/SDL.h"
 
 #include <vector>
+#include <map>
 #include <string>
 
 #include "Globals.h"
