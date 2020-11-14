@@ -1,8 +1,9 @@
+#include "Profiler.h"
 #include "Assimp.h"
 #include "OpenGL.h"
+#include "ImGui.h"
 
-#include "Globals.h"
-#include "Application.h"
+#include "Application.h"																		// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
 #include "M_Camera3D.h"
 #include "M_Input.h"
@@ -17,7 +18,7 @@
 
 #include "M_Renderer3D.h"
 
-#include "mmgr/include/mmgr.h"
+#include "MemoryManager.h"
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
@@ -53,19 +54,15 @@ bool M_Renderer3D::Init(Configuration& config)
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
 
-	ret = InitOpenGL();															// Initializing OpenGL. (Context and initial configuration)
+	ret = InitOpenGL();																			// Initializing OpenGL. (Context and initial configuration)
 
-	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);										// Projection matrix recalculation to keep up with the resizing of the window.
+	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);														// Projection matrix recalculation to keep up with the resizing of the window.
 
-	InitGlew();																	// Initializing Glew.
+	InitGlew();																					// Initializing Glew.
 
-	Importer::Materials::DevIL::Init();											// Initializing DevIL.
+	Importer::Materials::DevIL::Init();															// Initializing DevIL.
 	
-	CreatePrimitiveExamples();													// Adding one of each available primitice to the primitives vector for later display.
-
-	//LoadModel("Assets/Models/teapot/teapot.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
-	//LoadModel("Assets/Models/cube/small_cube.FBX", vec4(0.0f, 1.0f, 1.0f, 1.0f));
-	//LoadModel("Assets/Models/baker_house/BakerHouse.FBX");
+	CreatePrimitiveExamples();																	// Adding one of each available primitice to the primitives vector for later display.
 
 	LoadDebugTexture();
 
@@ -99,6 +96,8 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 {	
+	BROFILER_CATEGORY("M_Renderer3D PostUpdate", Profiler::Color::Chartreuse);
+	
 	if (draw_world_grid)
 	{
 		DrawWorldGrid(WORLD_GRID_SIZE);
@@ -195,7 +194,7 @@ bool M_Renderer3D::InitOpenGL()
 			}
 			else
 			{
-				LOG("[STATUS] Vsync is deactivated!")
+				LOG("[STATUS] Vsync is deactivated!");
 			}
 		}
 

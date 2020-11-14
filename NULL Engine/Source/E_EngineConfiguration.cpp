@@ -10,7 +10,7 @@
 
 #include "E_EngineConfiguration.h"
 
-#define MAX_INPUT_LOG_SIZE 100000
+#define MAX_INPUT_LOG_SIZE 10000
 
 E_EngineConfiguration::E_EngineConfiguration() : E_Panel("Configuration")
 {

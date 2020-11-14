@@ -1,8 +1,9 @@
+#include "Profiler.h"
+#include "OpenGL.h"																	// ATTENTION: It was included AFTER ImGui.h
 #include "ImGui.h"
-#include "OpenGL.h"
 #include "ImGui/include/imgui_internal.h"
 
-#include "Application.h"
+#include "Application.h"															// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
@@ -20,7 +21,7 @@
 
 #include "M_Editor.h"
 
-#include "mmgr/include/mmgr.h"
+#include "MemoryManager.h"
 
 #pragma comment (lib, "Source/Dependencies/glew/libx86/glew32.lib")
 
@@ -99,6 +100,8 @@ UPDATE_STATUS M_Editor::Update(float dt)
 
 UPDATE_STATUS M_Editor::PostUpdate(float dt)
 {
+	BROFILER_CATEGORY("Editor PostUpdate", Profiler::Color::IndianRed);
+	
 	UPDATE_STATUS ret = UPDATE_STATUS::CONTINUE;
 	
 	ImGuiIO& io = ImGui::GetIO();

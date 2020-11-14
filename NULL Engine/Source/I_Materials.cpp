@@ -6,15 +6,15 @@
 #include "OpenGL.h"
 #include "Assimp.h"
 #include "DevIL.h"
+#include "Log.h"
 
-#include "Globals.h"
 #include "Application.h"
 #include "M_FileSystem.h"
 #include "R_Material.h"
 
 #include "I_Materials.h"
 
-#include "mmgr/include/mmgr.h"
+#include "MemoryManager.h"
 
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/DevIL.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILU.lib")
@@ -145,7 +145,7 @@ bool Importer::Materials::DevIL::Import(const char* path, R_Material* r_material
 		}
 		else
 		{
-			LOG("[ERROR] The loaded file size was %u! Path: %s", path)
+			LOG("[ERROR] The loaded file size was %u! Path: %s", path);
 			ilDeleteImages(1, &tex_buffer);
 			ret = false;
 		}

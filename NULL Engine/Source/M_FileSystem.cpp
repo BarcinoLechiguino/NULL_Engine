@@ -3,8 +3,7 @@
 
 #include "PhysFS/include/physfs.h"
 
-#include "Application.h"
-#include "Globals.h"
+#include "Application.h"																	// ATTENTION: Globals.h already included in Module.h
 #include "PathNode.h"
 
 #include "M_FileSystem.h"
@@ -37,7 +36,7 @@ M_FileSystem::~M_FileSystem()
 
 bool M_FileSystem::Init(Configuration& config)
 {
-	LOG("Loading File System")
+	LOG("Loading File System");
 	
 	bool ret = true;
 

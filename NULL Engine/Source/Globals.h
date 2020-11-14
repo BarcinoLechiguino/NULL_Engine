@@ -8,6 +8,9 @@
 #include <windows.h>
 #include <stdio.h>
 
+#include "Log.h"
+#include "VarTypedefs.h"
+
 // Defining NULL just in case
 #ifdef NULL
 #undef NULL
@@ -16,9 +19,8 @@
 #define NULL 0
 
 // Log macros
-#define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
-
-void log(const char file[], int line, const char* format, ...);
+//#define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
+//void log(const char file[], int line, const char* format, ...);
 
 // Performance macros
 #define TIMER_START(timer) timer.Start();
@@ -55,10 +57,10 @@ void log(const char file[], int line, const char* format, ...);
 #define HUGE_STRING		10240
 
 // Type Definitions
-typedef unsigned char uchar;
-typedef unsigned int uint;
-typedef unsigned __int32 uint32;
-typedef unsigned __int64 uint64;
+//typedef unsigned char uchar;
+//typedef unsigned int uint;
+//typedef unsigned __int32 uint32;
+//typedef unsigned __int64 uint64;
 
 
 enum class UPDATE_STATUS						// Defines all the states that the application can be at when updating.

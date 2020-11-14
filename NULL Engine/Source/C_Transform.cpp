@@ -1,8 +1,6 @@
 #include "MathGeoLib/include/Math/TransformOps.h"
 #include "MathGeoLib/include/Math/Quat.h"
 
-#include "Globals.h"
-
 #include "GameObject.h"
 
 #include "C_Transform.h"
@@ -196,6 +194,23 @@ void C_Transform::SetRotation(const float3& rotation, const bool& is_local)
 	}
 }
 
+void C_Transform::SetRotation(const Quat& rotation, const bool& is_local)
+{
+	if (is_local)
+	{
+		local_transform = local_transform * rotation;
+		local_rotation = rotation.ToEulerXYZ();
+
+		update_world_transform = true;
+	}
+	else
+	{
+		world_transform = world_transform * rotation;
+
+		update_local_transform = true;
+	}
+}
+
 void C_Transform::SetScale(const float3& scale, const bool& is_local)
 {
 	if (is_local)
@@ -215,7 +230,7 @@ void C_Transform::SetScale(const float3& scale, const bool& is_local)
 	}
 }
 
-void C_Transform::Translate(const float3& movement, const bool& is_local = true)
+void C_Transform::Translate(const float3& movement, const bool& is_local)
 {
 	if (is_local)
 	{
@@ -232,11 +247,16 @@ void C_Transform::Translate(const float3& movement, const bool& is_local = true)
 	}
 }
 
-void C_Transform::Rotate(const float3& rotation, const bool& is_local = true)
+void C_Transform::Rotate(const float3& rotation, const bool& is_local)
 {
 	if (is_local)
 	{
-		local_rotation += rotation;
+		Quat X_rotation = Quat::RotateAxisAngle(local_transform.WorldX(), rotation.x);
+		Quat Y_rotation = Quat::RotateAxisAngle(local_transform.WorldY(), rotation.y);
+		Quat Z_rotation = Quat::RotateAxisAngle(local_transform.WorldZ(), rotation.z);
+		
+		local_transform = local_transform * X_rotation * Y_rotation * Z_rotation;
+		local_rotation = local_transform.ToEulerXYZ();
 
 		update_world_transform = true;
 	}
@@ -248,7 +268,7 @@ void C_Transform::Rotate(const float3& rotation, const bool& is_local = true)
 	}
 }
 
-void C_Transform::Scale(const float3& scale, const bool& is_local = true)
+void C_Transform::Scale(const float3& scale, const bool& is_local)
 {
 	if (is_local)
 	{

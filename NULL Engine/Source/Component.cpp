@@ -1,5 +1,3 @@
-#include "Globals.h"
-
 #include "GameObject.h"
 
 #include "Component.h"

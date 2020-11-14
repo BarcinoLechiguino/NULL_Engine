@@ -2,7 +2,6 @@
 #define __CAMERA_3D_H__
 
 #include "Module.h"
-#include "Globals.h"
 #include "glmath.h"
 
 class Configuration;

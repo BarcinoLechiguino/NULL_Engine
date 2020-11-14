@@ -1,6 +1,4 @@
-#include "Globals.h"
-#include "Application.h"
-#include "M_Renderer3D.h"
+#include "Log.h"
 
 #include "Component.h"
 #include "C_Transform.h"

@@ -1,8 +1,8 @@
 #ifndef __MODULEWINDOW_H__
 #define __MODULEWINDOW_H__
 
+#include "SDL/include/SDL.h"
 #include "Module.h"
-#include "Dependencies/SDL/include/SDL.h"
 
 class Application;
 class Configuration;

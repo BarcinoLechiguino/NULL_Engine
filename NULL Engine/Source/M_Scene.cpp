@@ -1,7 +1,6 @@
-#include "Brofiler/include/Brofiler.h"
+#include "Profiler.h"
 
-#include "Globals.h"
-#include "Application.h"
+#include "Application.h"														// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
 #include "M_Camera3D.h"
 #include "M_Renderer3D.h"
@@ -22,7 +21,7 @@
 
 #include "M_Scene.h"
 
-#include "mmgr/include/mmgr.h"
+#include "MemoryManager.h"
 
 M_Scene::M_Scene(bool is_active) : Module("SceneManager", is_active),
 root_object(nullptr),
@@ -345,12 +344,12 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 		}
 		else
 		{
-			LOG("[ERROR] Could not import the dropped texture! Path: %s", path)
+			LOG("[ERROR] Could not import the dropped texture! Path: %s", path);
 		}
 	}
 	else
 	{
-		LOG("[ERROR] No game object was being selected! Try again after selecting one from the hierarchy.")
+		LOG("[ERROR] No game object was being selected! Try again after selecting one from the hierarchy.");
 	}
 
 	return ret;

@@ -1,4 +1,33 @@
-﻿  C_Transform.cpp
+﻿  Application.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
+C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\Source\Dependencies\SDL\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
+  Configuration.cpp
+  C_Mesh.cpp
+  E_About.cpp
+  E_EngineConfiguration.cpp
+  E_Console.cpp
+  E_Hierarchy.cpp
+  E_Inspector.cpp
+  E_ImGuiDemo.cpp
+  E_Toolbar.cpp
+  I_Materials.cpp
+  I_Meshes.cpp
+  Log.cpp
+  M_Editor.cpp
+  Main.cpp
+  Module.cpp
+  M_Camera3D.cpp
+  M_Input.cpp
+  M_Renderer3D.cpp
   M_Scene.cpp
+  Generating Code...
+  Compiling...
+  M_Window.cpp
+  M_FileSystem.cpp
+  The contents of <filesystem> are available only with C++17 or later.
+  PathNode.cpp
+  Primitive.cpp
+  R_Model.cpp
+  T_Timer.cpp
   Generating Code...
   NULL Engine.vcxproj -> C:\Users\angot\Documents\GitHub\NULL_Engine\NULL Engine\.\Build\NULL Engine.exe

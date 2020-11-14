@@ -5,9 +5,10 @@
 #pragma comment (lib, "Source/Dependencies/glew/include/glew.h");*/
 
 #include "OpenGL.h"
-#include "Globals.h"
+
+#include "Application.h"														// Globals.h already included in Application.h.
+
 #include "Primitive.h"
-#include "Application.h"
 
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::NONE)

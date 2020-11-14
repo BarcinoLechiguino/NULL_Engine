@@ -1,4 +1,5 @@
 #include "Assimp.h"
+#include "Log.h"
 
 #include "R_Mesh.h"
 #include "I_Meshes.h"

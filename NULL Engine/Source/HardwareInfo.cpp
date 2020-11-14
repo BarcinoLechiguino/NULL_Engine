@@ -5,9 +5,10 @@
 #include "SDL/include/SDL_cpuinfo.h"
 #include "gpudetect/include/DeviceId.h"
 
-#include "Globals.h"
 #include "OpenGL.h"
 #include "DevIL.h"
+#include "Log.h"
+#include "VarTypedefs.h"
 
 #include "HardwareInfo.h"
 

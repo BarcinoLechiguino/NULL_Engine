@@ -103,6 +103,12 @@
     <Filter Include="Dependencies\PCG">
       <UniqueIdentifier>{43edea25-ddcc-47b7-9fa4-8c73b17b6e6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SourceCode\7_Tools\LibIncludes">
+      <UniqueIdentifier>{27351bd9-d935-41ef-a866-e00cc8cdf476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\7_Tools\System">
+      <UniqueIdentifier>{4b4fd0f3-b79d-482e-b786-26360cceb682}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Color.cpp">
@@ -157,9 +163,6 @@
       <Filter>SourceCode\2_Editor</Filter>
     </ClCompile>
     <ClCompile Include="Source\Log.cpp">
-      <Filter>SourceCode\7_Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\HardwareInfo.cpp">
       <Filter>SourceCode\7_Tools</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_About.cpp">
@@ -351,14 +354,17 @@
     <ClCompile Include="Source\Dependencies\PCG\include\pcg_basic.c">
       <Filter>Dependencies\PCG</Filter>
     </ClCompile>
-    <ClCompile Include="Time.cpp">
-      <Filter>SourceCode\7_Tools\Timers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\T_Timer.cpp">
       <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClCompile>
     <ClCompile Include="Source\T_PerfectTimer.cpp">
       <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Time.cpp">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\HardwareInfo.cpp">
+      <Filter>SourceCode\7_Tools\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -389,17 +395,11 @@
     <ClInclude Include="Source\Dependencies\glew\include\wglew.h">
       <Filter>Dependencies\glew</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OpenGL.h">
-      <Filter>SourceCode\7_Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Source\M_Editor.h">
       <Filter>SourceCode\1_Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\Configuration.h">
       <Filter>SourceCode\6_Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ImGui.h">
-      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\PhysFS\include\physfs.h">
       <Filter>Dependencies\PhysFS</Filter>
@@ -458,13 +458,7 @@
     <ClInclude Include="Source\E_Panel.h">
       <Filter>SourceCode\2_Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Assimp.h">
-      <Filter>SourceCode\7_Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Log.h">
-      <Filter>SourceCode\7_Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\HardwareInfo.h">
       <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_About.h">
@@ -514,9 +508,6 @@
     </ClInclude>
     <ClInclude Include="Source\GameObject.h">
       <Filter>SourceCode\5_GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\DevIL.h">
-      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\Brofiler\include\Brofiler.h">
       <Filter>Dependencies\Brofiler</Filter>
@@ -767,14 +758,38 @@
     <ClInclude Include="Source\Dependencies\PCG\include\pcg_basic.h">
       <Filter>Dependencies\PCG</Filter>
     </ClInclude>
-    <ClInclude Include="Time.h">
-      <Filter>SourceCode\7_Tools\Timers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\T_Timer.h">
       <Filter>SourceCode\7_Tools\Timers</Filter>
     </ClInclude>
     <ClInclude Include="Source\T_PerfectTimer.h">
       <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assimp.h">
+      <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DevIL.h">
+      <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ImGui.h">
+      <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OpenGL.h">
+      <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Time.h">
+      <Filter>SourceCode\7_Tools\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MemoryManager.h">
+      <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Profiler.h">
+      <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\HardwareInfo.h">
+      <Filter>SourceCode\7_Tools\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\VarTypedefs.h">
+      <Filter>SourceCode\7_Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

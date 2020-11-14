@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "ImGui.h"
-#include "Globals.h"
+#include "Log.h"
 
 class E_Panel
 {

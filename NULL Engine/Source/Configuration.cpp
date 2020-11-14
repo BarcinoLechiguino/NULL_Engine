@@ -3,7 +3,7 @@
 // Employed to load/save engine configurations.
 // ----------------------------------------------------
 
-#include "Globals.h"
+#include "Log.h"
 
 #include "Configuration.h"
 
@@ -149,7 +149,7 @@ uint Configuration::SerializeToBuffer(char** buffer)
 
 	if (status == JSONFailure)
 	{
-		LOG("[error] Configuration could not serialize the buffer.")
+		LOG("[error] Configuration could not serialize the buffer.");
 	}
 
 	return size;

@@ -88,6 +88,7 @@
     <ClCompile Include="Source\M_Window.cpp" />
     <ClCompile Include="Source\M_FileSystem.cpp" />
     <ClCompile Include="Source\PathNode.cpp" />
+    <ClCompile Include="Source\Time.cpp" />
     <ClCompile Include="Source\T_PerfectTimer.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
     <ClCompile Include="Source\Resource.cpp" />
@@ -95,7 +96,6 @@
     <ClCompile Include="Source\R_Mesh.cpp" />
     <ClCompile Include="Source\R_Model.cpp" />
     <ClCompile Include="Source\T_Timer.cpp" />
-    <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
@@ -214,6 +214,7 @@
     <ClInclude Include="Source\I_Materials.h" />
     <ClInclude Include="Source\I_Meshes.h" />
     <ClInclude Include="Source\Log.h" />
+    <ClInclude Include="Source\MemoryManager.h" />
     <ClInclude Include="Source\M_Editor.h" />
     <ClInclude Include="Source\glmath.h" />
     <ClInclude Include="Source\Globals.h" />
@@ -228,6 +229,8 @@
     <ClInclude Include="Source\M_FileSystem.h" />
     <ClInclude Include="Source\OpenGL.h" />
     <ClInclude Include="Source\PathNode.h" />
+    <ClInclude Include="Source\Profiler.h" />
+    <ClInclude Include="Source\Time.h" />
     <ClInclude Include="Source\T_PerfectTimer.h" />
     <ClInclude Include="Source\Primitive.h" />
     <ClInclude Include="Source\Resource.h" />
@@ -235,7 +238,7 @@
     <ClInclude Include="Source\R_Mesh.h" />
     <ClInclude Include="Source\R_Model.h" />
     <ClInclude Include="Source\T_Timer.h" />
-    <ClInclude Include="Time.h" />
+    <ClInclude Include="Source\VarTypedefs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Configuration\configuration.JSON" />

@@ -1,7 +1,7 @@
 #ifndef __T_PERFECT_TIMER_H__
 #define __T_PERFECT_TIMER_H__
 
-#include "Globals.h"
+#include "VarTypedefs.h"
 
 class T_PerfectTimer
 {

@@ -4,6 +4,7 @@
 // ----------------------------------------------------
 
 #include "Assimp.h"
+#include "Log.h"
 
 #include "Application.h"
 #include "M_FileSystem.h"
@@ -11,7 +12,7 @@
 
 #include "I_Meshes.h"
 
-#include "mmgr/include/mmgr.h"
+#include "MemoryManager.h"
 
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
 
@@ -74,12 +75,12 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 				delete r_mesh;
 				r_mesh = nullptr;
 
-				LOG("[ERROR] Could not generate a mesh during Import: R_Mesh* was nullptr!")
+				LOG("[ERROR] Could not generate a mesh during Import: R_Mesh* was nullptr!");
 			}
 		}
 		else
 		{
-			LOG("[ERROR] Could not generate a mesh during Import: aiMesh* was nullptr and/or did not have any faces!")
+			LOG("[ERROR] Could not generate a mesh during Import: aiMesh* was nullptr and/or did not have any faces!");
 		}
 	}
 
@@ -121,7 +122,7 @@ void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_m
 	{
 		memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * size);	// &r_mesh->vertices[0] gets a pointer to the beginning of the vector. mVertices is a 3D vector.
 
-		LOG("[STATUS] Imported %u position vertices!", size)
+		LOG("[STATUS] Imported %u position vertices!", size);
 	}
 	else
 	{
@@ -153,7 +154,7 @@ void Importer::Meshes::Utilities::GetTexCoords(const aiMesh* ai_mesh, R_Mesh* r_
 			r_mesh->tex_coords[i * 2 + 1] = ai_mesh->mTextureCoords[0][i].y;
 		}
 
-		LOG("[STATUS] Imported %u texture coordinates!", size)
+		LOG("[STATUS] Imported %u texture coordinates!", size);
 	}
 	else
 	{

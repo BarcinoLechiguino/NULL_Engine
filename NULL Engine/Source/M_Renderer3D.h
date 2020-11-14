@@ -2,7 +2,6 @@
 #define __M_RENDERER_3D_H__
 
 #include "MathGeoLib/include/Math/float4x4.h"
-#include "ImGui/include/imgui.h"														// REMOVE?
 
 #include "Module.h"
 #include "Globals.h"

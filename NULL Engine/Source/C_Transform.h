@@ -37,16 +37,15 @@ public:																// ------------------------------------------------------
 	float3		GetWorldRotation() const;							// Returns the global Transform's rotation in Radiants.
 	float3		GetWorldScale() const;								// Returns the global Transform's scale.
 
-	void		SetPosition(const float3& position, const bool& is_local = true);	// Mod. world_trns's position.	 Ex: SetPosition(1.0f, 0.0f, 0.0f)	==> world_position = (1.0f, 0.0f, 0.0f);
-	void		SetRotation(const float3& rotation, const bool& is_local = true);	// Mod. world_trns's rotation.	 Ex: SetRotation(90.0f, 0.0f, 0.0f)	==> world_rotation = (90.0f,0.0f, 0.0f);
-	void		SetScale(const float3& scale, const bool& is_local = true);			// Mod. world_trns's scale.		 Ex: SetScale(1.0f, 1.0f, 1.0f)		==> world_scale	= (1.0f, 1.0f, 1.0f);
+	void		SetPosition(const float3& new_position, const bool& is_local = true);	// Mod. world_trns's position. Ex: SetPosition(1.0f, 0.0f, 0.0f)  ==> wld_position = (1.0f, 0.0f, 0.0f);
+	void		SetRotation(const float3& new_rotation, const bool& is_local = true);	// Mod. world_trns's rotation. Ex: SetRotation(90.0f, 0.0f, 0.0f) ==> wld_rotation = (90.0f,0.0f, 0.0f);
+	void		SetRotation(const Quat& new_rotation, const bool& is_local = true);		// Mod. world_trns's rotation. Same as above but using Quats.
+	void		SetScale(const float3& new_scale, const bool& is_local = true);			// Mod. world_trns's scale.	   Ex: SetScale(1.0f, 1.0f, 1.0f)	  ==> wld_scale	= (1.0f, 1.0f, 1.0f);
 
-	void		Translate(const float3& movement, const bool& is_local = true);		// +/- to local_trns's position. Ex: Translate(1.0f, 0.0f, 0.0f)	==> local_position + (1.0f, 0.0f, 0.0f);
-	void		Rotate(const float3& rotation, const bool& is_local = true);		// +/- to local_trns's rotation. Ex: Rotate(90.0f, 0.0f, 0.0f)		==> local_rotation + (90.0f,0.0f, 0.0f);
-	void		Scale(const float3& scale, const bool& is_local = true);			// +/- to local_trns's scale.	 Ex: Scale(1.0f, 0.0f, 0.0f)		==> local_scale	+ (1.0f, 0.0f, 0.0f);
-
-	void		SetRotation(const Quat& rotation);					// Same as their float3 counterparts but passing a Quat. as the arg. Related with importing Transformations with Assimp.
-	void		Rotate(const Quat& rotation);						// Same as their float3 counterparts but passing a Quat. as the arg. Related with importing Transformations with Assimp.
+	void		Translate(const float3& movement, const bool& is_local = true);		// Add/Sub to local_trns's position. Ex: Translate(1.0f, 0.0f, 0.0f)  ==> lcl_position + (1.0f, 0.0f, 0.0f);
+	void		Rotate(const float3& rotation, const bool& is_local = true);		// Add/Sub to local_trns's rotation. Ex: Rotate(90.0f, 0.0f, 0.0f)	  ==> lcl_rotation + (90.0f,0.0f, 0.0f);
+	void		Rotate(const Quat& rotation, const bool& is_local = true);			// Add/Sub to local_trns's rotation. Same as above but using Quats.
+	void		Scale(const float3& scale, const bool& is_local = true);			// Add/Sub to local_trns's scale.	 Ex: Scale(1.0f, 0.0f, 0.0f)	  ==> lcl_scale	+ (1.0f, 0.0f, 0.0f);
 
 public:
 	void		ImportTransform(const float3& position, const Quat& rotation, const float3& scale);

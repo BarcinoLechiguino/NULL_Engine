@@ -164,7 +164,7 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 		{
 			App->scene->CreateGameObject("EmptyGameObject", App->scene->GetRootGameObject());
 
-			LOG("[SCENE] Created An Empty Object. Root Object defaults as parent.")
+			LOG("[SCENE] Created An Empty Object. Root Object defaults as parent.");
 		}
 		
 		if (ImGui::MenuItem("Create Empty x10"))
@@ -174,7 +174,7 @@ bool E_Toolbar::GameObjectsMainMenuItem()
 				App->scene->CreateGameObject("EmptyGameObject", App->scene->GetRootGameObject());
 			}
 
-			LOG("[SCENE] Created 10 Empty Objects. Root Object defaults as parent.")
+			LOG("[SCENE] Created 10 Empty Objects. Root Object defaults as parent.");
 		}
 		
 		if (ImGui::BeginMenu("Primitives"))

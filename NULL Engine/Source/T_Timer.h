@@ -1,7 +1,7 @@
 #ifndef __T_TIMER_H__
 #define __T_TIMER_H__
 
-#include "Globals.h"
+#include "VarTypedefs.h"
 
 struct Clock
 {

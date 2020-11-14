@@ -3,6 +3,9 @@
 
 #include <string>
 
+#include "Log.h"
+#include "VarTypedefs.h"
+
 class GameObject;
 
 enum class COMPONENT_TYPE

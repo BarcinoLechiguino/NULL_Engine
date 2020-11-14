@@ -1,6 +1,8 @@
 #ifndef __C_MATERIAL_H__
 #define __C_MATERIAL_H__
 
+#include <vector>
+
 #include "Component.h"
 
 class GameObject;

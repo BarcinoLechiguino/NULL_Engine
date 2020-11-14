@@ -1,7 +1,7 @@
-#pragma once
+#ifndef __M_SCENE_H__
+#define __M_SCENE_H__
 
 #include "Module.h"
-#include "Globals.h"
 
 class Configuration;
 class Primitive;
@@ -61,3 +61,5 @@ private:
 
 	std::vector<Primitive*>		primitives;
 };
+
+#endif // !__M_SCENE_H__

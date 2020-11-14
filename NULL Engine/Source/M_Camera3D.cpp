@@ -1,5 +1,4 @@
-#include "Globals.h"
-#include "Application.h"
+#include "Application.h"															// ATTENTION: Globals.h already included in Application.h.
 #include "M_Window.h"
 #include "M_Input.h"
 #include "M_Editor.h"

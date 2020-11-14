@@ -1,11 +1,10 @@
 #include <stdlib.h>
-#include "Application.h"
-#include "Globals.h"
+																
+#include "Application.h"																	// ATTENTION: Already included in Application.h.
 
-#include "mmgr/include/mmgr.h"
-
-#include "Dependencies/SDL/include/SDL.h"
-#include "Dependencies/Brofiler/include/Brofiler.h"
+#include "SDL/include/SDL.h"
+#include "Profiler.h"
+#include "MemoryManager.h"
 
 #pragma comment( lib, "Source/Dependencies/SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "Source/Dependencies/SDL/libx86/SDL2main.lib" )

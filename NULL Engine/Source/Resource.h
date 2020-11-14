@@ -5,7 +5,9 @@
 #include <string>
 
 #include "glmath.h"
-#include "Globals.h"
+
+#include "Log.h"
+#include "VarTypedefs.h"
 
 class Resource
 {
