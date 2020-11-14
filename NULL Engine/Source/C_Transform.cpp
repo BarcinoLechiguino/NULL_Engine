@@ -11,7 +11,7 @@ world_transform(matrix),
 local_position(float3::zero),
 local_rotation(float3::zero),
 local_scale(float3::one),
-update_local_transform(true),
+update_local_transform(false),
 update_world_transform(false),
 update_childs(false)
 {	
@@ -49,7 +49,9 @@ C_Transform::~C_Transform()
 bool C_Transform::Update()
 {
 	bool ret = true;
-	
+
+	update_local_transform = false;
+
 	if (update_local_transform)										//Skip updating static elements. Truly static elements will not vary in any way, neither position, rotation or scale.
 	{
 		UpdateLocalTransform();
@@ -139,14 +141,30 @@ void C_Transform::SetLocalTransform(const float4x4& local_transform)
 
 	// Should be local_scale = world_transform.GetScale() * parent->world_transform.GetScale();
 
-	update_local_transform = true;
+	update_world_transform = true;
+	update_local_transform = false;
 }
 
 void C_Transform::SetWorldTransform(const float4x4& world_transform)
 {
 	this->world_transform = world_transform;
 
-	update_world_transform = true;
+	update_local_transform = true;
+}
+
+float3 C_Transform::GetLocalPosition() const
+{
+	return local_position;
+}
+
+float3 C_Transform::GetLocalRotation() const
+{
+	return local_rotation;
+}
+
+float3 C_Transform::GetLocalScale() const
+{
+	return local_scale;
 }
 
 float3 C_Transform::GetWorldPosition() const

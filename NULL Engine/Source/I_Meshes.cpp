@@ -4,6 +4,7 @@
 // ----------------------------------------------------
 
 #include "Assimp.h"
+#include "MathStructures.h"
 #include "Log.h"
 
 #include "Application.h"
@@ -62,11 +63,11 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 
 		if (ai_mesh != nullptr && ai_mesh->HasFaces())												// Checks that the aiMesh is valid.
 		{
-			R_Mesh* r_mesh = new R_Mesh();															// Generates a new R_Mesh.
+			R_Mesh* r_mesh			= new R_Mesh();													// Generates a new R_Mesh.
+			r_mesh->base_transform	= new Transform();
 
 			Utilities::GenerateMesh(scene, ai_mesh, r_mesh);										// Sets the given r_mesh with the data stored in ai_mesh.
-
-			/*node->mTransformation.Decompose()*/
+			Utilities::GenerateTransform(scene, node, r_mesh->base_transform);
 
 			if (r_mesh != nullptr)																	// Checks that the R_Mesh* is valid/stores data.
 			{
@@ -92,6 +93,11 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 	}
 }
 
+//void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::map<R_Mesh*, Transform*>& meshes)		// Shortened with the use of used namespaces, otherwise it would be a bad idea.
+//{
+//
+//}
+
 void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
 {
 	// Allocating the required memory for each vector
@@ -116,6 +122,17 @@ void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const ai
 	Utilities::GetTexturePaths(ai_scene, ai_mesh, r_mesh);									// Will get the filename associated with ai_mesh and store it inside r_mesh's tex path vector.
 
 	r_mesh->LoadBuffers();
+}
+
+void Importer::Meshes::Utilities::GenerateTransform(const aiScene* ai_scene, const aiNode* ai_node, Transform* transform)
+{
+	aiTransform ai_transform;
+
+	ai_node->mTransformation.Decompose(ai_transform.scale, ai_transform.rotation, ai_transform.position);
+
+	transform->position = { ai_transform.position.x, ai_transform.position.y, ai_transform.position.z };
+	transform->rotation = { ai_transform.rotation.x, ai_transform.rotation.y, ai_transform.rotation.z, ai_transform.rotation.w };
+	transform->scale	= { ai_transform.scale.x, ai_transform.scale.y, ai_transform.scale.z };
 }
 
 void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size)

@@ -33,6 +33,10 @@ public:																// ------------------------------------------------------
 	void		SetWorldTransform(const float4x4& world_transform);	// Sets the world transform with the given matrix.
 
 public:																// --------------------------------------------------------- POSITION, ROTATION & SCALE METHODS
+	float3		GetLocalPosition() const;
+	float3		GetLocalRotation() const;
+	float3		GetLocalScale() const;
+	
 	float3		GetWorldPosition() const;							// Returns the global Transform's position.
 	float3		GetWorldRotation() const;							// Returns the global Transform's rotation in Radiants.
 	float3		GetWorldScale() const;								// Returns the global Transform's scale.

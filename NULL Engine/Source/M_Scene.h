@@ -8,6 +8,8 @@ class Primitive;
 class GameObject;
 class R_Mesh;
 
+struct Transform;
+
 class M_Scene : public Module
 {
 public:
@@ -29,7 +31,9 @@ public:
 
 	bool			CreateGameObjectsFromModel(const char* path);
 	bool			GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes);
-	bool			GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh);			
+	bool			GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh);
+	//bool			GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::map<R_Mesh*, Transform*>& meshes);
+	//bool			GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh, Transform* mesh_transform);		
 
 	bool			ApplyNewTextureToSelectedGameObject(const char* path);
 

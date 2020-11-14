@@ -7,7 +7,8 @@
 
 R_Mesh::R_Mesh() : Resource(),
 draw_normals(false),
-path("NONE")
+path("NONE"),
+base_transform(nullptr)
 {
 	VBO = 0;																								// Initializing the buffers.
 	NBO = 0;																								// 
@@ -90,6 +91,13 @@ bool R_Mesh::CleanUp()
 	indices.clear();
 
 	tex_paths.clear();
+
+	// --- Clear transform
+	if (base_transform != nullptr)
+	{
+		delete base_transform;
+		base_transform = nullptr;
+	}
 
 	return true;
 }

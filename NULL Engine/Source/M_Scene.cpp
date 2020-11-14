@@ -220,11 +220,14 @@ bool M_Scene::CreateGameObjectsFromModel(const char* path)
 
 	
 	std::vector<R_Mesh*> meshes;
-	//std::map<R_Mesh*, Transform> meshes;
-
 	Importer::Meshes::Import(path, meshes);															// Importing the model from the given path. The meshes will be returned in the vector.
-
+	
 	ret = GenerateGameObjectsFromMeshes(path, file, meshes);
+	
+	//std::map<R_Mesh*, Transform> meshes;
+	
+	//Importer::Meshes::Import(path, meshes);															// Importing the model from the given path. The meshes will be returned in the vector.
+	//ret = GenerateGameObjectsFromMeshes(path, file, meshes);
 
 	meshes.clear();
 
@@ -276,6 +279,13 @@ bool M_Scene::GenerateGameObjectComponents(const char* path, std::string file_na
 {
 	bool ret = true;
 	
+	
+	float3		position		= mesh->base_transform->position;										// Setting the C_Transform component related to the mesh of the Game Object.
+	Quat		rotation		= mesh->base_transform->rotation;										// 
+	float3		scale			= mesh->base_transform->scale;											// 	
+	float4x4	local_transform	= float4x4::FromTRS(position, rotation, scale);							// 
+	game_object->GetTransformComponent()->SetLocalTransform(local_transform);							// -------------------------------------------
+	
 	C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);				// Creating the C_Mesh components of each mesh.
 	c_mesh->SetMesh(mesh);																		// The name of the file will be added as the path of the mesh.
 	c_mesh->SetMeshPath(file_name.c_str());														// The mesh being iterated will be set as the component's mesh.
@@ -315,6 +325,16 @@ bool M_Scene::GenerateGameObjectComponents(const char* path, std::string file_na
 
 	return ret;
 }
+
+/*bool M_Scene::GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::map<R_Mesh*, Transform*>& meshes)
+{
+	return true;
+}
+
+bool M_Scene::GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh, Transform* mesh_transform)
+{
+	return true;
+}*/
 
 bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 {

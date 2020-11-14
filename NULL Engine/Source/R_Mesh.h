@@ -3,6 +3,8 @@
 
 #include "Resource.h"
 
+struct Transform;
+
 class R_Mesh : public Resource
 {
 public:
@@ -36,7 +38,7 @@ public:
 	std::string					path;
 
 	// Add a transform here?
-
+	Transform*					base_transform;			// Imported transform from Assimp. Represents the origin point, rotation and scale of the mesh.
 
 private:
 
