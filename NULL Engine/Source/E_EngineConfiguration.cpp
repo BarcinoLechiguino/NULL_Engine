@@ -514,16 +514,24 @@ void E_EngineConfiguration::RendererFlags()
 
 void E_EngineConfiguration::GenerateCameraPositionSlider()
 {
-	float position[3] = { App->camera->position.x, App->camera->position.y, App->camera->position.z };
-	ImGui::DragFloat3("Position", position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-	App->camera->SetPosition(vec3(position[0], position[1], position[2]));
+	/*float3 camera_position = App->camera->GetPosition();
+	ImGui::DragFloat3("Position", (float*)&camera_position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+	App->camera->SetPosition(camera_position);*/
+
+	vec3 camera_position = App->camera->GetPosition();
+	ImGui::DragFloat3("Position", (float*)&camera_position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+	App->camera->SetPosition(camera_position);
 }
 
 void E_EngineConfiguration::GenerateCameraReferenceSlider()
 {
-	float reference[3] = { App->camera->reference.x, App->camera->reference.y, App->camera->reference.z };
-	ImGui::DragFloat3("Reference", reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-	App->camera->SetReference(vec3(reference[0], reference[1], reference[2]));
+	/*float3 camera_reference = App->camera->GetReference();
+	ImGui::DragFloat3("Reference", (float*)&camera_reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+	App->camera->SetReference(camera_reference);*/
+
+	vec3 camera_reference = App->camera->GetReference();
+	ImGui::DragFloat3("Reference", (float*)&camera_reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
+	App->camera->SetReference(camera_reference);
 }
 
 void E_EngineConfiguration::GenerateCameraSpeedSliders()

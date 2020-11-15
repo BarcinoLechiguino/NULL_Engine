@@ -4,8 +4,9 @@
 #include <vector>
 #include <cmath>
 
-#include "glmath.h"
 #include "Color.h"
+#include "VarTypedefs.h"
+#include "MathStructures.h"
 
 enum class PRIMITIVE_TYPES
 {
@@ -41,14 +42,14 @@ public:
 
 public:
 	void			SetPos(float x, float y, float z);
-	vec3			GetPos() const;
-	void			SetRotation(float angle, const vec3 &u);
+	float3			GetPos() const;
+	void			SetRotation(const float3 &u, const float& angle);		// Angle in Radiants.
 	void			Scale(float x, float y, float z);
 	PRIMITIVE_TYPES	GetType() const;
 
 public:
 	Color color;
-	mat4x4 transform;
+	float4x4 transform;
 	bool axis, wire;
 
 	uint VAO;																// Defines the Vertex Array Object that will hold all buffer objects of a primitive.
@@ -72,9 +73,9 @@ protected:
 class P_Cube : public Primitive
 {
 public :
-	P_Cube(const vec3& size = vec3(1.f, 1.f, 1.f), float mass = 1.f);
+	P_Cube(const float3& size = float3::one, float mass = 1.f);
 
-	vec3 GetSize() const;
+	float3 GetSize() const;
 
 public:
 	void DirectRender() const;
@@ -91,7 +92,7 @@ protected:
 	//void IndicesRender();
 
 private:
-	vec3 size;
+	float3 size;
 
 	//unsigned int VAO;
 
@@ -164,7 +165,7 @@ private:
 class P_Pyramid : public Primitive
 {
 public:
-	P_Pyramid(vec3 size = vec3(1.0f, 1.0f, 1.0f));
+	P_Pyramid(float3 size = float3::one);
 
 protected:
 	void InnerRender() const override;
@@ -175,7 +176,7 @@ protected:
 	//std::vector<uint> indices;
 
 private:
-	vec3 size;
+	float3 size;
 
 	bool loaded_in_buffers;
 };
@@ -185,33 +186,34 @@ class P_Line : public Primitive
 {
 public:
 	P_Line();
-	P_Line(const vec3& A, const vec3& B);
+	P_Line(const float3& A, const float3& B);
 
-	vec3 GetOrigin() const;
-	vec3 GetDestination() const;
+	float3 GetOrigin() const;
+	float3 GetDestination() const;
 
 protected:
 	void InnerRender() const;
 	void IndicesRender() override;
 
 public:
-	vec3 origin;
-	vec3 destination;
+	float3 origin;
+	float3 destination;
 };
 
 // ============================================
 class P_Plane : public Primitive
 {
 public:
-	P_Plane(const vec3& normal = vec3(0,1,0));
+	P_Plane(const float3& normal = float3(0.0f, 1.0f, 0.0f));
 
-	vec3 GetNormal() const;
+	float3 GetNormal() const;
+
 protected:
 	void InnerRender() const;
 	void IndicesRender() override;
 
 private:
-	vec3 normal;
+	float3 normal;
 };
 
 // ============================================
@@ -219,24 +221,24 @@ class PrimitiveDrawExamples : public Primitive
 {
 public:
 	PrimitiveDrawExamples();
-	PrimitiveDrawExamples(float size, vec3 origin);
+	PrimitiveDrawExamples(float size, float3 origin);
 
 	void DrawAllExamples();								// Will draw all the examples. All examples are drawn in Direct Mode.
 
 public:
-	void GL_PointsExample			(int index = 0);
-	void GL_LinesExample			(int index = 1);
-	void GL_LineStripExample		(int index = 2);
-	void GL_LineLoopExample			(int index = 3);
-	void GL_PolygonExample			(int index = 4);
-	void GL_TrianglesExample		(int index = 5);
-	void GL_TriangleStripExample	(int index = 6);
-	void GL_TriangleFanExample		(int index = 7);
-	void GL_QuadsExample			(int index = 8);
-	void GL_QuadStripExample		(int index = 9);
+	void GL_PointsExample			(uint index = 0);
+	void GL_LinesExample			(uint index = 1);
+	void GL_LineStripExample		(uint index = 2);
+	void GL_LineLoopExample			(uint index = 3);
+	void GL_PolygonExample			(uint index = 4);
+	void GL_TrianglesExample		(uint index = 5);
+	void GL_TriangleStripExample	(uint index = 6);
+	void GL_TriangleFanExample		(uint index = 7);
+	void GL_QuadsExample			(uint index = 8);
+	void GL_QuadStripExample		(uint index = 9);
 
 public:
-	vec3 origin;
+	float3 origin;
 	float size;											//Just used to scale everything uniformly.
 };
 

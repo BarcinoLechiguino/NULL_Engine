@@ -1,9 +1,3 @@
-/*#include "Dependencies/glew/include/glew.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-#pragma comment (lib, "Source/Dependencies/glew/include/glew.h");*/
-
 #include "OpenGL.h"
 
 #include "Application.h"														// Globals.h already included in Application.h.
@@ -11,7 +5,7 @@
 #include "Primitive.h"
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::NONE)
+Primitive::Primitive() : transform(float4x4::identity), color(White), wire(false), axis(false), type(PRIMITIVE_TYPES::NONE)
 {
 	VAO = 0;
 	
@@ -37,7 +31,7 @@ void Primitive::Update()
 void Primitive::Render() const
 {
 	glPushMatrix();
-	glMultMatrixf(transform.M);
+	glMultMatrixf((GLfloat*)&transform.Transposed());
 
 	InnerRender();
 
@@ -47,7 +41,7 @@ void Primitive::Render() const
 void Primitive::RenderByIndices()
 {
 	glPushMatrix();
-	glMultMatrixf(transform.M);
+	glMultMatrixf((GLfloat*)&transform.Transposed());
 
 	IndicesRender();
 
@@ -57,17 +51,15 @@ void Primitive::RenderByIndices()
 // ------------------------------------------------------------
 void Primitive::LoadBuffersOnMemory()
 {
-	glGenVertexArrays(1, (GLuint*)&VAO);											// Generating a vertex array object that will store all buffer objects.
-	glBindVertexArray(VAO);															// --------
+	glGenVertexArrays(1, (GLuint*)&VAO);																// Generating a vertex array object that will store all buffer objects.
+	glBindVertexArray(VAO);																				// --------
 
-	glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::VERTICES]);				// Generating a vertex buffer that will store the vertex positions of the primitives.
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::VERTICES]);			// --------
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * bufferSize[(uint)BUFFER_TYPE::VERTICES] * 3, &vertices[0], GL_STATIC_DRAW);	// --------
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);	// -------- 
+	glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::VERTICES]);									// Generating a vertex buffer that will store the vertex positions of the primitives.
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::VERTICES]);								// --------
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices[0], GL_STATIC_DRAW);		// -------- 
 
-	glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::INDICES]);					// Generating an index buffer that will store the indices of each of the primitives.
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::INDICES]);		// --------
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * bufferSize[(uint)BUFFER_TYPE::INDICES] * 3, &indices[0], GL_STATIC_DRAW);	// --------
+	glGenBuffers(1, (GLuint*)&buffers[(uint)BUFFER_TYPE::INDICES]);										// Generating an index buffer that will store the indices of each of the primitives.
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[(uint)BUFFER_TYPE::INDICES]);							// --------
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);	// --------
 	
 	glEnableVertexAttribArray(0);
@@ -98,40 +90,34 @@ void Primitive::IndicesRender()
 // ------------------------------------------------------------
 void Primitive::SetPos(float x, float y, float z)
 {
-	transform.translate(x, y, z);
+	transform.Translate(x, y, z);
 }
 
-vec3 Primitive::GetPos() const
+float3 Primitive::GetPos() const										// In a 4x4 matrix, the top-left 3x3 matrix is the rotation and the left column's first 3 elements are the position.
 {
-	vec3 position = { 0.0f, 0.0f, 0.0f };
-
-	position.x = transform.M[12];				// In a 4x4 matrix, the top-left 3x3 matrix is the rotation and the left column's first 3 elements are the position.
-	position.y = transform.M[13];
-	position.z = transform.M[14];
-
-	return position;
+	return transform.TranslatePart();
 }
 
 // ------------------------------------------------------------
-void Primitive::SetRotation(float angle, const vec3 &u)
+void Primitive::SetRotation(const float3 &u, const float& angle)
 {
-	transform.rotate(angle, u);
+	transform.SetRotatePart(u, angle);
 }
 
 // ------------------------------------------------------------
 void Primitive::Scale(float x, float y, float z)
 {
-	transform.scale(x, y, z);
+	transform.Scale(x, y, z);
 }
 
 // CUBE ============================================
 
-P_Cube::P_Cube(const vec3& _size, float mass) : Primitive(), size(_size), loaded_in_array(false), loaded_in_indices(false)
+P_Cube::P_Cube(const float3& _size, float mass) : Primitive(), size(_size), loaded_in_array(false), loaded_in_indices(false)
 {
 	type = PRIMITIVE_TYPES::CUBE;
 }
 
-vec3 P_Cube::GetSize() const
+float3 P_Cube::GetSize() const
 {
 	return size;
 }
@@ -569,7 +555,7 @@ void P_Cube::IndicesRender()
 
 void P_Cube::ApplyTransform(float* coordinates, int array_size)
 {
-	vec3 position = GetPos();
+	float3 position = GetPos();
 
 	for (int i = 0; i < array_size; ++i)
 	{
@@ -701,9 +687,13 @@ void P_Sphere::IndicesRender()
 		loaded_buffers = true;
 	}
 
+	GLfloat x = (GLfloat)transform.TranslatePart().x;
+	GLfloat y = (GLfloat)transform.TranslatePart().y;
+	GLfloat z = (GLfloat)transform.TranslatePart().z;
+
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
+	glTranslatef(x, y, z);
 	
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -823,9 +813,13 @@ void P_Cylinder::IndicesRender()
 		loaded_in_buffers = true;
 	}
 
+	GLfloat x = (GLfloat)transform.TranslatePart().x;
+	GLfloat y = (GLfloat)transform.TranslatePart().y;
+	GLfloat z = (GLfloat)transform.TranslatePart().z;
+
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	glTranslatef(transform.M[12], transform.M[13], transform.M[14]);
+	glTranslatef(x, y, z);
 
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -981,10 +975,10 @@ void P_Cylinder::ConstructIndices(uint base_center_index, uint top_center_index)
 
 void P_Cylinder::InnerRender() const
 {
+	float4x4 rotateMat = float4x4::identity * Quat::RotateZ(90.0f * DEGTORAD);
+
 	glPushMatrix();
-	mat4x4 rotateMat = IdentityMatrix;
-	rotateMat.rotate(90.f, vec3(0, 0, 1));
-	glMultMatrixf(&rotateMat);
+	glMultMatrixf((GLfloat*)&rotateMat);
 
 	int n = 30;
 
@@ -993,7 +987,7 @@ void P_Cylinder::InnerRender() const
 	
 	for(int i = 360; i >= 0; i -= (360 / n))
 	{
-		float a = i * (float)M_PI / 180; // degrees to radians
+		float a = (float)i * PI / 180; // degrees to radians
 		glVertex3f(-height * 0.5f, radius * cos(a), radius * sin(a));
 		//glVertex3f(radius * sin(a), -height * 0.5f, radius * cos(a));
 	}
@@ -1004,7 +998,7 @@ void P_Cylinder::InnerRender() const
 	glNormal3f(0.0f, 0.0f, 1.0f);
 	for(int i = 0; i <= 360; i += (360 / n))
 	{
-		float a = i * (float)M_PI / 180; // degrees to radians
+		float a = (float)i * PI / 180; // degrees to radians
 		glVertex3f(height * 0.5f, radius * cos(a), radius * sin(a));
 		//glVertex3f(radius * sin(a), height * 0.5f, radius * cos(a));
 	}
@@ -1014,7 +1008,7 @@ void P_Cylinder::InnerRender() const
 	glBegin(GL_QUAD_STRIP);
 	for(int i = 0; i < 480; i += (360 / n))
 	{
-		float a = i * (float)M_PI / 180; // degrees to radians
+		float a = (float)i * PI / 180; // degrees to radians
 
 		glVertex3f(height*0.5f,  radius * cos(a), radius * sin(a) );
 		glVertex3f(-height*0.5f, radius * cos(a), radius * sin(a) );
@@ -1027,7 +1021,7 @@ void P_Cylinder::InnerRender() const
 }
 
 // PYRAMID ============================================
-P_Pyramid::P_Pyramid(vec3 size) : Primitive(), size(size), loaded_in_buffers(false)
+P_Pyramid::P_Pyramid(float3 size) : Primitive(), size(size), loaded_in_buffers(false)
 {
 	type = PRIMITIVE_TYPES::PYRAMID;
 }
@@ -1116,22 +1110,22 @@ void P_Pyramid::IndicesRender()
 }
 
 // LINE ==================================================
-P_Line::P_Line() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
+P_Line::P_Line() : Primitive(), origin(float3::zero), destination(float3::one)
 {
 	type = PRIMITIVE_TYPES::LINE;
 }
 
-P_Line::P_Line(const vec3& A, const vec3& B) : Primitive(), origin(A), destination(B)
+P_Line::P_Line(const float3& A, const float3& B) : Primitive(), origin(A), destination(B)
 {
 	type = PRIMITIVE_TYPES::LINE;
 }
 
-vec3 P_Line::GetOrigin() const
+float3 P_Line::GetOrigin() const
 {
 	return origin;
 }
 
-vec3 P_Line::GetDestination() const
+float3 P_Line::GetDestination() const
 {
 	return destination;
 }
@@ -1156,12 +1150,12 @@ void P_Line::IndicesRender()
 }
 
 // PLANE ==================================================
-P_Plane::P_Plane(const vec3& _normal) : Primitive(), normal(_normal)
+P_Plane::P_Plane(const float3& _normal) : Primitive(), normal(_normal)
 {
 	type = PRIMITIVE_TYPES::PLANE;
 }
 
-vec3 P_Plane::GetNormal() const
+float3 P_Plane::GetNormal() const
 {
 	return normal;
 }
@@ -1190,14 +1184,14 @@ void P_Plane::IndicesRender()
 	InnerRender();
 }
 
-PrimitiveDrawExamples::PrimitiveDrawExamples() : Primitive(), size(1.0f), origin(vec3(0.0f, 0.0f, 0.0f))
+PrimitiveDrawExamples::PrimitiveDrawExamples() : Primitive(), size(1.0f), origin(float3::zero)
 {
 
 }
 
-PrimitiveDrawExamples::PrimitiveDrawExamples(float size, vec3 origin) : Primitive(), size(size), origin(origin)
+PrimitiveDrawExamples::PrimitiveDrawExamples(float size, float3 origin) : Primitive(), size(size), origin(origin)
 {	
-	transform.translate(origin.x, origin.y, origin.z);
+	transform.Translate(origin.x, origin.y, origin.z);
 }
 
 void PrimitiveDrawExamples::DrawAllExamples()
@@ -1214,7 +1208,7 @@ void PrimitiveDrawExamples::DrawAllExamples()
 	GL_QuadStripExample();
 }
 
-void PrimitiveDrawExamples::GL_PointsExample(int index)
+void PrimitiveDrawExamples::GL_PointsExample(uint index)
 {
 	float offset = 4.0f * index;
 	
@@ -1242,7 +1236,7 @@ void PrimitiveDrawExamples::GL_PointsExample(int index)
 	glPointSize(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_LinesExample(int index)
+void PrimitiveDrawExamples::GL_LinesExample(uint index)
 {
 	float offset = 4.0f * index;
 	
@@ -1266,7 +1260,7 @@ void PrimitiveDrawExamples::GL_LinesExample(int index)
 	glLineWidth(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_LineStripExample(int index)
+void PrimitiveDrawExamples::GL_LineStripExample(uint index)
 {
 	float offset = 4.0f * index;
 
@@ -1288,7 +1282,7 @@ void PrimitiveDrawExamples::GL_LineStripExample(int index)
 	glLineWidth(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_LineLoopExample(int index)
+void PrimitiveDrawExamples::GL_LineLoopExample(uint index)
 {
 	float offset = 4.0f * index;
 
@@ -1310,7 +1304,7 @@ void PrimitiveDrawExamples::GL_LineLoopExample(int index)
 	glLineWidth(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_PolygonExample(int index)
+void PrimitiveDrawExamples::GL_PolygonExample(uint index)
 {
 	float offset = 4.0f * index;
 
@@ -1332,7 +1326,7 @@ void PrimitiveDrawExamples::GL_PolygonExample(int index)
 	glLineWidth(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_TrianglesExample(int index)
+void PrimitiveDrawExamples::GL_TrianglesExample(uint index)
 {
 	float offset = 3.95f * index;
 
@@ -1351,7 +1345,7 @@ void PrimitiveDrawExamples::GL_TrianglesExample(int index)
 	glLineWidth(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_TriangleStripExample(int index)
+void PrimitiveDrawExamples::GL_TriangleStripExample(uint index)
 {
 	float offset = 4.0f * index;
 
@@ -1375,7 +1369,7 @@ void PrimitiveDrawExamples::GL_TriangleStripExample(int index)
 
 }
 
-void PrimitiveDrawExamples::GL_TriangleFanExample(int index)
+void PrimitiveDrawExamples::GL_TriangleFanExample(uint index)
 {
 	float offset = 5.20f * index;
 
@@ -1390,7 +1384,7 @@ void PrimitiveDrawExamples::GL_TriangleFanExample(int index)
 
 	for (int i = 360 - 30; i >= 0 - 30; i -= (360 / 6))							// i = 360 - 30  so it is the same as the previously drawn hexagons.
 	{	
-		float a = i * (float)M_PI / 180; // degrees to radians
+		float a = (float)i * PI / 180;											// Degrees to Radiants
 		//glVertex3f(2.0f * sin(a), 2.0f * cos(a), 0.0f);						// Triangle fan centered at (0.0f, 0.0f, 0.0f)
 		//glVertex3f((2.0f * sin(a)), (2.0f * cos(a)) + 3.0f, 0.0f);			// Triangle fan centered at (0.0f, 3.0f, 0.0f)
 		glVertex3f((1.5f * sin(a)) + offset, (1.5f * cos(a)) + 3.0f, 0.0f);		// Triangle fan centered at (position_offset, 3.0f, 0.0f)
@@ -1401,7 +1395,7 @@ void PrimitiveDrawExamples::GL_TriangleFanExample(int index)
 	glLineWidth(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_QuadsExample(int index)
+void PrimitiveDrawExamples::GL_QuadsExample(uint index)
 {
 	float offset = 5.05f * index;
 
@@ -1421,7 +1415,7 @@ void PrimitiveDrawExamples::GL_QuadsExample(int index)
 	glLineWidth(1.0f);
 }
 
-void PrimitiveDrawExamples::GL_QuadStripExample(int index)
+void PrimitiveDrawExamples::GL_QuadStripExample(uint index)
 {
 	float offset = 5.0f * index;
 

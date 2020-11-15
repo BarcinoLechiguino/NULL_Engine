@@ -9,7 +9,7 @@
 
 #include "R_Model.h"
 
-R_Model::R_Model(std::string full_path, vec4 colour) : Resource(), full_path(full_path), colour(colour)
+R_Model::R_Model(std::string full_path, float4 colour) : Resource(), full_path(full_path), colour(colour)
 {
 
 }
@@ -37,7 +37,7 @@ void R_Model::DrawNormals()
 	}
 }
 
-void R_Model::SetMaterialColour(vec4 colour)
+void R_Model::SetMaterialColour(float4 colour)
 {
 	this->colour = colour;
 }

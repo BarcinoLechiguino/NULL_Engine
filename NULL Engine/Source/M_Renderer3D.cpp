@@ -286,8 +286,9 @@ void M_Renderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
-	glLoadMatrixf(&ProjectionMatrix);
+	projection_matrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
+	//projection_matrix = float4x4::OpenGLPerspProjRH(60.0f, (float)width / (float)height, 0.125f, 512.0f); /*perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);*/
+	glLoadMatrixf((GLfloat*)&projection_matrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -544,6 +545,26 @@ void M_Renderer3D::LoadDebugTexture()
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+//float4x4 M_Renderer3D::GetProjectionMatrix() const
+//{
+//	return projection_matrix;
+//}
+//
+//float3x3 M_Renderer3D::GetNormalMatrix() const
+//{
+//	return normal_matrix;
+//}
+
+mat4x4 M_Renderer3D::GetProjectionMatrix() const
+{
+	return projection_matrix;
+}
+
+mat3x3 M_Renderer3D::GetNormalMatrix() const
+{
+	return normal_matrix;
 }
 
 const char* M_Renderer3D::GetDrivers() const

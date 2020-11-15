@@ -1,6 +1,7 @@
 #ifndef __R_MODEL_H__
 #define __R_MODEL_H__
 
+#include "MathStructures.h"
 #include "Resource.h"
 
 struct	aiScene;
@@ -16,13 +17,13 @@ class	R_Mesh;
 class R_Model : public Resource
 {
 public:
-	R_Model(std::string full_path, vec4 colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	R_Model(std::string full_path, float4 colour = float4::one);
 	~R_Model();
 
 	void Draw();
 	void DrawNormals();
 
-	void SetMaterialColour(vec4 colour);
+	void SetMaterialColour(float4 colour);
 
 	void ProcessScene(const aiScene* scene);
 
@@ -40,7 +41,7 @@ private:
 	std::string full_path;
 	std::string directory;
 
-	vec4 colour;
+	float4 colour;
 
 };
 

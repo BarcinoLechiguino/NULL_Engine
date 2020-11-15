@@ -159,10 +159,9 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 			ImGui::SameLine(100.0f);
 
 			float3 position = transform->GetLocalPosition();
-			float pos[3] = { position.x, position.y, position.z };
-			if (ImGui::DragFloat3("P", pos, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+			if (ImGui::DragFloat3("P", (float*)&position, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
 			{
-				transform->SetPosition(float3(pos[0], pos[1], pos[2]));
+				transform->SetLocalPosition(position);
 			}
 
 			// --- ROTATION ---
@@ -170,12 +169,14 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 
 			ImGui::SameLine(100.0f);
 
-			float3 rotation = transform->GetWorldRotation() * RADTODEG;
-			float rot[3] = { rotation.x, rotation.y, rotation.z };
-			if (ImGui::DragFloat3("R", rot, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+			float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
+			if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
 			{	
-				float3 new_rotation = float3(rot[0], rot[1], rot[2]) * DEGTORAD;
-				transform->SetRotation(new_rotation);
+				//float3 new_rotation = float3(rot[0], rot[1], rot[2]) * DEGTORAD;
+				//transform->SetLocalRotation(new_rotation);
+
+				float3 offset = (rotation * DEGTORAD) - transform->GetLocalEulerRotation();
+				transform->Rotate(offset);															// Using Rotate() instead of SetRotation() as it does not lock Y at 90º/-90º.
 			}
 
 			// --- SCALE ---
@@ -183,11 +184,10 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 
 			ImGui::SameLine(100.0f);
 
-			float3 scale = transform->GetWorldScale();
-			float scl[3] = { scale.x, scale.y, scale.z };
-			if (ImGui::DragFloat3("S", scl, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+			float3 scale = transform->GetLocalScale();
+			if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
 			{
-				transform->SetScale(float3(scl[0], scl[1], scl[2]));
+				transform->SetLocalScale(scale);
 			}
 		}
 	}

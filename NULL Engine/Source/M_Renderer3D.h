@@ -2,10 +2,10 @@
 #define __M_RENDERER_3D_H__
 
 #include "MathStructures.h"
+#include "glmath.h"
 
 #include "Module.h"
 #include "Globals.h"
-#include "glmath.h"
 #include "Light.h"
 
 #define MAX_LIGHTS 8
@@ -65,6 +65,12 @@ public:																		// --- RENDER GEOMETRY
 	void			CreatePrimitiveExamples();
 
 public:																		// --- GET/SET METHODS
+	//float4x4		GetProjectionMatrix() const;
+	//float3x3		GetNormalMatrix() const;
+
+	mat4x4			GetProjectionMatrix() const;
+	mat3x3			GetNormalMatrix() const;
+	
 	const char*		GetDrivers() const;										// 
 	bool			GetVsync() const;										// 
 	void			SetVsync(bool set_to);									// 
@@ -91,14 +97,18 @@ public:																		// --- GET/SET METHODS
 public:
 	Light					lights[MAX_LIGHTS];								// 
 	SDL_GLContext			context;										// 
-	mat3x3					NormalMatrix;									// 
-	mat4x4					ProjectionMatrix;								// 
 
 	uint					debug_texture_id;
 
 	std::vector<Primitive*>	primitives;
 
 private:
+	//float4x4				projection_matrix;								//  
+	//float3x3				normal_matrix;									// 
+
+	mat4x4					projection_matrix;								// 
+	mat3x3					normal_matrix;									// 
+
 	bool					vsync;											// Will keep track of whether or not the vsync is currently active.
 
 	bool					draw_world_grid;								//

@@ -5,6 +5,8 @@
 #include <map>
 #include <string>
 
+#include "MathStructures.h"
+
 typedef unsigned int uint;
 
 class Component;
@@ -67,6 +69,8 @@ public:
 
 	bool						is_root_object;											// Will be set to true if this GameObject is M_Scene's root_object.
 	bool						to_delete;												// Will determine whether or not this GameObject should be deleted. See M_Scene's DeleteGameObject().
+
+	AABB						obb;
 
 private:
 	uint						id;

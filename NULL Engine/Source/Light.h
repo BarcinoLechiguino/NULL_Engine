@@ -2,7 +2,7 @@
 #define __LIGHT_H__
 
 #include "Color.h"
-#include "glmath.h"
+#include "MathStructures.h"
 
 struct Light
 {
@@ -13,12 +13,12 @@ struct Light
 	void Active(bool active);
 	void Render();
 
-	Color ambient;
-	Color diffuse;
-	vec3 position;
+	Color	ambient;
+	Color	diffuse;
+	float3	position;
 
-	int ref;
-	bool on;
+	int		ref;
+	bool	on;
 };
 
 #endif // !__LIGHT_H__

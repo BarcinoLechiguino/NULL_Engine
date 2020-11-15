@@ -21,7 +21,7 @@ R_Mesh::~R_Mesh()
 
 }
 
-void R_Mesh::Draw(vec4 colour)
+void R_Mesh::Draw(float4 colour)
 {	
 
 }
@@ -100,4 +100,10 @@ bool R_Mesh::CleanUp()
 	}
 
 	return true;
+}
+
+void R_Mesh::SetMeshAABB()
+{
+	aabb.SetNegativeInfinity();
+	aabb.Enclose((float3*)&vertices[0], vertices.size());
 }

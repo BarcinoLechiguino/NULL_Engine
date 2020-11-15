@@ -4,10 +4,9 @@
 #include <vector>
 #include <string>
 
-#include "glmath.h"
-
 #include "Log.h"
 #include "VarTypedefs.h"
+#include "MathStructures.h"
 
 class Resource
 {

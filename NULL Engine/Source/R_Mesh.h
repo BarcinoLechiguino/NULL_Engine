@@ -1,6 +1,7 @@
 #ifndef __R_MESH_H__
 #define __R_MESH_H__
 
+#include "MathStructures.h"
 #include "Resource.h"
 
 struct Transform;
@@ -11,12 +12,15 @@ public:
 	R_Mesh();
 	~R_Mesh();
 
-	void Draw(vec4 colour);
+	void Draw(float4 colour);
 	void DrawNormals();
 
 	void LoadBuffers();
 
 	bool CleanUp();
+
+public:
+	void SetMeshAABB();
 
 public:
 	std::vector<float>			vertices;
@@ -26,7 +30,7 @@ public:
 
 	std::vector<std::string>	tex_paths;
 
-	vec4						colour;
+	float4						colour;
 
 	// Buffer data
 	uint						VBO;					// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.
@@ -37,8 +41,9 @@ public:
 	bool						draw_normals;
 	std::string					path;
 
-	// Add a transform here?
-	Transform*					base_transform;			// Imported transform from Assimp. Represents the origin point, rotation and scale of the mesh.
+	Transform*					base_transform;			// Imported transform from Assimp. Represents the origin point, rotation and scale of the mesh. Add it here?
+
+	AABB aabb;
 
 private:
 

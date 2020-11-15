@@ -1,5 +1,6 @@
 #include "Profiler.h"
 #include "MathStructures.h"
+#include "glmath.h"																// WAITING UNTIL FRUSTUM TO DELETE IT
 
 #include "Application.h"														// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
@@ -47,7 +48,7 @@ bool M_Scene::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->LookAt(vec3(0, 0, 0));
+	App->camera->LookAt(vec3(0.0f, 0.0f, 0.0f) /*float3::zero*/);
 
 	if (root_object == nullptr)
 	{
@@ -408,6 +409,11 @@ void M_Scene::SetSelectedGameObject(GameObject* game_object)
 	if (game_object != selected_game_object)
 	{
 		selected_game_object = game_object;
+
+		float3 go_ref = game_object->GetTransformComponent()->GetWorldPosition();
+		vec3 reference = { go_ref.x, go_ref.y, go_ref.z };
+
+		App->camera->SetReference(reference);
 	}
 }
 
@@ -469,12 +475,17 @@ void M_Scene::HandleDebugInput()
 		float mouse_x_position = ((float)App->input->GetMouseX() / (float)App->window->GetWidth()) * 2.f - 1.f;
 		float mouse_y_position = -((float)App->input->GetMouseY() / (float)App->window->GetHeight()) * 2.f + 1.f;
 
-		const vec2 mousePos(mouse_x_position, mouse_y_position);
+		/*const float2 mouse_pos(mouse_x_position, mouse_y_position);
 
-		const vec4 rayEye = inverse(App->renderer->ProjectionMatrix) * vec4(mousePos.x, mousePos.y, -1.f, 1.f);
-		const vec4 rayWorld(inverse(App->camera->GetViewMatrix()) * vec4(rayEye.x, rayEye.y, -1.f, 0.f));
+		const float4 ray_eye = App->renderer->GetProjectionMatrix().Inverted() * float4(mouse_pos.x, mouse_pos.y, -1.f, 1.f);
+		const float4 ray_world(App->camera->GetViewMatrix().Inverted() * float4(ray_eye.x, ray_eye.y, -1.f, 0.f));*/
 
-		vec3 Dir(rayWorld.x, rayWorld.y, rayWorld.z);
+		const vec2 mouse_pos(mouse_x_position, mouse_y_position);
+
+		const vec4 ray_eye = inverse(App->renderer->GetProjectionMatrix()) * vec4(mouse_pos.x, mouse_pos.y, -1.f, 1.f);
+		const vec4 ray_world(inverse(App->camera->GetViewMatrix()) * vec4(ray_eye.x, ray_eye.y, -1.f, 0.f));
+
+		float3 dir(ray_world.x, ray_world.y, ray_world.z);
 	}
 }
 
