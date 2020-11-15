@@ -5,18 +5,12 @@
 *.opendb
 *.ipch
 *.ilk
+*.idb
 *.pdb
 *.obj
 *.pdb
-NULL Engine/Resources/memleaks.log
-NULL Engine/Resources/memory.log
 *.pdb
-.vs/NULL Engine/v16/.suo
-NULL Engine/Build/NULL Engine.exe
-NULL Engine/Intermediate/NULL Engine.log
-NULL Engine/Intermediate/NULL Engine.tlog/CL.command.1.tlog
-NULL Engine/Intermediate/NULL Engine.tlog/CL.read.1.tlog
 *.tlog
 *.log
+.vs/NULL Engine/v16/.suo
 NULL Engine/Build/NULL Engine.exe
-*.idb
