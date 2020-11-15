@@ -169,14 +169,16 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 
 			ImGui::SameLine(100.0f);
 
+			/*float3 rotation = transform->GetLocalEulerRotation();
+			if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				transform->SetLocalEulerRotation(rotation);
+			}*/
+
 			float3 rotation = transform->GetLocalEulerRotation() * RADTODEG;
 			if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
 			{	
-				//float3 new_rotation = float3(rot[0], rot[1], rot[2]) * DEGTORAD;
-				//transform->SetLocalRotation(new_rotation);
-
-				float3 offset = (rotation * DEGTORAD) - transform->GetLocalEulerRotation();
-				transform->Rotate(offset);															// Using Rotate() instead of SetRotation() as it does not lock Y at 90º/-90º.
+				transform->SetLocalRotation(rotation * DEGTORAD);
 			}
 
 			// --- SCALE ---

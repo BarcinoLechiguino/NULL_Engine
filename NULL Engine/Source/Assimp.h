@@ -12,4 +12,11 @@
 #include "Assimp/include/vector3.h"
 #include "Assimp/include/quaternion.h"
 
+struct aiTransform
+{
+	aiVector3D		position;
+	aiQuaternion	rotation;
+	aiVector3D		scale;
+};
+
 #endif // !__ASSIMP_H__

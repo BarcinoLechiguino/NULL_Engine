@@ -25,7 +25,7 @@ public:
 
 	void		ImportTransform(const float3& position, const Quat& rotation, const float3& scale);
 
-public:
+public:																				// --- GET/SET LOCAL AND WORLD POSITION, ROTATION AND SCALE
 	float3		GetLocalPosition() const;											// Returns the position vector of the local transform.
 	Quat		GetLocalRotation() const;											// Returns the rotation quaternion of the local transform.
 	float3		GetLocalEulerRotation() const;										// Returns the rotation quaternion of the local transform in Euler Angles.
@@ -39,6 +39,7 @@ public:
 	void		SetLocalPosition(const float3& new_position);						// Sets local_position to the given vector.			Ex: local_position	= new_position;
 	void		SetLocalRotation(const Quat& new_rotation);							// Sets local_rotation to the given quaternion.		Ex: local_rotation	= new_rotation;
 	void		SetLocalRotation(const float3& new_rotation);						// Sets local_rotation to the given vector.			Ex: local_rotation	= new_rotation;
+	void		SetLocalEulerRotation(const float3& new_euler_rotation);			// Sets local_rotation to the given vector.			Ex: local_rotation	= new_rotation;
 	void		SetLocalScale(const float3& new_scale);								// Sets local_scale to the given vector.			Ex: local_scale		= new_scale;
 
 	void		SetWorldPosition(const float3& new_position);						// Sets world position to the given vector.			Ex: world_transform.SetTranslatePart(new_position);
@@ -46,6 +47,7 @@ public:
 	void		SetWorldRotation(const float3& new_rotation);						// Sets world rotation to the given vector.			Ex: world_transform.SetRotatePart(Quat(new_rotation));
 	void		SetWorldScale(const float3& new_scale);								// Sets world scale to the given vector.			Ex: world_transform.Scale(new_scale);
 
+public:																				// --- TRANSFORM MOVEMENT, ROTATION AND SCALE OVER TIME.
 	void		Translate(const float3& velocity);									// Add/Sub to local_position the given vector.		Ex: local_position += velocity;
 	void		Rotate(const Quat& angular_velocity);								// Add/Sub to local_rotation the given quaternion.	Ex: local_rotation += angular_velocity;
 	void		Rotate(const float3& angular_velocity);								// Add/Sub to local_rotation the given vector.		Ex: local_rotation += angular_velocity;

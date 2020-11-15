@@ -366,6 +366,9 @@
     <ClCompile Include="Source\HardwareInfo.cpp">
       <Filter>SourceCode\7_Tools\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\I_Scenes.cpp">
+      <Filter>SourceCode\4_Importers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -793,6 +796,9 @@
     </ClInclude>
     <ClInclude Include="Source\MathStructures.h">
       <Filter>SourceCode\7_Tools\LibIncludes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\I_Scenes.h">
+      <Filter>SourceCode\4_Importers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

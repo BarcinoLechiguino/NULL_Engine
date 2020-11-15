@@ -2,12 +2,8 @@
 #define __I_MESHES_H__
 
 #include <vector>
-#include <map>
 
-#include "Assimp/include/vector3.h"
-#include "Assimp/include/quaternion.h"
-
-#include "VarTypedefs.h"
+#include "Assimp.h"
 
 struct aiScene;
 struct aiNode;
@@ -15,13 +11,6 @@ struct aiMesh;
 
 class R_Mesh;
 struct Transform;
-
-struct aiTransform
-{
-	aiVector3D		position;
-	aiQuaternion	rotation;
-	aiVector3D		scale;
-};
 
 namespace Importer
 {
@@ -38,6 +27,7 @@ namespace Importer
 			void ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Mesh*>& meshes);				// Processes the given aiNode and recursively goes through it's childs.
 
 			void GenerateMesh(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh);				// Stores the data of the given aiMesh* in the given R_Mesh*.
+			void GenerateMesh(const aiNode* ai_node, const aiMesh* ai_mesh, R_Mesh* r_mesh);
 			void GenerateTransform(const aiScene* ai_scene, const aiNode* ai_mesh, Transform* transform);
 
 			void GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);								// Gets the data for the meshes' vertex positions.

@@ -185,9 +185,10 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 	
 	if (!game_objects.empty() && game_object != nullptr)
 	{
+		game_object->CleanUp();													// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
+		
 		if (index != -1)														// If an index was given.
 		{
-			game_object->CleanUp();												// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
 			game_objects.erase(game_objects.begin() + index);					// Delete game object at index.
 			return;
 		}
@@ -197,7 +198,6 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 			{
 				if (game_objects[i] == game_object)								// Iterate game_objects until a match is found.
 				{
-					game_object->CleanUp();
 					game_objects.erase(game_objects.begin() + i);				// Delete the game_object at the current loop index.
 					return;
 				}

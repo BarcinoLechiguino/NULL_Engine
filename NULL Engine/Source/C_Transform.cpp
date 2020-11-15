@@ -146,18 +146,11 @@ void C_Transform::SetWorldTransform(const float4x4& world_transform)
 
 void C_Transform::ImportTransform(const float3& position, const Quat& rotation, const float3& scale)
 {	
-	local_position = position;
-	local_rotation = rotation;
-	local_euler_rotation = local_rotation.ToEulerXYZ();
+	local_position			= position;
+	local_rotation			= rotation;
+	local_scale				= scale;
 	
-	if (scale.x > 1.0f || scale.y > 1.0f || scale.z > 1.0f)
-	{
-		local_scale = float3::one;
-	}
-	else
-	{
-		local_scale = scale;
-	}
+	local_euler_rotation	= local_rotation.ToEulerXYZ();
 
 	local_transform = float4x4::FromTRS(local_position, local_rotation, local_scale);
 	update_world_transform = true;
@@ -177,8 +170,8 @@ Quat C_Transform::GetLocalRotation() const
 
 float3 C_Transform::GetLocalEulerRotation() const
 {
-	//return local_rotation.ToEulerXYZ();
 	return local_euler_rotation;
+	//return local_euler_rotation * RADTODEG;
 }
 
 float3 C_Transform::GetLocalScale() const
@@ -212,8 +205,8 @@ void C_Transform::SetLocalPosition(const float3& new_position)
 	local_position = new_position;
 
 	UpdateLocalTransform();
-	//update_local_transform = true;															// Parameter modifications could be batched to re-calculate the local transform only once.
-}																								// However, this would allow access to the dirty local transform before it can be updated.
+	//update_local_transform = true;																// Parameter modifications could be batched to re-calculate the local transform only once.
+}																									// However, this would allow access to the dirty local transform before it can be updated.
 
 void C_Transform::SetLocalRotation(const Quat& new_rotation)
 {
@@ -224,9 +217,17 @@ void C_Transform::SetLocalRotation(const Quat& new_rotation)
 
 void C_Transform::SetLocalRotation(const float3& new_rotation)
 {
-	local_rotation = Quat::FromEulerXYZ(new_rotation.x, new_rotation.y, new_rotation.z);
+	local_rotation			= Quat::FromEulerXYZ(new_rotation.x, new_rotation.y, new_rotation.z);
+	local_euler_rotation	= new_rotation;
 
-	local_euler_rotation = local_rotation.ToEulerXYZ();
+	UpdateLocalTransform();
+}
+
+void C_Transform::SetLocalEulerRotation(const float3& new_euler_rotation)
+{
+	float3 new_euler = new_euler_rotation * DEGTORAD;
+	local_rotation = Quat::FromEulerXYZ(new_euler.x, new_euler.y, new_euler.z);
+	local_euler_rotation = new_euler;
 
 	UpdateLocalTransform();
 }
@@ -234,7 +235,14 @@ void C_Transform::SetLocalRotation(const float3& new_rotation)
 void C_Transform::SetLocalScale(const float3& new_scale)
 {
 	//local_transform.Scale(local_transform.GetScale().Neg());
-	local_scale = new_scale;
+	if (new_scale.x == 0.0f || new_scale.y == 0.0f || new_scale.z == 0.0f)
+	{
+		local_scale = float3(0.1f, 0.1f, 0.1f);
+	}
+	else
+	{
+		local_scale = new_scale;
+	}
 
 	UpdateLocalTransform();
 }
@@ -263,7 +271,15 @@ void C_Transform::SetWorldRotation(const float3& new_rotation)
 void C_Transform::SetWorldScale(const float3& new_scale)
 {
 	world_transform.Scale(world_transform.GetScale().Neg());
-	world_transform.Scale(new_scale);
+
+	if (new_scale.x == 0.0f || new_scale.y == 0.0f || new_scale.z == 0.0f)
+	{
+		world_transform.Scale(float3(0.1f, 0.1f, 0.1f));
+	}
+	else
+	{
+		world_transform.Scale(new_scale);
+	}
 
 	SyncLocalToWorld();
 }
@@ -287,9 +303,13 @@ void C_Transform::Rotate(const Quat& angular_velocity)
 
 void C_Transform::Rotate(const float3& angular_velocity)
 {
-	local_rotation = local_rotation * Quat::FromEulerXYZ(angular_velocity.x, angular_velocity.y, angular_velocity.z);
-
+	local_rotation = local_rotation * Quat::FromEulerXYZ(angular_velocity.x, angular_velocity.y, angular_velocity.z);		// Only rotate Y? Would only look left/right horizontally.
 	local_euler_rotation += angular_velocity;
+	
+	//float3 local = local_rotation.ToEulerXYZ() * RADTODEG;																// If the above code is used to rotate objects, when used through
+	//float3 euler = local_euler_rotation * RADTODEG;																		// the editor with euler angles, they will get out of sync with
+	//LOG("[SCENE] Local Rotation: { %.3f, %.3f, %.3f }", local.x, local.y, local.z);										// the local_rotation quaternion at some rotations of the Y axis.
+	//LOG("[SCENE] Euler Rotation: { %.3f, %.3f, %.3f }", euler.x, euler.y, euler.z);										// Ex: Y = 95.0f --> X = 180.0f, Z = -180.0f ==> Gets out of sync.
 
 	UpdateLocalTransform();
 }

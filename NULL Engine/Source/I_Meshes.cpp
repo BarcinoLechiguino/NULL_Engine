@@ -119,6 +119,11 @@ void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const ai
 	r_mesh->LoadBuffers();
 }
 
+void Importer::Meshes::Utilities::GenerateMesh(const aiNode* ai_node, const aiMesh* ai_mesh, R_Mesh* r_mesh)
+{
+
+}
+
 void Importer::Meshes::Utilities::GenerateTransform(const aiScene* ai_scene, const aiNode* ai_node, Transform* transform)
 {
 	aiTransform ai_tfm;
