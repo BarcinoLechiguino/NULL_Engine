@@ -36,7 +36,6 @@ namespace Importer
 		namespace Utilities
 		{
 			void ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Mesh*>& meshes);				// Processes the given aiNode and recursively goes through it's childs.
-			//void ProcessNode(const aiScene* scene, aiNode* node, std::map<R_Mesh*, Transform*>& meshes);	// Processes the given aiNode and recursively goes through it's childs.
 
 			void GenerateMesh(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh);				// Stores the data of the given aiMesh* in the given R_Mesh*.
 			void GenerateTransform(const aiScene* ai_scene, const aiNode* ai_mesh, Transform* transform);

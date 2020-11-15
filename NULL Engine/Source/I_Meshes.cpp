@@ -93,11 +93,6 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 	}
 }
 
-//void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::map<R_Mesh*, Transform*>& meshes)		// Shortened with the use of used namespaces, otherwise it would be a bad idea.
-//{
-//
-//}
-
 void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
 {
 	// Allocating the required memory for each vector
@@ -126,13 +121,39 @@ void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const ai
 
 void Importer::Meshes::Utilities::GenerateTransform(const aiScene* ai_scene, const aiNode* ai_node, Transform* transform)
 {
-	aiTransform ai_transform;
+	aiTransform ai_tfm;
 
-	ai_node->mTransformation.Decompose(ai_transform.scale, ai_transform.rotation, ai_transform.position);
+	ai_node->mTransformation.Decompose(ai_tfm.scale, ai_tfm.rotation, ai_tfm.position);								// --- Getting the mesh transform stored in the node.
 
-	transform->position = { ai_transform.position.x, ai_transform.position.y, ai_transform.position.z };
-	transform->rotation = { ai_transform.rotation.x, ai_transform.rotation.y, ai_transform.rotation.z, ai_transform.rotation.w };
-	transform->scale	= { ai_transform.scale.x, ai_transform.scale.y, ai_transform.scale.z };
+	transform->position = { ai_tfm.position.x, ai_tfm.position.y, ai_tfm.position.z };								//
+	transform->rotation = { ai_tfm.rotation.x, ai_tfm.rotation.y, ai_tfm.rotation.z, ai_tfm.rotation.w };			//
+	transform->scale	= { ai_tfm.scale.x, ai_tfm.scale.y, ai_tfm.scale.z };										// --------------------------------------------------
+
+	std::string node_name = ai_node->mName.C_Str();																	// Assimp generates dummy nodes to stack multiple fbx transformations.
+	bool found_dummy_node = true;																					// All those transformations will be collapsed to the first non-dummy node.
+	while (found_dummy_node)																						
+	{
+		found_dummy_node = false;
+
+		if (node_name.find("_$AssimpFbx$_") != std::string::npos && ai_node->mNumChildren == 1)						// All dummy models will contain the "_$AssimpFbx$_" str and only one child.
+		{
+			ai_node = ai_node->mChildren[0];																		// As dummies only have one child, it will be rather easy to select it.
+			
+			ai_node->mTransformation.Decompose(ai_tfm.scale, ai_tfm.rotation, ai_tfm.position);						// --- Getting the transform in the dummy's child node.
+
+			float3	d_position	= { ai_tfm.position.x, ai_tfm.position.y, ai_tfm.position.z };						//
+			Quat	d_rotation	= { ai_tfm.rotation.x, ai_tfm.rotation.y, ai_tfm.rotation.z, ai_tfm.rotation.w };	//
+			float3	d_scale		= { ai_tfm.scale.x, ai_tfm.scale.y, ai_tfm.scale.z };								// ----------------------------------------------------
+
+																													// --- Adding the child's transform to the current one.
+			transform->position.Add(d_position);																	// position = position + d_position;
+			transform->rotation.Mul(d_rotation);																	// rotation = rotation * d_rotation;
+			transform->scale.Mul(d_scale);																			// scale	= scale * d_scale;	(s.x * ds.x, s.y * ds.y, s.z * ds.z);
+
+			node_name = ai_node->mName.C_Str();																		// The dummy's child will be set to be processed next.
+			found_dummy_node = true;
+		}
+	}
 }
 
 void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size)

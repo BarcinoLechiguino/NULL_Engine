@@ -12,6 +12,8 @@ update_local_transform(false),
 update_world_transform(false)
 {	
 	local_transform.Decompose(local_position, local_rotation, local_scale);
+
+	local_euler_rotation = local_rotation.ToEulerXYZ();
 }
 
 C_Transform::~C_Transform()
@@ -101,8 +103,11 @@ void C_Transform::SyncLocalToWorld()
 	}
 
 	local_position	= local_transform.TranslatePart();
-	local_rotation	= local_transform.RotatePart().ToQuat();
+	float3 euler	= local_transform.RotatePart().ToEulerXYZ();
+	local_rotation	= Quat::FromEulerXYZ(euler.x, euler.y, euler.z);
 	local_scale		= local_transform.GetScale();
+
+	local_euler_rotation = local_rotation.ToEulerXYZ();
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
@@ -139,6 +144,25 @@ void C_Transform::SetWorldTransform(const float4x4& world_transform)
 	SyncLocalToWorld();
 }
 
+void C_Transform::ImportTransform(const float3& position, const Quat& rotation, const float3& scale)
+{	
+	local_position = position;
+	local_rotation = rotation;
+	local_euler_rotation = local_rotation.ToEulerXYZ();
+	
+	if (scale.x > 1.0f || scale.y > 1.0f || scale.z > 1.0f)
+	{
+		local_scale = float3::one;
+	}
+	else
+	{
+		local_scale = scale;
+	}
+
+	local_transform = float4x4::FromTRS(local_position, local_rotation, local_scale);
+	update_world_transform = true;
+}
+
 // --- POSITION, ROTATION AND SCALE METHODS
 // -- GET METHODS
 float3 C_Transform::GetLocalPosition() const
@@ -153,7 +177,8 @@ Quat C_Transform::GetLocalRotation() const
 
 float3 C_Transform::GetLocalEulerRotation() const
 {
-	return local_rotation.ToEulerXYZ();
+	//return local_rotation.ToEulerXYZ();
+	return local_euler_rotation;
 }
 
 float3 C_Transform::GetLocalScale() const
@@ -201,11 +226,14 @@ void C_Transform::SetLocalRotation(const float3& new_rotation)
 {
 	local_rotation = Quat::FromEulerXYZ(new_rotation.x, new_rotation.y, new_rotation.z);
 
+	local_euler_rotation = local_rotation.ToEulerXYZ();
+
 	UpdateLocalTransform();
 }
 
 void C_Transform::SetLocalScale(const float3& new_scale)
 {
+	//local_transform.Scale(local_transform.GetScale().Neg());
 	local_scale = new_scale;
 
 	UpdateLocalTransform();
@@ -252,12 +280,16 @@ void C_Transform::Rotate(const Quat& angular_velocity)
 {
 	local_rotation = local_rotation * angular_velocity;
 
+	local_euler_rotation += angular_velocity.ToEulerXYZ();
+
 	UpdateLocalTransform();
 }
 
 void C_Transform::Rotate(const float3& angular_velocity)
 {
 	local_rotation = local_rotation * Quat::FromEulerXYZ(angular_velocity.x, angular_velocity.y, angular_velocity.z);
+
+	local_euler_rotation += angular_velocity;
 
 	UpdateLocalTransform();
 }
