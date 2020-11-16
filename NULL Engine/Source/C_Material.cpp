@@ -55,6 +55,8 @@ void C_Material::SetMaterial(R_Material* r_material)
 	material = r_material;
 }
 
+void C_Material::SetMaterialColour()
+
 std::string C_Material::GetTexturePath() const
 {
 	if (material != nullptr)

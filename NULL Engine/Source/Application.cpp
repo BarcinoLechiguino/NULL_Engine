@@ -32,7 +32,7 @@ file_system(nullptr)
 	// Modules -----------------------------------
 	window			= new M_Window();
 	input			= new M_Input();
-	scene		= new M_Scene();
+	scene			= new M_Scene();
 	editor			= new M_Editor();
 	renderer		= new M_Renderer3D();
 	camera			= new M_Camera3D();
@@ -71,7 +71,11 @@ file_system(nullptr)
 	dt						= 0.0f;
 	display_framerate_data	= false;
 
+	// Game Mode variables
+	play					= false;
 	pause					= false;
+	step					= false;
+	stop					= false;
 
 	PERF_TIMER_PEEK(perf_timer);
 }

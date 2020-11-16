@@ -109,16 +109,16 @@ bool Importer::Materials::DevIL::Import(const char* path, R_Material* r_material
 				success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 				if (success)																	// It is checked that the currently loaded image's pixel data is in RGBA format.
 				{
-					tex_id = DevIL::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH),	// Loading a texture into OpenGL buffers. Use data, for now it does not work though.
-														ilGetInteger(IL_IMAGE_HEIGHT), 
-														ilGetInteger(IL_IMAGE_FORMAT), 
-														ilGetInteger(IL_IMAGE_FORMAT),
-														GL_TEXTURE_2D, GL_NEAREST, GL_REPEAT);
+					tex_id = DevIL::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH),	// Loading a texture into OpenGL buffers. Use data buffer, for now it does not work though.
+																ilGetInteger(IL_IMAGE_HEIGHT), 
+																ilGetInteger(IL_IMAGE_FORMAT), 
+																ilGetInteger(IL_IMAGE_FORMAT),
+																GL_TEXTURE_2D, GL_NEAREST, GL_REPEAT);
 
 					if (tex_id != 0)
 					{
-						r_material->tex_data.path	= path;											// Filling the Texture struct in R_Material* with the data from the loaded texture.
-						r_material->tex_data.type	= TEXTURE_TYPE::DIFFUSE;						// For now only diffuse textures will be used.
+						r_material->tex_data.path	= path;										// Filling the Texture struct in R_Material* with the data from the loaded texture.
+						r_material->tex_data.type	= TEXTURE_TYPE::ALBEDO;						// For now only diffuse textures will be used.
 						r_material->tex_data.id		= tex_id;
 						r_material->tex_data.width	= ilGetInteger(IL_IMAGE_WIDTH);
 						r_material->tex_data.height = ilGetInteger(IL_IMAGE_HEIGHT);

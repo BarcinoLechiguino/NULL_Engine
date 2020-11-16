@@ -455,9 +455,6 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 	//glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glMultMatrixf((GLfloat*)&transform.Transposed());
-	//glTranslatef(transform.TranslatePart().x, transform.TranslatePart().y, transform.TranslatePart().z);
-	//glRotatef(0.0f, 0.0f, 0.0f, 0.0f);
-	//glScalef(1.0f, 1.0f, 1.0f);
 
 	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
@@ -467,7 +464,11 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 		SetGLFlag(GL_TEXTURE_2D, false);
 	}
 
-	if (texture_id == 0)
+	if (texture_id == -1)
+	{
+		glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+	}
+	else if (texture_id == 0)
 	{
 		glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
 	}
@@ -507,6 +508,11 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 	glPopMatrix();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, R_Material* material)
+{
+
 }
 
 void M_Renderer3D::LoadDebugTexture()

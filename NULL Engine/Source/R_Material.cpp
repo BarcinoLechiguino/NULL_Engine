@@ -5,6 +5,8 @@
 R_Material::R_Material() : Resource()
 {
 	//tex_data = { "NONE", TEXTURE_TYPE::NONE, 0, 0, 0 };
+
+	diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 }
 
 R_Material::~R_Material()

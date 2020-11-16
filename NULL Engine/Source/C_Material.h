@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Color.h"
+
 #include "Component.h"
 
 class GameObject;
@@ -23,6 +25,9 @@ public:
 	R_Material*		GetMaterial() const;
 	void			SetMaterial(R_Material* material);
 
+	void			SetMaterialColour(const Color& new_colour);
+	void			SetMaterialColour(const float& r, const float& g, const float& b, const float& a);
+	
 	std::string		GetTexturePath() const;
 	std::string		GetTextureFile() const;
 	uint			GetTextureId() const;
@@ -40,6 +45,7 @@ public:
 
 private:
 	R_Material* material;											// Currently used material.
+	//R_Texture* texture;
 };
 
 #endif // !__C_MATERIAL_H__

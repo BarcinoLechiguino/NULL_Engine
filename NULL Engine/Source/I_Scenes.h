@@ -14,7 +14,6 @@ namespace Importer
 {
 	namespace Scenes	// Maybe call it Models? Are Models a separate thing?
 	{
-		void Import(const aiScene* ai_scene);
 		void Import(const char* path, std::vector<GameObject*>& game_object_nodes);
 
 		void Save(const aiScene* ai_scene, char** buffer);
@@ -27,8 +26,8 @@ namespace Importer
 			
 			void ImportTransform(const aiNode* ai_node, GameObject* game_object);
 			void ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);
-			void ImportMaterials(const char* scene_path, GameObject* game_object, R_Mesh* r_mesh);
 			void ImportMaterials(const char* scene_path, GameObject* game_object);
+			void ImportTextures(const char* scene_path, GameObject* game_object);
 		}
 	}
 }

@@ -89,6 +89,7 @@
     <ClCompile Include="Source\M_Window.cpp" />
     <ClCompile Include="Source\M_FileSystem.cpp" />
     <ClCompile Include="Source\PathNode.cpp" />
+    <ClCompile Include="Source\R_Texture.cpp" />
     <ClCompile Include="Source\Time.cpp" />
     <ClCompile Include="Source\T_PerfectTimer.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Source\OpenGL.h" />
     <ClInclude Include="Source\PathNode.h" />
     <ClInclude Include="Source\Profiler.h" />
+    <ClInclude Include="Source\R_Texture.h" />
     <ClInclude Include="Source\Time.h" />
     <ClInclude Include="Source\T_PerfectTimer.h" />
     <ClInclude Include="Source\Primitive.h" />

@@ -216,8 +216,8 @@ void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const
 {
 	if (ai_mesh->mMaterialIndex >= 0)
 	{
-		aiMaterial* material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
-		uint num_textures = material->GetTextureCount(aiTextureType_DIFFUSE);
+		aiMaterial* material	= ai_scene->mMaterials[ai_mesh->mMaterialIndex];
+		uint num_textures		= material->GetTextureCount(aiTextureType_DIFFUSE);
 
 		for (uint i = 0; i < num_textures; ++i)
 		{
@@ -241,10 +241,11 @@ void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const
 				r_mesh->tex_paths.push_back(file_path.c_str());
 			}
 
-
 			//r_mesh->tex_paths.push_back(path.C_Str());
 
 			LOG("[STATUS] Mesh texture file name %u is %s", i, path.C_Str());
 		}
+
+		
 	}
 }

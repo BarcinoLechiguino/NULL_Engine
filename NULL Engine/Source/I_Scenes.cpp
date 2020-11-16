@@ -34,18 +34,6 @@
 
 using namespace Importer::Scenes;																		// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
-void Importer::Scenes::Import(const aiScene* ai_scene)
-{
-	if (ai_scene == nullptr || ai_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !ai_scene->mRootNode)
-	{
-		LOG("[ERROR] Error loading scene %s", aiGetErrorString());
-
-		return;
-	}
-
-	//Utilities::ProcessNode(ai_scene, ai_scene->mRootNode);
-}
-
 void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_object_nodes)
 {
 	const char* scene_path = path;
@@ -169,32 +157,6 @@ void Importer::Scenes::Utilities::ImportMeshes(const char* scene_file, const aiS
 	}
 
 	LOG("[IMPORTER] Imported the meshes of node: %s", ai_node->mName.C_Str());
-}
-
-void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameObject* game_object, R_Mesh* r_mesh)
-{
-	C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);			// 
-
-	for (uint i = 0; i < r_mesh->tex_paths.size(); ++i)
-	{
-		R_Material* r_material = new R_Material();															// 
-
-		std::string dir_path;																				//
-		App->file_system->SplitFilePath(scene_path, &dir_path, nullptr, nullptr);							//
-		dir_path += r_mesh->tex_paths[i];																	//
-
-		Importer::Materials::DevIL::Import(dir_path.c_str(), r_material);									//
-
-		if (r_material->tex_data.id != 0)
-		{
-			if (c_material->GetMaterial() == nullptr)
-			{
-				c_material->SetMaterial(r_material);
-			}
-
-			c_material->textures.push_back(r_material);
-		}
-	}
 }
 
 void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameObject* game_object)

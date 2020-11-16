@@ -43,11 +43,14 @@ bool M_FileSystem::Init(Configuration& config)
 	char* write_path = SDL_GetPrefPath(App->GetOrganizationName(), App->GetEngineName());	// SDL_GetPrefPath() returns the user-and-app-specific path where files can be written.
 
 	// Turn this on while in game mode
-	/*PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_setWriteDir(write_path);
-	if (result == PHYSFS_RESULT::FAILURE)
+	if (App->play)
 	{
-		LOG("[error] File System error while creating write dir: %s\n", PHYSFS_getLastError());
-	}*/
+		PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_setWriteDir(write_path);
+		if (result == PHYSFS_RESULT::FAILURE)
+		{
+			LOG("[error] File System error while creating write dir: %s\n", PHYSFS_getLastError());
+		}
+	}
 
 	SDL_free(write_path);
 	
@@ -112,6 +115,8 @@ bool M_FileSystem::Exists(const char* file) const
 
 void M_FileSystem::CreateLibraryDirectories()
 {
+	//CreateDir(ASSET_MODELS_PATH);
+	
 	CreateDir(LIBRARY_PATH);
 	CreateDir(ANIMATIONS_PATH);
 	CreateDir(BONES_PATH);

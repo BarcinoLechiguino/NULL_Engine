@@ -53,7 +53,7 @@ bool C_Mesh::Render()
 	C_Transform* transform	= owner->GetTransformComponent();
 	C_Material* material	= owner->GetMaterialComponent();
 
-	uint tex_id				= 0;
+	uint tex_id				= -1;
 	bool tex_is_active		= true;
 
 	if (material != nullptr)

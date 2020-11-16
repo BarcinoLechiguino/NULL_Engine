@@ -2,11 +2,12 @@
 #define __R_MATERIAL_H__
 
 #include "Resource.h"
+#include "Color.h"
 
 enum class TEXTURE_TYPE									// The enum values are set according to the values of Assimp's aiTextureType enum.
 {
 	NONE		= 0x0,
-	DIFFUSE		= 0x1,
+	ALBEDO		= 0x1,
 	SPECULAR	= 0x2,
 	UNKNOWN		= 0xC
 };
@@ -33,6 +34,7 @@ public:
 
 public:
 	Texture tex_data;
+	Color	diffuse;
 
 private:
 	

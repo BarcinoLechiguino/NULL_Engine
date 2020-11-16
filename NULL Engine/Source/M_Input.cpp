@@ -197,6 +197,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 						App->scene->ApplyNewTextureToSelectedGameObject(norm_path.c_str());
 					}
 
+					norm_path.clear();
 					extension.clear();
 				}
 				else

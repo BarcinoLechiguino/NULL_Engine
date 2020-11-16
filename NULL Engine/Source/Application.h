@@ -79,7 +79,11 @@ public:
 	M_Camera3D*				camera;
 	M_FileSystem*			file_system;
 
+	bool					play;
 	bool					pause;										// Will keep track of whether or not the applcation is currently paused.
+	bool					step;
+	bool					stop;
+
 	bool					quit;										// Will keep track of whether or not the application has to close.
 	bool					debug;										// Will keep track of whether or not the application is in debug mode.
 
