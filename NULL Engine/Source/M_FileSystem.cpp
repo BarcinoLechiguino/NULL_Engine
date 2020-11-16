@@ -342,6 +342,21 @@ std::string M_FileSystem::NormalizePath(const char* full_path) const
 	return normalized_path;
 }
 
+bool M_FileSystem::PathIsNormalized(const char* full_path) const
+{
+	std::string path(full_path);
+
+	for (uint i = 0; i < path.size(); ++i)
+	{
+		if (path[i] == '\\')
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void M_FileSystem::SplitFilePath(const char* full_path, std::string* path, std::string* file, std::string* extension) const
 {
 	if (full_path != nullptr)
@@ -642,4 +657,37 @@ std::string M_FileSystem::GetFileExtension(const char* path)
 	}
 
 	return extension;
+}
+
+std::string M_FileSystem::GetFileAndExtension(const char* path)
+{
+	std::string full_path	= path;
+	std::string file		= "";
+	std::string extension	= "";															// Just for safety check purposes.
+
+	NormalizePath(full_path.c_str());														// Will swap all '\\' for '/'.														
+
+	size_t file_start		= full_path.find_last_of("/");									// Gets the position of the last '/' of the string. Returns npos if none was found.
+	size_t extension_start	= full_path.find_last_of(".");									// Gets the position of the last '.' of the string. Returns npos if none was found.
+
+	if (file_start != std::string::npos)
+	{
+		file = full_path.substr(file_start + 1, full_path.size());							// Will get the string past the last slash
+	}
+	else
+	{
+		LOG("[WARNING] Path %s does not have any file!", path);
+	}
+
+	if (extension_start != std::string::npos)
+	{
+		extension = full_path.substr(extension_start + 1, full_path.size());				// Will get the string past the last dot of the path string. Ex: File.ext --> ext
+
+		if (extension == "")
+		{
+			LOG("[WARNING] Path %s does not have any file extension!", path);
+		}
+	}
+
+	return file;
 }

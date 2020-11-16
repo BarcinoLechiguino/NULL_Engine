@@ -12,6 +12,11 @@
 
 #include "Application.h"
 #include "M_FileSystem.h"
+#include "M_Scene.h"												// TMP
+
+#include "Resource.h"												// See if they can be delegated to the other importers.
+#include "R_Mesh.h"													// 
+#include "R_Material.h"												// ----------------------------------------------------
 
 #include "GameObject.h"
 #include "C_Transform.h"
@@ -43,7 +48,9 @@ void Importer::Scenes::Import(const aiScene* ai_scene)
 
 void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_object_nodes)
 {
-	//const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
+	const char* scene_path = path;
+	
+	LOG("[STATUS] Importing Scene: %s", App->file_system->GetFileAndExtension(path).c_str());
 
 	char* buffer	= nullptr;
 	uint file_size	= App->file_system->Load(path, &buffer);
@@ -59,27 +66,49 @@ void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_o
 			return;
 		}
 
-		Utilities::ProcessNode(ai_scene, ai_scene->mRootNode, game_object_nodes);
+		Utilities::ProcessNode(path, ai_scene, ai_scene->mRootNode, game_object_nodes, App->scene->GetRootGameObject());
 	}
 }
 
-void Importer::Scenes::Utilities::ProcessNode(const aiScene* ai_scene, const aiNode* ai_node, std::vector<GameObject*>& game_object_nodes)
+void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, std::vector<GameObject*>& game_objects, GameObject* parent)
 {
+	std::string scene_file = App->file_system->GetFileAndExtension(scene_path);
+	
 	GameObject* game_object = new GameObject();
 	
-	// Load Transform
-	Utilities::ImportTransform(ai_node, game_object);
+	if (ai_node == ai_scene->mRootNode)
+	{
+		game_object->SetName(scene_file.c_str());
+	}
+	else
+	{
+		game_object->SetName(ai_node->mName.C_Str());
+	}
+	
+	game_object->parent = parent;
 
-	// Load Mesh
-	Utilities::ImportMeshes(ai_node, game_object);
+	if (parent != nullptr)
+	{
+		parent->AddChild(game_object);
+	}
 
-	// Load Texture?
+	Utilities::ImportTransform(ai_node, game_object);														// Load Transforms
+	
+	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
+	
+	Utilities::ImportMaterials(scene_path, game_object);													// Load Textures
 
+	game_objects.push_back(game_object);
 
-	game_object_nodes.push_back(game_object);
+	for (uint i = 0; i < ai_node->mNumChildren; ++i)
+	{
+		Utilities::ProcessNode(scene_path, ai_scene, ai_node->mChildren[i], game_objects, game_object);
+	}
+
+	scene_file.clear();
 }
 
-void Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObject* game_object_node)
+void Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObject* game_object)
 {
 	aiTransform ai_t;																						// Transform structure for Assimp. aiVector3D and aiQuaternion.
 	Transform	ma_t;																						// Transform structure for MathGeoLib. float3 and Quat.
@@ -90,6 +119,7 @@ void Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObj
 	ma_t.rotation	= { ai_t.rotation.x, ai_t.rotation.y, ai_t.rotation.z, ai_t.rotation.w };				// 
 	ma_t.scale		= { ai_t.scale.x, ai_t.scale.y, ai_t.scale.z };											// ---------------------------------------------
 
+	std::string root_node = ai_node->mName.C_Str();															// Will be used for LOG Debug.
 	std::string node_name = ai_node->mName.C_Str();															// Assimp generates dummy nodes to store multiple FBX transformations.
 	bool found_dummy_node = true;																			// All those transformations will be collapsed to the first non_dummy node.
 	while (found_dummy_node) 
@@ -113,15 +143,93 @@ void Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObj
 
 			node_name			= ai_node->mName.C_Str();													// Setting the next node name to check with the name of the dummy node.
 			found_dummy_node	= true;																		// Setting it to true so the loop is run for another iteration.
+
+			game_object->is_dummy = true;
 		}
 	}
 
-	game_object_node->GetTransformComponent()->ImportTransform(ma_t.position, ma_t.rotation, ma_t.scale);	// Importing the final Transform into the game object's transform component.
+	game_object->GetTransformComponent()->ImportTransform(ma_t.position, ma_t.rotation, ma_t.scale);		// Importing the final Transform into the game object's transform component.
+
+	LOG("[IMPORTER] Imported the transforms of node: %s", root_node.c_str());
 }
 
-void Importer::Scenes::Utilities::ImportMeshes(const aiNode* ai_node, GameObject* game_object_node)
+void Importer::Scenes::Utilities::ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
 {
+	std::vector<R_Mesh*> meshes;
+	Importer::Meshes::Utilities::GetMeshesFromNode(ai_scene, ai_node, meshes);								//
+	
+	for (uint i = 0; i < meshes.size(); ++i)																//
+	{
+		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);						//
 
+		c_mesh->SetMesh(meshes[i]);																			// 
+		c_mesh->SetMeshPath(scene_file);																	// 
+
+		//Utilities::ImportMaterials(scene_path, game_object, meshes[i]);									// 
+	}
+
+	LOG("[IMPORTER] Imported the meshes of node: %s", ai_node->mName.C_Str());
+}
+
+void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameObject* game_object, R_Mesh* r_mesh)
+{
+	C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);			// 
+
+	for (uint i = 0; i < r_mesh->tex_paths.size(); ++i)
+	{
+		R_Material* r_material = new R_Material();															// 
+
+		std::string dir_path;																				//
+		App->file_system->SplitFilePath(scene_path, &dir_path, nullptr, nullptr);							//
+		dir_path += r_mesh->tex_paths[i];																	//
+
+		Importer::Materials::DevIL::Import(dir_path.c_str(), r_material);									//
+
+		if (r_material->tex_data.id != 0)
+		{
+			if (c_material->GetMaterial() == nullptr)
+			{
+				c_material->SetMaterial(r_material);
+			}
+
+			c_material->textures.push_back(r_material);
+		}
+	}
+}
+
+void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameObject* game_object)
+{
+	std::vector<C_Mesh*> c_meshes = game_object->GetAllMeshComponents();										// 
+
+	for (uint i = 0; i < c_meshes.size(); ++i)
+	{
+		C_Material* c_material	= (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);			// For now, creating more than one material component is not allowed.
+
+		if (c_material != nullptr)
+		{
+			R_Mesh* r_mesh = c_meshes[i]->GetMesh();															// 
+			for (uint j = 0; j < r_mesh->tex_paths.size(); ++j)
+			{
+				R_Material* r_material = new R_Material();														// 
+
+				std::string dir_path;																			//
+				App->file_system->SplitFilePath(scene_path, &dir_path, nullptr, nullptr);						//
+				dir_path += r_mesh->tex_paths[j];																//
+
+				Importer::Materials::DevIL::Import(dir_path.c_str(), r_material);								//
+
+				if (r_material != nullptr && r_material->tex_data.id != 0)										//
+				{
+					if (c_material->GetMaterial() == nullptr)													//
+					{
+						c_material->SetMaterial(r_material);													//
+					}
+
+					c_material->textures.push_back(r_material);													//
+				}
+			}
+		}
+	}
 }
 
 void Importer::Scenes::Save(const aiScene* ai_scene, char** buffer)

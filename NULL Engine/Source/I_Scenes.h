@@ -6,11 +6,13 @@
 struct aiScene;
 struct aiNode;
 
+class R_Mesh;
+
 class GameObject;
 
 namespace Importer
 {
-	namespace Scenes	// Maybe call it Models?
+	namespace Scenes	// Maybe call it Models? Are Models a separate thing?
 	{
 		void Import(const aiScene* ai_scene);
 		void Import(const char* path, std::vector<GameObject*>& game_object_nodes);
@@ -21,10 +23,12 @@ namespace Importer
 
 		namespace Utilities
 		{
-			void ProcessNode(const aiScene* ai_scene, const aiNode* ai_node, std::vector<GameObject*>& game_object_nodes);
+			void ProcessNode(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, std::vector<GameObject*>& game_objects, GameObject* parent);
 			
-			void ImportTransform(const aiNode* ai_node, GameObject* game_object_node);
-			void ImportMeshes(const aiNode* ai_node, GameObject* game_object_node);
+			void ImportTransform(const aiNode* ai_node, GameObject* game_object);
+			void ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);
+			void ImportMaterials(const char* scene_path, GameObject* game_object, R_Mesh* r_mesh);
+			void ImportMaterials(const char* scene_path, GameObject* game_object);
 		}
 	}
 }

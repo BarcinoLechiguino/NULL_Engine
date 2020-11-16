@@ -17,7 +17,7 @@ M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
 	Y					= vec3(0.0f, 1.0f, 0.0f);									//
 	Z					= vec3(0.0f, 0.0f, 1.0f);									//
 
-	position_origin		= vec3(15.0f, 10.0f, 15.0f);								//
+	position_origin		= vec3(60.0f, 40.0f, 60.0f);								//
 	reference_origin	= vec3(0.0f, 0.0f, 0.0f);									//
 	position			= position_origin;											// 
 	reference			= reference_origin;											// 

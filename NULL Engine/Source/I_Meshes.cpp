@@ -4,7 +4,6 @@
 // ----------------------------------------------------
 
 #include "Assimp.h"
-#include "MathStructures.h"
 #include "Log.h"
 
 #include "Application.h"
@@ -64,10 +63,8 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 		if (ai_mesh != nullptr && ai_mesh->HasFaces())												// Checks that the aiMesh is valid.
 		{
 			R_Mesh* r_mesh			= new R_Mesh();													// Generates a new R_Mesh.
-			r_mesh->base_transform	= new Transform();
 
-			Utilities::GenerateMesh(scene, ai_mesh, r_mesh);										// Sets the given r_mesh with the data stored in ai_mesh.
-			Utilities::GenerateTransform(scene, node, r_mesh->base_transform);
+			Utilities::ImportMeshData(scene, ai_mesh, r_mesh);										// Sets the given r_mesh with the data stored in ai_mesh.
 
 			if (r_mesh != nullptr)																	// Checks that the R_Mesh* is valid/stores data.
 			{
@@ -83,7 +80,7 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 		}
 		else
 		{
-			LOG("[ERROR] Could not generate a mesh during Import: aiMesh* was nullptr and/or did not have any faces!");
+			LOG("[ERROR] Could not generate a mesh during Import: aiMesh* was nullptr and did not have any faces!");
 		}
 	}
 
@@ -93,7 +90,28 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 	}
 }
 
-void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
+void Importer::Meshes::Utilities::GetMeshesFromNode(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes)
+{
+	for (uint i = 0; i < node->mNumMeshes; ++i)
+	{
+		aiMesh* ai_mesh = scene->mMeshes[node->mMeshes[i]];
+
+		if (ai_mesh != nullptr && ai_mesh->HasFaces())
+		{
+			R_Mesh* r_mesh = new R_Mesh();
+
+			Utilities::ImportMeshData(scene, ai_mesh, r_mesh);
+
+			meshes.push_back(r_mesh);
+		}
+		else
+		{
+			LOG("[ERROR] Node %s's Mesh %d could not be generated: aiMesh* was nullptr and/or did not have any faces!", node->mName.C_Str(), i);
+		}
+	}
+}
+
+void Importer::Meshes::Utilities::ImportMeshData(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
 {
 	// Allocating the required memory for each vector
 	uint vertices_size = ai_mesh->mNumVertices * 3;											// There will be 3 coordinates per vertex, hence the size will be numVertices * 3.
@@ -109,63 +127,21 @@ void Importer::Meshes::Utilities::GenerateMesh(const aiScene* ai_scene, const ai
 	r_mesh->indices.resize(indices_size);													// Allocating in advance the required memory to store all the indices.
 
 	// Loading the data from the mesh into the corresponding vectors
-	Utilities::GetVertices(ai_mesh, r_mesh, vertices_size);									// 
-	Utilities::GetNormals(ai_mesh, r_mesh, normals_size);									// 
-	Utilities::GetTexCoords(ai_mesh, r_mesh, tex_coords_size);								// 
-	Utilities::GetIndices(ai_mesh, r_mesh, indices_size);									// 
+	Utilities::GetVertices(ai_mesh, r_mesh, vertices_size);									// Gets the vertices data stored in the given ai_mesh.
+	Utilities::GetNormals(ai_mesh, r_mesh, normals_size);									// Gets the normals data stored in the given ai_mesh
+	Utilities::GetTexCoords(ai_mesh, r_mesh, tex_coords_size);								// Gets the tex coords data stored in the given ai_mesh.
+	Utilities::GetIndices(ai_mesh, r_mesh, indices_size);									// Gets the indices data stored in the given ai_mesh.
 
 	Utilities::GetTexturePaths(ai_scene, ai_mesh, r_mesh);									// Will get the filename associated with ai_mesh and store it inside r_mesh's tex path vector.
 
 	r_mesh->LoadBuffers();
 }
 
-void Importer::Meshes::Utilities::GenerateMesh(const aiNode* ai_node, const aiMesh* ai_mesh, R_Mesh* r_mesh)
-{
-
-}
-
-void Importer::Meshes::Utilities::GenerateTransform(const aiScene* ai_scene, const aiNode* ai_node, Transform* transform)
-{
-	aiTransform ai_tfm;
-
-	ai_node->mTransformation.Decompose(ai_tfm.scale, ai_tfm.rotation, ai_tfm.position);								// --- Getting the mesh transform stored in the node.
-
-	transform->position = { ai_tfm.position.x, ai_tfm.position.y, ai_tfm.position.z };								//
-	transform->rotation = { ai_tfm.rotation.x, ai_tfm.rotation.y, ai_tfm.rotation.z, ai_tfm.rotation.w };			//
-	transform->scale	= { ai_tfm.scale.x, ai_tfm.scale.y, ai_tfm.scale.z };										// --------------------------------------------------
-
-	std::string node_name = ai_node->mName.C_Str();																	// Assimp generates dummy nodes to stack multiple fbx transformations.
-	bool found_dummy_node = true;																					// All those transformations will be collapsed to the first non-dummy node.
-	while (found_dummy_node)																						
-	{
-		found_dummy_node = false;
-
-		if (node_name.find("_$AssimpFbx$_") != std::string::npos && ai_node->mNumChildren == 1)						// All dummy models will contain the "_$AssimpFbx$_" str and only one child.
-		{
-			ai_node = ai_node->mChildren[0];																		// As dummies only have one child, it will be rather easy to select it.
-			
-			ai_node->mTransformation.Decompose(ai_tfm.scale, ai_tfm.rotation, ai_tfm.position);						// --- Getting the transform in the dummy's child node.
-
-			float3	d_position	= { ai_tfm.position.x, ai_tfm.position.y, ai_tfm.position.z };						//
-			Quat	d_rotation	= { ai_tfm.rotation.x, ai_tfm.rotation.y, ai_tfm.rotation.z, ai_tfm.rotation.w };	//
-			float3	d_scale		= { ai_tfm.scale.x, ai_tfm.scale.y, ai_tfm.scale.z };								// ----------------------------------------------------
-
-																													// --- Adding the child's transform to the current one.
-			transform->position.Add(d_position);																	// position = position + d_position;
-			transform->rotation.Mul(d_rotation);																	// rotation = rotation * d_rotation;
-			transform->scale.Mul(d_scale);																			// scale	= scale * d_scale;	(s.x * ds.x, s.y * ds.y, s.z * ds.z);
-
-			node_name = ai_node->mName.C_Str();																		// The dummy's child will be set to be processed next.
-			found_dummy_node = true;
-		}
-	}
-}
-
 void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size)
 {
 	if (ai_mesh->HasPositions())
 	{
-		memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * size);	// &r_mesh->vertices[0] gets a pointer to the beginning of the vector. mVertices is a 3D vector.
+		memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * size);										// &r_mesh->vertices[0] gets a pointer to the beginning of the vector.
 
 		LOG("[STATUS] Imported %u position vertices!", size);
 	}
@@ -195,8 +171,8 @@ void Importer::Meshes::Utilities::GetTexCoords(const aiMesh* ai_mesh, R_Mesh* r_
 	{
 		for (uint i = 0; i < ai_mesh->mNumVertices; ++i)
 		{
-			r_mesh->tex_coords[i * 2] = ai_mesh->mTextureCoords[0][i].x;
-			r_mesh->tex_coords[i * 2 + 1] = ai_mesh->mTextureCoords[0][i].y;
+			r_mesh->tex_coords[i * 2]		= ai_mesh->mTextureCoords[0][i].x;
+			r_mesh->tex_coords[i * 2 + 1]	= ai_mesh->mTextureCoords[0][i].y;
 		}
 
 		LOG("[STATUS] Imported %u texture coordinates!", size);

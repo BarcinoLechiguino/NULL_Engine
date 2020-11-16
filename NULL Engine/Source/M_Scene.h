@@ -29,34 +29,27 @@ public:
 	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
 	void			DeleteGameObject(GameObject* game_object, uint index = -1);
 
-	bool			CreateGameObjectsFromModel(const char* path);
-	bool			GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes);
-	bool			GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh);
-	//bool			GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::map<R_Mesh*, Transform*>& meshes);
-	//bool			GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh, Transform* mesh_transform);		
-
+	bool			ImportScene(const char* path);
 	bool			ApplyNewTextureToSelectedGameObject(const char* path);
 
 	// --- ROOT GAME OBJECT METHODS ---
-	GameObject*		GetRootGameObject() const;
-	void			SetRootGameObject(GameObject* game_object);
+	GameObject*		GetRootGameObject() const;																//
+	void			SetRootGameObject(GameObject* game_object);												//
 	
-	void			ChangeSceneName(const char* new_name);
+	void			ChangeSceneName(const char* new_name);													//
 
 	// --- SELECTED GAME OBJECT METHODS ---
-	GameObject*		GetSelectedGameObject() const;
-	void			SetSelectedGameObject(GameObject* game_object);
+	GameObject*		GetSelectedGameObject() const;															// 
+	void			SetSelectedGameObject(GameObject* game_object);											// 
 
-	void			DeleteSelectedGameObject();
-
-	//bool			NameHasDuplicate(const char* name);
-	//void			AddDuplicateNumberToName(const char* name);
+	void			DeleteSelectedGameObject();																// 
 
 private:
 	void			HandleDebugInput();
 	void			DebugSpawnPrimitive(Primitive* p);
 
 public:
+	int a;
 
 private:
 	std::vector<GameObject*>	game_objects;

@@ -17,6 +17,7 @@ bool R_Material::CleanUp()
 	bool ret = true;
 
 	tex_data.path.clear();
+	tex_data.file.clear();
 
 	glDeleteTextures(1, (GLuint*)&tex_data.id);													// Free texture buffers.
 
@@ -26,6 +27,7 @@ bool R_Material::CleanUp()
 Texture::Texture()
 {
 	path	= "NONE";
+	file	= "NONE";
 	type	= TEXTURE_TYPE::NONE;
 	id		= 0;
 	width	= 0;

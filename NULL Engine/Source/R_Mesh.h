@@ -1,10 +1,7 @@
 #ifndef __R_MESH_H__
 #define __R_MESH_H__
 
-#include "MathStructures.h"
 #include "Resource.h"
-
-struct Transform;
 
 class R_Mesh : public Resource
 {
@@ -40,8 +37,6 @@ public:
 
 	bool						draw_normals;
 	std::string					path;
-
-	Transform*					base_transform;			// Imported transform from Assimp. Represents the origin point, rotation and scale of the mesh. Add it here?
 
 	AABB aabb;
 

@@ -39,19 +39,22 @@ public:
 	Component*		GetComponent(COMPONENT_TYPE type);									// Iterates through the components vector and returns the component that matches the given type.
 	const char*		GetComponentNameFromType(COMPONENT_TYPE type);						// Returns a string matching the given type. Mainly used for debug purposes (LOG).
 	
+	std::vector<Component*> GetAllComponentsWithType(COMPONENT_TYPE type);				// Returns a vector with all the components of the given type that the GameObject currently has.
+	
 	C_Transform*	GetTransformComponent();											// Returns the GameObject's Transform Component.	Returns nullptr on ERROR.
 	C_Mesh*			GetMeshComponent();													// Returns the GameObject's Mesh Component.			Returns nullptr on ERROR.
 	C_Material*		GetMaterialComponent();												// Returns the GameObject's Material Component.		Returns nullptr on ERROR.
 	C_Light*		GetLightComponent();												// Returns the GameObject's Light Component.		Returns nullptr on ERROR.
 	C_Camera*		GetCameraComponent();												// Returns the GameObject's Camera Component.		Returns nullptr on ERROR.
 
-	void			SetID(uint id);
+	std::vector<C_Mesh*> GetAllMeshComponents();
 
 public:																					// --- GETTERS AND SETTERS
 	const char* GetName() const;
 	bool		IsActive() const;
 	bool		IsStatic() const;
 
+	void		SetID(uint id);
 	void		SetName(const char* new_name);
 	void		SetIsActive(const bool& set_to);
 	void		SetIsStatic(const bool& set_to);
@@ -68,6 +71,7 @@ public:
 	C_Transform*				transform;												// Don't know what to do with this. Maybe keeping it like Unity? Or have it like the rest of components?
 
 	bool						is_root_object;											// Will be set to true if this GameObject is M_Scene's root_object.
+	bool						is_dummy;												// Will be set to true if this GameObject was created from a dummy aiNode.
 	bool						to_delete;												// Will determine whether or not this GameObject should be deleted. See M_Scene's DeleteGameObject().
 
 	AABB						obb;

@@ -110,9 +110,14 @@ void E_Console::ConsoleOutput()
 			text_colour = { 1.0f, 0.0f, 1.0f, 1.0f };
 		}
 
-		if (strstr(logs[i], "[SCENE]") != nullptr)
+		if (strstr(logs[i], "[IMPORTER]") != nullptr)
 		{
 			text_colour = { 0.0f, 1.0f, 1.0f, 1.0f };
+		}
+
+		if (strstr(logs[i], "[SCENE]") != nullptr)
+		{
+			text_colour = { 0.0f, 1.0f, 0.0f, 1.0f };
 		}
 
 		ImGui::PushStyleColor(ImGuiCol_Text, text_colour);

@@ -186,7 +186,8 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 					if (extension == "fbx" || extension == "FBX"												// If the file extension is .fbx or .FBX, then it is a model.
 						|| extension == "obj" || extension == "OBJ")
 					{
-						App->scene->CreateGameObjectsFromModel(norm_path.c_str());
+						//App->scene->CreateGameObjectsFromModel(norm_path.c_str());
+						App->scene->ImportScene(norm_path.c_str());
 					}
 
 					if (extension == "png" || extension == "PNG"												// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.

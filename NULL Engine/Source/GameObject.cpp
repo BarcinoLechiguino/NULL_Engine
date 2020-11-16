@@ -16,6 +16,7 @@ is_active(true),
 is_static(false),
 parent(nullptr),
 is_root_object(false),
+is_dummy(false),
 to_delete(false)
 {
 	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
@@ -28,6 +29,7 @@ is_active(is_active),
 is_static(is_static),
 parent(nullptr),
 is_root_object(false),
+is_dummy(false),
 to_delete(false)
 {
 	if (name.empty())
@@ -273,6 +275,21 @@ const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
 	return "Invalid Component Type";
 }
 
+std::vector<Component*> GameObject::GetAllComponentsWithType(COMPONENT_TYPE type)
+{
+	std::vector<Component*> type_components;
+	
+	for (uint i = 0; i < components.size(); ++i)
+	{
+		if (components[i]->type == type)
+		{
+			type_components.push_back(components[i]);
+		}
+	}
+
+	return type_components;
+}
+
 C_Transform* GameObject::GetTransformComponent()
 {
 	return (C_Transform*)GetComponent(COMPONENT_TYPE::TRANSFORM);					// The component is returned directly without any checks as the checks will be done in GetComponent().
@@ -298,9 +315,19 @@ C_Camera* GameObject::GetCameraComponent()
 	return (C_Camera*)GetComponent(COMPONENT_TYPE::CAMERA);
 }
 
-void GameObject::SetID(uint id)
+std::vector<C_Mesh*> GameObject::GetAllMeshComponents()
 {
+	std::vector<C_Mesh*> mesh_components;
+	
+	for (uint i = 0; i < components.size(); ++i)
+	{
+		if (components[i]->type == COMPONENT_TYPE::MESH)
+		{
+			mesh_components.push_back((C_Mesh*)components[i]);
+		}
+	}
 
+	return mesh_components;
 }
 
 // --- GAME OBJECT GETTERS AND SETTERS ---
@@ -317,6 +344,11 @@ bool GameObject::IsActive() const
 bool GameObject::IsStatic() const
 {
 	return is_static;
+}
+
+void GameObject::SetID(uint id)
+{
+
 }
 
 void GameObject::SetName(const char* new_name)

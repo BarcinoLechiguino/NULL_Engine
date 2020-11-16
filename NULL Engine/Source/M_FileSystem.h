@@ -48,6 +48,7 @@ public:
 	bool HasExtension(const char* path, std::vector<std::string> extensions) const;			// Will check whether or not the given path has any of the extensions given in the list in it.
 
 	std::string NormalizePath(const char* full_path) const;									// Normalizes the dashes in the given path from '\\' to '/'.
+	bool PathIsNormalized(const char* full_path) const;
 	void SplitFilePath(const char* full_path, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;	// Will "return" 3 separate strs: path, file & ext.
 
 	// Open for Read/Write
@@ -63,7 +64,9 @@ public:
 
 	uint64 GetLastModTime(const char* filename) const;										// Returns the last time that the given file was modified.
 	std::string GetUniqueName(const char* path, const char* name) const;					// Gets a unique name for a file with the same base name as other files in the same directory.
-	std::string GetFileExtension(const char* path);
+	
+	std::string GetFileExtension(const char* path);											// 
+	std::string GetFileAndExtension(const char* path);										// 
 };
 
 #endif // !__M_FILE_SYSTEM_H__

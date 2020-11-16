@@ -10,6 +10,7 @@
 #include "M_Editor.h"
 #include "Primitive.h"
 
+#include "I_Scenes.h"
 #include "I_Meshes.h"
 #include "I_Materials.h"
 #include "R_Mesh.h"
@@ -57,7 +58,8 @@ bool M_Scene::Start()
 		selected_game_object = root_object;
 	}
 
-	CreateGameObjectsFromModel("Assets/Models/baker_house/BakerHouse.fbx");
+	//ImportScene("Assets/Models/baker_house/BakerHouse.fbx");
+	ImportScene("Assets/Models/street/Street Environment_V01.FBX");
 
 	return ret;
 }
@@ -143,12 +145,7 @@ bool M_Scene::SaveConfiguration(Configuration& root) const
 
 // -------------- SCENE METHODS --------------
 GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
-{
-	/*if (NameHasDuplicate(name))
-	{
-		AddDuplicateNumberToName(game_object);
-	}*/
-	
+{	
 	std::string complete_name = name;
 
 	if (!game_objects.empty())
@@ -208,117 +205,33 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 	}
 }
 
-bool M_Scene::CreateGameObjectsFromModel(const char* path)
+bool M_Scene::ImportScene(const char* path)
 {
-	BROFILER_CATEGORY("CreateGameObjectsFromModel()", Profiler::Color::LawnGreen)
+	BROFILER_CATEGORY("M_Scene::ImportScene()", Profiler::Color::LawnGreen);
 
-	bool ret = false;
-
-	std::string file				= path;															// Getting the file name and the game_object's name.
-	uint file_start					= file.find_last_of("//") + 1;									//
-	uint file_end					= file.find_last_of(".");										//
-	file							= file.substr(file_start, file_end); 							// -------------------------------------------------
-
-	
-	std::vector<R_Mesh*> meshes;
-	Importer::Meshes::Import(path, meshes);															// Importing the model from the given path. The meshes will be returned in the vector.
-	
-	ret = GenerateGameObjectsFromMeshes(path, file, meshes);
-
-	meshes.clear();
-
-	return ret;
-}
-
-bool M_Scene::GenerateGameObjectsFromMeshes(const char* path, std::string file_name, std::vector<R_Mesh*>& meshes)
-{
 	bool ret = true;
 
-	for (uint i = 0; i < meshes.size(); ++i)
+	std::vector<GameObject*> nodes;
+	Importer::Scenes::Import(path, nodes);
+
+	for (uint i = 0; i < nodes.size(); ++i)
 	{
-		GameObject* game_object = new GameObject();
-
-		GenerateGameObjectComponents(path, file_name, game_object, meshes[i]);						// Will generate the created game_object components with the passed data.
-
-		if (game_object != nullptr)
+		/*if (nodes[i]->is_dummy)
 		{
-			if (i == 0)																				// Adding the current game object as a child.
-			{																						// 
-				root_object->AddChild(game_object);													// Depending on whether it's the first game object of the loop or not, 
-				selected_game_object = game_object;													// it will be parented to the Scene's root_object and set as the selected GameObject.
-			}																						// 
-			else																					// In any other case, the created game object will be set as the child of the parent
-			{																						// mesh's GameObject, which will be the selected GameObject.
-				selected_game_object->AddChild(game_object);										// 
-			}																						// ---------------------------------------------------------
-
-			std::string game_object_name = file_name + "-" + std::to_string(i);						// Adding the index of iteration to the current game object.
-			game_object_name += "(" + std::to_string(game_objects.size()) + ")";					//
-			game_object->SetName(game_object_name.c_str());											// ---------------------------------------------------------
-			
-			game_objects.push_back(game_object);													// The newly constructed game_object will be added to the game_objects vector.
-
-			ret = true;
-		}
-		else																						// The created game object was not valid (nullptr).
-		{																							// 
-			delete game_object;																		// The game object will be deleted and set to null.
-			game_object = nullptr;																	// 
-			ret = false;																			// 
-		}																							// ------------------------------------------------
+			nodes[i]->to_delete = true;
+		}*/
+		
+		game_objects.push_back(nodes[i]);
 	}
 
-	return ret;
-}
-
-bool M_Scene::GenerateGameObjectComponents(const char* path, std::string file_name, GameObject* game_object, R_Mesh* mesh)
-{
-	bool ret = true;
+	//for (uint i = 0; i < nodes.size(); ++i)
+	//{
+	//	nodes[i]->CleanUp();
+	//	RELEASE(nodes[i]);
+	//
+	//}
 	
-	
-	float3		position		= mesh->base_transform->position;										// Setting the C_Transform component related to the mesh of the Game Object.
-	Quat		rotation		= mesh->base_transform->rotation;										// 
-	float3		scale			= mesh->base_transform->scale;											// 	
-	float4x4	local_transform	= float4x4::FromTRS(position, rotation, scale);							// 
-	//game_object->GetTransformComponent()->SetLocalTransform(local_transform);							// -------------------------------------------
-	game_object->GetTransformComponent()->ImportTransform(position, rotation, scale);					// -------------------------------------------
-	
-	C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);				// Creating the C_Mesh components of each mesh.
-	c_mesh->SetMesh(mesh);																		// The name of the file will be added as the path of the mesh.
-	c_mesh->SetMeshPath(file_name.c_str());														// The mesh being iterated will be set as the component's mesh.
-
-	if (!mesh->tex_paths.empty())
-	{
-		C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
-
-		for (uint i = 0; i < mesh->tex_paths.size(); ++i)
-		{
-			R_Material* material = new R_Material();
-
-			std::string path_str = path;														// Getting the correct path to the texture.
-			uint file_start = path_str.find_last_of("/") + 1;									// 
-			path_str = path_str.substr(0, file_start);											// 
-																								// 
-			path_str += mesh->tex_paths[i];														// ----------------------------------------
-
-			Importer::Materials::DevIL::Import(path_str.c_str(), material);						// Importing the data o the texture in the given path.
-
-			if (material->tex_data.id != 0)
-			{
-				if (c_material->GetMaterial() == nullptr)										// If the component material does not have a R_Material* yet.
-				{
-					c_material->SetMaterial(material);											// The material that will be used to bind the texture (id, width, height...)
-				}
-
-				c_material->textures.push_back(material);										// Vector that will contain all the materials that a single mesh has.
-			}
-		}
-	}
-	else
-	{
-		LOG("[WARNING] Mesh did not have any paths to textures! Mesh path: %s", path);
-		ret = false;
-	}
+	nodes.clear();
 
 	return ret;
 }
@@ -349,7 +262,7 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 
 				if (c_material != nullptr)																		// Checks that the newly created C_Material* is not nullptr.
 				{
-					c_material->SetMaterial(material);															// 
+					c_material->SetMaterial(material);															// Sets the new C_Material component with the r_material with the imported tex.
 					c_material->textures.push_back(material);
 				}
 			}
@@ -408,27 +321,8 @@ void M_Scene::DeleteSelectedGameObject()
 	if (selected_game_object != nullptr)
 	{
 		DeleteGameObject(selected_game_object);
-		//selected_game_object = nullptr;
 	}
 }
-
-/*bool M_Scene::NameHasDuplicate(const char* name)
-{
-	uint duplicates = 0;
-	
-	for (uint i = 0; i < game_objects.size(); ++i)
-	{
-		if (strcmp(name, game_objects[i]->GetName()) == 0)
-		{
-			return true;
-			++duplicates;
-		}
-	}
-
-	return duplicates;
-
-	return false;
-}*/
 
 void M_Scene::HandleDebugInput()
 {
