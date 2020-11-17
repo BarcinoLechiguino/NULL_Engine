@@ -44,14 +44,88 @@ void Importer::Textures::Utilities::CleanUp()
 	ilShutDown();
 }
 
-void Importer::Textures::Import(const char* path, R_Texture* r_texture)
+bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 {
+	bool ret = true;
 
+	LOG("[IMPORTER] Loading %s texture.", path);
+
+	// Create a tex buffer and a tex id.
+
+	// Check that path is not nullptr
+
+	// Use ilGenImages() and ilBindImage() to generate and bind the tex buffer.
+
+	// Load the data in the path using the file system.
+
+	// If the file size is not 0
+
+	// Identify the type of the texture and leave it in uknown if the type does not match with the extension.
+
+	// Use ilLoadL() to import a texture from a buffer.
+
+	// If ilLoadL() is successful, load the texture to a OpenGL buffer
+
+	// Convert the image to the type you want. (IL_RGBA, IL_UNSIGNED_BYTE)
+
+	// Create the texture using CreateTexture();
+
+	// if the tex_id returned by CreateTexture is not 0
+
+	// Assign the data to the tex_data variable in R_Texture*
+
+	// Else LOG an error with the path.
+
+
+	return ret;
+}
+
+uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, uint height, int internal_format, uint format, uint target, int filter_type, int filling_type)
+{
+	uint texture_id = 0; 
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	glGenTextures(1, (GLuint*)&texture_id);
+	glBindTexture(target, texture_id);
+
+	glTexParameteri(target, GL_TEXTURE_WRAP_S, filling_type);
+	glTexParameteri(target, GL_TEXTURE_WRAP_T, filling_type);
+
+	if (filter_type == GL_NEAREST)
+	{
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	}
+	else if (filter_type == GL_LINEAR)
+	{
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	}
+	else
+	{
+		LOG("[ERROR] Invalid filter type! Supported filters: GL_LINEAR and GL_NEAREST.");
+	}
+
+	glTexImage2D(target, 0, internal_format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+
+	glGenerateMipmap(target);
+
+	glBindTexture(target, 0);
+
+	if (texture_id != 0)
+	{
+		LOG("[STATUS] Texture Successfully loaded! Id: %u, Size: %u x %u", texture_id, width, height);
+	}
+
+	return texture_id;
 }
 
 uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 {
-
+	uint64 size = 0;
+	
+	return size;
 }
 
 void Importer::Textures::Load(const char* buffer, R_Texture* r_texture)

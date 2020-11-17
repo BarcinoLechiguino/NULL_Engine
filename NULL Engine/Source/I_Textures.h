@@ -9,7 +9,7 @@ namespace Importer
 {
 	namespace Textures
 	{	
-		void	Import(const char* path, R_Texture* r_texture);
+		bool	Import(const char* path, R_Texture* r_texture);
 
 		uint64	Save(const R_Texture* r_texture, char** buffer);
 
@@ -20,7 +20,7 @@ namespace Importer
 			void Init();
 			void CleanUp();
 			
-			void CreateTexture(const void* data, uint width,
+			uint CreateTexture(const void* data, uint width,
 												 uint height, 
 												 int internal_format = 0x1908,		// 0x1908 = GL_RGBA
 												 uint format = 0x1908, 				// 0x1908 = GL_RGBA
