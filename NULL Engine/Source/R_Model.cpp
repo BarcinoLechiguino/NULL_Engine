@@ -33,7 +33,7 @@ void R_Model::DrawNormals()
 {
 	for (uint i = 0; i < meshes.size(); ++i)
 	{
-		meshes[i]->DrawNormals();
+		meshes[i]->DrawVertexNormals();
 	}
 }
 

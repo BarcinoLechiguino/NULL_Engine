@@ -199,12 +199,11 @@ void E_Inspector::DrawMeshComponent(GameObject* selected_game_object)
 {
 	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		// --- IS ACTIVE ---
-
 		C_Mesh* mesh = selected_game_object->GetMeshComponent();
 
 		if (mesh != nullptr)
 		{
+			// --- IS ACTIVE ---
 			bool mesh_is_active = mesh->IsActive();
 			if (ImGui::Checkbox("Mesh Is Active", &mesh_is_active))
 			{
@@ -238,14 +237,17 @@ void E_Inspector::DrawMeshComponent(GameObject* selected_game_object)
 			// --- DRAW MODE ---
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Draw Mode:");
 
-			bool draw_vert_normals = mesh->GetDrawNormals();
+			bool draw_vert_normals = mesh->GetDrawVertexNormals();
 			if (ImGui::Checkbox("Draw Vertex Normals", &draw_vert_normals))
 			{
-				mesh->SetDrawNormals(draw_vert_normals);
+				mesh->SetDrawVertexNormals(draw_vert_normals);
 			}
 
-			bool draw_face_normals = false;
-			ImGui::Checkbox("Draw Face Normals (WIP)", &draw_face_normals);
+			bool draw_face_normals = mesh->GetDrawFaceNormals();
+			if (ImGui::Checkbox("Draw Face Normals", &draw_face_normals))
+			{
+				mesh->SetDrawFaceNormals(draw_face_normals);
+			}
 		}
 		else
 		{

@@ -9,3 +9,12 @@ Resource::~Resource()
 {
 
 }
+
+bool Resource::CleanUp()
+{
+	bool ret = true;
+
+
+
+	return ret;
+}

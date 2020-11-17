@@ -9,14 +9,14 @@ public:
 	R_Mesh();
 	~R_Mesh();
 
-	void Draw(float4 colour);
-	void DrawNormals();
+	bool CleanUp() override;
+
+public:
+	void DrawVertexNormals();
+	void DrawFaceNormals();
 
 	void LoadBuffers();
 
-	bool CleanUp();
-
-public:
 	void SetMeshAABB();
 
 public:
@@ -35,7 +35,8 @@ public:
 	uint						TBO;					// Tex Coord Buffer Object. -->		Will store all the buffer data of the tex coords of the mesh.
 	uint						IBO;					// Index Buffer Object.		--> 	Will store all the buffer data of the indices of the mesh.
 
-	bool						draw_normals;
+	bool						draw_vertex_normals;
+	bool						draw_face_normals;
 	std::string					path;
 
 	AABB aabb;

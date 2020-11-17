@@ -1,3 +1,5 @@
+#include "Color.h"
+
 #include "GameObject.h"
 #include "R_Material.h"
 
@@ -55,7 +57,10 @@ void C_Material::SetMaterial(R_Material* r_material)
 	material = r_material;
 }
 
-void C_Material::SetMaterialColour()
+void C_Material::SetMaterialColour(const Color& color)
+{
+	material->diffuse = color;
+}
 
 std::string C_Material::GetTexturePath() const
 {

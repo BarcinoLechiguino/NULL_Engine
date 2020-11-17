@@ -372,6 +372,9 @@
     <ClCompile Include="Source\R_Texture.cpp">
       <Filter>SourceCode\3_Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\I_Textures.cpp">
+      <Filter>SourceCode\4_Importers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -805,6 +808,9 @@
     </ClInclude>
     <ClInclude Include="Source\R_Texture.h">
       <Filter>SourceCode\3_Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\I_Textures.h">
+      <Filter>SourceCode\4_Importers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

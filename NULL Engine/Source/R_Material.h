@@ -30,7 +30,7 @@ public:
 	R_Material();
 	~R_Material();
 
-	bool CleanUp();
+	bool CleanUp() override;
 
 public:
 	Texture tex_data;

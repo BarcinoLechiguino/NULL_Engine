@@ -9,6 +9,7 @@
 
 class GameObject;
 class R_Material;
+class R_Texture;
 
 struct Texture;
 
@@ -39,13 +40,13 @@ public:
 	void			SetUseDefaultTexture(const bool& set_to);
 
 public:
-	std::vector<R_Material*> textures;								// Will store all the textures that this component can have.
+	std::vector<R_Material*>	textures;							// Will store all the textures that this component can have.
 
-	bool use_default_tex;
+	bool						use_default_tex;
 
 private:
-	R_Material* material;											// Currently used material.
-	//R_Texture* texture;
+	R_Material*					material;							// Currently used material.
+	R_Texture*					texture;
 };
 
 #endif // !__C_MATERIAL_H__

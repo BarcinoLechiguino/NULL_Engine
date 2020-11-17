@@ -500,9 +500,14 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY and GL_VERTEX_ARRAY.
 
 	// --- DEBUG DRAW ---
-	if (mesh->draw_normals)
+	if (mesh->draw_vertex_normals)
 	{
-		mesh->DrawNormals();
+		mesh->DrawVertexNormals();
+	}
+
+	if (mesh->draw_face_normals)
+	{
+		mesh->DrawFaceNormals();
 	}
 
 	glPopMatrix();

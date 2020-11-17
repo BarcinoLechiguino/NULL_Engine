@@ -194,6 +194,11 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 	}
 }
 
+void Importer::Scenes::Utilities::ImportTextures(const char* scene_path, GameObject* game_object)
+{
+
+}
+
 void Importer::Scenes::Save(const aiScene* ai_scene, char** buffer)
 {
 

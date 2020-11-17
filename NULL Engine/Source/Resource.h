@@ -12,7 +12,9 @@ class Resource
 {
 public:
 	Resource();
-	~Resource();
+	virtual ~Resource();
+
+	virtual bool CleanUp();
 
 private:
 

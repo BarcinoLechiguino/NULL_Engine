@@ -95,42 +95,50 @@ float* Color::operator &()
 
 Color Color::operator +(const Color& color)
 {	
-	r += color.r;
-	g += color.g;
-	b += color.b;
-	a += color.a;
+	Color col;
 
-	return *this;
+	col.r = r + color.r;
+	col.g = g + color.g;
+	col.b = b + color.b;
+	col.a = a + color.a;
+
+	return col;
 }
 
 Color Color::operator -(const Color& color)
 {
-	r -= color.r;
-	g -= color.g;
-	b -= color.b;
-	a -= color.a;
+	Color col;
+	
+	col.r = r - color.r;
+	col.g = g - color.g;
+	col.b = b - color.b;
+	col.a = a - color.a;
 
-	return *this;
+	return col;
 }
 
 Color Color::operator *(const float& scalar)
 {
-	r *= scalar;
-	g *= scalar;
-	b *= scalar;
-	a *= scalar;
+	Color col;
+	
+	col.r = r * scalar;
+	col.g = g * scalar;
+	col.b = b * scalar;
+	col.a = a * scalar;
 
-	return *this;
+	return col;
 }
 
 Color Color::operator /(const float& scalar)
 {
-	r /= scalar;
-	g /= scalar;
-	b /= scalar;
-	a /= scalar;
+	Color col;
 
-	return *this;
+	col.r = r / scalar;
+	col.g = g / scalar;
+	col.b = b / scalar;
+	col.a = a / scalar;
+
+	return col;
 }
 
 Color Color::operator +=(const Color& color)
@@ -149,6 +157,8 @@ Color Color::operator -=(const Color& color)
 	g -= color.g;
 	b -= color.b;
 	a -= color.a;
+
+	return *this;
 }
 
 Color Color::operator *=(const float& scalar)
@@ -157,6 +167,8 @@ Color Color::operator *=(const float& scalar)
 	g *= scalar;
 	b *= scalar;
 	a *= scalar;
+
+	return *this;
 }
 
 Color Color::operator /=(const float& scalar)
@@ -165,6 +177,23 @@ Color Color::operator /=(const float& scalar)
 	g /= scalar;
 	b /= scalar;
 	a /= scalar;
+
+	return *this;
+}
+
+Color Color::operator =(const Color& color)
+{
+	r = color.r;
+	g = color.g;
+	b = color.b;
+	a = color.a;
+
+	return *this;
+}
+
+bool Color::operator ==(const Color& color)
+{
+	return (r == color.r && g == color.g && b == color.b && a == color.a);
 }
 
 Color Red		= Color(1.0f, 0.0f, 0.0f);

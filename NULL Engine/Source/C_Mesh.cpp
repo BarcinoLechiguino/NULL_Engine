@@ -128,20 +128,36 @@ void C_Mesh::GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_co
 	}
 }
 
-bool C_Mesh::GetDrawNormals() const
+bool C_Mesh::GetDrawVertexNormals() const
 {
 	if (mesh != nullptr)
 	{
-		return mesh->draw_normals;
+		return mesh->draw_vertex_normals;
 	}
 
 	return false;
 }
 
-void C_Mesh::SetDrawNormals(const bool& set_to)
+bool C_Mesh::GetDrawFaceNormals() const
 {
 	if (mesh != nullptr)
 	{
-		mesh->draw_normals = set_to;
+		return mesh->draw_face_normals;
+	}
+}
+
+void C_Mesh::SetDrawVertexNormals(const bool& set_to)
+{
+	if (mesh != nullptr)
+	{
+		mesh->draw_vertex_normals = set_to;
+	}
+}
+
+void C_Mesh::SetDrawFaceNormals(const bool& set_to)
+{
+	if (mesh != nullptr)
+	{
+		mesh->draw_face_normals = set_to;
 	}
 }

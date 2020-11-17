@@ -92,8 +92,8 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 
 // File Directories ---------------------------------					// Necessary as a global definition?
 #define ASSETS_PATH				"Assets/"
-#define ASSET_MODELS_PATH		"Assets/Models"
-#define ASSET_TEXTURES_PATH		"Assets/Textures"
+#define ASSET_MODELS_PATH		"Assets/Models/"
+#define ASSET_TEXTURES_PATH		"Assets/Textures/"
 
 #define LIBRARY_PATH			"Library/"
 #define ANIMATIONS_PATH			"Library/Animations/"

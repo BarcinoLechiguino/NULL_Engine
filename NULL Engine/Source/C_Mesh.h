@@ -26,8 +26,10 @@ public:
 
 	void			GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices);
 
-	bool			GetDrawNormals() const;
-	void			SetDrawNormals(const bool& set_to);
+	bool			GetDrawVertexNormals() const;
+	bool			GetDrawFaceNormals() const;
+	void			SetDrawVertexNormals(const bool& set_to);
+	void			SetDrawFaceNormals(const bool& set_to);
 
 private:
 	R_Mesh* mesh;
