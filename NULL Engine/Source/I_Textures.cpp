@@ -64,10 +64,10 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 		ilGenImages(1, (ILuint*)&tex_buffer);
 		ilBindImage(tex_buffer);
 
-		char* tex_data;
+		char* tex_data = nullptr;
 		uint file_size = App->file_system->Load(path, &tex_data);
 
-		if (file_size > 0)
+		if (tex_data != nullptr && file_size > 0)
 		{
 			ILenum type = Utilities::GetTextureType(path);														// ILenum is a typedef for unsigned int, which makes it equivalent to our uint.
 
@@ -87,7 +87,12 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 
 					if (tex_id != 0)
 					{
-						//r_texture->
+						r_texture->tex_data.id		= tex_id;
+						r_texture->tex_data.width	= ilGetInteger(IL_IMAGE_WIDTH);
+						r_texture->tex_data.height	= ilGetInteger(IL_IMAGE_HEIGHT);
+						r_texture->tex_data.path	= path;
+						r_texture->tex_data.file	= App->file_system->GetFileAndExtension(path).c_str();
+						r_texture->tex_data.format	= (TEXTURE_FORMAT)ilGetInteger(IL_IMAGE_FORMAT);
 					}
 					else
 					{
