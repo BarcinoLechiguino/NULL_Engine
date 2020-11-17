@@ -141,7 +141,7 @@ void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_m
 {
 	if (ai_mesh->HasPositions())
 	{
-		memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * size);										// &r_mesh->vertices[0] gets a pointer to the beginning of the vector.
+		memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * size);						// &r_mesh->vertices[0] gets a pointer to the beginning of the vector.
 
 		LOG("[STATUS] Imported %u position vertices!", size);
 	}
@@ -185,22 +185,16 @@ void Importer::Meshes::Utilities::GetTexCoords(const aiMesh* ai_mesh, R_Mesh* r_
 
 void Importer::Meshes::Utilities::GetIndices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size)
 {
-	if (ai_mesh->HasFaces())																	// Double checked if for whatever reason Generate Mesh is called independently.
+	if (ai_mesh->HasFaces())																		// Double checked if for whatever reason Generate Mesh is called independently.
 	{
-		uint ind = 0;
 		for (uint i = 0; i < ai_mesh->mNumFaces; ++i)
 		{
-			aiFace face = ai_mesh->mFaces[i];													// Getting the face that is currently being iterated.
+			aiFace face		= ai_mesh->mFaces[i];													// Getting the face that is currently being iterated.
+			uint num_ind	= face.mNumIndices;
 
-			if (face.mNumIndices == 3)
+			if (num_ind == 3)
 			{
-				//memcpy(&r_mesh->indices[i * 3], face.mIndices, sizeof(uint) * 3);
-
-				for (uint j = 0; j < face.mNumIndices; ++j)
-				{
-					r_mesh->indices[ind] = face.mIndices[j];
-					++ind;
-				}
+				memcpy(&r_mesh->indices[i * num_ind], face.mIndices, sizeof(uint) * num_ind);		// As each face has 3 elements (vertices), the memcpy will be done 3 vertices at a time.
 			}
 			else
 			{
@@ -249,3 +243,9 @@ void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const
 		
 	}
 }
+
+//for (uint j = 0; j < face.mNumIndices; ++j)
+//{
+//	r_mesh->indices[ind] = face.mIndices[j];
+//	++ind;
+//}

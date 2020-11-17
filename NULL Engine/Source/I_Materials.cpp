@@ -1,6 +1,6 @@
 // ----------------------------------------------------
-// I_Materials.cpp --- Importing textures from files.
-// Interface class between engine and Assimp + DevIL.
+// I_Materials.cpp --- Importing materials from files.
+// Interface class between engine and Assimp.
 // ----------------------------------------------------
 
 #include "OpenGL.h"
