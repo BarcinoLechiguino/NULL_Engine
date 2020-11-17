@@ -48,34 +48,68 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 {
 	bool ret = true;
 
+	if (r_texture == nullptr)																					// Safety check to avoid importing textures for non-existent Texture Resources.
+	{
+		LOG("[ERROR] Texture Import: R_Texture* was nullptr!");
+		return false;
+	}
+	
 	LOG("[IMPORTER] Loading %s texture.", path);
 
-	// Create a tex buffer and a tex id.
+	uint tex_buffer;
+	uint tex_id;
 
-	// Check that path is not nullptr
+	if (path != nullptr)
+	{
+		ilGenImages(1, (ILuint*)&tex_buffer);
+		ilBindImage(tex_buffer);
 
-	// Use ilGenImages() and ilBindImage() to generate and bind the tex buffer.
+		char* tex_data;
+		uint file_size = App->file_system->Load(path, &tex_data);
 
-	// Load the data in the path using the file system.
+		if (file_size > 0)
+		{
+			ILenum type = Utilities::GetTextureType(path);														// ILenum is a typedef for unsigned int, which makes it equivalent to our uint.
 
-	// If the file size is not 0
+			bool success = ilLoadL(type, (const void*)tex_data, file_size);
+			if (success)
+			{
+				tex_id = ilutGLBindTexImage();
 
-	// Identify the type of the texture and leave it in uknown if the type does not match with the extension.
+				success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+				if (success)
+				{
+					tex_id = Utilities::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH),
+																	ilGetInteger(IL_IMAGE_HEIGHT),
+																	ilGetInteger(IL_IMAGE_FORMAT),
+																	ilGetInteger(IL_IMAGE_FORMAT),
+																	GL_TEXTURE_2D, GL_LINEAR, GL_REPEAT);
 
-	// Use ilLoadL() to import a texture from a buffer.
-
-	// If ilLoadL() is successful, load the texture to a OpenGL buffer
-
-	// Convert the image to the type you want. (IL_RGBA, IL_UNSIGNED_BYTE)
-
-	// Create the texture using CreateTexture();
-
-	// if the tex_id returned by CreateTexture is not 0
-
-	// Assign the data to the tex_data variable in R_Texture*
-
-	// Else LOG an error with the path.
-
+					if (tex_id != 0)
+					{
+						//r_texture->
+					}
+					else
+					{
+						LOG("[ERROR] Could not get texture ID! Path: %s", path);
+					}
+				}
+			}
+			else
+			{
+				ILenum error = ilGetError();
+				LOG("[ERROR] ilLoadL() Error: %s", iluErrorString(error));
+			}
+		}
+		else
+		{
+			LOG("[ERROR] File System could not load the texture: File size was 0!");
+		}
+	}
+	else
+	{
+		LOG("[ERROR] Texture could not be imported: Path was nullptr!");
+	}
 
 	return ret;
 }
@@ -92,15 +126,23 @@ uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, 
 	glTexParameteri(target, GL_TEXTURE_WRAP_S, filling_type);
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, filling_type);
 
-	if (filter_type == GL_NEAREST)
+	if (filter_type == GL_NEAREST)																				// Nearest filtering gets the color of the nearest neighbour pixel.
 	{
 		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	}
-	else if (filter_type == GL_LINEAR)
+	else if (filter_type == GL_LINEAR)																			// Linear filtering interpolates the color of the neighbour pixels.
 	{
 		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+		if (glewIsSupported("GL_EXT_texture_filter_anisotropic"))												// In case Anisotropic filtering is available, it will be used.
+		{
+			GLfloat max_anisotropy;
+
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropy);
+			glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy);
+		}
 	}
 	else
 	{
@@ -119,6 +161,32 @@ uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, 
 	}
 
 	return texture_id;
+}
+
+uint Importer::Textures::Utilities::GetTextureType(const char* path)
+{
+	uint type = IL_TYPE_UNKNOWN;
+
+	std::string extension = App->file_system->GetFileExtension(path);
+
+	if (extension == "png" || extension == "PNG")
+	{
+		type = IL_PNG;
+	}
+	else if (extension == "dds" || extension == "DDS")
+	{
+		type = IL_DDS;
+	}
+	else if (extension == "tga" || extension == "TGA")
+	{
+		type = IL_TGA;
+	}
+	else
+	{
+		LOG("[WARNING] Texture %s: Could not get texture type from extension!", path);
+	}
+
+	return type;
 }
 
 uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)

@@ -1,6 +1,7 @@
 #ifndef __I_TEXTURES_H__
 #define __I_TEXTURES_H__
 
+#include <string>
 #include "VarTypedefs.h"
 
 class R_Texture;
@@ -27,6 +28,8 @@ namespace Importer
 												 uint target = 0x0DE1, 				// 0x0DE1 = GL_TEXTURE_2D
 												 int filter_type = 0x2600,			// 0x2600 = GL_NEAREST
 												 int filling_type = 0x2901);		// 0x2901 = GL_REPEAT
+
+			uint GetTextureType(const char* path);
 		}
 	}
 }
