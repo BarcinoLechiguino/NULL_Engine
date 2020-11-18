@@ -670,7 +670,7 @@ std::string M_FileSystem::GetFileAndExtension(const char* path)
 	std::string file		= "";
 	std::string extension	= "";															// Just for safety check purposes.
 
-	NormalizePath(full_path.c_str());														// Will swap all '\\' for '/'.														
+	full_path = NormalizePath(full_path.c_str());											// Will swap all '\\' for '/'.														
 
 	size_t file_start		= full_path.find_last_of("/");									// Gets the position of the last '/' of the string. Returns npos if none was found.
 	size_t extension_start	= full_path.find_last_of(".");									// Gets the position of the last '.' of the string. Returns npos if none was found.

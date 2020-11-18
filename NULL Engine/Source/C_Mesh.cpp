@@ -83,6 +83,7 @@ bool C_Mesh::Render()
 		if (mesh != nullptr)
 		{
 			App->renderer->RenderMesh(transform->GetWorldTransform(), mesh, tex_id, tex_is_active);
+			//App->renderer->RenderGameObject(owner);
 		}
 	}
 

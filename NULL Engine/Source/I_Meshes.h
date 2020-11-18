@@ -34,7 +34,7 @@ namespace Importer
 			void GetTexCoords(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);							// Gets the data for the meshes' vertex tex coords.
 			void GetIndices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);								// Gets the data for the meshes' indices.
 
-			void GetTexturePaths(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh);			// Will get the filename of the texture/s associated with the given aiMesh* and store them.
+			//void GetTexturePaths(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh);			// Will get the filename of the texture/s associated with the given aiMesh* and store them.
 		}
 	}
 }

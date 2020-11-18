@@ -44,7 +44,7 @@ Texture::Texture()
 	path		= "NONE";
 	file		= "NONE";
 	
-	id			= 0;
+	id			= -1;											// Dirty way to set the id to Non-Valid.
 	width		= 0;
 	height		= 0;
 	depth		= 0;

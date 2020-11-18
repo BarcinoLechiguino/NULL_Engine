@@ -30,6 +30,7 @@ public:
 	void			SetTexture(R_Texture* texture);
 
 public:
+	Color			GetMaterialColour();
 	void			SetMaterialColour(const Color& new_colour);
 	void			SetMaterialColour(float r, float g, float b, float a);
 	

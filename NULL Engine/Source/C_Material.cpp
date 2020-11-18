@@ -74,6 +74,16 @@ void C_Material::SetTexture(R_Texture* r_texture)
 	texture = r_texture;
 }
 
+Color C_Material::GetMaterialColour()
+{
+	if (material != nullptr)
+	{
+		return material->diffuse_color;
+	}
+
+	return Color();
+}
+
 void C_Material::SetMaterialColour(const Color& color)
 {
 	material->diffuse_color = color;

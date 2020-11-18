@@ -27,7 +27,7 @@ namespace Importer
 			void ImportTransform(const aiNode* ai_node, GameObject* game_object);
 			void ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);
 			void ImportMaterials(const char* scene_path, GameObject* game_object);
-			void ImportMaterials(const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);
+			void ImportMaterials(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);
 		}
 	}
 }

@@ -3,6 +3,8 @@
 #include "OpenGL.h"
 #include "ImGui.h"
 
+#include "Color.h"
+
 #include "Application.h"																		// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
 #include "M_Camera3D.h"
@@ -13,7 +15,14 @@
 
 #include "R_Model.h"
 #include "R_Mesh.h"
+#include "R_Material.h"
 #include "I_Textures.h"
+
+#include "GameObject.h"																			// TMP
+#include "Component.h"																			// 
+#include "C_Transform.h"																		// DELETE
+#include "C_Mesh.h"																				// LATER
+#include "C_Material.h"																			// 
 
 #include "M_Renderer3D.h"
 
@@ -514,9 +523,79 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, R_Material* material)
+void M_Renderer3D::RenderGameObject(GameObject* game_object)
 {
+	C_Transform* transform	= game_object->GetTransformComponent();
+	C_Mesh* mesh			= game_object->GetMeshComponent();
+	C_Material* material	= game_object->GetMaterialComponent();
+	
+	if (show_wireframe)
+	{
+		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+	}
 
+	//glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)&transform->GetWorldTransform().Transposed());							// OpenGL requires that the 4x4 matrices are column-major instead of row-major.
+
+	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
+
+	if (!material->IsActive())
+	{
+		SetGLFlag(GL_TEXTURE_2D, false);
+	}
+
+	if (material->GetTextureId() == -1)
+	{
+		Color color = material->GetMaterialColour();
+		glColor4f(color.r, color.g, color.b, color.a);
+	}
+	else if (material->GetTextureId() == 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, material->GetTextureId());
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMesh()->TBO);														// Will bind the buffer object with the mesh->TBO identifyer for rendering.
+	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of tex coords to use when rendering.
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMesh()->VBO);														// The vertex buffer is bound so the vertex positions can be interpreted correctly.
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of vert coords to use when rendering.
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetMesh()->IBO);												// Will bind the buffer object with the mesh->IBO identifyer for rendering.
+	//glColor4f(colour.r, colour.g, colour.b, colour.a);
+	glDrawElements(GL_TRIANGLES, mesh->GetMesh()->indices.size(), GL_UNSIGNED_INT, nullptr);					// 
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);														// Clearing the buffers.
+	glBindBuffer(GL_ARRAY_BUFFER, 0);																// 												
+	glBindTexture(GL_TEXTURE_2D, 0);																// ---------------------
+
+	if (!material->IsActive())
+	{
+		SetGLFlag(GL_TEXTURE_2D, true);
+	}
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);													// Disabling the client-side capabilities enabled at the beginning.
+	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY and GL_VERTEX_ARRAY.
+
+	// --- DEBUG DRAW ---
+	if (mesh->GetMesh()->draw_vertex_normals)
+	{
+		mesh->GetMesh()->DrawVertexNormals();
+	}
+
+	if (mesh->GetMesh()->draw_face_normals)
+	{
+		mesh->GetMesh()->DrawFaceNormals();
+	}
+
+	glPopMatrix();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void M_Renderer3D::LoadDebugTexture()

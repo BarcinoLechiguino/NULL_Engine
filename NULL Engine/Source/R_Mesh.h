@@ -25,9 +25,8 @@ public:
 	std::vector<float>			tex_coords;
 	std::vector<uint>			indices;
 
-	std::vector<std::string>	tex_paths;
-
-	float4						colour;
+	//std::vector<std::string>	tex_paths;
+	//float4						colour;
 
 	// Buffer data
 	uint						VBO;					// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.

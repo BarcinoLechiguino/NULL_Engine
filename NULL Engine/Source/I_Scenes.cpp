@@ -85,7 +85,7 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	Utilities::ImportTransform(ai_node, game_object);														// Load Transforms
 	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
 	//Utilities::ImportMaterials(scene_path, game_object);													// Load Materials
-	Utilities::ImportMaterials(ai_scene, ai_node, game_object);												// Load Materials
+	Utilities::ImportMaterials(scene_path, ai_scene, ai_node, game_object);									// Load Materials
 
 	game_objects.push_back(game_object);
 
@@ -162,7 +162,7 @@ void Importer::Scenes::Utilities::ImportMeshes(const char* scene_file, const aiS
 	LOG("[IMPORTER] Imported the meshes of node: %s", ai_node->mName.C_Str());
 }
 
-void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameObject* game_object)
+/*void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameObject* game_object)
 {
 	std::vector<C_Mesh*> c_meshes = game_object->GetAllMeshComponents();										// 
 
@@ -175,7 +175,7 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 			R_Mesh* r_mesh = c_meshes[i]->GetMesh();															// 
 			for (uint j = 0; j < r_mesh->tex_paths.size(); ++j)
 			{
-				R_Material* r_material	= new R_Material();														//
+				//R_Material* r_material	= new R_Material();													//
 				R_Texture* r_texture = new R_Texture();															// 
 
 				std::string dir_path;																			//
@@ -188,7 +188,7 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 
 				//Importer::Materials::Import();
 				
-				/*Importer::Materials::Import(dir_path.c_str(), r_material);									//
+				Importer::Materials::Import(dir_path.c_str(), r_material);									//
 																												
 				if (r_material != nullptr && r_material->tex_data.id != 0)										//
 				{
@@ -198,7 +198,7 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 					}
 
 					c_material->textures.push_back(r_material);													//
-				}*/
+				}
 
 				uint tex_id = Importer::Textures::Import(dir_path.c_str(), r_texture);							//
 
@@ -214,15 +214,34 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 			}
 		}
 	}
-}
+}*/
 
-void Importer::Scenes::Utilities::ImportMaterials(const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
+void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
 {
-	for (uint i = 0; i < ai_node->mNumMeshes; ++i)
+	for (uint i = 0; i < ai_node->mNumMeshes; ++i)																// For every mesh in the node.
 	{
 		aiMesh* ai_mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];												// aiMesh_array[index].
 
+		if (ai_mesh != nullptr && ai_mesh->HasFaces())
+		{
+			if (ai_mesh->mMaterialIndex >= 0)
+			{
+				aiMaterial* ai_material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
 
+				R_Material* r_material	= new R_Material();														// Only considering one texture per mesh.
+				R_Texture* r_texture	= new R_Texture();
+
+				Importer::Materials::Import(scene_path, ai_material, r_material, r_texture);
+
+				C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
+
+				if (c_material != nullptr)
+				{
+					c_material->SetMaterial(r_material);
+					c_material->SetTexture(r_texture);
+				}
+			}
+		}
 	}
 }
 
