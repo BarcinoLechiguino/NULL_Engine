@@ -52,6 +52,8 @@ void Importer::Meshes::Import(const char* path, std::vector<R_Mesh*>& meshes)
 
 		Utilities::ProcessNode(scene, scene->mRootNode, meshes);
 	}
+
+	RELEASE_ARRAY(buffer);
 }
 
 void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Mesh*>& meshes)		// Shortened with the use of used namespaces, otherwise it would be a bad idea.
@@ -206,7 +208,7 @@ void Importer::Meshes::Utilities::GetIndices(const aiMesh* ai_mesh, R_Mesh* r_me
 	}
 }
 
-void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
+void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)		// This, to I_Material?  
 {
 	if (ai_mesh->mMaterialIndex >= 0)
 	{

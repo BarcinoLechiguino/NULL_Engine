@@ -12,9 +12,9 @@
 
 #include "I_Scenes.h"
 #include "I_Meshes.h"
-#include "I_Materials.h"
+#include "I_Textures.h"
 #include "R_Mesh.h"
-#include "R_Material.h"
+#include "R_Texture.h"
 
 #include "GameObject.h"
 #include "Component.h"
@@ -244,17 +244,17 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 
 	if (selected_game_object != nullptr)
 	{
-		C_Material* c_material	= selected_game_object->GetMaterialComponent();
-		R_Material* material	= new R_Material();
+		C_Material* c_material	= selected_game_object->GetMaterialComponent();									// GetMaterialComponent() will return nullptr if C_Material* does not exist.
+		R_Texture* texture		= new R_Texture();
 
-		bool imported = Importer::Materials::DevIL::Import(path, material);										// Should check for duplicates.
+		bool success = Importer::Textures::Import(path, texture);												// Should check for duplicates.
 
-		if (imported)																							// If the import was successful
+		if (success)																							// If the import was successful
 		{
 			if (c_material != nullptr)																			// If the C_Material* component already exists.
 			{
-				c_material->SetMaterial(material);																// Just reset the material with the new one.
-				c_material->textures.push_back(material);														// Add the material to the materials loaded in the component.
+				c_material->SetTexture(texture);																// Just reset the material with the new one.
+				c_material->textures.push_back(texture);														// Add the material to the materials loaded in the component.
 			}
 			else
 			{
@@ -262,8 +262,8 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 
 				if (c_material != nullptr)																		// Checks that the newly created C_Material* is not nullptr.
 				{
-					c_material->SetMaterial(material);															// Sets the new C_Material component with the r_material with the imported tex.
-					c_material->textures.push_back(material);
+					c_material->SetTexture(texture);															// Sets the new C_Material component with the r_material with the imported tex.
+					c_material->textures.push_back(texture);
 				}
 			}
 		}

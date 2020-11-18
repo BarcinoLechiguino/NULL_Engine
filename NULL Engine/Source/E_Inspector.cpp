@@ -277,7 +277,8 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 			ImGui::Separator();
 
 			// --- TEXTURE PATH ---
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", material->GetTextureFile().c_str());
+			//ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", material->GetTextureFile().c_str());
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", material->GetTexturePath().c_str());
 
 			ImGui::Separator();
 

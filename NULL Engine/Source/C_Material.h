@@ -24,10 +24,14 @@ public:
 
 public:
 	R_Material*		GetMaterial() const;
-	void			SetMaterial(R_Material* material);
+	R_Texture*		GetTexture() const;
 
+	void			SetMaterial(R_Material* material);
+	void			SetTexture(R_Texture* texture);
+
+public:
 	void			SetMaterialColour(const Color& new_colour);
-	void			SetMaterialColour(const float& r, const float& g, const float& b, const float& a);
+	void			SetMaterialColour(float r, float g, float b, float a);
 	
 	std::string		GetTexturePath() const;
 	std::string		GetTextureFile() const;
@@ -40,12 +44,12 @@ public:
 	void			SetUseDefaultTexture(const bool& set_to);
 
 public:
-	std::vector<R_Material*>	textures;							// Will store all the textures that this component can have.
+	std::vector<R_Texture*>		textures;											// Will store all the textures that this component can have.
 
 	bool						use_default_tex;
 
 private:
-	R_Material*					material;							// Currently used material.
+	R_Material*					material;										// Currently used material.
 	R_Texture*					texture;
 };
 

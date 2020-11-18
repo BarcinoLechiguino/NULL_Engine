@@ -60,7 +60,7 @@ bool C_Mesh::Render()
 	{
 		if (material->IsActive())
 		{
-			if (material->GetMaterial() != nullptr)
+			if (material->GetTexture() != nullptr)
 			{
 				if (material->UseDefaultTexture())
 				{
@@ -144,6 +144,8 @@ bool C_Mesh::GetDrawFaceNormals() const
 	{
 		return mesh->draw_face_normals;
 	}
+
+	return false;
 }
 
 void C_Mesh::SetDrawVertexNormals(const bool& set_to)

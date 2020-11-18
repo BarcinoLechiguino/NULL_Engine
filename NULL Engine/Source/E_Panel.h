@@ -23,7 +23,7 @@ public:
 	const char*		GetName() const;
 	bool			IsActive() const;
 	bool			IsHovered() const;
-	void			SetIsHovered();													// Trying out having a Set() function without any parameters.
+	void			SetIsHovered();													// Trying out having a Set() function without any parameters. Kinda dirty.
 
 	void			HelpMarker(const char* description);
 

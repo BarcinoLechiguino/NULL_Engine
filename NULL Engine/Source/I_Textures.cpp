@@ -20,7 +20,7 @@
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILU.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILUT.lib")
 
-using namespace Importer::Textures;																		// Not a good thing to do but it will be employed sparsely and only inside this .cpp
+using namespace Importer::Textures;																			// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
 void Importer::Textures::Utilities::Init()
 {
@@ -48,78 +48,90 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 {
 	bool ret = true;
 
-	if (r_texture == nullptr)																					// Safety check to avoid importing textures for non-existent Texture Resources.
+	if (path != nullptr && r_texture != nullptr)
 	{
-		LOG("[ERROR] Texture Import: R_Texture* was nullptr!");
-		return false;
-	}
-	
-	LOG("[IMPORTER] Loading %s texture.", path);
+		LOG("[IMPORTER] Loading %s texture.", path);
 
-	uint tex_buffer;
-	uint tex_id;
+		char* tex_data = nullptr;																				// Buffer where the binary data of the texture to import will be stored.
+		uint file_size = App->file_system->Load(path, &tex_data);												// Generating a buffer with the data of the texture in the given path.
 
-	if (path != nullptr)
-	{
-		ilGenImages(1, (ILuint*)&tex_buffer);
-		ilBindImage(tex_buffer);
-
-		char* tex_data = nullptr;
-		uint file_size = App->file_system->Load(path, &tex_data);
-
-		if (tex_data != nullptr && file_size > 0)
+		if (tex_data != nullptr && file_size > 0)																// If the buffer is not still nullptr and the file could be loaded.
 		{
-			ILenum type = Utilities::GetTextureType(path);														// ILenum is a typedef for unsigned int, which makes it equivalent to our uint.
+			ILuint il_image;	//This = 0																		// Will be used to generate, bind and delete the buffers created by DevIL.
+			ilGenImages(1, &il_image);																			// DevIL's buffers work pretty much the same way as OpenGL's do.
+			ilBindImage(il_image);																				// The first step is to generate a buffer and then bind it.
 
-			bool success = ilLoadL(type, (const void*)tex_data, file_size);
+			ILenum type = IL_TYPE_UNKNOWN;																		// When type is IL_TYPE_UNKNOWN, DevIL will try to find the type on it's own.
+			
+			bool success = ilLoadL(type, (const void*)tex_data, file_size);										// ilLoadL() loads a texture from some buffer data. size == 0 = no bounds check.
 			if (success)
 			{
-				tex_id = ilutGLBindTexImage();
+				GLuint tex_id = 0;																				// Will be used to store the texture's id used in OpenGL's buffers.
+				tex_id = ilutGLBindTexImage();	//NECESSARY?													// Binds the imported image to a generated OpenGL texture.
 
-				success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+				success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);											// Will convert the image to the given format and type. ERROR if out of memory. 
 				if (success)
 				{
-					tex_id = Utilities::CreateTexture(ilGetData(), ilGetInteger(IL_IMAGE_WIDTH),
-																	ilGetInteger(IL_IMAGE_HEIGHT),
-																	ilGetInteger(IL_IMAGE_FORMAT),
-																	ilGetInteger(IL_IMAGE_FORMAT),
-																	GL_TEXTURE_2D, GL_LINEAR, GL_REPEAT);
+					uint width  = (uint)ilGetInteger(IL_IMAGE_WIDTH);											// --------------------- Getting the imported texture's data.
+					uint height = (uint)ilGetInteger(IL_IMAGE_HEIGHT);											// 
+					uint format = (uint)ilGetInteger(IL_IMAGE_FORMAT);											// Internal format will be forced to be the same as format.
+					uint target = (uint)GL_TEXTURE_2D;															// 
+					int filter	= (int)GL_LINEAR;																// 
+					int filler	= (int)GL_REPEAT;																// ----------------------------------------------------------
+					
+					tex_id = Utilities::CreateTexture(ilGetData(), width, height, target, filter, filler, format, format);	// Creates an OpenGL texture with the given data and parameters.
 
-					if (tex_id != 0)
+					if (tex_id != 0)																			// If tex_id == 0, then it means that the texture could not be created.
 					{
-						r_texture->tex_data.id		= tex_id;
-						r_texture->tex_data.width	= ilGetInteger(IL_IMAGE_WIDTH);
-						r_texture->tex_data.height	= ilGetInteger(IL_IMAGE_HEIGHT);
-						r_texture->tex_data.path	= path;
-						r_texture->tex_data.file	= App->file_system->GetFileAndExtension(path).c_str();
-						r_texture->tex_data.format	= (TEXTURE_FORMAT)ilGetInteger(IL_IMAGE_FORMAT);
-					}
+						//r_texture->SetTextureData()
+						
+						r_texture->tex_data.id		= tex_id;													// Filling the Texture struct in R_Texture* with the imported texture data.
+						r_texture->tex_data.width	= ilGetInteger(IL_IMAGE_WIDTH);								// 
+						r_texture->tex_data.height	= ilGetInteger(IL_IMAGE_HEIGHT);							// 
+						r_texture->tex_data.path	= path;														// 
+						r_texture->tex_data.file	= App->file_system->GetFileAndExtension(path).c_str();		// 
+						r_texture->tex_data.format	= (TEXTURE_FORMAT)ilGetInteger(IL_IMAGE_FORMAT);			// 
+					}																							// ------------------------------------------------------------------------
 					else
 					{
 						LOG("[ERROR] Could not get texture ID! Path: %s", path);
+						ret = false;
 					}
+				}
+				else
+				{
+					ILenum error = ilGetError();
+					LOG("[ERROR] ilConvertImage() Error: %s", iluErrorString(error));
 				}
 			}
 			else
-			{
+			{	
 				ILenum error = ilGetError();
 				LOG("[ERROR] ilLoadL() Error: %s", iluErrorString(error));
+
+				ret = false;
 			}
+
+			ilDeleteImages(1, &il_image);
 		}
 		else
 		{
 			LOG("[ERROR] File System could not load the texture: File size was 0!");
+			ret = false;
 		}
+
+		RELEASE_ARRAY(tex_data);
 	}
 	else
 	{
-		LOG("[ERROR] Texture could not be imported: Path was nullptr!");
+		LOG("[ERROR] Texture could not be imported: Path and/or R_Texture* was nullptr!");
+		ret = false;
 	}
 
 	return ret;
 }
 
-uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, uint height, int internal_format, uint format, uint target, int filter_type, int filling_type)
+uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, uint height, uint target, int filter_type, int filling_type, int internal_format, uint format)
 {
 	uint texture_id = 0; 
 
@@ -166,32 +178,6 @@ uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, 
 	}
 
 	return texture_id;
-}
-
-uint Importer::Textures::Utilities::GetTextureType(const char* path)
-{
-	uint type = IL_TYPE_UNKNOWN;
-
-	std::string extension = App->file_system->GetFileExtension(path);
-
-	if (extension == "png" || extension == "PNG")
-	{
-		type = IL_PNG;
-	}
-	else if (extension == "dds" || extension == "DDS")
-	{
-		type = IL_DDS;
-	}
-	else if (extension == "tga" || extension == "TGA")
-	{
-		type = IL_TGA;
-	}
-	else
-	{
-		LOG("[WARNING] Texture %s: Could not get texture type from extension!", path);
-	}
-
-	return type;
 }
 
 uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)

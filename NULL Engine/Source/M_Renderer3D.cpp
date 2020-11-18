@@ -13,8 +13,7 @@
 
 #include "R_Model.h"
 #include "R_Mesh.h"
-#include "R_Material.h"
-#include "I_Materials.h"
+#include "I_Textures.h"
 
 #include "M_Renderer3D.h"
 
@@ -60,7 +59,7 @@ bool M_Renderer3D::Init(Configuration& config)
 
 	InitGlew();																					// Initializing Glew.
 
-	Importer::Materials::DevIL::Init();															// Initializing DevIL.
+	Importer::Textures::Utilities::Init();														// Initializing DevIL.
 	
 	CreatePrimitiveExamples();																	// Adding one of each available primitice to the primitives vector for later display.
 
@@ -138,7 +137,7 @@ bool M_Renderer3D::CleanUp()
 	
 	primitives.clear();
 
-	Importer::Materials::DevIL::CleanUp();
+	Importer::Textures::Utilities::CleanUp();													// Shutting down DevIL. 
 
 	SDL_GL_DeleteContext(context);
 
@@ -454,7 +453,7 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 	
 	//glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	glMultMatrixf((GLfloat*)&transform.Transposed());
+	glMultMatrixf((GLfloat*)&transform.Transposed());												// OpenGL requires that the 4x4 matrices are column-major instead of row-major.
 
 	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
