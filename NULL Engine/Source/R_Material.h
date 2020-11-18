@@ -31,7 +31,8 @@ public:
 
 public:
 	MATERIAL_TYPE	type;
-	Color			diffuse;
+	Color			diffuse_color;
+	uint			texture_id;
 
 private:
 	

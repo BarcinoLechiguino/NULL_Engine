@@ -232,7 +232,7 @@ void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const
 			else
 			{
 				uint file_end	= file_path.size();
-				file_path		= file_path.substr(file_start, file_end);
+				file_path		= file_path.substr(file_start + 1, file_end);
 
 				r_mesh->tex_paths.push_back(file_path.c_str());
 			}

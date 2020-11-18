@@ -2,7 +2,7 @@
 
 R_Material::R_Material() : Resource()
 {
-	diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+	diffuse_color	= { 1.0f, 1.0f, 1.0f, 1.0f };
 }
 
 R_Material::~R_Material()

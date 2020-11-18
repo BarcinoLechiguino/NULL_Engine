@@ -83,10 +83,8 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	}
 
 	Utilities::ImportTransform(ai_node, game_object);														// Load Transforms
-	
 	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
-	
-	Utilities::ImportMaterials(scene_path, game_object);													// Load Textures
+	Utilities::ImportMaterials(scene_path, game_object);													// Load Materials
 
 	game_objects.push_back(game_object);
 
@@ -174,16 +172,19 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 			R_Mesh* r_mesh = c_meshes[i]->GetMesh();															// 
 			for (uint j = 0; j < r_mesh->tex_paths.size(); ++j)
 			{
-				R_Material* r_material	= new R_Material();														// 
-				R_Texture* r_texture	= new R_Texture();														// 
+				R_Material* r_material	= new R_Material();														//
+				R_Texture* r_texture = new R_Texture();															// 
 
 				std::string dir_path;																			//
 				std::string file_name;
 				App->file_system->SplitFilePath(scene_path, &dir_path, &file_name, nullptr);					//
 				dir_path += r_mesh->tex_paths[j];																//
+
 				std::string path_to_tex = ASSET_TEXTURES_PATH;
 				path_to_tex += file_name;
 
+				//Importer::Materials::Import();
+				
 				/*Importer::Materials::Import(dir_path.c_str(), r_material);									//
 																												
 				if (r_material != nullptr && r_material->tex_data.id != 0)										//
@@ -196,9 +197,9 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 					c_material->textures.push_back(r_material);													//
 				}*/
 
-				Importer::Textures::Import(dir_path.c_str(), r_texture);										//
+				uint tex_id = Importer::Textures::Import(dir_path.c_str(), r_texture);							//
 
-				if (r_material != nullptr && r_texture->tex_data.id != 0)										//
+				if (tex_id != 0 && r_texture != nullptr)														//
 				{
 					if (c_material->GetTexture() == nullptr)													//
 					{
@@ -210,11 +211,6 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 			}
 		}
 	}
-}
-
-void Importer::Scenes::Utilities::ImportTextures(const char* scene_path, GameObject* game_object)
-{
-
 }
 
 void Importer::Scenes::Save(const aiScene* ai_scene, char** buffer)

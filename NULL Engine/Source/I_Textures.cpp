@@ -44,9 +44,9 @@ void Importer::Textures::Utilities::CleanUp()
 	ilShutDown();
 }
 
-bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
+uint Importer::Textures::Import(const char* path, R_Texture* r_texture)
 {
-	bool ret = true;
+	uint tex_id = 0;
 
 	if (path != nullptr && r_texture != nullptr)
 	{
@@ -66,8 +66,8 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 			bool success = ilLoadL(type, (const void*)tex_data, file_size);										// ilLoadL() loads a texture from some buffer data. size == 0 = no bounds check.
 			if (success)
 			{
-				GLuint tex_id = 0;																				// Will be used to store the texture's id used in OpenGL's buffers.
-				tex_id = ilutGLBindTexImage();	//NECESSARY?													// Binds the imported image to a generated OpenGL texture.
+				//GLuint tex_id = 0;																				// Will be used to store the texture's id used in OpenGL's buffers.
+				tex_id = ilutGLBindTexImage();																	// Binds the imported image to a generated OpenGL texture.
 
 				success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);											// Will convert the image to the given format and type. ERROR if out of memory. 
 				if (success)
@@ -79,37 +79,34 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 					int filter	= (int)GL_LINEAR;																// 
 					int filler	= (int)GL_REPEAT;																// ----------------------------------------------------------
 					
-					tex_id = Utilities::CreateTexture(ilGetData(), width, height, target, filter, filler, format, format);	// Creates an OpenGL texture with the given data and parameters.
+					tex_id = Utilities::CreateTexture(ilGetData(), width, height, target, filter, filler, format, format);		// Creates an OpenGL texture with the given data and parameters.
 
-					if (tex_id != 0)																			// If tex_id == 0, then it means that the texture could not be created.
+					if (tex_id != 0)																							// If tex_id == 0, then it means the tex. could not be created.
 					{
-						//r_texture->SetTextureData()
+						std::string file = App->file_system->GetFileAndExtension(path);
 						
-						r_texture->tex_data.id		= tex_id;													// Filling the Texture struct in R_Texture* with the imported texture data.
-						r_texture->tex_data.width	= ilGetInteger(IL_IMAGE_WIDTH);								// 
-						r_texture->tex_data.height	= ilGetInteger(IL_IMAGE_HEIGHT);							// 
-						r_texture->tex_data.path	= path;														// 
-						r_texture->tex_data.file	= App->file_system->GetFileAndExtension(path).c_str();		// 
-						r_texture->tex_data.format	= (TEXTURE_FORMAT)ilGetInteger(IL_IMAGE_FORMAT);			// 
-					}																							// ------------------------------------------------------------------------
+						r_texture->SetTextureData(path, file.c_str(), tex_id, width, height, 0, 0, 0, (TEXTURE_FORMAT)format);
+
+						file.clear();
+					}
 					else
 					{
 						LOG("[ERROR] Could not get texture ID! Path: %s", path);
-						ret = false;
+						tex_id = 0;
 					}
 				}
 				else
 				{
 					ILenum error = ilGetError();
 					LOG("[ERROR] ilConvertImage() Error: %s", iluErrorString(error));
+					tex_id = 0;
 				}
 			}
 			else
 			{	
 				ILenum error = ilGetError();
 				LOG("[ERROR] ilLoadL() Error: %s", iluErrorString(error));
-
-				ret = false;
+				tex_id = 0;
 			}
 
 			ilDeleteImages(1, &il_image);
@@ -117,7 +114,7 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 		else
 		{
 			LOG("[ERROR] File System could not load the texture: File size was 0!");
-			ret = false;
+			tex_id = 0;
 		}
 
 		RELEASE_ARRAY(tex_data);
@@ -125,10 +122,10 @@ bool Importer::Textures::Import(const char* path, R_Texture* r_texture)
 	else
 	{
 		LOG("[ERROR] Texture could not be imported: Path and/or R_Texture* was nullptr!");
-		ret = false;
+		tex_id = 0;
 	}
 
-	return ret;
+	return tex_id;
 }
 
 uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, uint height, uint target, int filter_type, int filling_type, int internal_format, uint format)

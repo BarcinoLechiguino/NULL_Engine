@@ -41,6 +41,8 @@ bool E_Inspector::Draw(ImGuiIO& io)
 		DrawComponents(selected_game_object);
 	}
 
+	//ImGui::ShowStyleEditor();
+
 	//ImGui::Text("WantCaptureMouse: %d", io.WantCaptureMouse);
 	//ImGui::Text("WantCaptureKeyboard: %d", io.WantCaptureKeyboard);
 	//ImGui::Text("WantTextInput: %d", io.WantTextInput);

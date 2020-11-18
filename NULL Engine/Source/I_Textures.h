@@ -10,7 +10,7 @@ namespace Importer
 {
 	namespace Textures
 	{	
-		bool	Import(const char* path, R_Texture* r_texture);
+		uint	Import(const char* path, R_Texture* r_texture);
 
 		uint64	Save(const R_Texture* r_texture, char** buffer);
 

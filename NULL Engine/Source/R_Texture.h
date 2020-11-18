@@ -18,12 +18,17 @@ struct Texture
 {
 	Texture();
 
+	std::string		path;								// Path of the file in the directory. Will be used to avoid making duplicates.
+	std::string		file;								// File and extension string of the texture. Maybe use path + App->file_system->GetFileAndExtension() instead?
+
 	uint			id;									// Id of the texture.
 	uint			width;								// Width of the texture in pixels.
 	uint			height;								// Height of the texture in pixels.
-	std::string		path;								// Path of the file in the directory. Will be used to avoid making duplicates.
-	std::string		file;								// File and extension string of the texture. Maybe use path + App->file_system->GetFileAndExtension() instead?
+	uint			depth;								// Depth of the texture in pixels.
+	uint			bpp;								// Amount of Bytes Per Pixel.
+	uint			bytes;								// Size of the texture in bytes.
 	TEXTURE_FORMAT	format;								// Colour Index, RGB, RGBA... Adapted to fit the formats that DevIL returns.
+	bool			compressed;							// Will be True if the texture comes from a compressed format (DDS, ...).
 };
 
 class R_Texture : public Resource
@@ -38,7 +43,7 @@ public:
 
 
 public:
-	void SetTextureData(const char* path, const char* file, TEXTURE_FORMAT format, uint id, uint width, uint height);
+	void SetTextureData(const char* path, const char* file, uint id, uint width, uint height, uint depth, uint bpp, uint bytes, TEXTURE_FORMAT format, bool compressed = true);
 
 public:
 	Texture tex_data;

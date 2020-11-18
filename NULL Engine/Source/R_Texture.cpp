@@ -24,17 +24,32 @@ bool R_Texture::CleanUp()
 	return ret;
 }
 
-void R_Texture::SetTextureData(const char* path, const char* file, TEXTURE_FORMAT format, uint id, uint width, uint height)
+void R_Texture::SetTextureData(const char* path, const char* file, uint id, uint width, uint height, uint depth, uint bpp, uint bytes, TEXTURE_FORMAT format, bool compressed)
 {
+	tex_data.path			= path;
+	tex_data.file			= file;
 
+	tex_data.id				= id;
+	tex_data.width			= width;
+	tex_data.height			= height;
+	tex_data.depth			= depth;
+	tex_data.bpp			= bpp;
+	tex_data.bytes			= bytes;
+	tex_data.format			= format;
+	tex_data.compressed		= compressed;
 }
 
 Texture::Texture()
 {
-	path	= "NONE";
-	file	= "NONE";
-	format	= TEXTURE_FORMAT::UNKNOWN;
-	id		= 0;
-	width	= 0;
-	height	= 0;
+	path		= "NONE";
+	file		= "NONE";
+	
+	id			= 0;
+	width		= 0;
+	height		= 0;
+	depth		= 0;
+	bpp			= 0;
+	bytes		= 0;
+	format		= TEXTURE_FORMAT::UNKNOWN;
+	compressed	= true;
 }

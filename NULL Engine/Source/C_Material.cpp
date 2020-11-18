@@ -76,13 +76,13 @@ void C_Material::SetTexture(R_Texture* r_texture)
 
 void C_Material::SetMaterialColour(const Color& color)
 {
-	material->diffuse = color;
+	material->diffuse_color = color;
 }
 
 // --- MATERIAL AND TEXTURE GET/SET DATA METHODS
 void C_Material::SetMaterialColour(float r, float g, float b, float a)
 {
-	material->diffuse = Color(r, g, b, a);
+	material->diffuse_color = Color(r, g, b, a);
 }
 
 std::string C_Material::GetTexturePath() const
