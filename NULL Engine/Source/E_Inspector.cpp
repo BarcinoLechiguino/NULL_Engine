@@ -15,9 +15,9 @@
 #define MAX_VALUE 100000
 #define MIN_VALUE -100000
 
-E_Inspector::E_Inspector() : E_Panel("Inspector") /*, selected_game_object(nullptr)*/
+E_Inspector::E_Inspector() : E_Panel("Inspector")
 {
-
+	combo_item = 0;
 }
 
 E_Inspector::~E_Inspector()
@@ -40,6 +40,8 @@ bool E_Inspector::Draw(ImGuiIO& io)
 		DrawGameObjectInfo(selected_game_object);
 		DrawComponents(selected_game_object);
 	}
+	
+	AddComponentCombo(selected_game_object); 
 
 	//ImGui::ShowStyleEditor();
 
@@ -344,4 +346,18 @@ void E_Inspector::DrawLightComponent(GameObject* selected_game_object)
 void E_Inspector::DrawCameraComponent(GameObject* selected_game_object)
 {
 
+}
+
+void E_Inspector::AddComponentCombo(GameObject* selected_game_object)
+{
+	//ImGui::BeginCombo()
+
+	ImGui::Combo("##", &combo_item, "Add Component\0Transform\0Mesh\0Material\0Light\0Camera\n");
+
+	ImGui::SameLine();
+
+	if ((ImGui::Button("ADD")))
+	{ 
+		selected_game_object->CreateComponent((COMPONENT_TYPE)combo_item);
+	}
 }

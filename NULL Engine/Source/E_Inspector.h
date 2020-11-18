@@ -25,10 +25,12 @@ private:
 	void DrawCameraComponent(GameObject* selected_game_object);
 
 	// ------- DRAW COMPONENT METHODS -------
-
+	void AddComponentCombo(GameObject* selected_game_object);
 
 private:
-	//GameObject* selected_game_object;
+	bool open_add_component_popup;
+
+	int combo_item;
 };
 
 #endif // !__E_INSPECTOR_H__
