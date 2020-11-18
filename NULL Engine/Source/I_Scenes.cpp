@@ -84,7 +84,8 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 
 	Utilities::ImportTransform(ai_node, game_object);														// Load Transforms
 	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
-	Utilities::ImportMaterials(scene_path, game_object);													// Load Materials
+	//Utilities::ImportMaterials(scene_path, game_object);													// Load Materials
+	Utilities::ImportMaterials(ai_scene, ai_node, game_object);												// Load Materials
 
 	game_objects.push_back(game_object);
 
@@ -144,17 +145,19 @@ void Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObj
 void Importer::Scenes::Utilities::ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
 {
 	std::vector<R_Mesh*> meshes;
-	Importer::Meshes::Utilities::GetMeshesFromNode(ai_scene, ai_node, meshes);								//
+	Importer::Meshes::Utilities::GetMeshesFromNode(ai_scene, ai_node, meshes);									//
 	
-	for (uint i = 0; i < meshes.size(); ++i)																//
+	for (uint i = 0; i < meshes.size(); ++i)																	//
 	{
-		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);						//
+		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);							//
 
-		c_mesh->SetMesh(meshes[i]);																			// 
-		c_mesh->SetMeshPath(scene_file);																	// 
+		c_mesh->SetMesh(meshes[i]);																				// 
+		c_mesh->SetMeshPath(scene_file);																		// 
 
-		//Utilities::ImportMaterials(scene_path, game_object, meshes[i]);									// 
+		//Utilities::ImportMaterials(scene_path, game_object, meshes[i]);										// 
 	}
+
+	meshes.clear();
 
 	LOG("[IMPORTER] Imported the meshes of node: %s", ai_node->mName.C_Str());
 }
@@ -210,6 +213,16 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, GameOb
 				}
 			}
 		}
+	}
+}
+
+void Importer::Scenes::Utilities::ImportMaterials(const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
+{
+	for (uint i = 0; i < ai_node->mNumMeshes; ++i)
+	{
+		aiMesh* ai_mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];												// aiMesh_array[index].
+
+
 	}
 }
 

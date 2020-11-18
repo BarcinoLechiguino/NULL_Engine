@@ -4,7 +4,7 @@
 #include "Resource.h"
 #include "Color.h"
 
-enum class MATERIAL_TYPE									// The enum values are set according to the values of Assimp's aiTextureType enum.
+enum class TEXTURE_TYPE									// The enum values are set according to the values of Assimp's aiTextureType enum.
 {
 	NONE			= 0x0,									// 0x0 = aiTextureType_NONE			--> No texture. The value will be used for all material properties non-related to textures.
 	DIFFUSE			= 0x1,									// 0x1 = aiTextureType_DIFFUSE		--> Tex. will be combined with the diffuse lighting equation's result.
@@ -30,7 +30,7 @@ public:
 	bool CleanUp() override;
 
 public:
-	MATERIAL_TYPE	type;
+	TEXTURE_TYPE	type;
 	Color			diffuse_color;
 	uint			texture_id;
 

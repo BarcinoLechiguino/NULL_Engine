@@ -24,7 +24,7 @@
 using namespace Importer::Materials;																	// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
 // Importing, saving and loading aiMaterials with Assimp.
-void Importer::Materials::Import(const char* path, const aiMaterial* ai_material, R_Material* r_material, R_Texture* r_texture)		// R_Texture* TMP until the Resource Manager is in place.
+void Importer::Materials::Import(const aiMaterial* ai_material, R_Material* r_material, R_Texture* r_texture)		// R_Texture* TMP until the Resource Manager is in place.
 {
 
 }
