@@ -43,7 +43,6 @@ void Importer::Materials::Import(const char* path, const aiMaterial* ai_material
 		
 		r_material->texture_id = Importer::Textures::Import(dir_path.c_str(), r_texture);
 	}
-
 }
 
 uint64 Importer::Materials::Save(const R_Material* r_material, char** buffer)

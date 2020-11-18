@@ -4,6 +4,7 @@
 #include "E_Panel.h"
 
 class GameObject;
+enum class COMPONENT_TYPE;
 
 class E_Inspector : public E_Panel
 {
@@ -27,10 +28,13 @@ private:
 	// ------- DRAW COMPONENT METHODS -------
 	void AddComponentCombo(GameObject* selected_game_object);
 
-private:
-	bool open_add_component_popup;
+	void DeleteComponentPopup(GameObject* selected_game_object);
 
-	int combo_item;
+private:
+	bool		show_delete_component_popup;
+	int			combo_item;
+
+	Component*	component_to_delete;
 };
 
 #endif // !__E_INSPECTOR_H__

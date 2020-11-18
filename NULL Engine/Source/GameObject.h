@@ -36,6 +36,8 @@ public:
 	bool			DeleteChild(GameObject* child);										// Deletes the given child from the childs vector. Returns false upon not finding the child.
 	
 	Component*		CreateComponent(COMPONENT_TYPE type);								// Creates a component of the given type and adds it to the components vector.
+	bool			DeleteComponent(Component* component_to_delete);					// Deletes the given component from the Components vector. Returs False on ERROR.
+
 	Component*		GetComponent(COMPONENT_TYPE type);									// Iterates through the components vector and returns the component that matches the given type.
 	const char*		GetComponentNameFromType(COMPONENT_TYPE type);						// Returns a string matching the given type. Mainly used for debug purposes (LOG).
 	

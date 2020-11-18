@@ -488,6 +488,9 @@ void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id,
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->TBO);														// Will bind the buffer object with the mesh->TBO identifyer for rendering.
 	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of tex coords to use when rendering.
 
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->NBO);
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);
+
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);														// The vertex buffer is bound so the vertex positions can be interpreted correctly.
 	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of vert coords to use when rendering.
 

@@ -38,10 +38,6 @@ to_delete(false)
 	}
 
 	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
-	//TMP
-	CreateComponent(COMPONENT_TYPE::MESH);
-	CreateComponent(COMPONENT_TYPE::MATERIAL);
-	CreateComponent(COMPONENT_TYPE::LIGHT);
 }
 
 GameObject::~GameObject()
@@ -217,6 +213,10 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::LIGHT:
 		component = new C_Light(this);
 		break;
+
+	case COMPONENT_TYPE::CAMERA:
+		component = new C_Camera(this);
+		break;
 	}
 
 	if (component != nullptr)
@@ -241,6 +241,31 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	}
 
 	return component;
+}
+
+bool GameObject::DeleteComponent(Component* component_to_delete)
+{
+	if (component_to_delete != nullptr)
+	{
+		for (uint i = 0; i < components.size(); ++i)
+		{
+			if (components[i] == component_to_delete)
+			{
+				components[i]->CleanUp();
+
+				delete components[i];
+				components[i] = nullptr;
+
+				components.erase(components.begin() + i);
+
+				return true;
+			}
+		}
+	}
+
+	LOG("[STATUS] Deleted Component %s of Game Object %s", component_to_delete->GetName(), name.c_str());
+
+	return false;
 }
 
 Component* GameObject::GetComponent(COMPONENT_TYPE type)
