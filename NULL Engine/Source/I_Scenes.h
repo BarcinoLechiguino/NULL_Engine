@@ -24,7 +24,8 @@ namespace Importer
 		{
 			void ProcessNode(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, std::vector<GameObject*>& game_objects, GameObject* parent);
 			
-			void ImportTransform(const aiNode* ai_node, GameObject* game_object);
+			//void ImportTransform(const aiNode* ai_node, GameObject* game_object);
+			const aiNode* ImportTransform(const aiNode* ai_node, GameObject* game_object);
 			void ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);
 			void ImportMaterials(const char* scene_path, GameObject* game_object);
 			void ImportMaterials(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);

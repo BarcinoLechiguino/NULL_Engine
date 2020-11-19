@@ -217,7 +217,7 @@ void M_Editor::EditorShortcuts()
 }
 
 void M_Editor::CheckShowHideFlags()
-{
+{	
 	show_configuration	?	configuration->Enable()	: configuration->Disable();					// Engine Configuration
 	show_hierarchy		?	hierarchy->Enable()		: hierarchy->Disable();						// Hierarchy
 	show_inspector		?	inspector->Enable()		: inspector->Disable();						// Inspector

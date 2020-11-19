@@ -38,10 +38,9 @@ public:
 	Component*		CreateComponent(COMPONENT_TYPE type);								// Creates a component of the given type and adds it to the components vector.
 	bool			DeleteComponent(Component* component_to_delete);					// Deletes the given component from the Components vector. Returs False on ERROR.
 
+public:																					// --- COMPONENT GETTERS AND SETTERS
 	Component*		GetComponent(COMPONENT_TYPE type);									// Iterates through the components vector and returns the component that matches the given type.
 	const char*		GetComponentNameFromType(COMPONENT_TYPE type);						// Returns a string matching the given type. Mainly used for debug purposes (LOG).
-	
-	std::vector<Component*> GetAllComponentsWithType(COMPONENT_TYPE type);				// Returns a vector with all the components of the given type that the GameObject currently has.
 	
 	C_Transform*	GetTransformComponent();											// Returns the GameObject's Transform Component.	Returns nullptr on ERROR.
 	C_Mesh*			GetMeshComponent();													// Returns the GameObject's Mesh Component.			Returns nullptr on ERROR.
@@ -49,20 +48,21 @@ public:
 	C_Light*		GetLightComponent();												// Returns the GameObject's Light Component.		Returns nullptr on ERROR.
 	C_Camera*		GetCameraComponent();												// Returns the GameObject's Camera Component.		Returns nullptr on ERROR.
 
+	std::vector<Component*> GetAllComponentsWithType(COMPONENT_TYPE type);				// Returns a vector with all the components of the given type that the GameObject currently has.
 	std::vector<C_Mesh*> GetAllMeshComponents();
 
-public:																					// --- GETTERS AND SETTERS
-	const char* GetName() const;
-	bool		IsActive() const;
-	bool		IsStatic() const;
+public:																					// --- GAME OBJECT GETTERS AND SETTERS
+	const char*		GetName() const;
+	bool			IsActive() const;
+	bool			IsStatic() const;
 
-	void		SetID(uint id);
-	void		SetName(const char* new_name);
-	void		SetIsActive(const bool& set_to);
-	void		SetIsStatic(const bool& set_to);
+	void			SetID(uint id);
+	void			SetName(const char* new_name);
+	void			SetIsActive(const bool& set_to);
+	void			SetIsStatic(const bool& set_to);
 
-	void		SetChildsIsActive(const bool& set_to, GameObject* parent);
-	void		SetChildsIsStatic(const bool& set_to, GameObject* parent);
+	void			SetChildsIsActive(const bool& set_to, GameObject* parent);
+	void			SetChildsIsStatic(const bool& set_to, GameObject* parent);
 
 public:
 	std::vector<Component*>		components;

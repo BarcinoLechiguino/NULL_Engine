@@ -65,6 +65,12 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	std::string scene_file = App->file_system->GetFileAndExtension(scene_path);
 	
 	GameObject* game_object = new GameObject();
+
+	ai_node = Utilities::ImportTransform(ai_node, game_object);												// Load Transforms. Dummy nodes will be ignored.
+
+	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
+	//Utilities::ImportMaterials(scene_path, game_object);													// Load Materials
+	Utilities::ImportMaterials(scene_path, ai_scene, ai_node, game_object);									// Load Materials
 	
 	if (ai_node == ai_scene->mRootNode)
 	{
@@ -74,19 +80,14 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	{
 		game_object->SetName(ai_node->mName.C_Str());
 	}
-	
+
 	game_object->parent = parent;
 
 	if (parent != nullptr)
 	{
 		parent->AddChild(game_object);
 	}
-
-	Utilities::ImportTransform(ai_node, game_object);														// Load Transforms
-	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
-	//Utilities::ImportMaterials(scene_path, game_object);													// Load Materials
-	Utilities::ImportMaterials(scene_path, ai_scene, ai_node, game_object);									// Load Materials
-
+	
 	game_objects.push_back(game_object);
 
 	for (uint i = 0; i < ai_node->mNumChildren; ++i)
@@ -97,7 +98,7 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	scene_file.clear();
 }
 
-void Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObject* game_object)
+const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObject* game_object)
 {
 	aiTransform ai_t;																						// Transform structure for Assimp. aiVector3D and aiQuaternion.
 	Transform	ma_t;																						// Transform structure for MathGeoLib. float3 and Quat.
@@ -140,6 +141,8 @@ void Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObj
 	game_object->GetTransformComponent()->ImportTransform(ma_t.position, ma_t.rotation, ma_t.scale);		// Importing the final Transform into the game object's transform component.
 
 	LOG("[IMPORTER] Imported the transforms of node: %s", root_node.c_str());
+
+	return ai_node;
 }
 
 void Importer::Scenes::Utilities::ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
@@ -188,7 +191,7 @@ void Importer::Scenes::Utilities::ImportMeshes(const char* scene_file, const aiS
 
 				//Importer::Materials::Import();
 				
-				Importer::Materials::Import(dir_path.c_str(), r_material);									//
+				Importer::Materials::Import(dir_path.c_str(), r_material);										//
 																												
 				if (r_material != nullptr && r_material->tex_data.id != 0)										//
 				{
