@@ -1,37 +1,32 @@
-#include "Profiler.h"
-#include "Assimp.h"
-#include "OpenGL.h"
-#include "ImGui.h"
+#include "Profiler.h"																			// Libraries & Other 3rd Party Softwares
+#include "OpenGL.h"																				// -------------------------------------
 
-#include "Color.h"
+#include "Color.h"																				// Own independent macros and structures
+#include "Primitive.h"																			// -------------------------------------
 
-#include "Application.h"																		// ATTENTION: Globals.h already included in Module.h
-#include "M_Window.h"
-#include "M_Camera3D.h"
-#include "M_Input.h"
-#include "M_FileSystem.h"
-#include "M_Editor.h"
-#include "Primitive.h"
+#include "Application.h"																		// Application and Modules
+#include "M_Window.h"																			// 
+#include "M_Camera3D.h"																			// 
+#include "M_Input.h"																			// 
+#include "M_FileSystem.h"																		// 
+#include "M_Editor.h"																			// -----------------------
 
-#include "R_Model.h"
-#include "R_Mesh.h"
-#include "R_Material.h"
-#include "I_Textures.h"
+#include "R_Mesh.h"																				// Resources
+#include "R_Material.h"																			//
+#include "R_Texture.h"																			// ---------
 
-#include "GameObject.h"																			// TMP
-#include "Component.h"																			// 
-#include "C_Transform.h"																		// DELETE
-#include "C_Mesh.h"																				// LATER
-#include "C_Material.h"																			// 
+#include "I_Textures.h"																			// Importers
 
-#include "M_Renderer3D.h"
+#include "C_Mesh.h"																				// GameObject and Components Trading these two deps. for a much cleaner RenderMesh() method.
+#include "C_Material.h"																			// -------------------------
+
+#include "M_Renderer3D.h"																		// Header of this .cpp file.
 
 #include "MemoryManager.h"
 
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
-
-#pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
+#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */							// Libraries Pragma Comments
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */							// 
+#pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")							// -------------------------
 
 #define WORLD_GRID_SIZE 200
 #define CHECKERS_WIDTH 64
@@ -402,26 +397,6 @@ void M_Renderer3D::CreatePrimitiveExamples()
 	primitives.push_back(pyramid);
 }
 
-/*void M_Renderer3D::LoadModel(const char* file_path, vec4 mat_colour)
-{
-	R_Model* model = new R_Model(file_path, mat_colour);
-
-	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
-
-	//char* buffer = nullptr;
-	//uint file_size = App->file_system->Load(file_path, &buffer);
-	//const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
-
-	if (scene != nullptr)
-	{
-		model->ProcessScene(scene);
-
-		aiReleaseImport(scene);
-	}
-
-	models.push_back(model);
-}*/
-
 void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 {
 	if (!mesh->vertices.empty())
@@ -453,87 +428,8 @@ void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 	}
 }
 
-void M_Renderer3D::RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id, bool tex_is_active)
-{
-	if (show_wireframe)
-	{
-		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-	}
-	
-	//glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glMultMatrixf((GLfloat*)&transform.Transposed());												// OpenGL requires that the 4x4 matrices are column-major instead of row-major.
-
-	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
-
-	if (!tex_is_active)
-	{
-		SetGLFlag(GL_TEXTURE_2D, false);
-	}
-
-	if (texture_id == -1)
-	{
-		glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-	}
-	else if (texture_id == 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
-	}
-	else
-	{
-		glBindTexture(GL_TEXTURE_2D, texture_id);
-	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->TBO);														// Will bind the buffer object with the mesh->TBO identifyer for rendering.
-	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of tex coords to use when rendering.
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->NBO);
-	glVertexPointer(3, GL_FLOAT, 0, nullptr);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);														// The vertex buffer is bound so the vertex positions can be interpreted correctly.
-	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of vert coords to use when rendering.
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);												// Will bind the buffer object with the mesh->IBO identifyer for rendering.
-	//glColor4f(colour.r, colour.g, colour.b, colour.a);
-	glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, nullptr);					// 
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);														// Clearing the buffers.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);																// 												
-	glBindTexture(GL_TEXTURE_2D, 0);																// ---------------------
-
-	if (!tex_is_active)
-	{
-		SetGLFlag(GL_TEXTURE_2D, true);
-	}
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);													// Disabling the client-side capabilities enabled at the beginning.
-	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY and GL_VERTEX_ARRAY.
-
-	// --- DEBUG DRAW ---
-	if (mesh->draw_vertex_normals)
-	{
-		mesh->DrawVertexNormals();
-	}
-
-	if (mesh->draw_face_normals)
-	{
-		mesh->DrawFaceNormals();
-	}
-
-	glPopMatrix();
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-}
-
 void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material)
-{
-	if (c_mesh == nullptr || c_material == nullptr)
-	{
-		LOG("[ERROR] RenderMesh(): %s", !c_mesh ? "C_Mesh* was nullptr!" : "C_Material was nullptr");
-		return;
-	}
-	
+{	
 	R_Mesh* r_mesh = c_mesh->GetMesh();
 	
 	if (show_wireframe)
@@ -610,109 +506,32 @@ void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-void M_Renderer3D::RenderGameObject(GameObject* game_object)
-{
-	C_Transform* transform	= game_object->GetTransformComponent();
-	C_Mesh* mesh			= game_object->GetMeshComponent();
-	C_Material* material	= game_object->GetMaterialComponent();
-	
-	if (show_wireframe)
-	{
-		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-	}
-
-	//glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glMultMatrixf((GLfloat*)&transform->GetWorldTransform().Transposed());							// OpenGL requires that the 4x4 matrices are column-major instead of row-major.
-
-	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and will be used during rendering.
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and will be used during rendering.
-
-	if (!material->IsActive())
-	{
-		SetGLFlag(GL_TEXTURE_2D, false);
-	}
-
-	if (material->GetTextureId() == -1)
-	{
-		Color color = material->GetMaterialColour();
-		glColor4f(color.r, color.g, color.b, color.a);
-	}
-	else if (material->GetTextureId() == 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
-	}
-	else
-	{
-		glBindTexture(GL_TEXTURE_2D, material->GetTextureId());
-	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMesh()->TBO);														// Will bind the buffer object with the mesh->TBO identifyer for rendering.
-	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of tex coords to use when rendering.
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->GetMesh()->VBO);														// The vertex buffer is bound so the vertex positions can be interpreted correctly.
-	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of vert coords to use when rendering.
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetMesh()->IBO);												// Will bind the buffer object with the mesh->IBO identifyer for rendering.
-	//glColor4f(colour.r, colour.g, colour.b, colour.a);
-	glDrawElements(GL_TRIANGLES, mesh->GetMesh()->indices.size(), GL_UNSIGNED_INT, nullptr);					// 
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);														// Clearing the buffers.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);																// 												
-	glBindTexture(GL_TEXTURE_2D, 0);																// ---------------------
-
-	if (!material->IsActive())
-	{
-		SetGLFlag(GL_TEXTURE_2D, true);
-	}
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);													// Disabling the client-side capabilities enabled at the beginning.
-	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY and GL_VERTEX_ARRAY.
-
-	// --- DEBUG DRAW ---
-	if (mesh->GetMesh()->draw_vertex_normals)
-	{
-		mesh->GetMesh()->DrawVertexNormals();
-	}
-
-	if (mesh->GetMesh()->draw_face_normals)
-	{
-		mesh->GetMesh()->DrawFaceNormals();
-	}
-
-	glPopMatrix();
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-}
-
 void M_Renderer3D::LoadDebugTexture()
 {	
-	GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];					// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
+	GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];							// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
 
-	for (int i = 0; i < CHECKERS_HEIGHT; ++i)									// There will be CHECKERS_WIDTH rows per column.
+	for (int i = 0; i < CHECKERS_HEIGHT; ++i)											// There will be CHECKERS_WIDTH rows per column.
 	{
-		for (int j = 0; j < CHECKERS_WIDTH; ++j)								// There will be an RGBA value per checker.
+		for (int j = 0; j < CHECKERS_WIDTH; ++j)										// There will be an RGBA value per checker.
 		{
-			int color = ((((i & 0x8) == 0) ^ ((j & 0x8) == 0))) * 255;			// Getting whether the checker will be white or black according to the iteration indexes and bitwise operations.
+			int color = ((((i & 0x8) == 0) ^ ((j & 0x8) == 0))) * 255;					// Getting the checker's color (white or black) according to the iteration indices and bitwise ops.
 
-			checker_image[i][j][0] = (GLubyte)color;							// R
-			checker_image[i][j][1] = (GLubyte)color;							// G
-			checker_image[i][j][2] = (GLubyte)color;							// B
-			checker_image[i][j][3] = (GLubyte)255;								// A
-
-			//LOG("CHECKER COLOR: %s", color == 255 ? "White" : "Black");
+			checker_image[i][j][0] = (GLubyte)color;									// R
+			checker_image[i][j][1] = (GLubyte)color;									// G
+			checker_image[i][j][2] = (GLubyte)color;									// B
+			checker_image[i][j][3] = (GLubyte)255;										// A
 		}
 	}
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);										// Sets the pixel storage modes. GL_UNPACK_ALIGNMENT specifies the alignment requirements for the
-	// --->																		// start of each pixel row in memory. 1 means that the alignment requirements will be byte-alignment.
-	glGenTextures(1, &debug_texture_id);										// Generate texture names. Returns n names in the given buffer. GL_INVALID_VALUE if n is negative.
-	glBindTexture(GL_TEXTURE_2D, debug_texture_id);								// Bind a named texture to a texturing target. Binds the buffer with the given target (GL_TEXTURE_2D).
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);												// Sets the pixel storage modes. GL_UNPACK_ALIGNMENT specifies the alignment requirements for the
+	// --->																				// start of each pixel row in memory. 1 means that the alignment requirements will be byte-alignment.
+	glGenTextures(1, &debug_texture_id);												// Generate texture names. Returns n names in the given buffer. GL_INVALID_VALUE if n is negative.
+	glBindTexture(GL_TEXTURE_2D, debug_texture_id);										// Bind a named texture to a texturing target. Binds the buffer with the given target (GL_TEXTURE_2D).
 	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);				// Set texture parameters. WRAP_S: Set the wrap parameters for texture coordinate s. GL_REPEAT is the default.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);				// WRAP_T: Set the wrap parameters for the texture coordinate r
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);			// MAG_FILTER: Sets the texture magnification process parameters. GL_NEAREST rets the val. of nearest tex elem.
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);			// MIN_FILTER: Sets the texture minimization process parameters. " ".
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);						// Set texture parameters. WRAP_S: Set the wrap parameters for tex. coord. S.. GL_REPEAT is the default.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);						// WRAP_T: Set the wrap parameters for the texture coordinate r
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);					// MAG_FILTER: Sets the tex. magnification process param.. GL_NEAREST rets the val. of nearest tex elem.
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					// MIN_FILTER: Sets the texture minimization process parameters. " ".
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
 	// --->																				// handle the process of resizing a tex. Takes the mipmap that most closely matches the size of the px.
 

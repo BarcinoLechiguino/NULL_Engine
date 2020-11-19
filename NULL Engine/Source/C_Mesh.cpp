@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "M_Renderer3D.h"
+
 #include "R_Mesh.h"
 
 #include "GameObject.h"
@@ -22,9 +23,12 @@ bool C_Mesh::Update()
 {
 	bool ret = true;
 
-	if (mesh != nullptr)
-	{	
-		Render();
+	if (IsActive())
+	{
+		if (mesh != nullptr)
+		{
+			Render();
+		}
 	}
 
 	return ret;
@@ -45,53 +49,15 @@ bool C_Mesh::CleanUp()
 	return ret;
 }
 
-// ------ C_MESH METHODS ------
+// --- C_MESH METHODS ---
 bool C_Mesh::Render()
 {
 	bool ret = true;
 
-	C_Transform* c_transform	= owner->GetTransformComponent();
-	C_Material* c_material		= owner->GetMaterialComponent();
+	C_Transform* c_transform = owner->GetTransformComponent();
+	C_Material* c_material = owner->GetMaterialComponent();
 
-	uint tex_id					= -1;
-	bool tex_is_active			= true;
-
-	if (c_material != nullptr)
-	{
-		if (c_material->IsActive())
-		{
-			if (c_material->GetTexture() != nullptr)
-			{
-				if (c_material->UseDefaultTexture())
-				{
-					tex_id = 0;
-				}
-				else
-				{
-					tex_id = c_material->GetTextureId();
-				}
-			}
-		}
-		else
-		{
-			tex_is_active = false;
-		}
-	}
-
-	if (this->IsActive())																				// Added this-> to further clarify that IsActive() refers to this C_Mesh component.
-	{
-		if (mesh != nullptr)
-		{
-			//App->renderer->RenderMesh(c_transform->GetWorldTransform(), mesh, tex_id, tex_is_active);
-			//App->renderer->RenderGameObject(owner);
-			
-			App->renderer->RenderMesh(c_transform->GetWorldTransform(), this, c_material);
-		}
-		else
-		{
-			LOG("[ERROR] C_Mesh Render(): R_Mesh* was nullptr!");
-		}
-	}
+	App->renderer->RenderMesh(c_transform->GetWorldTransform(), this, c_material);
 
 	return ret;
 }

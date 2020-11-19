@@ -17,7 +17,6 @@ class R_Material;
 class R_Texture;
 class R_Model;
 
-class GameObject;																					// TMP
 class C_Mesh;																						// TMP
 class C_Material;																					// TMP
 
@@ -62,10 +61,7 @@ public:
 
 public:																		// --- RENDER GEOMETRY
 	void			GenerateBuffers(R_Mesh* mesh);
-	void			RenderMesh(float4x4 transform, R_Mesh* mesh, uint texture_id = 0, bool tex_is_active = true);
 	void			RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material);
-	void			RenderGameObject(GameObject* game_object);
-	//void			LoadModel(const char* file_path, vec4 mat_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	void			LoadDebugTexture();
 
