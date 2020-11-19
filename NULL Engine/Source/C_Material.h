@@ -13,6 +13,18 @@ class R_Texture;
 
 struct Texture;
 
+enum class TEX_MAP													// Will correspond with the indexes of the texture_ids vector. Ex: texture_ids[DIFFUSE] = diffuse tex_id;
+{
+	DEFAULT		= 0,												// Will correspond with the Debug Texture (Checkers).
+	DIFFUSE		= 1,
+	SPECULAR	= 2,
+	AMBIENT		= 3,
+	EMISSIVE	= 4,
+	HEIGHT		= 5,
+	NORMAL		= 6,
+	UNKNOWN		= -1
+};
+
 class C_Material : public Component
 {
 public:
@@ -46,12 +58,15 @@ public:
 
 public:
 	std::vector<R_Texture*>		textures;											// Will store all the textures that this component can have.
-
-	bool						use_default_tex;
+	//std::vector<uint>			texture_ids;										// Will store all the Texture Id's related with this Material Component.
+	//uint texture_ids[7];															// { 0, 0, 0, 0, 0, 0, 0 };
 
 private:
-	R_Material*					material;										// Currently used material.
+	R_Material*					material;											// Currently used material.
 	R_Texture*					texture;
+
+	bool						use_default_tex;
+	bool						use_albedo_tex;
 };
 
 #endif // !__C_MATERIAL_H__

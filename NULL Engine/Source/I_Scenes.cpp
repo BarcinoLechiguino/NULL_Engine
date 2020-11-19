@@ -238,7 +238,18 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, const 
 				if (c_material != nullptr)
 				{
 					c_material->SetMaterial(r_material);
-					c_material->SetTexture(r_texture);
+					
+					if (r_texture->tex_data.id != 0)
+					{
+						c_material->SetTexture(r_texture);
+					}
+					else
+					{
+						delete r_texture;
+						r_texture = nullptr;
+
+						LOG("[IMPORTER] Imported aiMaterial had no texture!");
+					}
 				}
 			}
 		}

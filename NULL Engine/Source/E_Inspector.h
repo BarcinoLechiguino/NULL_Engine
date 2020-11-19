@@ -4,7 +4,8 @@
 #include "E_Panel.h"
 
 class GameObject;
-enum class COMPONENT_TYPE;
+class Component;
+class C_Material;
 
 class E_Inspector : public E_Panel
 {
@@ -17,18 +18,19 @@ public:
 	bool CleanUp() override;
 
 private:
-	void DrawGameObjectInfo(GameObject* selected_game_object);
-	void DrawComponents(GameObject* selected_game_object);
-	void DrawTransformComponent(GameObject* selected_game_object);
-	void DrawMeshComponent(GameObject* selected_game_object);
-	void DrawMaterialComponent(GameObject* selected_game_object);
-	void DrawLightComponent(GameObject* selected_game_object);
-	void DrawCameraComponent(GameObject* selected_game_object);
+	void DrawGameObjectInfo			(GameObject* selected_game_object);
+	void DrawComponents				(GameObject* selected_game_object);
+	void DrawTransformComponent		(GameObject* selected_game_object);
+	void DrawMeshComponent			(GameObject* selected_game_object);
+	void DrawMaterialComponent		(GameObject* selected_game_object);
+	void DrawLightComponent			(GameObject* selected_game_object);
+	void DrawCameraComponent		(GameObject* selected_game_object);
 
 	// ------- DRAW COMPONENT METHODS -------
-	void AddComponentCombo(GameObject* selected_game_object);
+	void AddComponentCombo			(GameObject* selected_game_object);
+	void DeleteComponentPopup		(GameObject* selected_game_object);
 
-	void DeleteComponentPopup(GameObject* selected_game_object);
+	void TextureDisplay				(C_Material* c_material);
 
 private:
 	bool		show_delete_component_popup;

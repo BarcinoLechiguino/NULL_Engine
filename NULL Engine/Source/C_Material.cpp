@@ -33,11 +33,17 @@ bool C_Material::CleanUp()
 	if (material != nullptr)
 	{
 		material->CleanUp();
+
+		delete material;
+		material = nullptr;
 	}
 
 	if (texture != nullptr)
 	{
 		texture->CleanUp();
+
+		delete texture;
+		texture = nullptr;
 	}
 
 	for (uint i = 0; i < textures.size(); ++i)

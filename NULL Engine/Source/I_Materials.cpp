@@ -41,7 +41,7 @@ void Importer::Materials::Import(const char* path, const aiMaterial* ai_material
 		//std::string dir_path = ASSET_TEXTURES_PATH;																	// Dirty setting of the assets path.
 		//dir_path += file;
 		
-		r_material->texture_id = Importer::Textures::Import(dir_path.c_str(), r_texture);
+		r_material->texture_id = Importer::Textures::Import(dir_path.c_str(), r_texture);								// Redundant: r_material and r_texture will store the tex_id.
 	}
 }
 

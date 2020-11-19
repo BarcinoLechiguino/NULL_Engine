@@ -211,25 +211,20 @@ bool M_Scene::ImportScene(const char* path)
 
 	bool ret = true;
 
-	std::vector<GameObject*> nodes;
-	Importer::Scenes::Import(path, nodes);
+	//Importer::Scenes::Import(path, game_objects);													// Importing the new game objects directly into the game_objects vector.
+
+	std::vector<GameObject*> nodes;																// Creating an step in the middle of the import to manipulate the
+	Importer::Scenes::Import(path, nodes);															// game objects created by the Import Pipeline.
 
 	for (uint i = 0; i < nodes.size(); ++i)
-	{
+	{	
 		/*if (nodes[i]->is_dummy)
 		{
-			nodes[i]->to_delete = true;
+			continue;
 		}*/
-		
+
 		game_objects.push_back(nodes[i]);
 	}
-
-	//for (uint i = 0; i < nodes.size(); ++i)
-	//{
-	//	nodes[i]->CleanUp();
-	//	RELEASE(nodes[i]);
-	//
-	//}
 	
 	nodes.clear();
 
@@ -269,6 +264,9 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 		}
 		else
 		{
+			delete texture;
+			texture = nullptr;
+			
 			LOG("[ERROR] Could not import the dropped texture! Path: %s", path);
 		}
 	}

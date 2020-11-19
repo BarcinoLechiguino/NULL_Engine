@@ -2,6 +2,7 @@
 #include "Color.h"
 
 #include "Application.h"
+#include "M_Renderer3D.h"
 #include "M_Editor.h"
 
 #include "GameObject.h"
@@ -302,14 +303,26 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 			
 			ImGui::Separator();
 
-			// COLOR & ALPHA
-
+			// --- MATERIAL PATH ---
+			//ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", material->GetTextureFile().c_str());
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_material->GetTexturePath().c_str());
 
 			ImGui::Separator();
 
-			// --- TEXTURE PATH ---
-			//ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", material->GetTextureFile().c_str());
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_material->GetTexturePath().c_str());
+			// --- MATERIAL COLOR & ALPHA ---
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Material Data:");
+
+			Color color = c_material->GetMaterialColour();
+
+			if (ImGui::ColorEdit3("Diffuse Color", (float*)&color, ImGuiColorEditFlags_NoAlpha))
+			{
+				c_material->SetMaterialColour(color);
+			}
+
+			if (ImGui::SliderFloat("Diffuse Alpha", (float*)&color.a, 0.0f, 1.0f, "%.3f"))
+			{
+				c_material->SetMaterialColour(color);
+			}
 
 			ImGui::Separator();
 
@@ -326,8 +339,14 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 
 			ImGui::Separator();
 
-			// --- CHECKER TEX ---
+			// --- TEXTURE DISPLAY ---
+			TextureDisplay(c_material);
+
+			ImGui::Separator();
+
+			// --- MAIN MAPS ---
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Main Maps:");
+			
 			bool use_albedo_tex = false;
 			ImGui::Checkbox("Albedo Texture (WIP)", &use_albedo_tex);
 
@@ -470,4 +489,27 @@ void E_Inspector::DeleteComponentPopup(GameObject* selected_game_object)
 
 		ImGui::EndPopup();
 	}
+}
+
+void E_Inspector::TextureDisplay(C_Material* c_material)
+{
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Texture Display:");
+
+	ImGui::Spacing();
+
+	ImTextureID tex_id		= 0;
+	ImVec2 display_size		= { ImGui::GetWindowWidth() * 0.925f , ImGui::GetWindowWidth() * 0.925f };		// Display Size will be 7.5% smaller than the Window Width.
+	ImVec4 tint				= { 1.0f, 1.0f, 1.0f, 1.0f };
+	ImVec4 border_color		= { 0.0f, 1.0f, 0.0f, 1.0f };
+
+	if (c_material->UseDefaultTexture())
+	{
+		tex_id = (ImTextureID)App->renderer->debug_texture_id;
+	}
+	else
+	{
+		tex_id = (ImTextureID)c_material->GetTextureId();
+	}
+
+	ImGui::Image(tex_id, display_size, ImVec2(1.0f, 0.0f), ImVec2(0.0f, 1.0f), tint, border_color);			// ImGui has access to OpenGL's buffers, so only the Texture Id is required.
 }

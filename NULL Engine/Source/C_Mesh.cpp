@@ -50,25 +50,25 @@ bool C_Mesh::Render()
 {
 	bool ret = true;
 
-	C_Transform* transform	= owner->GetTransformComponent();
-	C_Material* material	= owner->GetMaterialComponent();
+	C_Transform* c_transform	= owner->GetTransformComponent();
+	C_Material* c_material		= owner->GetMaterialComponent();
 
-	uint tex_id				= -1;
-	bool tex_is_active		= true;
+	uint tex_id					= -1;
+	bool tex_is_active			= true;
 
-	if (material != nullptr)
+	if (c_material != nullptr)
 	{
-		if (material->IsActive())
+		if (c_material->IsActive())
 		{
-			if (material->GetTexture() != nullptr)
+			if (c_material->GetTexture() != nullptr)
 			{
-				if (material->UseDefaultTexture())
+				if (c_material->UseDefaultTexture())
 				{
 					tex_id = 0;
 				}
 				else
 				{
-					tex_id = material->GetTextureId();
+					tex_id = c_material->GetTextureId();
 				}
 			}
 		}
@@ -82,8 +82,14 @@ bool C_Mesh::Render()
 	{
 		if (mesh != nullptr)
 		{
-			App->renderer->RenderMesh(transform->GetWorldTransform(), mesh, tex_id, tex_is_active);
+			//App->renderer->RenderMesh(c_transform->GetWorldTransform(), mesh, tex_id, tex_is_active);
 			//App->renderer->RenderGameObject(owner);
+			
+			App->renderer->RenderMesh(c_transform->GetWorldTransform(), this, c_material);
+		}
+		else
+		{
+			LOG("[ERROR] C_Mesh Render(): R_Mesh* was nullptr!");
 		}
 	}
 
