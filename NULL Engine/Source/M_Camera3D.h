@@ -23,6 +23,8 @@ public:
 public:
 	void			PointAt(const vec3 &position, const vec3 &reference, bool RotateAroundReference = false);
 	void			LookAt(const vec3 &Spot);
+	void			Focus(const vec3& target_position);
+
 	void			Move(const vec3 &Movement);
 
 	void			ReturnToWorldOrigin();

@@ -12,12 +12,12 @@
 
 #include "Application.h"
 #include "M_FileSystem.h"
-#include "M_Scene.h"												// TMP
+#include "M_Scene.h"															// TMP
 
-#include "Resource.h"												// See if they can be delegated to the other importers.
-#include "R_Mesh.h"													// 
-#include "R_Material.h"												// 
-#include "R_Texture.h"												// ----------------------------------------------------
+#include "Resource.h"															// See if they can be delegated to the other importers.
+#include "R_Mesh.h"																// 
+#include "R_Material.h"															// 
+#include "R_Texture.h"															// ----------------------------------------------------
 
 #include "GameObject.h"
 #include "C_Transform.h"

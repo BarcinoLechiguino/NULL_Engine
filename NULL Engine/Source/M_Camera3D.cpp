@@ -118,6 +118,11 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 		{
 			ReturnToWorldOrigin();
 		}
+
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_STATE::KEY_DOWN)
+		{
+
+		}
 	}
 
 	return UPDATE_STATUS::CONTINUE;
@@ -150,6 +155,11 @@ void M_Camera3D::LookAt(const vec3 &spot)									// Almost identical to PointAt
 	Y = cross(Z, X);
 }
 
+// -----------------------------------------------------------------
+void M_Camera3D::Focus(const vec3& target_position)
+{
+
+}
 
 // -----------------------------------------------------------------
 void M_Camera3D::Move(const vec3 &Movement)

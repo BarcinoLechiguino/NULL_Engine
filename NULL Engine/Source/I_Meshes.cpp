@@ -134,8 +134,6 @@ void Importer::Meshes::Utilities::ImportMeshData(const aiScene* ai_scene, const 
 	Utilities::GetTexCoords(ai_mesh, r_mesh, tex_coords_size);								// Gets the tex coords data stored in the given ai_mesh.
 	Utilities::GetIndices(ai_mesh, r_mesh, indices_size);									// Gets the indices data stored in the given ai_mesh.
 
-	//Utilities::GetTexturePaths(ai_scene, ai_mesh, r_mesh);									// Will get the filename associated with ai_mesh and store it inside r_mesh's tex path vector.
-
 	r_mesh->LoadBuffers();
 }
 
@@ -207,47 +205,3 @@ void Importer::Meshes::Utilities::GetIndices(const aiMesh* ai_mesh, R_Mesh* r_me
 		LOG("[STATUS] Imported %u mesh indices!", size);
 	}
 }
-
-//void Importer::Meshes::Utilities::GetTexturePaths(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)		// This, to I_Material?  
-//{
-//	if (ai_mesh->mMaterialIndex >= 0)
-//	{
-//		aiMaterial* material	= ai_scene->mMaterials[ai_mesh->mMaterialIndex];
-//		uint num_textures		= material->GetTextureCount(aiTextureType_DIFFUSE);
-//
-//		for (uint i = 0; i < num_textures; ++i)
-//		{
-//			aiString path;
-//			material->GetTexture(aiTextureType_DIFFUSE, i, &path);
-//
-//			std::string file_path = path.C_Str();
-//			file_path = App->file_system->NormalizePath(file_path.c_str());
-//
-//			uint file_start = file_path.find_last_of("/");
-//
-//			if (file_start == file_path.npos)													// If no "/" could be found.
-//			{
-//				r_mesh->tex_paths.push_back(file_path.c_str());
-//			}
-//			else
-//			{
-//				uint file_end	= file_path.size();
-//				file_path		= file_path.substr(file_start + 1, file_end);
-//
-//				r_mesh->tex_paths.push_back(file_path.c_str());
-//			}
-//
-//			//r_mesh->tex_paths.push_back(path.C_Str());
-//
-//			LOG("[STATUS] Mesh texture file name %u is %s", i, path.C_Str());
-//		}
-//
-//		
-//	}
-//}
-
-//for (uint j = 0; j < face.mNumIndices; ++j)
-//{
-//	r_mesh->indices[ind] = face.mIndices[j];
-//	++ind;
-//}
