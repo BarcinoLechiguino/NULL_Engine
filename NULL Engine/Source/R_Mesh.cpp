@@ -69,7 +69,7 @@ void R_Mesh::DrawFaceNormals()
 
 	for (uint i = 0; i < vertices.size(); i += 9)												// FIX THIS: Face normals are not displayed correctly.
 	{
-		if ((i + 8) < vertices.size())
+		/*if ((i + 8) < vertices.size())
 		{
 			float3 vertex_A = float3(vertices[i], vertices[i + 1], vertices[i + 2]);
 			float3 vertex_B = float3(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
@@ -84,7 +84,7 @@ void R_Mesh::DrawFaceNormals()
 
 			glVertex3f(vertex_avg.x, vertex_avg.y, vertex_avg.z);
 			glVertex3f(normal_avg.x, normal_avg.y, normal_avg.z);
-		}
+		}*/
 	}
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
