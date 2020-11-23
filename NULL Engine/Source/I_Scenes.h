@@ -14,14 +14,17 @@ namespace Importer
 {
 	namespace Scenes	// Maybe call it Models? Are Models a separate thing?
 	{
-		void Import(const char* path, std::vector<GameObject*>& game_object_nodes);
+		void Import(const char* path, std::vector<GameObject*>& game_objects);
 
-		void Save(const aiScene* ai_scene, char** buffer);
+		uint64 Save(const aiScene* ai_scene, char** buffer);
 
 		void Load(const char* buffer, aiScene* ai_scene);
 
 		namespace Utilities
 		{
+			void ImportFromAssets(const char* path, std::vector<GameObject*>& game_objects);
+			void ImportFromLibrary(const char* path, std::vector<GameObject*>& game_objects);
+			
 			void ProcessNode(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, std::vector<GameObject*>& game_objects, GameObject* parent);
 			
 			//void ImportTransform(const aiNode* ai_node, GameObject* game_object);

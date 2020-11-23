@@ -26,11 +26,11 @@ public:
 	bool			SaveConfiguration(Configuration& root) const override;
 
 public:
-	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);
-	void			DeleteGameObject(GameObject* game_object, uint index = -1);
+	GameObject*		CreateGameObject(const char* name = nullptr, GameObject* parent = nullptr);				// 
+	void			DeleteGameObject(GameObject* game_object, uint index = -1);								// 
 
-	bool			ImportScene(const char* path);
-	bool			ApplyNewTextureToSelectedGameObject(const char* path);
+	bool			ImportScene(const char* path);															//
+	bool			ApplyNewTextureToSelectedGameObject(const char* path);									//
 
 	// --- ROOT GAME OBJECT METHODS ---
 	GameObject*		GetRootGameObject() const;																//
@@ -48,13 +48,10 @@ private:
 	void			HandleDebugInput();
 	void			DebugSpawnPrimitive(Primitive* p);
 
-public:
-	int a;
-
 private:
-	std::vector<GameObject*>	game_objects;
-	GameObject*					root_object;
-	GameObject*					selected_game_object;
+	std::vector<GameObject*>	game_objects;																// 
+	GameObject*					root_object;																// 
+	GameObject*					selected_game_object;														// 
 
 	std::vector<Primitive*>		primitives;
 };

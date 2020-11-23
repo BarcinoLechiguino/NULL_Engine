@@ -36,14 +36,47 @@
 
 using namespace Importer::Scenes;																		// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
-void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_object_nodes)
+uint64 Importer::Scenes::Save(const aiScene* ai_scene, char** buffer)
 {
-	const char* scene_path = path;
+	uint64 size = 0;
 	
+
+
+	return size;
+}
+
+void Importer::Scenes::Load(const char* buffer, aiScene* ai_scene)
+{
+
+}
+
+void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_objects)
+{	
+	bool ret = true;
+	
+	// Load .meta and check whether or not the model/scene has not already been lodaded.
+
+	if (ret)																									// If .meta does not exist or the file IDs are incorrect, import from Assets.
+	{
+		Utilities::ImportFromAssets(path, game_objects);
+	}
+	else
+	{
+		Utilities::ImportFromLibrary(path, game_objects);														// If it has been already loaded, load the scene from the Library.
+	}
+}
+
+void Importer::Scenes::Utilities::ImportFromLibrary(const char* path, std::vector<GameObject*>& game_objects)
+{
+
+}
+
+void Importer::Scenes::Utilities::ImportFromAssets(const char* path, std::vector<GameObject*>& game_objects)
+{
 	LOG("[STATUS] Importing Scene: %s", App->file_system->GetFileAndExtension(path).c_str());
 
-	char* buffer	= nullptr;
-	uint file_size	= App->file_system->Load(path, &buffer);
+	char* buffer = nullptr;
+	uint file_size = App->file_system->Load(path, &buffer);
 
 	if (file_size > 0)
 	{
@@ -56,7 +89,7 @@ void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_o
 			return;
 		}
 
-		Utilities::ProcessNode(path, ai_scene, ai_scene->mRootNode, game_object_nodes, App->scene->GetRootGameObject());
+		Utilities::ProcessNode(path, ai_scene, ai_scene->mRootNode, game_objects, App->scene->GetRootGameObject());
 	}
 }
 
@@ -183,7 +216,7 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, const 
 
 				if (c_material != nullptr)
 				{
-					c_material->SetMaterial(r_material);
+					c_material->SetMaterial(r_material);														// C_Material will always have a R_Material*.
 					
 					if (r_texture->tex_data.id != 0)
 					{
@@ -197,17 +230,17 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, const 
 						LOG("[IMPORTER] Imported aiMaterial had no texture!");
 					}
 				}
+				else
+				{
+					delete r_material;
+					r_material = nullptr;
+
+					delete r_texture;
+					r_texture = nullptr;
+
+					LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());
+				}
 			}
 		}
 	}
-}
-
-void Importer::Scenes::Save(const aiScene* ai_scene, char** buffer)
-{
-
-}
-
-void Importer::Scenes::Load(const char* buffer, aiScene* ai_scene)
-{
-
 }

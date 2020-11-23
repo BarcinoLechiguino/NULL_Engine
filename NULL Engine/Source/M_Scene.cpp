@@ -58,7 +58,6 @@ bool M_Scene::Start()
 		selected_game_object = root_object;
 	}
 
-	//ImportScene("Assets/Models/baker_house/BakerHouse.fbx");
 	ImportScene("Assets/Models/street/Street Environment_V01.FBX");
 
 	return ret;
@@ -211,22 +210,17 @@ bool M_Scene::ImportScene(const char* path)
 
 	bool ret = true;
 
-	//Importer::Scenes::Import(path, game_objects);													// Importing the new game objects directly into the game_objects vector.
+	Importer::Scenes::Import(path, game_objects);													// Importing the new game objects directly into the game_objects vector.
 
-	std::vector<GameObject*> nodes;																// Creating an step in the middle of the import to manipulate the
-	Importer::Scenes::Import(path, nodes);															// game objects created by the Import Pipeline.
+	//std::vector<GameObject*> nodes;																	// Creating an step in the middle of the import to manipulate the
+	//Importer::Scenes::Import(path, nodes);															// game objects created by the Import Pipeline.
 
-	for (uint i = 0; i < nodes.size(); ++i)
-	{	
-		/*if (nodes[i]->is_dummy)
-		{
-			continue;
-		}*/
-
-		game_objects.push_back(nodes[i]);
-	}
-	
-	nodes.clear();
+	//for (uint i = 0; i < nodes.size(); ++i)
+	//{	
+	//	game_objects.push_back(nodes[i]);
+	//}
+	//
+	//nodes.clear();
 
 	return ret;
 }
