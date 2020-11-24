@@ -39,8 +39,6 @@ M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), co
 	draw_world_grid		= true;
 	draw_world_axis		= true;
 	show_wireframe		= false;
-	show_normals		= false;
-	show_tex_coords		= false;
 
 	draw_primitive_examples = false;
 
@@ -49,7 +47,9 @@ M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), co
 
 // Destructor
 M_Renderer3D::~M_Renderer3D()
-{}
+{
+
+}
 
 // Called before render is available
 bool M_Renderer3D::Init(Configuration& config)
@@ -263,10 +263,10 @@ bool M_Renderer3D::InitOpenGL()
 		SetGLFlag(GL_TEXTURE_2D, true);
 
 		SetGLFlag(GL_ALPHA_TEST, true);
-		glAlphaFunc(GL_GREATER, 0.25f);													// Have alpha test in c_material (color alpha)?
+		glAlphaFunc(GL_GREATER, 0.20f);													// Have alpha test in c_material (color alpha)?
 
 		//SetGLFlag(GL_BLEND, true);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	return ret;
@@ -318,11 +318,6 @@ void M_Renderer3D::RendererShortcuts()
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_STATE::KEY_DOWN)
 	{
 		SetShowWireframe(!show_wireframe);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_STATE::KEY_DOWN)
-	{
-		show_normals = !show_normals;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_STATE::KEY_DOWN)
@@ -596,45 +591,31 @@ void M_Renderer3D::SetVsync(bool set_to)
 	}
 }
 
-bool M_Renderer3D::GetGLFlag(GLenum cap) const
+bool M_Renderer3D::GetGLFlag(GLenum flag) const
 {
-	return glIsEnabled(cap);
+	return glIsEnabled(flag);
 }
 
-bool M_Renderer3D::GetGLFlag(RENDERER_FLAGS cap) const
+bool M_Renderer3D::GetGLFlag(RENDERER_FLAGS flag) const
 {
-	return glIsEnabled((GLenum)cap);
+	return glIsEnabled((GLenum)flag);
 }
 
-void M_Renderer3D::SetGLFlag(GLenum cap, bool set_to)
+void M_Renderer3D::SetGLFlag(GLenum flag, bool set_to)
 {
-	if (set_to != (bool)glIsEnabled(cap))
+	if (set_to != (bool)glIsEnabled(flag))
 	{
-		if (set_to)
-		{
-			glEnable(cap);
-		}
-		else
-		{
-			glDisable(cap);
-		}
+		set_to ? glEnable(flag) : glDisable(flag);
 	}
 }
 
-void M_Renderer3D::SetGLFlag(RENDERER_FLAGS cap, bool set_to)
+void M_Renderer3D::SetGLFlag(RENDERER_FLAGS flag, bool set_to)
 {
-	GLenum flag = (GLenum)cap;
+	GLenum gl_flag = (GLenum)flag;
 	
-	if (set_to != (bool)glIsEnabled(flag))
+	if (set_to != (bool)glIsEnabled(gl_flag))
 	{
-		if (set_to)
-		{
-			glEnable(flag);
-		}
-		else
-		{
-			glDisable(flag);
-		}
+		set_to ? glEnable(gl_flag) : glDisable(gl_flag);
 	}
 }
 
@@ -651,16 +632,6 @@ bool M_Renderer3D::GetDrawWorldAxis() const
 bool M_Renderer3D::GetShowWireframe() const
 {
 	return show_wireframe;
-}
-
-bool M_Renderer3D::GetShowNormals() const
-{
-	return show_normals;
-}
-
-bool M_Renderer3D::GetShowTexCoords() const
-{
-	return show_tex_coords;
 }
 
 bool M_Renderer3D::GetDrawPrimitiveExamples() const
@@ -700,22 +671,6 @@ void M_Renderer3D::SetShowWireframe(bool set_to)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			SetGLFlag(GL_TEXTURE_2D, true);
 		}
-	}
-}
-
-void M_Renderer3D::SetShowNormals(bool set_to)
-{
-	if (set_to != show_normals)
-	{
-		show_normals = set_to;
-	}
-}
-
-void M_Renderer3D::SetShowTexCoords(bool set_to)
-{
-	if (set_to != show_tex_coords)
-	{
-		show_tex_coords = set_to;
 	}
 }
 

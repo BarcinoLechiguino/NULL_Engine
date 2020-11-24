@@ -20,7 +20,76 @@
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILU.lib")
 #pragma comment (lib, "Source/Dependencies/DevIL/libx86/ILUT.lib")
 
-using namespace Importer::Textures;																			// Not a good thing to do but it will be employed sparsely and only inside this .cpp
+using namespace Importer::Textures;																				// Not a good thing to do but it will be used sparsely and only inside this .cpp
+
+uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
+{
+	uint64 written = 0;
+
+	ILuint		size;
+	ILubyte*	data;
+
+	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);																		// Choosing a specific DXT compression.
+
+	size = ilSaveL(IL_DDS, nullptr, 0);																			// Getting the size of the data buffer.
+	if (size > 0)
+	{
+		data = new ILubyte[size];																				// Allocating the required memory to the data buffer.
+
+		if (ilSaveL(IL_DDS, data, size) > 0)																	// ilSaveL() will save the current image as the specified type.
+		{
+			*buffer = (char*)data;
+
+			std::string dir_path	= TEXTURES_PATH;
+			std::string file		= r_texture->tex_data.file;
+			std::string full_path	= dir_path + file;
+
+			written = App->file_system->Save(full_path.c_str(), *buffer, size, false);
+			if (written > 0)
+			{
+				LOG("[IMPORTER] Successfully saved %s in %s", file.c_str(), dir_path.c_str());
+			}
+			else
+			{
+				*buffer = nullptr;
+				LOG("[ERROR] Could not save %s!", file.c_str());
+			}
+
+			dir_path.clear();
+			file.clear();
+			full_path.clear();
+		}
+		else
+		{
+			LOG("[ERROR] ilSaveL() Error: %s", iluErrorString(ilGetError()));
+		}
+	}
+	else
+	{
+		LOG("[ERROR] ilSaveL() Error: %s", iluErrorString(ilGetError()));
+	}
+
+	return written;
+}
+
+void Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_texture)
+{
+	ILuint il_image;
+	ilGenImages(1, &il_image);
+	ilBindImage(il_image);
+
+	bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);
+	if (success)
+	{
+		r_texture->tex_data.id = ilutGLBindTexImage();
+	}
+	else
+	{
+		LOG("[ERROR] Could not Load() %s from Library!", r_texture->tex_data.file.c_str());
+	}
+
+	ilDeleteImages(1, &il_image);
+}
 
 void Importer::Textures::Utilities::Init()
 {
@@ -66,7 +135,7 @@ uint Importer::Textures::Import(const char* path, R_Texture* r_texture)									
 			bool success = ilLoadL(type, (const void*)tex_data, file_size);										// ilLoadL() loads a texture from some buffer data. size == 0 = no bounds check.
 			if (success)
 			{
-				//GLuint tex_id = 0;																				// Will be used to store the texture's id used in OpenGL's buffers.
+				//GLuint tex_id = 0;																			// Will be used to store the texture's id used in OpenGL's buffers.
 				tex_id = ilutGLBindTexImage();																	// Binds the imported image to a generated OpenGL texture.
 
 				success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);											// Will convert the image to the given format and type. ERROR if out of memory. 
@@ -84,10 +153,20 @@ uint Importer::Textures::Import(const char* path, R_Texture* r_texture)									
 					if (tex_id != 0)																							// If tex_id == 0, then it means the tex. could not be created.
 					{
 						std::string file = App->file_system->GetFileAndExtension(path);
-						
+
 						r_texture->SetTextureData(path, file.c_str(), tex_id, width, height, 0, 0, 0, (TEXTURE_FORMAT)format);
 
 						file.clear();
+
+						char* buffer = nullptr;
+
+						uint64 buffer_size = Importer::Textures::Save(r_texture, &buffer);
+						if (buffer_size > 0)
+						{
+							Importer::Textures::Load(buffer, buffer_size, r_texture);
+						}
+
+						RELEASE_ARRAY(buffer);
 					}
 					else
 					{
@@ -97,15 +176,13 @@ uint Importer::Textures::Import(const char* path, R_Texture* r_texture)									
 				}
 				else
 				{
-					ILenum error = ilGetError();
-					LOG("[ERROR] ilConvertImage() Error: %s", iluErrorString(error));
+					LOG("[ERROR] ilConvertImage() Error: %s", iluErrorString(ilGetError()));
 					tex_id = 0;
 				}
 			}
 			else
 			{	
-				ILenum error = ilGetError();
-				LOG("[ERROR] ilLoadL() Error: %s", iluErrorString(error));
+				LOG("[ERROR] ilLoadL() Error: %s", iluErrorString(ilGetError()));
 				tex_id = 0;
 			}
 
@@ -155,7 +232,7 @@ uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, 
 			GLfloat max_anisotropy;
 
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropy);
-			glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy);
+			glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, (GLint)max_anisotropy);
 		}
 	}
 	else
@@ -175,16 +252,4 @@ uint Importer::Textures::Utilities::CreateTexture(const void* data, uint width, 
 	}
 
 	return texture_id;
-}
-
-uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
-{
-	uint64 size = 0;
-	
-	return size;
-}
-
-void Importer::Textures::Load(const char* buffer, R_Texture* r_texture)
-{
-
 }

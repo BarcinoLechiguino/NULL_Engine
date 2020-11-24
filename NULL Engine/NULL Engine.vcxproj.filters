@@ -4,9 +4,6 @@
     <Filter Include="SourceCode">
       <UniqueIdentifier>{847d135d-9520-4f5b-aeac-e70c9571d346}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SourceCode\Helpers">
-      <UniqueIdentifier>{66983efd-86bc-4c9b-bf60-feb3f97dda9a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Dependencies">
       <UniqueIdentifier>{8ff307dd-7d8a-439f-810f-ce188766b944}</UniqueIdentifier>
     </Filter>
@@ -108,6 +105,9 @@
     </Filter>
     <Filter Include="SourceCode\7_Tools\System">
       <UniqueIdentifier>{4b4fd0f3-b79d-482e-b786-26360cceb682}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\7_Tools\Random">
+      <UniqueIdentifier>{65defa9a-373d-47ef-ac1d-b0544ee05aa3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

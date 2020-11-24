@@ -127,6 +127,7 @@ void M_FileSystem::CreateLibraryDirectories()
 	CreateDir(PARTICLES_PATH);
 	CreateDir(SCENES_PATH);
 	CreateDir(SHADERS_PATH);
+	CreateDir(TEXTURES_PATH);
 }
 
 bool M_FileSystem::CreateDir(const char* directory)

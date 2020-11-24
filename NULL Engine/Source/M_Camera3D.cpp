@@ -5,8 +5,8 @@
 
 #include "M_Camera3D.h"
 
-#define MOVEMENT_SPEED 6.0f
-#define ROTATION_SPEED 0.25f
+#define MOVEMENT_SPEED 12.0f
+#define ROTATION_SPEED 12.0f
 #define ZOOM_SPEED 24.0f
 
 M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
@@ -222,7 +222,7 @@ void M_Camera3D::FreeLookAround()
 	int dx = -App->input->GetMouseXMotion();							// Motion value registered by the mouse in the X axis. Negated so the camera behaves like it should.
 	int dy = -App->input->GetMouseYMotion();							// Motion value registered by the mouse in the Y axis. Negated so the camera behaves like it should.
 
-	float sensitivity = rotation_speed;									// Factor that will be applied to dx before constructing the angle with which to rotate the vectors.
+	float sensitivity = rotation_speed * App->GetDt();					// Factor that will be applied to dx before constructing the angle with which to rotate the vectors.
 
 	if (dx != 0)														// --- 
 	{
@@ -253,7 +253,7 @@ void M_Camera3D::RotateAroundReference()								// Almost identical to FreeLookA
 	int dx = -App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
-	float sensitivity = rotation_speed;
+	float sensitivity = rotation_speed * App->GetDt();
 
 	position -= reference;												// One of the two differences with FreeLookAround().
 

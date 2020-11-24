@@ -437,11 +437,11 @@ void E_EngineConfiguration::RendererFlags()
 	bool lighting			= App->renderer->GetGLFlag(RENDERER_FLAGS::LIGHTING);
 	bool color_material		= App->renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL);
 	bool texture_2D			= App->renderer->GetGLFlag(RENDERER_FLAGS::TEXTURE_2D);
+	bool alpha_test			= App->renderer->GetGLFlag(RENDERER_FLAGS::ALPHA_TEST);
+	bool blend				= App->renderer->GetGLFlag(RENDERER_FLAGS::BLEND);
 
 	// --- SHOW FLAGS
 	bool show_wireframe		= App->renderer->GetShowWireframe();
-	bool show_normals		= App->renderer->GetShowNormals();
-	bool show_tex_coords	= App->renderer->GetShowTexCoords();
 
 	// --- DRAW FLAGS
 	bool draw_grid			= App->renderer->GetDrawWorldGrid();
@@ -449,7 +449,7 @@ void E_EngineConfiguration::RendererFlags()
 
 
 	// --- OPENGL FLAGS
-	if (ImGui::Checkbox("Depth Buffer", &depth_test))
+	if (ImGui::Checkbox("Depth Test", &depth_test))
 	{
 		App->renderer->SetGLFlag(RENDERER_FLAGS::DEPTH_TEST, depth_test);
 	}
@@ -480,22 +480,22 @@ void E_EngineConfiguration::RendererFlags()
 
 	ImGui::SameLine(175.0f);
 
-	// --- SHOW FLAGS
-	if (ImGui::Checkbox("Show Wireframes", &show_wireframe))
+	if (ImGui::Checkbox("Alpha Test", &alpha_test))
 	{
-		App->renderer->SetShowWireframe(show_wireframe);
+		App->renderer->SetGLFlag(RENDERER_FLAGS::ALPHA_TEST, alpha_test);
 	}
 
-	if (ImGui::Checkbox("Show Normals", &show_normals))
+	if (ImGui::Checkbox("Blend", &blend))
 	{
-		App->renderer->SetShowNormals(show_normals);
+		App->renderer->SetGLFlag(RENDERER_FLAGS::BLEND, blend);
 	}
 
 	ImGui::SameLine(175.0f);
 
-	if (ImGui::Checkbox("Show Tex Coords", &show_tex_coords))
+	// --- SHOW FLAGS
+	if (ImGui::Checkbox("Show Wireframes", &show_wireframe))
 	{
-		App->renderer->SetShowTexCoords(show_tex_coords);
+		App->renderer->SetShowWireframe(show_wireframe);
 	}
 
 	// --- DRAW FLAGS

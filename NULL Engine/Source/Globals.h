@@ -105,6 +105,7 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 #define PARTICLES_PATH			"Library/Particles/"
 #define SCENES_PATH				"Library/Scenes/"
 #define SHADERS_PATH			"Library/Shaders/"
+#define TEXTURES_PATH			"Library/Textures/"
 
 // Deletes a buffer
 #define RELEASE( x )			\

@@ -28,7 +28,7 @@ void Importer::Materials::Import(const char* path, const aiMaterial* ai_material
 	App->file_system->SplitFilePath(path, &dir_path, nullptr, nullptr);
 	
 	aiColor4D color;
-	if (ai_material->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)										// Could also get specular and ambient occlusion colours.
+	if (ai_material->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)													// Could also get specular and ambient occlusion colours.
 	{
 		r_material->diffuse_color = Color(color.r, color.g, color.b, color.a);
 	}

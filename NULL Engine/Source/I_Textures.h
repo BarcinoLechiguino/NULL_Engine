@@ -14,7 +14,7 @@ namespace Importer
 
 		uint64	Save(const R_Texture* r_texture, char** buffer);
 
-		void	Load(const char* buffer, R_Texture* r_texture);
+		void	Load(const char* buffer, const uint size, R_Texture* r_texture);
 
 		namespace Utilities
 		{
