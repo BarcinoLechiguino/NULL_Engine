@@ -261,6 +261,12 @@ bool M_Renderer3D::InitOpenGL()
 		SetGLFlag(GL_LIGHTING, true);
 		SetGLFlag(GL_COLOR_MATERIAL, true);
 		SetGLFlag(GL_TEXTURE_2D, true);
+
+		SetGLFlag(GL_ALPHA_TEST, true);
+		glAlphaFunc(GL_GREATER, 0.25f);													// Have alpha test in c_material (color alpha)?
+
+		//SetGLFlag(GL_BLEND, true);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	return ret;

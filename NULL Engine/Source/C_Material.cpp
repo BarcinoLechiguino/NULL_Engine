@@ -48,7 +48,7 @@ bool C_Material::CleanUp()
 
 	for (uint i = 0; i < textures.size(); ++i)
 	{
-		textures[i]->CleanUp();
+		textures[i]->CleanUp();											// FIX: nullptr R_Textures* can be found inside.
 
 		delete textures[i];
 		textures[i] = nullptr;

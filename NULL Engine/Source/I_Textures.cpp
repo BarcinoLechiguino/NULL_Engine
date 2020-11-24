@@ -44,7 +44,7 @@ void Importer::Textures::Utilities::CleanUp()
 	ilShutDown();
 }
 
-uint Importer::Textures::Import(const char* path, R_Texture* r_texture)
+uint Importer::Textures::Import(const char* path, R_Texture* r_texture)											// FIX: FLIP TEXTURE
 {
 	uint tex_id = 0;
 

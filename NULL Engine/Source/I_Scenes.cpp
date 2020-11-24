@@ -34,6 +34,9 @@
 
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
 
+//typedef std::vector<uint> uintVec;
+//typedef std::vector<GameObject*> GOVec;
+
 using namespace Importer::Scenes;																		// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
 uint64 Importer::Scenes::Save(const aiScene* ai_scene, char** buffer)
@@ -85,7 +88,6 @@ void Importer::Scenes::Utilities::ImportFromAssets(const char* path, std::vector
 		if (ai_scene == nullptr || ai_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !ai_scene->mRootNode)
 		{
 			LOG("[ERROR] Error loading scene %s", aiGetErrorString());
-
 			return;
 		}
 
@@ -100,23 +102,15 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	GameObject* game_object = new GameObject();
 
 	ai_node = Utilities::ImportTransform(ai_node, game_object);												// Load Transforms. Dummy nodes will be ignored.
-
 	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
 	Utilities::ImportMaterials(scene_path, ai_scene, ai_node, game_object);									// Load Materials
 	
-	if (ai_node == ai_scene->mRootNode)
-	{
-		game_object->SetName(scene_file.c_str());
-	}
-	else
-	{
-		game_object->SetName(ai_node->mName.C_Str());
-	}
-
-	game_object->parent = parent;
+	const char* node_name = (ai_node == ai_scene->mRootNode) ? scene_file.c_str() : ai_node->mName.C_Str();	// If node is root node, use the scene file's name. Else use the node's name.
+	game_object->SetName(node_name);
 
 	if (parent != nullptr)
 	{
+		game_object->parent = parent;
 		parent->AddChild(game_object);
 	}
 	
