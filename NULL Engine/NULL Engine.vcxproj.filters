@@ -375,6 +375,9 @@
     <ClCompile Include="Source\I_Textures.cpp">
       <Filter>SourceCode\4_Importers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Random.cpp">
+      <Filter>SourceCode\7_Tools\Random</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -811,6 +814,9 @@
     </ClInclude>
     <ClInclude Include="Source\I_Textures.h">
       <Filter>SourceCode\4_Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Random.h">
+      <Filter>SourceCode\7_Tools\Random</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

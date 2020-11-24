@@ -7,6 +7,8 @@
 #include "DevIL.h"
 #include "Log.h"
 
+#include "Random.h"
+
 #include "Application.h"
 #include "M_FileSystem.h"
 
@@ -26,7 +28,9 @@ uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 {
 	uint64 written = 0;
 
-	ILuint		size;
+	ilEnable(IL_FILE_OVERWRITE);
+
+	ILuint		size; 
 	ILubyte*	data;
 
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);																		// Choosing a specific DXT compression.
@@ -41,7 +45,8 @@ uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 			*buffer = (char*)data;
 
 			std::string dir_path	= TEXTURES_PATH;
-			std::string file		= r_texture->tex_data.file;
+			//std::string file		= r_texture->tex_data.file;
+			std::string file		= std::to_string(Random::PCG::GetRandomUint());
 			std::string full_path	= dir_path + file;
 
 			written = App->file_system->Save(full_path.c_str(), *buffer, size, false);
@@ -74,6 +79,8 @@ uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 
 void Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_texture)
 {
+	// ilEnable(IL_FILE_OVERWRITE);
+	
 	ILuint il_image;
 	ilGenImages(1, &il_image);
 	ilBindImage(il_image);
@@ -161,10 +168,11 @@ uint Importer::Textures::Import(const char* path, R_Texture* r_texture)									
 						char* buffer = nullptr;
 
 						uint64 buffer_size = Importer::Textures::Save(r_texture, &buffer);
-						if (buffer_size > 0)
-						{
-							Importer::Textures::Load(buffer, buffer_size, r_texture);
-						}
+
+						//if (buffer_size > 0)
+						//{
+						//	Importer::Textures::Load(buffer, buffer_size, r_texture);
+						//}
 
 						RELEASE_ARRAY(buffer);
 					}

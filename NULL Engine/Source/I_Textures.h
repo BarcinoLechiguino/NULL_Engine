@@ -28,6 +28,8 @@ namespace Importer
 												 int filling_type = 0x2901,			// 0x2901 = GL_REPEAT
 												 int internal_format = 0x1908,		// 0x1908 = GL_RGBA
 												 uint format = 0x1908); 			// 0x1908 = GL_RGBA
+
+			//uint CreateTexture(const void* data, TextureParameters tex_param);
 		}
 	}
 }
