@@ -442,23 +442,26 @@ void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_
 	glPushMatrix();
 	glMultMatrixf((GLfloat*)&transform.Transposed());												// OpenGL requires that the 4x4 matrices are column-major instead of row-major.
 
-	if (!c_material->IsActive())
+	if (c_material != nullptr)
 	{
-		SetGLFlag(GL_TEXTURE_2D, false);
-	}
+		if (!c_material->IsActive())
+		{
+			SetGLFlag(GL_TEXTURE_2D, false);
+		}
 
-	if (c_material->GetTexture() == nullptr)														// If the Material Component does not have a Texture Resource.
-	{
-		Color color = c_material->GetMaterialColour();
-		glColor4f(color.r, color.g, color.b, color.a);												// Apply the diffuse color to the mesh.
-	}
-	else if (c_material->UseDefaultTexture())														// If the default texture is set to be used (bool use_default_texture)
-	{
-		glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
-	}
-	else
-	{
-		glBindTexture(GL_TEXTURE_2D, c_material->GetTextureId());									// Binding the texture_id in the Texture Resource of the Material Component.
+		if (c_material->GetTexture() == nullptr)														// If the Material Component does not have a Texture Resource.
+		{
+			Color color = c_material->GetMaterialColour();
+			glColor4f(color.r, color.g, color.b, color.a);												// Apply the diffuse color to the mesh.
+		}
+		else if (c_material->UseDefaultTexture())														// If the default texture is set to be used (bool use_default_texture)
+		{
+			glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, c_material->GetTextureId());									// Binding the texture_id in the Texture Resource of the Material Component.
+		}
 	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and to be used during rendering.
@@ -485,9 +488,12 @@ void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_
 	glDisableClientState(GL_NORMAL_ARRAY);															// 
 	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY, GL_NORMAL_ARRAY and GL_VERTEX_ARRAY.
 
-	if (!c_material->IsActive())
+	if (c_material != nullptr)
 	{
-		SetGLFlag(GL_TEXTURE_2D, true);
+		if (!c_material->IsActive())
+		{
+			SetGLFlag(GL_TEXTURE_2D, true);
+		} 
 	}
 
 	// --- DEBUG DRAW ---

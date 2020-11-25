@@ -46,7 +46,9 @@ uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 
 			std::string dir_path	= TEXTURES_PATH;
 			//std::string file		= r_texture->tex_data.file;
-			std::string file		= std::to_string(Random::PCG::GetRandomUint());
+			//std::string file		= std::to_string(Random::PCG::GetRandomUint());
+			std::string file		= std::to_string(Random::LCG::GetRandomUint());
+
 			std::string full_path	= dir_path + file;
 
 			written = App->file_system->Save(full_path.c_str(), *buffer, size, false);
@@ -169,10 +171,10 @@ uint Importer::Textures::Import(const char* path, R_Texture* r_texture)									
 
 						uint64 buffer_size = Importer::Textures::Save(r_texture, &buffer);
 
-						//if (buffer_size > 0)
-						//{
-						//	Importer::Textures::Load(buffer, buffer_size, r_texture);
-						//}
+						if (buffer_size > 0)
+						{
+							Importer::Textures::Load(buffer, buffer_size, r_texture);
+						}
 
 						RELEASE_ARRAY(buffer);
 					}

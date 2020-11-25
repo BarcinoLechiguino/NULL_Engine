@@ -94,7 +94,7 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 	{
 		if (game_objects[i]->to_delete)
 		{
-			DeleteGameObject(game_objects[i], i);	
+			DeleteGameObject(game_objects[i], i);
 			continue;
 		}
 		

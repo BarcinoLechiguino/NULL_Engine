@@ -64,9 +64,17 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 
 		if (ai_mesh != nullptr && ai_mesh->HasFaces())												// Checks that the aiMesh is valid.
 		{
-			R_Mesh* r_mesh			= new R_Mesh();													// Generates a new R_Mesh.
+			R_Mesh* r_mesh = new R_Mesh();															// Generates a new R_Mesh.
 
-			Utilities::ImportMeshData(scene, ai_mesh, r_mesh);										// Sets the given r_mesh with the data stored in ai_mesh.
+			Importer::Meshes::Utilities::ImportMeshData(scene, ai_mesh, r_mesh);					// Sets the given r_mesh with the data stored in ai_mesh.
+
+			char** buffer = nullptr;
+			uint size = Importer::Meshes::Save(r_mesh, buffer);
+			if (size > 0)
+			{
+				Importer::Meshes::Load(*buffer, r_mesh);
+			}
+			RELEASE_ARRAY(buffer);
 
 			if (r_mesh != nullptr)																	// Checks that the R_Mesh* is valid/stores data.
 			{
