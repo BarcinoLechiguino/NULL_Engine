@@ -27,7 +27,7 @@ namespace Importer
 			
 			void GetMeshesFromNode(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes);	// Will get all the meshes related to the given node. No rec. iteration of childs.
 
-			void ImportMeshData(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh);			// Stores the data of the given aiMesh* in the given R_Mesh*.
+			void ImportMeshData(const aiMesh* ai_mesh, R_Mesh* r_mesh);										// Stores the data of the given aiMesh* in the given R_Mesh*.
 
 			void GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);								// Gets the data for the meshes' vertex positions.
 			void GetNormals(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);								// Gets the data for the meshes' vertex normals.

@@ -236,9 +236,9 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 		C_Material* c_material	= selected_game_object->GetMaterialComponent();									// GetMaterialComponent() will return nullptr if C_Material* does not exist.
 		R_Texture* texture		= new R_Texture();
 
-		bool success = Importer::Textures::Import(path, texture);												// Should check for duplicates.
+		uint tex_id = Importer::Textures::Import(path, texture);												// Should check for duplicates.
 
-		if (success)																							// If the import was successful
+		if (tex_id != 0)																						// If the import was successful
 		{
 			if (c_material != nullptr)																			// If the C_Material* component already exists.
 			{

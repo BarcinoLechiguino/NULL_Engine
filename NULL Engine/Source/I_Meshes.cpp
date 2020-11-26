@@ -66,7 +66,7 @@ void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Me
 		{
 			R_Mesh* r_mesh = new R_Mesh();															// Generates a new R_Mesh.
 
-			Importer::Meshes::Utilities::ImportMeshData(scene, ai_mesh, r_mesh);					// Sets the given r_mesh with the data stored in ai_mesh.
+			Importer::Meshes::Utilities::ImportMeshData(ai_mesh, r_mesh);							// Sets the given r_mesh with the data stored in ai_mesh.
 
 			char** buffer = nullptr;
 			uint size = Importer::Meshes::Save(r_mesh, buffer);
@@ -110,7 +110,7 @@ void Importer::Meshes::Utilities::GetMeshesFromNode(const aiScene* scene, const 
 		{
 			R_Mesh* r_mesh = new R_Mesh();
 
-			Utilities::ImportMeshData(scene, ai_mesh, r_mesh);
+			Utilities::ImportMeshData(ai_mesh, r_mesh);
 
 			meshes.push_back(r_mesh);
 		}
@@ -121,7 +121,7 @@ void Importer::Meshes::Utilities::GetMeshesFromNode(const aiScene* scene, const 
 	}
 }
 
-void Importer::Meshes::Utilities::ImportMeshData(const aiScene* ai_scene, const aiMesh* ai_mesh, R_Mesh* r_mesh)
+void Importer::Meshes::Utilities::ImportMeshData(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 {
 	// Allocating the required memory for each vector
 	uint vertices_size = ai_mesh->mNumVertices * 3;											// There will be 3 coordinates per vertex, hence the size will be numVertices * 3.
@@ -211,5 +211,9 @@ void Importer::Meshes::Utilities::GetIndices(const aiMesh* ai_mesh, R_Mesh* r_me
 		}
 
 		LOG("[STATUS] Imported %u mesh indices!", size);
+	}
+	else
+	{
+		LOG("[ERROR] Imported Mesh has no faces!");
 	}
 }

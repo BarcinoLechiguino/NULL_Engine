@@ -16,7 +16,6 @@ is_active(true),
 is_static(false),
 parent(nullptr),
 is_root_object(false),
-is_dummy(false),
 to_delete(false)
 {
 	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
@@ -29,7 +28,6 @@ is_active(is_active),
 is_static(is_static),
 parent(nullptr),
 is_root_object(false),
-is_dummy(false),
 to_delete(false)
 {
 	if (name.empty())

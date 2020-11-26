@@ -101,7 +101,7 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	
 	GameObject* game_object = new GameObject();
 
-	ai_node = Utilities::ImportTransform(ai_node, game_object);												// Load Transforms. Dummy nodes will be ignored.
+	ai_node = Utilities::ImportTransform(ai_node, game_object);												// Load Transforms. Returns the first non-dummy node that is found.
 	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
 	Utilities::ImportMaterials(scene_path, ai_scene, ai_node, game_object);									// Load Materials
 	
@@ -126,6 +126,9 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 
 const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, GameObject* game_object)
 {
+	// Assimp generates dummy nodes to store multiple FBX transformations.
+	// All those transformations will be collapsed to the first non-dummy node.
+	
 	aiTransform ai_t;																						// Transform structure for Assimp. aiVector3D and aiQuaternion.
 	Transform	ma_t;																						// Transform structure for MathGeoLib. float3 and Quat.
 
@@ -135,38 +138,25 @@ const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node
 	ma_t.rotation	= { ai_t.rotation.x, ai_t.rotation.y, ai_t.rotation.z, ai_t.rotation.w };				// 
 	ma_t.scale		= { ai_t.scale.x, ai_t.scale.y, ai_t.scale.z };											// ---------------------------------------------
 
-	std::string root_node = ai_node->mName.C_Str();															// Will be used for LOG Debug.
-	std::string node_name = ai_node->mName.C_Str();															// Assimp generates dummy nodes to store multiple FBX transformations.
-	bool found_dummy_node = true;																			// All those transformations will be collapsed to the first non_dummy node.
-	while (found_dummy_node) 
+	while (NodeIsDummyNode(*ai_node))																		// All dummy nodes will contain the "_$AssimpFbx$_" string and only one child node.
 	{
-		found_dummy_node = false;
+		ai_node = ai_node->mChildren[0];																	// As dummies will only have one child, selecting the next one to process is easy.
 
-		if (node_name.find("_$AssimpFbx$_") != std::string::npos && ai_node->mNumChildren == 1)				// All dummy nodes will contain the "_$AssimpFbx$_" string and only one child node.
-		{	
-			ai_node = ai_node->mChildren[0];																// As dummies will only have one child, selecting the next one to process is easy.
+		ai_node->mTransformation.Decompose(ai_t.scale, ai_t.rotation, ai_t.position);						// --- Getting the Transform stored in the dummy node.
 
-			ai_node->mTransformation.Decompose(ai_t.scale, ai_t.rotation, ai_t.position);					// --- Getting the Transform stored in the dummy node.
+		Transform dummy;																					// 
+		dummy.position = { ai_t.position.x, ai_t.position.y, ai_t.position.z };								// 
+		dummy.rotation = { ai_t.rotation.x, ai_t.rotation.y, ai_t.rotation.z, ai_t.rotation.w };			// 
+		dummy.scale = { ai_t.scale.x, ai_t.scale.y, ai_t.scale.z };											// ---------------------------------------------------
 
-			Transform dummy;																				// 
-			dummy.position	= { ai_t.position.x, ai_t.position.y, ai_t.position.z };						// 
-			dummy.rotation	= { ai_t.rotation.x, ai_t.rotation.y, ai_t.rotation.z, ai_t.rotation.w };		// 
-			dummy.scale		= { ai_t.scale.x, ai_t.scale.y, ai_t.scale.z };									// ---------------------------------------------------
-
-			ma_t.position.Add(dummy.position);																// --- Adding the dummy's Transform to the current one.
-			ma_t.rotation.Mul(dummy.rotation);																// 
-			ma_t.scale.Mul(dummy.scale);																	// ----------------------------------------------------
-
-			node_name			= ai_node->mName.C_Str();													// Setting the next node name to check with the name of the dummy node.
-			found_dummy_node	= true;																		// Setting it to true so the loop is run for another iteration.
-
-			game_object->is_dummy = true;
-		}
+		ma_t.position.Add(dummy.position);																	// --- Adding the dummy's Transform to the current one.
+		ma_t.rotation.Mul(dummy.rotation);																	// 
+		ma_t.scale.Mul(dummy.scale);																		// ----------------------------------------------------
 	}
-
+	
 	game_object->GetTransformComponent()->ImportTransform(ma_t.position, ma_t.rotation, ma_t.scale);		// Importing the final Transform into the game object's transform component.
 
-	LOG("[IMPORTER] Imported the transforms of node: %s", root_node.c_str());
+	LOG("[IMPORTER] Imported the transforms of node: %s", ai_node->mName.C_Str());
 
 	return ai_node;
 }
@@ -237,4 +227,9 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, const 
 			}
 		}
 	}
+}
+
+bool Importer::Scenes::Utilities::NodeIsDummyNode(const aiNode& ai_node)
+{
+	return (strstr(ai_node.mName.C_Str(), "_$AssimpFbx$_") != nullptr && ai_node.mNumChildren == 1);		// All dummy nodes will contain the "_$AssimpFbx$_" string and only one child node.
 }

@@ -63,7 +63,7 @@ bool M_Renderer3D::Init(Configuration& config)
 
 	InitGlew();																					// Initializing Glew.
 
-	Importer::Textures::Utilities::Init();														// Initializing DevIL.
+	Importer::Textures::Init();																	// Initializing DevIL.
 	
 	CreatePrimitiveExamples();																	// Adding one of each available primitice to the primitives vector for later display.
 
@@ -141,7 +141,7 @@ bool M_Renderer3D::CleanUp()
 	
 	primitives.clear();
 
-	Importer::Textures::Utilities::CleanUp();													// Shutting down DevIL. 
+	Importer::Textures::CleanUp();																// Shutting down DevIL. 
 
 	SDL_GL_DeleteContext(context);
 

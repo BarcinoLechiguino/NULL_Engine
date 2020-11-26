@@ -378,6 +378,9 @@
     <ClCompile Include="Source\Random.cpp">
       <Filter>SourceCode\7_Tools\Random</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Importer.cpp">
+      <Filter>SourceCode\4_Importers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Color.h">
@@ -817,6 +820,9 @@
     </ClInclude>
     <ClInclude Include="Source\Random.h">
       <Filter>SourceCode\7_Tools\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Importer.h">
+      <Filter>SourceCode\4_Importers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
