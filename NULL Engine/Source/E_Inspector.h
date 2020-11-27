@@ -34,9 +34,11 @@ private:
 
 private:
 	bool		show_delete_component_popup;
-	int			combo_item;
+	int			component_type;
 
-	Component*	component_to_delete;
+	int			map_to_display;
+
+	Component* component_to_delete;
 };
 
 #endif // !__E_INSPECTOR_H__

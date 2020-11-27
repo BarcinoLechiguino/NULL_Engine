@@ -230,43 +230,37 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
 	BROFILER_CATEGORY("ApplyNewTextureToSelectedGameObject()", Profiler::Color::Magenta)
 	
 	bool ret = true;
-
+	
 	if (selected_game_object != nullptr)
 	{
-		C_Material* c_material	= selected_game_object->GetMaterialComponent();									// GetMaterialComponent() will return nullptr if C_Material* does not exist.
-		R_Texture* texture		= new R_Texture();
+		R_Texture* r_texture	= new R_Texture();
+		uint tex_id				= Importer::Textures::Import(path, r_texture);									// Textures::Import returns 0 if the texture import is not successful.
 
-		uint tex_id = Importer::Textures::Import(path, texture);												// Should check for duplicates.
-
-		if (tex_id != 0)																						// If the import was successful
+		if (tex_id != 0)
 		{
-			if (c_material != nullptr)																			// If the C_Material* component already exists.
+			C_Material* c_material = selected_game_object->GetMaterialComponent();								// GetMaterialComponent() == nullptr if game object does not have a C_Material.
+			
+			if (c_material == nullptr)
 			{
-				c_material->SetTexture(texture);																// Just reset the material with the new one.
-				c_material->textures.push_back(texture);														// Add the material to the materials loaded in the component.
+				c_material = (C_Material*)selected_game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);		// Creating a Material Component if none was found in the selected game object.
 			}
-			else
-			{
-				c_material = (C_Material*)selected_game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);		// Creates a new C_Material* to accomodate the imported texture.
-
-				if (c_material != nullptr)																		// Checks that the newly created C_Material* is not nullptr.
-				{
-					c_material->SetTexture(texture);															// Sets the new C_Material component with the r_material with the imported tex.
-					c_material->textures.push_back(texture);
-				}
-			}
+			
+			c_material->SetTexture(r_texture);																	// Setting the Material Component's texture with the newly created one.
 		}
 		else
 		{
-			delete texture;
-			texture = nullptr;
-			
 			LOG("[ERROR] Could not import the dropped texture! Path: %s", path);
+
+			delete r_texture;
+			r_texture = nullptr;
+
+			return false;
 		}
 	}
 	else
 	{
 		LOG("[ERROR] No game object was being selected! Try again after selecting one from the hierarchy.");
+		ret = false;
 	}
 
 	return ret;

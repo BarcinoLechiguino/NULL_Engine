@@ -20,7 +20,8 @@
 
 E_Inspector::E_Inspector() : E_Panel("Inspector"),
 show_delete_component_popup(false),
-combo_item(0),
+component_type(0),
+map_to_display(0),
 component_to_delete(nullptr)
 {
 
@@ -339,22 +340,22 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 
 			ImGui::Separator();
 
-			// --- TEXTURE DISPLAY ---
-			TextureDisplay(c_material);
-
-			ImGui::Separator();
-
 			// --- MAIN MAPS ---
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Main Maps:");
-			
-			bool use_albedo_tex = false;
-			ImGui::Checkbox("Albedo Texture (WIP)", &use_albedo_tex);
+
+			if (ImGui::Combo("Textures(WIP)", &map_to_display, "Diffuse\0Specular\0Ambient\0Height\0Normal\0"))
+			{
+				LOG("[SCENE] Changed to map %d", map_to_display);
+			}
 
 			bool use_checkered_tex = c_material->UseDefaultTexture();
 			if (ImGui::Checkbox("Use Default Texture", &use_checkered_tex))
 			{
 				c_material->SetUseDefaultTexture(use_checkered_tex);
 			}
+
+			// --- TEXTURE DISPLAY ---
+			TextureDisplay(c_material);
 		}
 		else
 		{
@@ -431,15 +432,15 @@ void E_Inspector::DrawCameraComponent(GameObject* selected_game_object)
 
 void E_Inspector::AddComponentCombo(GameObject* selected_game_object)
 {
-	ImGui::Combo("##", &combo_item, "Add Component\0Transform\0Mesh\0Material\0Light\0Camera");
+	ImGui::Combo("##", &component_type, "Add Component\0Transform\0Mesh\0Material\0Light\0Camera");
 
 	ImGui::SameLine();
 
 	if ((ImGui::Button("ADD")))
 	{ 
-		if (combo_item != (int)COMPONENT_TYPE::NONE)
+		if (component_type != (int)COMPONENT_TYPE::NONE)
 		{
-			selected_game_object->CreateComponent((COMPONENT_TYPE)combo_item);
+			selected_game_object->CreateComponent((COMPONENT_TYPE)component_type);
 		}
 	}
 }

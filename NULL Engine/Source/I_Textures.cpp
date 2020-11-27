@@ -89,14 +89,14 @@ uint Importer::Textures::Import(const char* path, R_Texture* r_texture)									
 					file.clear();
 
 					char* buffer = nullptr;
-
+					
 					uint64 buffer_size = Importer::Textures::Save(r_texture, &buffer);
-
+					
 					if (buffer_size > 0)
 					{
 						Importer::Textures::Load(buffer, buffer_size, r_texture);
 					}
-
+					
 					RELEASE_ARRAY(buffer);
 				}
 				else
@@ -197,12 +197,12 @@ void Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 	{
 		ilutGLBindTexImage();
 
-		uint width = (uint)ilGetInteger(IL_IMAGE_WIDTH);											// --------------------- Getting the imported texture's data.
-		uint height = (uint)ilGetInteger(IL_IMAGE_HEIGHT);											// 
-		uint format = (uint)ilGetInteger(IL_IMAGE_FORMAT);											// Internal format will be forced to be the same as format.
-		uint target = (uint)GL_TEXTURE_2D;															// 
-		int wrapping = (int)GL_REPEAT;																// 
-		int filter = (int)GL_LINEAR;																// ----------------------------------------------------------
+		uint width		= (uint)ilGetInteger(IL_IMAGE_WIDTH);													// --------------------- Getting the imported texture's data.
+		uint height		= (uint)ilGetInteger(IL_IMAGE_HEIGHT);													// 
+		uint format		= (uint)ilGetInteger(IL_IMAGE_FORMAT);													// Internal format will be forced to be the same as format.
+		uint target		= (uint)GL_TEXTURE_2D;																	// 
+		int wrapping	= (int)GL_REPEAT;																		// 
+		int filter		= (int)GL_LINEAR;																		// ----------------------------------------------------------
 
 		r_texture->tex_data.id = Utilities::CreateTexture(ilGetData(), width, height, target, wrapping, filter, format, format);
 	}

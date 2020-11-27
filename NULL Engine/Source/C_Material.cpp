@@ -46,7 +46,7 @@ bool C_Material::CleanUp()
 		texture = nullptr;
 	}
 
-	for (uint i = 0; i < textures.size(); ++i)
+	/*for (uint i = 0; i < textures.size(); ++i)
 	{
 		textures[i]->CleanUp();											// FIX: nullptr R_Textures* can be found inside.
 
@@ -54,7 +54,7 @@ bool C_Material::CleanUp()
 		textures[i] = nullptr;
 	}
 
-	textures.clear();
+	textures.clear();*/
 
 	return ret;
 }
@@ -77,6 +77,14 @@ void C_Material::SetMaterial(R_Material* r_material)
 
 void C_Material::SetTexture(R_Texture* r_texture)
 {
+	if (texture != nullptr)												// Change later to tex_id array.
+	{
+		texture->CleanUp();
+		
+		delete texture;
+		texture = nullptr;
+	}
+
 	texture = r_texture;
 }
 
