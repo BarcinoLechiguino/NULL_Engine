@@ -2,10 +2,10 @@
 
 #include "R_Texture.h"
 
-R_Texture::R_Texture() : Resource(),
-assets_path(""),
-assets_file(""),
-library_path(""),
+R_Texture::R_Texture() : Resource(), 
+assets_path(""), 
+assets_file(""), 
+library_path(""), 
 library_file("")
 {
 
@@ -28,6 +28,27 @@ bool R_Texture::CleanUp()
 	return ret;
 }
 
+// --- R_TEXTURE METHODS ---
+void R_Texture::SetAssetsPath(const char* assets_path)
+{
+	this->assets_path = assets_path;
+}
+
+void R_Texture::SetAssetsFile(const char* assets_file)
+{
+	this->assets_file = assets_file;
+}
+
+void R_Texture::SetLibraryPath(const char* library_path)
+{
+	this->library_path = library_path;
+}
+
+void R_Texture::SetLibraryFile(const char* library_file)
+{
+	this->library_file = library_file;
+}
+
 void R_Texture::SetTextureData(const char* path, const char* file, uint id, uint width, uint height, uint depth, uint bpp, uint bytes, TEXTURE_FORMAT format, bool compressed)
 {
 	tex_data.path			= path;
@@ -43,6 +64,7 @@ void R_Texture::SetTextureData(const char* path, const char* file, uint id, uint
 	tex_data.compressed		= compressed;
 }
 
+// --- TEXTURE STRUCT METHODS ---
 Texture::Texture()
 {
 	path		= "NONE";

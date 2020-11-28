@@ -43,16 +43,21 @@ public:
 
 
 public:
+	void SetAssetsPath(const char* assets_path);
+	void SetAssetsFile(const char* assets_file);
+	void SetLibraryPath(const char* library_path);
+	void SetLibraryFile(const char* library_file);
+	
 	void SetTextureData(const char* path, const char* file, uint id, uint width, uint height, uint depth, uint bpp, uint bytes, TEXTURE_FORMAT format, bool compressed = true);
 
 public:
-	Texture tex_data;
-
 	std::string		assets_path;								// Path of the file in the directory. Will be used to avoid making duplicates.
 	std::string		assets_file;								// File and extension string of the texture. Maybe use path + App->file_system->GetFileAndExtension() instead?
 
 	std::string		library_path;								// Path of the file in the directory. Will be used to avoid making duplicates.
 	std::string		library_file;								// File and extension string of the texture. Maybe use path + App->file_system->GetFileAndExtension() instead?
+
+	Texture			tex_data;
 
 private:
 

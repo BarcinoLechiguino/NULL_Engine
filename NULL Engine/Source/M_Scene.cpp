@@ -7,14 +7,16 @@
 #include "M_Camera3D.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
+#include "M_FileSystem.h"
 #include "M_Editor.h"
-#include "Primitive.h"
 
 #include "I_Scenes.h"
 #include "I_Meshes.h"
 #include "I_Textures.h"
 #include "R_Mesh.h"
 #include "R_Texture.h"
+
+#include "Primitive.h"
 
 #include "GameObject.h"
 #include "Component.h"
@@ -202,6 +204,34 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 
 		LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
 	}
+}
+
+bool M_Scene::ImportFile(const char* path)
+{
+	bool ret = true;
+	
+	std::string extension = App->file_system->GetFileExtension(path);
+
+	if (extension == "fbx" || extension == "FBX"												// If the file extension is .fbx or .FBX, then it is a model.
+		|| extension == "obj" || extension == "OBJ")
+	{
+		ImportScene(path);
+	}
+	else if (extension == "png" || extension == "PNG"												// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.
+			|| extension == "tga" || extension == "TGA"
+			|| extension == "dds" || extension == "DDS")
+	{
+		ApplyNewTextureToSelectedGameObject(path);
+	}
+	else
+	{
+		LOG("[ERROR] Could not import the dropped file: File extension is not supported!"); 
+		ret = false;
+	}
+
+	extension.clear();
+
+	return ret;
 }
 
 bool M_Scene::ImportScene(const char* path)

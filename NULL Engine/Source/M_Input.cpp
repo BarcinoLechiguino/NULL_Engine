@@ -174,36 +174,19 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 
 				std::string norm_path = App->file_system->NormalizePath(dropped_file_path);
 
-				uint directory_path_start	= norm_path.find_last_of("A");										// Dirty fix to get the correct path to pass to the FileSystem.
-				uint directory_path_end		= norm_path.size();
-
-				if (directory_path_start < MAX_DIR_LENGTH && directory_path_end < MAX_DIR_LENGTH)				// Checking that the directory path is not extremely long.
+				uint dir_path_start = norm_path.find("Assets");
+				if (dir_path_start != std::string::npos)
 				{
-					norm_path = norm_path.substr(directory_path_start, directory_path_end);
+					norm_path = norm_path.substr(dir_path_start, norm_path.size());
 
-					std::string extension = App->file_system->GetFileExtension(dropped_file_path);
-
-					if (extension == "fbx" || extension == "FBX"												// If the file extension is .fbx or .FBX, then it is a model.
-						|| extension == "obj" || extension == "OBJ")
-					{
-						//App->scene->CreateGameObjectsFromModel(norm_path.c_str());
-						App->scene->ImportScene(norm_path.c_str());
-					}
-
-					if (extension == "png" || extension == "PNG"												// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.
-						|| extension == "tga" || extension == "TGA"
-						|| extension == "dds" || extension == "DDS")
-					{
-						App->scene->ApplyNewTextureToSelectedGameObject(norm_path.c_str());
-					}
-
-					norm_path.clear();
-					extension.clear();
+					App->scene->ImportFile(norm_path.c_str());
 				}
 				else
 				{
-					LOG("[ERROR] Directory path from drop event object is too long! Max Characters: %u", MAX_DIR_LENGTH);
+					LOG("[ERROR] Dropped file is not located inside the Assets folder!");
 				}
+
+				norm_path.clear();
 
 				SDL_free(event.drop.file);
 

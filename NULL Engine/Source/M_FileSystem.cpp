@@ -648,6 +648,26 @@ std::string M_FileSystem::GetUniqueName(const char* path, const char* name) cons
 	return final_name;
 }
 
+std::string M_FileSystem::GetLastDirectory(const char* path)
+{	
+	std::string full_path	= NormalizePath(path);											// Assets/Dir/LastDir/File.extension. Normalized to avoid errors regarding "\".
+	std::string dir_path	= "";
+	std::string last_dir	= "";
+
+	SplitFilePath(full_path.c_str(), &dir_path, nullptr, nullptr);							// Assets/Dir/LastDir/
+
+	dir_path = dir_path.substr(0, dir_path.size() - 1);										// Assets/Dir/LastDir
+
+	uint last_dir_start	= dir_path.find_last_of("/") + 1;									// Getting the position of the "/" before the last directory.
+
+	last_dir = dir_path.substr(last_dir_start, dir_path.size()) + "/";						// LastDir/
+
+	full_path.clear();
+	dir_path.clear();
+
+	return last_dir;
+}
+
 std::string M_FileSystem::GetFileExtension(const char* path)
 {
 	std::string full_path = path;
@@ -695,5 +715,29 @@ std::string M_FileSystem::GetFileAndExtension(const char* path)
 		}
 	}
 
+	full_path.clear();
+	extension.clear();
+
 	return file;
+}
+
+std::string M_FileSystem::GetLastDirectoryAndFile(const char* path)
+{
+	std::string full_path	= NormalizePath(path);
+	std::string dir_path	= "";
+	std::string last_dir	= "";
+	std::string file		= "";
+
+	SplitFilePath(path, &dir_path, &file, nullptr);
+
+	dir_path = dir_path.substr(0, dir_path.size() - 1);										// Assets/Dir/LastDir
+
+	uint last_dir_start = dir_path.find_last_of("/") + 1;									// Getting the position of the "/" before the last directory.
+
+	last_dir = dir_path.substr(last_dir_start, dir_path.size()) + "/";						// LastDir/
+
+	full_path.clear();
+	dir_path.clear();
+
+	return (last_dir + file);
 }

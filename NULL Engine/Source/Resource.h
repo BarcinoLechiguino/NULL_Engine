@@ -22,11 +22,16 @@ public:
 	virtual bool CleanUp();
 
 public:
+	uint GetID();
+	void SetID();
+
 	//ImporterSettings GetImporterSettings();
 	//void SetImporterSettings(ImporterSettings importer_settings);
 
 private:
-	ImporterSettings importer_settings;
+	uint				id;
+
+	ImporterSettings	importer_settings;
 };
 
 #endif // !__RESOURCE_H__
