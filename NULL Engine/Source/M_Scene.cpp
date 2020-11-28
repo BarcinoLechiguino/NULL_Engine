@@ -210,7 +210,7 @@ bool M_Scene::ImportScene(const char* path)
 
 	bool ret = true;
 
-	Importer::Scenes::Import(path, game_objects);													// Importing the new game objects directly into the game_objects vector.
+	Importer::Scenes::Import(path, game_objects);														// Importing the new game objects directly into the game_objects vector.
 
 	//std::vector<GameObject*> nodes;																	// Creating an step in the middle of the import to manipulate the
 	//Importer::Scenes::Import(path, nodes);															// game objects created by the Import Pipeline.

@@ -2,7 +2,11 @@
 
 #include "R_Texture.h"
 
-R_Texture::R_Texture() : Resource()
+R_Texture::R_Texture() : Resource(),
+assets_path(""),
+assets_file(""),
+library_path(""),
+library_file("")
 {
 
 }

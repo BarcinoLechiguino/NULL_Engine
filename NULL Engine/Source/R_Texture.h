@@ -48,6 +48,12 @@ public:
 public:
 	Texture tex_data;
 
+	std::string		assets_path;								// Path of the file in the directory. Will be used to avoid making duplicates.
+	std::string		assets_file;								// File and extension string of the texture. Maybe use path + App->file_system->GetFileAndExtension() instead?
+
+	std::string		library_path;								// Path of the file in the directory. Will be used to avoid making duplicates.
+	std::string		library_file;								// File and extension string of the texture. Maybe use path + App->file_system->GetFileAndExtension() instead?
+
 private:
 
 };

@@ -82,8 +82,6 @@ void GameObject::FreeComponents()
 		components[i] = nullptr;
 	}
 
-	LOG("[STATUS] FREE COMPONENT CALL");
-
 	components.clear();
 }
 
@@ -113,18 +111,20 @@ bool GameObject::AddChild(GameObject* child)
 	if (child->is_root_object)
 	{
 		LOG("[ERROR] Could not add child %s to %s: %s is current root object!", child->name.c_str(), name.c_str(), child->name.c_str());
-
 		return false;
 	}
 	
 	if (NewChildIsOwnParent(child))
 	{
-		for (uint i = 0; i < child->childs.size(); ++i)				// Iterating all the childs of the child.
+		/*for (uint i = 0; i < child->childs.size(); ++i)				// Iterating all the childs of the child.
 		{
 			child->parent->AddChild(child->childs[i]);				// Re-setting the parent of the childs to the parent of the passed child (root->GO->childs => root->childs->GO)
 		}
 
-		child->childs.clear();
+		child->childs.clear();*/
+		
+		LOG("[ERROR] Cannot re-parent parents into their own children!");
+		return false;
 	}
 
 	if (child->parent != nullptr)

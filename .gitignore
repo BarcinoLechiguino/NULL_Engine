@@ -14,3 +14,5 @@
 *.log
 .vs/NULL Engine/v16/.suo
 NULL Engine/Build/NULL Engine.exe
+*.iobj
+*.ipdb

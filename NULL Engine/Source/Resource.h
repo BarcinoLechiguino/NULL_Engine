@@ -8,6 +8,11 @@
 #include "VarTypedefs.h"
 #include "MathStructures.h"
 
+struct ImporterSettings
+{
+	int a;
+};
+
 class Resource
 {
 public:
@@ -16,8 +21,12 @@ public:
 
 	virtual bool CleanUp();
 
-private:
+public:
+	//ImporterSettings GetImporterSettings();
+	//void SetImporterSettings(ImporterSettings importer_settings);
 
+private:
+	ImporterSettings importer_settings;
 };
 
 #endif // !__RESOURCE_H__
