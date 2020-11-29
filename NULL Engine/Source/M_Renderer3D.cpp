@@ -460,7 +460,7 @@ void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_
 		}
 		else
 		{
-			glBindTexture(GL_TEXTURE_2D, c_material->GetTextureId());									// Binding the texture_id in the Texture Resource of the Material Component.
+			glBindTexture(GL_TEXTURE_2D, c_material->GetTextureID());									// Binding the texture_id in the Texture Resource of the Material Component.
 		}
 	}
 

@@ -202,7 +202,7 @@ void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, const 
 				{
 					c_material->SetMaterial(r_material);														// C_Material will always have a R_Material*.
 					
-					if (r_texture->tex_data.id != 0)
+					if (r_texture->GetTextureID() != 0)
 					{
 						c_material->SetTexture(r_texture);
 					}

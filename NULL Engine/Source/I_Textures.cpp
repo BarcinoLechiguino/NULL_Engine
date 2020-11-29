@@ -69,19 +69,19 @@ uint Importer::Textures::Import(const char* path, R_Texture* r_texture)									
 			
 			if (buffer != nullptr && written > 0)
 			{
-				r_texture->assets_path = path;
-				r_texture->assets_file = App->file_system->GetFileAndExtension(path);
+				r_texture->SetAssetsPath(path);
+				r_texture->SetAssetsFile(App->file_system->GetFileAndExtension(path).c_str());
 				
 				//Importer::Textures::Load(buffer, written, r_texture);
 				success = Importer::Textures::Load(r_texture);
 				if (success)
 				{
-					tex_id = r_texture->tex_data.id;
-					LOG("[IMPORTER] Successfully loaded %s from Library!", r_texture->assets_file.c_str());
+					tex_id = r_texture->GetTextureID();
+					LOG("[IMPORTER] Successfully loaded %s from Library!", r_texture->GetAssetsFile());
 				}
 				else
 				{
-					LOG("[IMPORTER] Could not load %s from Library!", r_texture->assets_file.c_str());
+					LOG("[IMPORTER] Could not load %s from Library!", r_texture->GetAssetsFile());
 				}
 			}
 			else
@@ -125,7 +125,7 @@ uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
 	ILuint size = ilSaveL(IL_DDS, nullptr, 0);																	// Getting the size of the data buffer in bytes. Compressed DDS, Uncomp. TGA.
 	if (size > 0)
 	{
-		LOG("[IMPORTER] Bytes: %u, Size: %d x %d", size, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
+		LOG("[IMPORTER] Size: %d x %d", ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
 		
 		ILubyte* data = new ILubyte[size];																		// Allocating the required memory to the data buffer.
 
@@ -188,7 +188,7 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 		}																								// its new format or the operation is invalid (no bound img. or invalid identifier).
 		else
 		{
-			LOG("[WARNING] Texture has less than 3 color channels! Path: %s", r_texture->assets_path.c_str());
+			LOG("[WARNING] Texture has less than 3 color channels! Path: %s", r_texture->GetAssetsPath());
 		}
 
 		if (success)
@@ -218,17 +218,11 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 
 			if (tex_id != 0)																								// If tex_id == 0, then it means the tex. could not be created.
 			{
-				std::string path = r_texture->assets_path.c_str();
-				std::string file = r_texture->assets_file.c_str();
-
-				r_texture->SetTextureData(path.c_str(), file.c_str(), tex_id, width, height, depth, bpp, size, (TEXTURE_FORMAT)format);
-
-				path.clear();
-				file.clear();
+				r_texture->SetTextureData(tex_id, width, height, depth, bpp, size, (TEXTURE_FORMAT)format);
 			}
 			else
 			{
-				LOG("[ERROR] Could not get texture ID! Path: %s", r_texture->assets_path.c_str());
+				LOG("[ERROR] Could not get texture ID! Path: %s", r_texture->GetAssetsPath());
 				ret = false;
 			}
 		}
@@ -253,12 +247,12 @@ bool Importer::Textures::Load(R_Texture* r_texture)
 {
 	bool ret = true;
 	
-	char* tex_data = nullptr;																				// Buffer where the binary data of the texture to import will be stored.
-	uint file_size = App->file_system->Load(r_texture->library_path.c_str(), &tex_data);					// Generating a buffer with the data of the texture in the given path.
+	char* tex_data = nullptr;																			// Buffer where the binary data of the texture to import will be stored.
+	uint file_size = App->file_system->Load(r_texture->GetLibraryPath(), &tex_data);					// Generating a buffer with the data of the texture in the given path.
 
 	if (tex_data == nullptr || file_size == 0)
 	{
-		LOG("[ERROR] File System could not load tex data! Path: %s", r_texture->assets_path.c_str());
+		LOG("[ERROR] File System could not load tex data! Path: %s", r_texture->GetAssetsPath());
 		return false;
 	}
 	
@@ -280,7 +274,7 @@ bool Importer::Textures::Load(R_Texture* r_texture)
 		}																								// its new format or the operation is invalid (no bound img. or invalid identifier).
 		else
 		{
-			LOG("[WARNING] Texture has less than 3 color channels! Path: %s", r_texture->assets_path.c_str());
+			LOG("[WARNING] Texture has less than 3 color channels! Path: %s", r_texture->GetAssetsPath());
 		}
 
 		if (success)
@@ -307,17 +301,11 @@ bool Importer::Textures::Load(R_Texture* r_texture)
 
 			if (tex_id != 0)																							// If tex_id == 0, then it means the tex. could not be created.
 			{
-				std::string path = r_texture->assets_path.c_str();
-				std::string file = r_texture->assets_file.c_str();
-
-				r_texture->SetTextureData(path.c_str(), file.c_str(), tex_id, width, height, depth, bpp, size, (TEXTURE_FORMAT)format);
-
-				path.clear();
-				file.clear();
+				r_texture->SetTextureData(tex_id, width, height, depth, bpp, size, (TEXTURE_FORMAT)format);
 			}
 			else
 			{
-				LOG("[ERROR] Could not get texture ID! Path: %s", r_texture->assets_path.c_str());
+				LOG("[ERROR] Could not get texture ID! Path: %s", r_texture->GetAssetsPath());
 				ret = false;
 			}
 		}

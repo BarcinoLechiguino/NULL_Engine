@@ -5,7 +5,11 @@
 
 class GameObject;
 class Component;
+class C_Transform;
+class C_Mesh;
 class C_Material;
+class C_Light;
+class C_Camera;
 
 class E_Inspector : public E_Panel
 {
@@ -26,11 +30,18 @@ private:
 	void DrawLightComponent			(GameObject* selected_game_object);
 	void DrawCameraComponent		(GameObject* selected_game_object);
 
-	// ------- DRAW COMPONENT METHODS -------
-	void AddComponentCombo			(GameObject* selected_game_object);
-	void DeleteComponentPopup		(GameObject* selected_game_object);
+	void DrawTransformComponent		(C_Transform* c_transform);
+	void DrawMeshComponent			(C_Mesh* c_mesh);
+	void DrawMaterialComponent		(C_Material* c_material);
+	void DrawLightComponent			(C_Light* c_light);
+	void DrawCameraComponent		(C_Camera* c_camera);
 
-	void TextureDisplay				(C_Material* c_material);
+	// ------- DRAW COMPONENT METHODS -------
+	void AddComponentCombo			(GameObject* selected_game_object);					// 
+	void DeleteComponentPopup		(GameObject* selected_game_object);					// 
+
+	void DisplayTextureData			(C_Material* c_material);							// Will display the texture's width, height, depth...
+	void TextureDisplay				(C_Material* c_material);							// Will display the texture as an image through Dear ImGui.
 
 private:
 	bool		show_delete_component_popup;

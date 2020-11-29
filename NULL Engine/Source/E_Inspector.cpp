@@ -132,10 +132,11 @@ void E_Inspector::DrawComponents(GameObject* selected_game_object)
 		Component* component = selected_game_object->components[i];
 		
 		if (component != nullptr)
-		{
+		{	
 			switch (component->type)
 			{
-			case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent(selected_game_object); }	break;
+			//case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent(selected_game_object); }	break;
+			case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent((C_Transform*)component); }	break;
 			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent(selected_game_object); }		break;
 			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent(selected_game_object); }	break;
 			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent(selected_game_object); }		break;
@@ -147,6 +148,72 @@ void E_Inspector::DrawComponents(GameObject* selected_game_object)
 				LOG("[WARNING] Selected Object %s has invalid component: %s", selected_game_object->GetName(), component->GetName());
 			}
 		}
+	}
+}
+
+void E_Inspector::DrawTransformComponent(C_Transform* c_transform)
+{
+	bool show = true;																				// Dummy bool to delete the component related with the collpsing header.
+	if (ImGui::CollapsingHeader("Transform", &show, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (c_transform != nullptr)
+		{
+			// --- IS ACTIVE ---
+			bool transform_is_active = c_transform->IsActive();
+			if (ImGui::Checkbox("Transform Is Active", &transform_is_active))
+			{
+				//transform->SetIsActive(transform_is_active);
+				c_transform->SetIsActive(transform_is_active);
+			}
+
+			ImGui::Separator();
+
+			// --- POSITION ---
+			ImGui::Text("Position");
+
+			ImGui::SameLine(100.0f);
+
+			float3 position = c_transform->GetLocalPosition();
+			if (ImGui::DragFloat3("P", (float*)&position, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				c_transform->SetLocalPosition(position);
+			}
+
+			// --- ROTATION ---
+			ImGui::Text("Rotation");
+
+			ImGui::SameLine(100.0f);
+
+			/*float3 rotation = transform->GetLocalEulerRotation();
+			if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				transform->SetLocalEulerRotation(rotation);
+			}*/
+
+			float3 rotation = c_transform->GetLocalEulerRotation() * RADTODEG;
+			if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				c_transform->SetLocalRotation(rotation * DEGTORAD);
+			}
+
+			// --- SCALE ---
+			ImGui::Text("Scale");
+
+			ImGui::SameLine(100.0f);
+
+			float3 scale = c_transform->GetLocalScale();
+			if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
+			{
+				c_transform->SetLocalScale(scale);
+			}
+		}
+
+		if (!show)
+		{
+			LOG("[ERROR] Transform components cannot be deleted!");
+		}
+
+		ImGui::Separator();
 	}
 }
 
@@ -214,6 +281,8 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 		{
 			LOG("[ERROR] Transform components cannot be deleted!");
 		}
+
+		ImGui::Separator();
 	}
 }
 
@@ -305,8 +374,7 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 			ImGui::Separator();
 
 			// --- MATERIAL PATH ---
-			//ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", material->GetTextureFile().c_str());
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_material->GetTexturePath().c_str());
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_material->GetTexturePath());
 
 			ImGui::Separator();
 
@@ -328,15 +396,7 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 			ImGui::Separator();
 
 			// --- TEXTURE DATA ---
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Texture Data:");
-
-			uint width	= 0;
-			uint height = 0;
-
-			c_material->GetTextureSize(width, height);
-
-			ImGui::Text("Width:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " %u", width);
-			ImGui::Text("Height:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u", height);
+			DisplayTextureData(c_material);
 
 			ImGui::Separator();
 
@@ -356,6 +416,8 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 
 			// --- TEXTURE DISPLAY ---
 			TextureDisplay(c_material);
+
+			ImGui::Separator();
 		}
 		else
 		{
@@ -427,6 +489,8 @@ void E_Inspector::DrawCameraComponent(GameObject* selected_game_object)
 			component_to_delete				= c_camera;
 			show_delete_component_popup		= true;
 		}
+
+		ImGui::Separator();
 	}
 }
 
@@ -492,12 +556,33 @@ void E_Inspector::DeleteComponentPopup(GameObject* selected_game_object)
 	}
 }
 
+void E_Inspector::DisplayTextureData(C_Material* c_material)
+{
+	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Texture Data:");
+
+	uint id					= 0;
+	uint width				= 0;
+	uint height				= 0;
+	uint depth				= 0;
+	uint bpp				= 0;
+	uint size				= 0;
+	std::string format		= "NONE";
+	bool compressed			= 0;
+
+	c_material->GetTextureInfo(id, width, height, depth, bpp, size, format, compressed);
+
+	ImGui::Text("Texture ID:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u", id);
+	ImGui::Text("Width:");			ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "     %upx", width);
+	ImGui::Text("Height:");			ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %upx", height);
+	ImGui::Text("Depth:");			ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "     %u", depth);
+	ImGui::Text("Bpp:");			ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "       %uB", bpp);
+	ImGui::Text("Size:");			ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "      %uB", size);
+	ImGui::Text("Format:");			ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %s", format.c_str());
+	ImGui::Text("Compressed:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", compressed ? "True" : "False");
+}
+
 void E_Inspector::TextureDisplay(C_Material* c_material)
 {
-	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Texture Display:");
-
-	ImGui::Spacing();
-
 	ImTextureID tex_id		= 0;
 	ImVec2 display_size		= { ImGui::GetWindowWidth() * 0.925f , ImGui::GetWindowWidth() * 0.925f };		// Display Size will be 7.5% smaller than the Window Width.
 	ImVec4 tint				= { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -509,8 +594,15 @@ void E_Inspector::TextureDisplay(C_Material* c_material)
 	}
 	else
 	{
-		tex_id = (ImTextureID)c_material->GetTextureId();
+		tex_id = (ImTextureID)c_material->GetTextureID();
 	}
 
-	ImGui::Image(tex_id, display_size, ImVec2(1.0f, 0.0f), ImVec2(0.0f, 1.0f), tint, border_color);			// ImGui has access to OpenGL's buffers, so only the Texture Id is required.
+	if (tex_id != 0)
+	{
+		ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Texture Display:");
+
+		ImGui::Spacing();
+
+		ImGui::Image(tex_id, display_size, ImVec2(1.0f, 0.0f), ImVec2(0.0f, 1.0f), tint, border_color);			// ImGui has access to OpenGL's buffers, so only the Texture Id is required.
+	}
 }
