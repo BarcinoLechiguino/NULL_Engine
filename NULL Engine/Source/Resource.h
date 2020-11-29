@@ -2,6 +2,7 @@
 #define __RESOURCE_H__
 
 #include <vector>
+#include <map>
 #include <string>
 
 #include "Log.h"
@@ -22,14 +23,33 @@ public:
 	virtual bool CleanUp();
 
 public:
-	uint GetID();
-	void SetID();
+	uint32				GetID				() const;
+	void				SetID				();
 
-	//ImporterSettings GetImporterSettings();
-	//void SetImporterSettings(ImporterSettings importer_settings);
+	const char*			GetAssetsPath		() const;								// 
+	const char*			GetAssetsFile		() const;								// 
+	const char*			GetLibraryPath		() const;								// 
+	const char*			GetLibraryFile		() const;								// 
+
+	void				SetAssetsPath		(const char* assets_path);				// 
+	void				SetAssetsFile		(const char* assets_file);				// 
+	void				SetLibraryPath		(const char* library_path);				// 
+	void				SetLibraryFile		(const char* library_file);				// 
+
+	//ImporterSettings	GetImporterSettings	();
+	//void				SetImporterSettings	(ImporterSettings importer_settings);
+
+public:
+	std::map<uint32, Resource*> resources;
 
 private:
-	uint				id;
+	uint32				id;
+
+	std::string			assets_path;												// Path of the file in the Assets directory. Will be used to avoid making duplicates.
+	std::string			assets_file;												// File and extension string of the texture in the Assets directory.
+
+	std::string			library_path;												// Path of the file in the Library directory. Will be used to avoid making duplicates.
+	std::string			library_file;												// File and extension string of the texture in the Library directory.
 
 	ImporterSettings	importer_settings;
 };

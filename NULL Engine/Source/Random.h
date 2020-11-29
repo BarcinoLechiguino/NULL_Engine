@@ -10,8 +10,8 @@ namespace Random
 	{	
 		static math::LCG lcg_rand;
 
-		uint	GetRandomUint();												// 
-		uint	GetBoundedRandomUint(uint min = 0, uint max = 2147483647);		// 
+		uint32	GetRandomUint();												// 
+		uint32	GetBoundedRandomUint(uint32 min = 0, uint32 max = 4294967295);	// 
 		float	GetBoundedRandomFloat(float min, float max);					// 
 	}
 
@@ -19,8 +19,8 @@ namespace Random
 	{
 		void	InitPCG();
 		
-		uint	GetRandomUint();												// 
-		uint	GetBoundedRandomUint(uint max = 2147483647);					// 
+		uint32	GetRandomUint();												// 
+		uint32	GetBoundedRandomUint(uint32 max = 4294967295);					// 
 		float	GetBoundedRandomFloat(float max);								// 
 	}
 }

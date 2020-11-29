@@ -5,14 +5,14 @@
 #include "Random.h"
 
 // --- LCG ---
-uint Random::LCG::GetRandomUint()
+uint32 Random::LCG::GetRandomUint()
 {	
-	return (uint)lcg_rand.Int();
+	return (uint32)lcg_rand.Int();
 }
 
-uint Random::LCG::GetBoundedRandomUint(uint min, uint max)
+uint32 Random::LCG::GetBoundedRandomUint(uint32 min, uint32 max)
 {
-	return (uint)lcg_rand.Int(min, max);
+	return (uint32)lcg_rand.Int(min, max);
 }
 
 float Random::LCG::GetBoundedRandomFloat(float min, float max)
@@ -26,12 +26,12 @@ void Random::PCG::InitPCG()
 	pcg32_srandom(42u, 54u);
 }
 
-uint Random::PCG::GetRandomUint()
+uint32 Random::PCG::GetRandomUint()
 {
 	return pcg32_random();
 }
 
-uint Random::PCG::GetBoundedRandomUint(uint max)
+uint32 Random::PCG::GetBoundedRandomUint(uint32 max)
 {
 	/*pcg32_random_t rng;
 	return pcg32_boundedrand_r(&rng, max);*/

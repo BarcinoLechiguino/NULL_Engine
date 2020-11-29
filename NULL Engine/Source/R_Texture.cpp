@@ -2,11 +2,7 @@
 
 #include "R_Texture.h"
 
-R_Texture::R_Texture() : Resource(), 
-assets_path(""), 
-assets_file(""), 
-library_path(""), 
-library_file("")
+R_Texture::R_Texture() : Resource()
 {
 
 }
@@ -20,54 +16,12 @@ bool R_Texture::CleanUp()
 {
 	bool ret = true;
 
-	assets_path.clear();
-	assets_file.clear();
-	library_path.clear();
-	library_file.clear();
-
 	glDeleteTextures(1, (GLuint*)&tex_data.id);
 
 	return ret;
 }
 
 // --- R_TEXTURE METHODS ---
-const char* R_Texture::GetAssetsPath() const
-{
-	return assets_path.c_str();
-}
-const char* R_Texture::GetAssetsFile() const
-{
-	return assets_file.c_str();
-}
-const char* R_Texture::GetLibraryPath() const
-{
-	return library_path.c_str();
-}
-const char* R_Texture::GetLibraryFile() const
-{
-	return library_file.c_str();
-}
-
-void R_Texture::SetAssetsPath(const char* assets_path)
-{
-	this->assets_path = assets_path;
-}
-
-void R_Texture::SetAssetsFile(const char* assets_file)
-{
-	this->assets_file = assets_file;
-}
-
-void R_Texture::SetLibraryPath(const char* library_path)
-{
-	this->library_path = library_path;
-}
-
-void R_Texture::SetLibraryFile(const char* library_file)
-{
-	this->library_file = library_file;
-}
-
 Texture R_Texture::GetTextureData() const
 {
 	return tex_data;
