@@ -39,9 +39,6 @@ public:
 	//ImporterSettings	GetImporterSettings	();
 	//void				SetImporterSettings	(ImporterSettings importer_settings);
 
-public:
-	std::map<uint32, Resource*> resources;
-
 private:
 	uint32				id;
 

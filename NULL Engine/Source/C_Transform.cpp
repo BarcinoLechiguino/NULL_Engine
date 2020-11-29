@@ -102,12 +102,12 @@ void C_Transform::SyncLocalToWorld()
 		local_transform = world_transform;
 	}
 
-	local_position	= local_transform.TranslatePart();
-	float3 euler	= local_transform.RotatePart().ToEulerXYZ();
-	local_rotation	= Quat::FromEulerXYZ(euler.x, euler.y, euler.z);
-	local_scale		= local_transform.GetScale();
+	local_position			= local_transform.TranslatePart();
+	float3 euler			= local_transform.RotatePart().ToEulerXYZ();
+	local_rotation			= Quat::FromEulerXYZ(euler.x, euler.y, euler.z);
+	local_scale				= local_transform.GetScale();
 
-	local_euler_rotation = euler;
+	local_euler_rotation	= euler;
 	//local_euler_rotation = local_rotation.ToEulerXYZ();
 
 	for (uint i = 0; i < owner->childs.size(); ++i)

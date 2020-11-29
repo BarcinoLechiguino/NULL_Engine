@@ -16,7 +16,10 @@ bool Resource::CleanUp()
 {
 	bool ret = true;
 
-
+	assets_path.clear();
+	assets_file.clear();
+	library_path.clear();
+	library_file.clear();
 
 	return ret;
 }

@@ -57,7 +57,7 @@ void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_o
 {	
 	bool ret = true;
 	
-	// Load .meta and check whether or not the model/scene has not already been lodaded.
+	// Load .meta and check whether or not the model/scene has not already been loaded.
 
 	if (ret)																									// If .meta does not exist or the file IDs are incorrect, import from Assets.
 	{
@@ -102,8 +102,7 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 	GameObject* game_object = new GameObject();
 
 	ai_node = Utilities::ImportTransform(ai_node, game_object);												// Load Transforms. Returns the first non-dummy node that is found.
-	Utilities::ImportMeshes(scene_file.c_str(), ai_scene, ai_node, game_object);							// Load Meshes
-	Utilities::ImportMaterials(scene_path, ai_scene, ai_node, game_object);									// Load Materials
+	Utilities::ImportMeshesAndMaterials(scene_path, ai_scene, ai_node, game_object);
 	
 	const char* node_name = (ai_node == ai_scene->mRootNode) ? scene_file.c_str() : ai_node->mName.C_Str();	// If node is root node, use the scene file's name. Else use the node's name.
 	game_object->SetName(node_name);
@@ -145,9 +144,9 @@ const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node
 		ai_node->mTransformation.Decompose(ai_t.scale, ai_t.rotation, ai_t.position);						// --- Getting the Transform stored in the dummy node.
 
 		Transform dummy;																					// 
-		dummy.position = { ai_t.position.x, ai_t.position.y, ai_t.position.z };								// 
-		dummy.rotation = { ai_t.rotation.x, ai_t.rotation.y, ai_t.rotation.z, ai_t.rotation.w };			// 
-		dummy.scale = { ai_t.scale.x, ai_t.scale.y, ai_t.scale.z };											// ---------------------------------------------------
+		dummy.position	= { ai_t.position.x, ai_t.position.y, ai_t.position.z };							// 
+		dummy.rotation	= { ai_t.rotation.x, ai_t.rotation.y, ai_t.rotation.z, ai_t.rotation.w };			// 
+		dummy.scale		= { ai_t.scale.x, ai_t.scale.y, ai_t.scale.z };										// ---------------------------------------------------
 
 		ma_t.position.Add(dummy.position);																	// --- Adding the dummy's Transform to the current one.
 		ma_t.rotation.Mul(dummy.rotation);																	// 
@@ -161,71 +160,83 @@ const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node
 	return ai_node;
 }
 
-void Importer::Scenes::Utilities::ImportMeshes(const char* scene_file, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
+void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const char* path, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
 {
-	std::vector<R_Mesh*> meshes;
-	Importer::Meshes::Utilities::GetMeshesFromNode(ai_scene, ai_node, meshes);									//
-	
-	for (uint i = 0; i < meshes.size(); ++i)																	//
+	for (uint i = 0; i < ai_node->mNumMeshes; ++i)
 	{
-		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);							//
-
-		c_mesh->SetMesh(meshes[i]);																				// 
-		c_mesh->SetMeshPath(scene_file);																		// 
-	}
-
-	meshes.clear();
-
-	LOG("[IMPORTER] Imported the meshes of node: %s", ai_node->mName.C_Str());
-}
-
-void Importer::Scenes::Utilities::ImportMaterials(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
-{
-	for (uint i = 0; i < ai_node->mNumMeshes; ++i)																// For every mesh in the node.
-	{
-		aiMesh* ai_mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];												// aiMesh_array[index].
+		aiMesh* ai_mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];
 
 		if (ai_mesh != nullptr && ai_mesh->HasFaces())
 		{
+			Importer::Scenes::Utilities::ImportMesh(path, ai_mesh, game_object);
+
 			if (ai_mesh->mMaterialIndex >= 0)
 			{
 				aiMaterial* ai_material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
-
-				R_Material* r_material	= new R_Material();														// Only considering one texture per mesh.
-				R_Texture* r_texture	= new R_Texture();
-
-				Importer::Materials::Import(scene_path, ai_material, r_material, r_texture);
-
-				C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
-
-				if (c_material != nullptr)
-				{
-					c_material->SetMaterial(r_material);														// C_Material will always have a R_Material*.
-					
-					if (r_texture->GetTextureID() != 0)
-					{
-						c_material->SetTexture(r_texture);
-					}
-					else
-					{
-						delete r_texture;
-						r_texture = nullptr;
-
-						LOG("[IMPORTER] Imported aiMaterial had no texture!");
-					}
-				}
-				else
-				{
-					delete r_material;
-					r_material = nullptr;
-
-					delete r_texture;
-					r_texture = nullptr;
-
-					LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());
-				}
+				
+				Importer::Scenes::Utilities::ImportMaterial(path, ai_material, game_object);
 			}
 		}
+	}   
+}
+
+void Importer::Scenes::Utilities::ImportMesh(const char* path, const aiMesh* ai_mesh, GameObject* game_object)
+{
+	R_Mesh* r_mesh = new R_Mesh();
+
+	r_mesh->SetAssetsPath(path);
+	r_mesh->SetAssetsFile(App->file_system->GetFileAndExtension(path).c_str());
+
+	Importer::Meshes::Import(ai_mesh, r_mesh);
+
+	if (r_mesh != nullptr)
+	{
+		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
+
+		c_mesh->SetMesh(r_mesh);
+		c_mesh->SetMeshPath(path);
+	}
+	else
+	{
+		delete r_mesh;
+		r_mesh = nullptr;
+	}
+}
+
+void Importer::Scenes::Utilities::ImportMaterial(const char* path, const aiMaterial* ai_material, GameObject* game_object)
+{
+	R_Material* r_material	= new R_Material();														// Only considering one texture per mesh.
+	R_Texture* r_texture	= new R_Texture();
+
+	Importer::Materials::Import(path, ai_material, r_material, r_texture);
+
+	C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
+
+	if (c_material != nullptr)
+	{
+		c_material->SetMaterial(r_material);														// C_Material will always have a R_Material*.
+
+		if (r_texture->GetTextureID() != 0)
+		{
+			c_material->SetTexture(r_texture);
+		}
+		else
+		{
+			delete r_texture;
+			r_texture = nullptr;
+
+			LOG("[IMPORTER] Imported aiMaterial had no texture!");
+		}
+	}
+	else
+	{
+		delete r_material;
+		r_material = nullptr;
+
+		delete r_texture;
+		r_texture = nullptr;
+
+		LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());
 	}
 }
 

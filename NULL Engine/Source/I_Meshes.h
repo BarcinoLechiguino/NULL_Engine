@@ -15,7 +15,8 @@ namespace Importer
 {
 	namespace Meshes
 	{
-		void	Import(const char* path, std::vector<R_Mesh*>& meshes);										// Loads the data in the given file path & stores the resulting meshes in a vector.
+		void	Import(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes);				// Loads all mesh data from the given aiNode & stores the new r_meshes in a vector.
+		void	Import(const aiMesh* ai_mesh, R_Mesh* r_mesh);												// Loads all mesh data from the given aiNode & stores the new r_meshes in a vector.
 
 		uint64	Save(const R_Mesh* mesh, char** buffer);													// Processes R_Mesh data into ready-to-save buffer. Will return buffer file's size.
 
@@ -23,10 +24,6 @@ namespace Importer
 
 		namespace Utilities
 		{
-			void ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Mesh*>& meshes);				// Processes the given aiNode and recursively goes through it's childs.
-			
-			void GetMeshesFromNode(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes);	// Will get all the meshes related to the given node. No rec. iteration of childs.
-
 			void ImportMeshData(const aiMesh* ai_mesh, R_Mesh* r_mesh);										// Stores the data of the given aiMesh* in the given R_Mesh*.
 
 			void GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);								// Gets the data for the meshes' vertex positions.

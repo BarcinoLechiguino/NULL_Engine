@@ -67,7 +67,7 @@ public:
 
 private:
 	float4x4	local_transform;													// Will represent the position, rotation and scale of the transform in Local Space.
-	float4x4	world_transform;													// Will represent the 
+	float4x4	world_transform;													// Will represent the position, rotation and scale of the transform in World Space.
 	
 	float3		local_position;														// Position vector of the local transform.
 	Quat		local_rotation;														// Rotation quaternion of the local transform.

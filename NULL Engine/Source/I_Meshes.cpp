@@ -32,75 +32,7 @@ void Importer::Meshes::Load(const char* buffer, R_Mesh* mesh)
 
 }
 
-void Importer::Meshes::Import(const char* path, std::vector<R_Mesh*>& meshes)
-{
-	//const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
-
-	char* buffer = nullptr;
-	uint file_size = App->file_system->Load(path, &buffer);
-
-	if (file_size > 0)
-	{
-		const aiScene* scene = aiImportFileFromMemory(buffer, file_size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
-
-		if (scene == nullptr || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-		{
-			LOG("[ERROR] Error loading scene %s", aiGetErrorString());
-
-			return;
-		}
-
-		Utilities::ProcessNode(scene, scene->mRootNode, meshes);
-	}
-
-	RELEASE_ARRAY(buffer);
-}
-
-void Utilities::ProcessNode(const aiScene* scene, aiNode* node, std::vector<R_Mesh*>& meshes)		// Shortened with the use of used namespaces, otherwise it would be a bad idea.
-{
-	for (uint i = 0; i < node->mNumMeshes; ++i)														// The loop is run for as many meshes that the node has registered it has.
-	{
-		aiMesh* ai_mesh = scene->mMeshes[node->mMeshes[i]];											// Gets the mesh specifiec by the mesh index stored in the node's mMeshes array.
-
-		if (ai_mesh != nullptr && ai_mesh->HasFaces())												// Checks that the aiMesh is valid.
-		{
-			R_Mesh* r_mesh = new R_Mesh();															// Generates a new R_Mesh.
-
-			Importer::Meshes::Utilities::ImportMeshData(ai_mesh, r_mesh);							// Sets the given r_mesh with the data stored in ai_mesh.
-
-			char** buffer = nullptr;
-			uint size = Importer::Meshes::Save(r_mesh, buffer);
-			if (size > 0)
-			{
-				Importer::Meshes::Load(*buffer, r_mesh);
-			}
-			RELEASE_ARRAY(buffer);
-
-			if (r_mesh != nullptr)																	// Checks that the R_Mesh* is valid/stores data.
-			{
-				meshes.push_back(r_mesh);															// Adds the R_Mesh* to the given meshes vector.
-			}
-			else
-			{
-				delete r_mesh;
-				r_mesh = nullptr;
-
-				LOG("[ERROR] Could not generate a mesh during Import: R_Mesh* was nullptr!");
-			}
-		}
-		else
-		{
-			LOG("[ERROR] Could not generate a mesh during Import: aiMesh* was nullptr and did not have any faces!");
-		}
-	}
-
-	for (uint i = 0; i < node->mNumChildren; ++i)
-	{
-		Utilities::ProcessNode(scene, node->mChildren[i], meshes);
-	}
-}
-
-void Importer::Meshes::Utilities::GetMeshesFromNode(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes)
+void Importer::Meshes::Import(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes)
 {
 	for (uint i = 0; i < node->mNumMeshes; ++i)
 	{
@@ -118,6 +50,31 @@ void Importer::Meshes::Utilities::GetMeshesFromNode(const aiScene* scene, const 
 		{
 			LOG("[ERROR] Node %s's Mesh %d could not be generated: aiMesh* was nullptr and/or did not have any faces!", node->mName.C_Str(), i);
 		}
+	}
+}
+
+void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
+{
+	Utilities::ImportMeshData(ai_mesh, r_mesh);
+
+	char* buffer = nullptr;
+	uint written = Importer::Meshes::Save(r_mesh, &buffer);
+	if (written > 0)
+	{
+		Importer::Meshes::Load(buffer, r_mesh);
+
+		if (r_mesh != nullptr)
+		{
+			LOG("[IMPORTER] Successfully loaded %s from the Library directory!", r_mesh->GetAssetsFile());
+		}
+		else
+		{
+			LOG("[ERROR] Could not load %s from the Library directory!", r_mesh->GetAssetsFile());
+		}
+	}
+	else
+	{
+		LOG("[ERROR] Could not save %s in the Library directory!", r_mesh->GetAssetsFile());
 	}
 }
 
