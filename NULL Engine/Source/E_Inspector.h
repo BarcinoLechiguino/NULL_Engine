@@ -24,11 +24,6 @@ public:
 private:
 	void DrawGameObjectInfo			(GameObject* selected_game_object);
 	void DrawComponents				(GameObject* selected_game_object);
-	void DrawTransformComponent		(GameObject* selected_game_object);
-	void DrawMeshComponent			(GameObject* selected_game_object);
-	void DrawMaterialComponent		(GameObject* selected_game_object);
-	void DrawLightComponent			(GameObject* selected_game_object);
-	void DrawCameraComponent		(GameObject* selected_game_object);
 
 	void DrawTransformComponent		(C_Transform* c_transform);
 	void DrawMeshComponent			(C_Mesh* c_mesh);

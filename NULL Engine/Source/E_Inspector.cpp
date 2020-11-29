@@ -47,6 +47,8 @@ bool E_Inspector::Draw(ImGuiIO& io)
 		DrawGameObjectInfo(selected_game_object);
 		DrawComponents(selected_game_object);
 
+		ImGui::Separator();
+
 		AddComponentCombo(selected_game_object);
 
 		if (show_delete_component_popup)
@@ -135,12 +137,11 @@ void E_Inspector::DrawComponents(GameObject* selected_game_object)
 		{	
 			switch (component->type)
 			{
-			//case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent(selected_game_object); }	break;
 			case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent((C_Transform*)component); }	break;
-			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent(selected_game_object); }		break;
-			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent(selected_game_object); }	break;
-			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent(selected_game_object); }		break;
-			case COMPONENT_TYPE::CAMERA:	{ DrawCameraComponent(selected_game_object); }		break;
+			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent((C_Mesh*)component); }				break;
+			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent((C_Material*)component); }		break;
+			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent((C_Light*)component); }			break;
+			case COMPONENT_TYPE::CAMERA:	{ DrawCameraComponent((C_Camera*)component); }			break;
 			}
 
 			if (component->type == COMPONENT_TYPE::NONE || component->type == COMPONENT_TYPE::UNKNOWN)
@@ -156,75 +157,6 @@ void E_Inspector::DrawTransformComponent(C_Transform* c_transform)
 	bool show = true;																				// Dummy bool to delete the component related with the collpsing header.
 	if (ImGui::CollapsingHeader("Transform", &show, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		if (c_transform != nullptr)
-		{
-			// --- IS ACTIVE ---
-			bool transform_is_active = c_transform->IsActive();
-			if (ImGui::Checkbox("Transform Is Active", &transform_is_active))
-			{
-				//transform->SetIsActive(transform_is_active);
-				c_transform->SetIsActive(transform_is_active);
-			}
-
-			ImGui::Separator();
-
-			// --- POSITION ---
-			ImGui::Text("Position");
-
-			ImGui::SameLine(100.0f);
-
-			float3 position = c_transform->GetLocalPosition();
-			if (ImGui::DragFloat3("P", (float*)&position, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
-			{
-				c_transform->SetLocalPosition(position);
-			}
-
-			// --- ROTATION ---
-			ImGui::Text("Rotation");
-
-			ImGui::SameLine(100.0f);
-
-			/*float3 rotation = transform->GetLocalEulerRotation();
-			if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
-			{
-				transform->SetLocalEulerRotation(rotation);
-			}*/
-
-			float3 rotation = c_transform->GetLocalEulerRotation() * RADTODEG;
-			if (ImGui::DragFloat3("R", (float*)&rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
-			{
-				c_transform->SetLocalRotation(rotation * DEGTORAD);
-			}
-
-			// --- SCALE ---
-			ImGui::Text("Scale");
-
-			ImGui::SameLine(100.0f);
-
-			float3 scale = c_transform->GetLocalScale();
-			if (ImGui::DragFloat3("S", (float*)&scale, 0.05f, 0.0f, 0.0f, "%.3f", NULL))
-			{
-				c_transform->SetLocalScale(scale);
-			}
-		}
-
-		if (!show)
-		{
-			LOG("[ERROR] Transform components cannot be deleted!");
-		}
-
-		ImGui::Separator();
-	}
-}
-
-void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
-{
-	bool show = true;																				// Dummy bool to delete the component related with the collpsing header.
-	if (ImGui::CollapsingHeader("Transform", &show, ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		//C_Transform* transform = selected_game_object->transform;
-		C_Transform* c_transform = selected_game_object->GetTransformComponent();
-
 		if (c_transform != nullptr)
 		{
 			// --- IS ACTIVE ---
@@ -286,13 +218,11 @@ void E_Inspector::DrawTransformComponent(GameObject* selected_game_object)
 	}
 }
 
-void E_Inspector::DrawMeshComponent(GameObject* selected_game_object)
+void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 {
 	bool show = true;
 	if (ImGui::CollapsingHeader("Mesh", &show, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		C_Mesh* c_mesh = selected_game_object->GetMeshComponent();
-
 		if (c_mesh != nullptr)
 		{
 			// --- IS ACTIVE ---
@@ -343,7 +273,7 @@ void E_Inspector::DrawMeshComponent(GameObject* selected_game_object)
 		}
 		else
 		{
-			LOG("[ERROR] Could not get the Mesh Component from %s Game Object!", selected_game_object->GetName());
+			LOG("[ERROR] Could not get the Mesh Component from %s Game Object!", c_mesh->owner->GetName());
 		}
 
 		if (!show)
@@ -356,13 +286,11 @@ void E_Inspector::DrawMeshComponent(GameObject* selected_game_object)
 	}
 }
 
-void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
+void E_Inspector::DrawMaterialComponent(C_Material* c_material)
 {
 	bool show = true;
 	if (ImGui::CollapsingHeader("Material", &show, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		C_Material* c_material = selected_game_object->GetMaterialComponent();
-
 		if (c_material != nullptr)
 		{
 			bool material_is_active = c_material->IsActive();
@@ -416,12 +344,10 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 
 			// --- TEXTURE DISPLAY ---
 			TextureDisplay(c_material);
-
-			ImGui::Separator();
 		}
 		else
 		{
-			LOG("[ERROR] Could not get the Material Component from %s Game Object!", selected_game_object->GetName());
+			LOG("[ERROR] Could not get the Material Component from %s Game Object!", c_material->owner->GetName());
 		}
 
 		if (!show)
@@ -434,13 +360,11 @@ void E_Inspector::DrawMaterialComponent(GameObject* selected_game_object)
 	}
 }
 
-void E_Inspector::DrawLightComponent(GameObject* selected_game_object)
+void E_Inspector::DrawLightComponent(C_Light* c_light)
 {
 	bool show = true;
 	if (ImGui::CollapsingHeader("Light", &show, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		C_Light* c_light = selected_game_object->GetLightComponent();
-		
 		if (c_light != nullptr)
 		{
 			bool light_is_active = c_light->IsActive();
@@ -464,13 +388,11 @@ void E_Inspector::DrawLightComponent(GameObject* selected_game_object)
 	}
 }
 
-void E_Inspector::DrawCameraComponent(GameObject* selected_game_object)
+void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 {
 	bool show = true;
 	if (ImGui::CollapsingHeader("Camera", &show, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		C_Camera* c_camera = selected_game_object->GetCameraComponent();
-
 		if (c_camera != nullptr)
 		{
 			bool camera_is_active = c_camera->IsActive();
