@@ -27,9 +27,9 @@ uint64 Importer::Meshes::Save(const R_Mesh* mesh, char** buffer)
 	return buffer_size;
 }
 
-void Importer::Meshes::Load(const char* buffer, R_Mesh* mesh)
+bool Importer::Meshes::Load(const char* buffer, R_Mesh* mesh)
 {
-
+	return true;
 }
 
 void Importer::Meshes::Import(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes)
@@ -61,9 +61,8 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 	uint written = Importer::Meshes::Save(r_mesh, &buffer);
 	if (written > 0)
 	{
-		Importer::Meshes::Load(buffer, r_mesh);
-
-		if (r_mesh != nullptr)
+		bool success = Importer::Meshes::Load(buffer, r_mesh);
+		if (success)
 		{
 			LOG("[IMPORTER] Successfully loaded %s from the Library directory!", r_mesh->GetAssetsFile());
 		}

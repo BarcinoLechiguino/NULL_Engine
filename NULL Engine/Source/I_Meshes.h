@@ -20,7 +20,7 @@ namespace Importer
 
 		uint64	Save(const R_Mesh* mesh, char** buffer);													// Processes R_Mesh data into ready-to-save buffer. Will return buffer file's size.
 
-		void	Load(const char* buffer, R_Mesh* mesh);														// Processes buffer data into a ready-to-use R_Mesh. Will return nullptr on ERROR.
+		bool	Load(const char* buffer, R_Mesh* mesh);														// Processes buffer data into a ready-to-use R_Mesh. Will return nullptr on ERROR.
 
 		namespace Utilities
 		{
