@@ -36,9 +36,8 @@ public:
 
 	bool						draw_vertex_normals;
 	bool						draw_face_normals;
-	std::string					path;
 
-	AABB aabb;
+	AABB						aabb;
 
 private:
 

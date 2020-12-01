@@ -6,15 +6,15 @@
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
 
-R_Mesh::R_Mesh() : Resource(),
-draw_vertex_normals(false),
-draw_face_normals(false),
-path("NONE")
+R_Mesh::R_Mesh() : Resource(), 
+VBO(0),																										// Initializing the buffers.
+NBO(0), 																									// 
+TBO(0), 																									//
+IBO(0), 																									// -------------------------
+draw_vertex_normals(false), 
+draw_face_normals(false)
 {
-	VBO = 0;																								// Initializing the buffers.
-	NBO = 0;																								// 
-	TBO = 0;																								//
-	IBO = 0;																								// -----------------------------------
+
 }
 
 R_Mesh::~R_Mesh()

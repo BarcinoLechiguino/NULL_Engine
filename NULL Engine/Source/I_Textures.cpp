@@ -116,7 +116,7 @@ uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
 	uint64 written = 0;
 	
 	std::string dir_path	= TEXTURES_PATH;																	// --- Getting the path to which save the texture.
-	std::string file		= std::to_string(r_texture->GetID()) /*+ std::string(".nulletex")*/;				// 
+	std::string file		= std::to_string(r_texture->GetID()) + std::string(TEXTURE_EXTENSION);				// 
 	std::string full_path	= dir_path + file;																	// -----------------------------------------------
 
 	ilEnable(IL_FILE_OVERWRITE);																				// Allowing DevIL to overwrite existing files.

@@ -76,7 +76,7 @@ std::string C_Mesh::GetMeshPath() const
 {
 	if (mesh != nullptr)
 	{
-		return mesh->path;
+		return mesh->GetAssetsPath();
 	}
 
 	return "NONE";
@@ -86,7 +86,7 @@ void C_Mesh::SetMeshPath(const char* path)
 {
 	if (mesh != nullptr)
 	{
-		mesh->path = path;
+		mesh->SetAssetsPath(path);
 	}
 }
 

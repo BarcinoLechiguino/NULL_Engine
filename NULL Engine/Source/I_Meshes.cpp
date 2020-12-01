@@ -18,41 +18,6 @@
 
 using namespace Importer::Meshes;																	// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
-uint64 Importer::Meshes::Save(const R_Mesh* mesh, char** buffer)
-{
-	uint64 buffer_size = 0;
-
-	
-
-	return buffer_size;
-}
-
-bool Importer::Meshes::Load(const char* buffer, R_Mesh* mesh)
-{
-	return true;
-}
-
-void Importer::Meshes::Import(const aiScene* scene, const aiNode* node, std::vector<R_Mesh*>& meshes)
-{
-	for (uint i = 0; i < node->mNumMeshes; ++i)
-	{
-		aiMesh* ai_mesh = scene->mMeshes[node->mMeshes[i]];
-
-		if (ai_mesh != nullptr && ai_mesh->HasFaces())
-		{
-			R_Mesh* r_mesh = new R_Mesh();
-
-			Utilities::ImportMeshData(ai_mesh, r_mesh);
-
-			meshes.push_back(r_mesh);
-		}
-		else
-		{
-			LOG("[ERROR] Node %s's Mesh %d could not be generated: aiMesh* was nullptr and/or did not have any faces!", node->mName.C_Str(), i);
-		}
-	}
-}
-
 void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 {
 	Utilities::ImportMeshData(ai_mesh, r_mesh);
@@ -99,6 +64,7 @@ void Importer::Meshes::Utilities::ImportMeshData(const aiMesh* ai_mesh, R_Mesh* 
 	Utilities::GetIndices(ai_mesh, r_mesh, indices_size);									// Gets the indices data stored in the given ai_mesh.
 
 	r_mesh->LoadBuffers();
+	r_mesh->SetMeshAABB();
 }
 
 void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size)
@@ -172,4 +138,93 @@ void Importer::Meshes::Utilities::GetIndices(const aiMesh* ai_mesh, R_Mesh* r_me
 	{
 		LOG("[ERROR] Imported Mesh has no faces!");
 	}
+}
+
+uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
+{
+	uint64 written = 0;
+
+	uint header_info[8] = {
+		r_mesh->vertices.size(),																	// 0 --> Num Vertices
+		r_mesh->normals.size(), 																	// 1 --> Num Normals
+		r_mesh->tex_coords.size(), 																	// 2 --> Num Texture Coordinates
+		r_mesh->indices.size(), 																	// 3 --> Num Indices
+		r_mesh->VBO, 																				// 4 --> Vertices Buffer Object ID
+		r_mesh->NBO, 																				// 5 --> Normals Buffer Object ID
+		r_mesh->TBO, 																				// 6 --> Texture Coordinates Buffer Object ID
+		r_mesh->IBO 																				// 7 --> Indices Buffer Object ID
+		// Draw Normals Bools?
+	};
+
+	uint header_data_size = sizeof(header_info) + sizeof(uint);
+	uint array_data_size = (header_info[0] + header_info[1] + header_info[2]) * sizeof(float) + header_info[3] * sizeof(uint);
+	uint precalculated_data_size = r_mesh->aabb.NumVertices() * sizeof(float) * 3;
+
+	uint size = header_data_size + array_data_size + precalculated_data_size;
+
+	if (size == 0)
+	{
+		LOG("[WARNING] Mesh %u had no data to Save!", r_mesh->GetID());
+		return 0;
+	}
+
+	char* file_buffer = new char[size];
+	char* cursor = file_buffer;
+
+	// --- HEADER DATA ---
+	uint bytes = sizeof(header_info);
+	memcpy_s(cursor, size, header_info, bytes);
+	cursor += bytes;
+
+	// --- VERTEX ARRAY DATA ---
+	bytes = r_mesh->vertices.size() * sizeof(float);
+	memcpy_s(cursor, size, &r_mesh->vertices[0], bytes);
+	cursor += bytes;
+
+	bytes = r_mesh->normals.size() * sizeof(float);
+	memcpy_s(cursor, size, &r_mesh->normals[0], bytes);
+	cursor += bytes;
+
+	bytes = r_mesh->tex_coords.size() * sizeof(float);
+	memcpy_s(cursor, size, &r_mesh->tex_coords[0], bytes);
+	cursor += bytes;
+
+	bytes = r_mesh->indices.size() * sizeof(uint);
+	memcpy_s(cursor, size, &r_mesh->indices[0], bytes);
+	cursor += bytes;
+
+	// --- PRECALCULATED DATA ---
+	float3 aabb_corners[8];
+	r_mesh->aabb.GetCornerPoints(aabb_corners);
+
+	bytes = r_mesh->aabb.NumVertices() * sizeof(float) * 3;
+	memcpy_s(cursor, size, aabb_corners, bytes);
+	cursor += bytes;
+
+	// --- SAVING THE BUFFER ---
+	std::string path = std::string(MESHES_PATH) + std::to_string(r_mesh->GetID()) + std::string(MESH_EXTENSION);
+
+	written = App->file_system->Save(path.c_str(), file_buffer, size);
+	
+	if (written > 0)
+	{
+		LOG("[IMPORTER] Meshes: Successfully Saved %s into the Library!", r_mesh->GetAssetsFile());
+	}
+	else
+	{
+		LOG("[ERROR] Meshes Importer: Could not Save %s into the Library!", r_mesh->GetAssetsFile());
+	}
+
+	path.clear();
+
+	return written;
+}
+
+bool Importer::Meshes::Load(const char* buffer, R_Mesh* r_mesh)
+{
+	bool ret = true;
+
+
+
+	return ret;
 }

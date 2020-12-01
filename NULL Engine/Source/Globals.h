@@ -107,6 +107,10 @@ enum class UPDATE_STATUS						// Defines all the states that the application can
 #define SHADERS_PATH			"Library/Shaders/"
 #define TEXTURES_PATH			"Library/Textures/"
 
+#define MESH_EXTENSION			".nemesh"
+#define MATERIAL_EXTENSION		".nemat"
+#define TEXTURE_EXTENSION		".netex"
+
 // Deletes a buffer
 #define RELEASE( x )			\
 	{							\
