@@ -11,6 +11,18 @@ struct aiMesh;
 
 class R_Mesh;
 
+enum class HEADER_DATA
+{
+	VERTICES,
+	NORMALS,
+	TEX_COORDS,
+	INDICES,
+	VBO,
+	NBO,
+	TBO,
+	IBO
+};
+
 namespace Importer
 {
 	namespace Meshes

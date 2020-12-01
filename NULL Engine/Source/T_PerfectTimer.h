@@ -8,11 +8,11 @@ class T_PerfectTimer
 public:
 	T_PerfectTimer();							// Constructor
 
-	void Start();
-	void Stop();
+	void	Start		();
+	void	Stop		();
 
-	double ReadMs() const;
-	uint64 ReadTicks() const;
+	double	ReadMs		() const;
+	uint64	ReadTicks	() const;
 
 private:
 	bool			running;				// Will keep track of whether or not the timer is still active.

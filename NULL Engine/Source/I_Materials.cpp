@@ -42,6 +42,22 @@ void Importer::Materials::Import(const char* path, const aiMaterial* ai_material
 		r_material->texture_id = Importer::Textures::Import(full_path.c_str(), r_texture);								// Redundant: r_material and r_texture will store the tex_id.
 	}
 
+	char* buffer = nullptr;
+	uint written = Importer::Materials::Save(r_material, &buffer);
+	if (written > 0)
+	{
+		bool success = Importer::Materials::Load(buffer, r_material);
+
+		if (success)
+		{
+
+		}
+		else
+		{
+
+		}
+	}
+
 	dir_path.clear();
 	file.clear();
 	full_path.clear();
@@ -49,12 +65,12 @@ void Importer::Materials::Import(const char* path, const aiMaterial* ai_material
 
 uint64 Importer::Materials::Save(const R_Material* r_material, char** buffer)
 {
-	uint64 size = 0;
+	uint64 written = 0;
 	
-	return size;
+	return written;
 }
 
-void Importer::Materials::Load(const char* buffer, R_Material* r_material)
+bool Importer::Materials::Load(const char* buffer, R_Material* r_material)
 {
-
+	return true;
 }

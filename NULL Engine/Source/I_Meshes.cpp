@@ -14,7 +14,11 @@
 
 #include "MemoryManager.h"
 
+#include "T_Timer.h"
+
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
+
+#define HEADER_SIZE 8																				// Amount of items in the Header Data Array. (Save & Load)
 
 using namespace Importer::Meshes;																	// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
@@ -23,7 +27,7 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 	Utilities::ImportMeshData(ai_mesh, r_mesh);
 
 	char* buffer = nullptr;
-	uint written = Importer::Meshes::Save(r_mesh, &buffer);
+	uint64 written = Importer::Meshes::Save(r_mesh, &buffer);
 	if (written > 0)
 	{
 		bool success = Importer::Meshes::Load(buffer, r_mesh);
@@ -40,6 +44,8 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 	{
 		LOG("[ERROR] Could not save %s in the Library directory!", r_mesh->GetAssetsFile());
 	}
+
+	RELEASE_ARRAY(buffer);
 }
 
 void Importer::Meshes::Utilities::ImportMeshData(const aiMesh* ai_mesh, R_Mesh* r_mesh)
@@ -144,7 +150,7 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 {
 	uint64 written = 0;
 
-	uint header_info[8] = {
+	uint header_data[HEADER_SIZE] = {
 		r_mesh->vertices.size(),																	// 0 --> Num Vertices
 		r_mesh->normals.size(), 																	// 1 --> Num Normals
 		r_mesh->tex_coords.size(), 																	// 2 --> Num Texture Coordinates
@@ -156,8 +162,8 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 		// Draw Normals Bools?
 	};
 
-	uint header_data_size = sizeof(header_info) + sizeof(uint);
-	uint array_data_size = (header_info[0] + header_info[1] + header_info[2]) * sizeof(float) + header_info[3] * sizeof(uint);
+	uint header_data_size = sizeof(header_data) + sizeof(uint);
+	uint array_data_size = (header_data[0] + header_data[1] + header_data[2]) * sizeof(float) + header_data[3] * sizeof(uint);
 	uint precalculated_data_size = r_mesh->aabb.NumVertices() * sizeof(float) * 3;
 
 	uint size = header_data_size + array_data_size + precalculated_data_size;
@@ -168,12 +174,13 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 		return 0;
 	}
 
-	char* file_buffer = new char[size];
-	char* cursor = file_buffer;
+	char* file_buffer	= new char[size];
+	char* cursor		= file_buffer;
+	uint bytes			= 0;
 
 	// --- HEADER DATA ---
-	uint bytes = sizeof(header_info);
-	memcpy_s(cursor, size, header_info, bytes);
+	bytes = sizeof(header_data);
+	memcpy_s(cursor, size, header_data, bytes);
 	cursor += bytes;
 
 	// --- VERTEX ARRAY DATA ---
@@ -224,6 +231,68 @@ bool Importer::Meshes::Load(const char* buffer, R_Mesh* r_mesh)
 {
 	bool ret = true;
 
+	if (buffer == nullptr || r_mesh == nullptr)
+	{
+		LOG("[ERROR] Meshes Importer: Could not load Mesh Resource from Library, buffer and/or r_mesh was nullptr!");
+		return false;
+	}
+
+	/*std::string path	= std::string(MESHES_PATH) + std::to_string(r_mesh->GetID()) + std::string(MESH_EXTENSION);
+	char* read_buffer	= nullptr;
+	uint read			= App->file_system->Load(path.c_str(), &read_buffer);
+	if (read == 0)
+	{
+		// --- LOAD MESH DATA ---
+		LOG("[BRUH] Bruh");
+		return false;
+	}*/
+	
+	char* cursor	= (char*)buffer;
+	uint bytes		= 0;
+
+	// --- HEADER DATA ---
+	uint header_data[HEADER_SIZE];
+
+	bytes = sizeof(header_data);
+	memcpy_s(header_data, bytes, cursor, bytes);
+	cursor += bytes;
+
+	// --- VERTEX ARRAY DATA ---
+	r_mesh->vertices.resize(header_data[0]);
+	bytes = header_data[0] * sizeof(float);
+	memcpy_s(&r_mesh->vertices[0], bytes, cursor, bytes);
+	cursor += bytes;
+
+	r_mesh->normals.resize(header_data[1]);
+	bytes = header_data[1] * sizeof(float);
+	memcpy_s(&r_mesh->normals[0], bytes, cursor, bytes);
+	cursor += bytes;
+
+	r_mesh->tex_coords.resize(header_data[2]);
+	bytes = header_data[2] * sizeof(float);
+	memcpy_s(&r_mesh->tex_coords[0], bytes, cursor, bytes);
+	cursor += bytes;
+
+	r_mesh->indices.resize(header_data[3]);
+	bytes = header_data[3] * sizeof(uint);
+	memcpy_s(&r_mesh->indices[0], bytes, cursor, bytes);
+	cursor += bytes;
+
+	r_mesh->VBO = header_data[4];
+	r_mesh->NBO = header_data[5];
+	r_mesh->TBO = header_data[6];
+	r_mesh->IBO = header_data[7];
+
+	// --- PRECALCULATED DATA ---
+	float3 aabb_corners[8];
+
+	bytes = sizeof(aabb_corners);
+	memcpy_s(aabb_corners, bytes, cursor, bytes);
+	cursor += bytes;
+
+	r_mesh->aabb = AABB(aabb_corners[0], aabb_corners[7]);
+
+	// --- FREEING THE BUFFERS ---
 
 
 	return ret;
