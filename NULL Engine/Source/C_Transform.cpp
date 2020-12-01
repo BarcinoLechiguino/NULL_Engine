@@ -239,10 +239,15 @@ void C_Transform::SetLocalEulerRotation(const float3& new_euler_rotation)
 
 void C_Transform::SetLocalScale(const float3& new_scale)
 {
-	//local_transform.Scale(local_transform.GetScale().Neg());
 	if (new_scale.x == 0.0f || new_scale.y == 0.0f || new_scale.z == 0.0f)
 	{
-		local_scale = float3(0.1f, 0.1f, 0.1f);
+		float3 mod_scale = float3::one;
+		
+		mod_scale.x = (new_scale.x == 0.0f) ? 0.1f : new_scale.x;
+		mod_scale.y = (new_scale.y == 0.0f) ? 0.1f : new_scale.y;
+		mod_scale.z = (new_scale.z == 0.0f) ? 0.1f : new_scale.z;
+		
+		local_scale = mod_scale;
 	}
 	else
 	{
