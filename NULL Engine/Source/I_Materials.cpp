@@ -50,13 +50,15 @@ void Importer::Materials::Import(const char* path, const aiMaterial* ai_material
 
 		if (success)
 		{
-
+			LOG("[IMPORTER] Successfully Loaded Material From Library!");
 		}
 		else
 		{
-
+			LOG("[ERROR] Could not load Material from Library!");
 		}
 	}
+
+	RELEASE_ARRAY(buffer);
 
 	dir_path.clear();
 	file.clear();
@@ -67,10 +69,69 @@ uint64 Importer::Materials::Save(const R_Material* r_material, char** buffer)
 {
 	uint64 written = 0;
 	
+	if (r_material == nullptr)
+	{
+		return 0;
+	}
+	
+	float color[4] = {
+		r_material->diffuse_color.r,
+		r_material->diffuse_color.g,
+		r_material->diffuse_color.b,
+		r_material->diffuse_color.a,
+	};
+
+	uint size = sizeof(color);
+
+	if (size == 0)
+	{
+		return 0;
+	}
+
+	*buffer			= new char[size];
+	char* cursor	= *buffer;
+	uint bytes		= 0;
+
+	// --- COLOR DATA ---
+	bytes = sizeof(color);
+	memcpy_s(cursor, size, color, bytes);
+	cursor += bytes;
+
+	// --- SAVING THE BUFFER ---
+	std::string path = std::string(MATERIALS_PATH) + std::to_string(r_material->GetID()) + std::string(MATERIAL_EXTENSION);
+
+	written = App->file_system->Save(path.c_str(), *buffer, size);
+	if (written > 0)
+	{
+		LOG("[IMPORTER] Importer Materials: Successfully Saved Material into Library!");
+	}
+	else
+	{
+		LOG("[ERROR] Importer Materials: Could not Save Material into Library! File System could did not write anything!");
+	}
+
 	return written;
 }
 
 bool Importer::Materials::Load(const char* buffer, R_Material* r_material)
 {
-	return true;
+	bool ret = true;
+	
+	if (buffer == nullptr || r_material == nullptr)
+	{
+		LOG("[ERROR] Materials Importer: Could not Load Material from Library, buffer and/or r_material were nullptr!");
+	}
+
+	char* cursor	= (char*)buffer;
+	uint bytes		= 0;
+	
+	float color[4];
+	
+	bytes = sizeof(color);
+	memcpy_s(color, bytes, cursor, bytes);
+	cursor += bytes;
+
+	r_material->diffuse_color.Set(color[0], color[1], color[2], color[3]);
+
+	return ret;
 }

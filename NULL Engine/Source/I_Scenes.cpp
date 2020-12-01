@@ -208,6 +208,9 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* path, const aiMater
 	R_Material* r_material	= new R_Material();														// Only considering one texture per mesh.
 	R_Texture* r_texture	= new R_Texture();
 
+	r_material->SetAssetsPath(path);
+	r_material->SetAssetsFile(App->file_system->GetFileAndExtension(path).c_str());
+
 	Importer::Materials::Import(path, ai_material, r_material, r_texture);
 
 	C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);

@@ -174,8 +174,8 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 		return 0;
 	}
 
-	char* file_buffer	= new char[size];
-	char* cursor		= file_buffer;
+	*buffer				= new char[size];
+	char* cursor		= *buffer;
 	uint bytes			= 0;
 
 	// --- HEADER DATA ---
@@ -211,7 +211,7 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 	// --- SAVING THE BUFFER ---
 	std::string path = std::string(MESHES_PATH) + std::to_string(r_mesh->GetID()) + std::string(MESH_EXTENSION);
 
-	written = App->file_system->Save(path.c_str(), file_buffer, size);
+	written = App->file_system->Save(path.c_str(), *buffer, size);
 	
 	if (written > 0)
 	{
