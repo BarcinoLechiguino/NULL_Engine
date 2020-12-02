@@ -129,16 +129,11 @@ bool GameObject::AddChild(GameObject* child)
 
 	if (child->parent != nullptr)
 	{	
-		bool deleted = child->parent->DeleteChild(child);
+		child->parent->DeleteChild(child);
 
-		if (!deleted)
-		{
-			//LOG("[WARNING] Could not find child %s in parent %s", child->name.c_str(), child->parent->name.c_str());
-		}
+		C_Transform* child_transform			= child->GetTransformComponent();
+		child_transform->update_local_transform	= true;
 	}
-
-	C_Transform* child_transform = child->GetTransformComponent();
-	child_transform->update_local_transform = true;
 
 	child->parent = this;
 	childs.push_back(child);

@@ -25,14 +25,14 @@ bool C_Transform::Update()
 {
 	bool ret = true;
 
-	//if (update_local_transform)
-	//{
-	//	UpdateLocalTransform();
-	//}
-
 	if (update_world_transform)
 	{
 		UpdateWorldTransform();
+	}
+
+	if (update_local_transform)
+	{
+		SyncLocalToWorld();
 	}
 
 	return ret;
@@ -53,6 +53,8 @@ void C_Transform::UpdateLocalTransform()
 
 	update_local_transform = false;
 	update_world_transform = true;
+
+	//UpdateWorldTransform();
 }
 
 void C_Transform::UpdateWorldTransform()
@@ -155,8 +157,10 @@ void C_Transform::ImportTransform(const float3& position, const Quat& rotation, 
 	
 	local_euler_rotation	= local_rotation.ToEulerXYZ();
 
-	local_transform = float4x4::FromTRS(local_position, local_rotation, local_scale);
-	update_world_transform = true;
+	UpdateLocalTransform();
+
+	//local_transform = float4x4::FromTRS(local_position, local_rotation, local_scale);
+	//update_world_transform = true;
 }
 
 // --- POSITION, ROTATION AND SCALE METHODS

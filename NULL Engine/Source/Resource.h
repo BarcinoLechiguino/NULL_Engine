@@ -14,6 +14,13 @@ struct ImporterSettings
 	int a;
 };
 
+enum class RESOURCE_TYPE
+{
+	MESH,
+	MATERIAL,
+	TEXTURE
+};
+
 class Resource
 {
 public:
