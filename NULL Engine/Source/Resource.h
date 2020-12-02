@@ -9,9 +9,29 @@
 #include "VarTypedefs.h"
 #include "MathStructures.h"
 
-struct ImporterSettings
+enum class AXIS_ORIENTATION
 {
-	int a;
+	X_UP,
+	Y_UP,
+	Z_UP
+};
+
+struct ImportSettings													// TMP. Brought from Importer.h
+{
+	ImportSettings();
+
+	float				global_scale;
+	AXIS_ORIENTATION	axis;
+	bool				ignore_cameras;
+	bool				ignore_lights;
+
+	int					compression;
+	bool				flip_X;
+	bool				flip_Y;
+	int					wrapping;
+	int					filter;
+	bool				generate_mipmaps;
+	bool				anisotropy;
 };
 
 enum class RESOURCE_TYPE
@@ -55,7 +75,7 @@ private:
 	std::string			library_path;												// Path of the file in the Library directory. Will be used to avoid making duplicates.
 	std::string			library_file;												// File and extension string of the texture in the Library directory.
 
-	ImporterSettings	importer_settings;
+	ImportSettings		import_settings;
 };
 
 #endif // !__RESOURCE_H__

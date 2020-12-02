@@ -2,11 +2,9 @@
 #define __M_INPUT_H__
 
 #include "Module.h"
-#include "Globals.h"
-
-#define MAX_MOUSE_BUTTONS 5
 
 class Configuration;
+typedef unsigned int uint;
 
 enum class KEY_STATE
 {
@@ -15,6 +13,8 @@ enum class KEY_STATE
 	KEY_REPEAT,
 	KEY_UP
 };
+
+#define MAX_MOUSE_BUTTONS 5
 
 class M_Input : public Module
 {
@@ -64,8 +64,6 @@ private:
 
 	int				prev_x_mouse_pos;
 	int				prev_y_mouse_pos;
-
-	const char*		dropped_file_path;
 };
 
 #endif // !__M_INPUT_H__

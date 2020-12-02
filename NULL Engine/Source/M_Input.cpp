@@ -1,9 +1,9 @@
 #include "Application.h"																						// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
 #include "M_Renderer3D.h"
-#include "M_FileSystem.h"
 #include "M_Editor.h"
-#include "M_Scene.h"
+
+#include "Importer.h"
 
 #include "M_Input.h"
 
@@ -29,8 +29,6 @@ M_Input::M_Input(bool is_active) : Module("Input", is_active)
 
 	prev_x_mouse_pos = 0;
 	prev_y_mouse_pos = 0;
-
-	dropped_file_path = nullptr;
 }
 
 // Destructor
@@ -170,23 +168,14 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_DROPFILE:
-				dropped_file_path = event.drop.file;
-
-				std::string norm_path = App->file_system->NormalizePath(dropped_file_path);
-
-				uint dir_path_start = norm_path.find("Assets");
-				if (dir_path_start != std::string::npos)
+				if (event.drop.file != nullptr)
 				{
-					norm_path = norm_path.substr(dir_path_start, norm_path.size());
-
-					App->scene->ImportFile(norm_path.c_str());
+					Importer::ImportFile(event.drop.file);
 				}
 				else
 				{
-					LOG("[ERROR] Dropped file is not located inside the Assets folder!");
+					LOG("[ERROR] String from Drop Event was nullptr!");
 				}
-
-				norm_path.clear();
 
 				SDL_free(event.drop.file);
 
@@ -296,9 +285,4 @@ int M_Input::GetMouseXWheel() const
 int M_Input::GetMouseYWheel() const
 {
 	return mouse_y_wheel;
-}
-
-const char* M_Input::GetDroppedFilePath() const
-{
-	return dropped_file_path;
 }

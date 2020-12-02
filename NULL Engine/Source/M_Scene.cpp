@@ -154,7 +154,7 @@ GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 		complete_name += std::to_string(game_objects.size());
 	}
 	
-	GameObject* game_object = new GameObject(game_objects.size(), complete_name);
+	GameObject* game_object = new GameObject(complete_name);
 
 	if (game_object != nullptr)
 	{
@@ -221,7 +221,7 @@ bool M_Scene::ImportFile(const char* path)
 			|| extension == "tga" || extension == "TGA"
 			|| extension == "dds" || extension == "DDS")
 	{
-		ApplyNewTextureToSelectedGameObject(path);
+		//ApplyNewTextureToSelectedGameObject(path);
 	}
 	else
 	{
@@ -255,45 +255,67 @@ bool M_Scene::ImportScene(const char* path)
 	return ret;
 }
 
-bool M_Scene::ApplyNewTextureToSelectedGameObject(const char* path)
+bool M_Scene::ImportTexture(const char* path)
 {
-	BROFILER_CATEGORY("ApplyNewTextureToSelectedGameObject()", Profiler::Color::Magenta)
-	
 	bool ret = true;
-	
-	if (selected_game_object != nullptr)
+
+	R_Texture* r_texture = new R_Texture();
+	uint tex_id = Importer::Textures::Import(path, r_texture);
+
+	if (r_texture != nullptr && r_texture->GetTextureID() != 0)
 	{
-		R_Texture* r_texture	= new R_Texture();
-		uint tex_id				= Importer::Textures::Import(path, r_texture);									// Textures::Import returns 0 if the texture import is not successful.
 
-		if (tex_id != 0)
-		{
-			C_Material* c_material = selected_game_object->GetMaterialComponent();								// GetMaterialComponent() == nullptr if game object does not have a C_Material.
-			
-			if (c_material == nullptr)
-			{
-				c_material = (C_Material*)selected_game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);		// Creating a Material Component if none was found in the selected game object.
-			}
-			
-			c_material->SetTexture(r_texture);																	// Setting the Material Component's texture with the newly created one.
-		}
-		else
-		{
-			LOG("[ERROR] Could not import the dropped texture! Path: %s", path);
-
-			delete r_texture;
-			r_texture = nullptr;
-
-			return false;
-		}
 	}
 	else
 	{
-		LOG("[ERROR] No game object was being selected! Try again after selecting one from the hierarchy.");
+		LOG("Could not import the dropped texture! Path: %s", path);
+
+		RELEASE(r_texture);
 		ret = false;
 	}
 
 	return ret;
+}
+
+std::vector<GameObject*> M_Scene::GetGameObjects() const
+{
+	return game_objects;
+}
+
+bool M_Scene::ApplyNewTextureToSelectedGameObject(R_Texture* r_texture)
+{
+	BROFILER_CATEGORY("ApplyNewTextureToSelectedGameObject()", Profiler::Color::Magenta)
+	
+	if (r_texture == nullptr)
+	{
+		LOG("[ERROR] Could not add the texture to the selected game object! Error: R_Texture* was nullptr");
+		return false;
+	}
+
+	if (r_texture->GetTextureID() == 0)
+	{
+		LOG("[ERROR] Could not add the texture to the selected game object! Error: R_Texture* Tex ID was 0");
+		RELEASE(r_texture);
+		return false;
+	}
+
+	if (selected_game_object == nullptr)
+	{
+		LOG("[ERROR] No game object was being selected! Try again after selecting one from the hierarchy.");
+		return false;
+	}
+
+	// --- SETTING THE NEW TEXTURE ---
+	C_Material* c_material = selected_game_object->GetMaterialComponent();										// GetMaterialComponent() == nullptr if game object does not have a C_Material.
+
+	if (c_material == nullptr)
+	{
+		c_material = (C_Material*)selected_game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);				// Creating a Material Component if none was found in the selected game object.
+	}
+
+	c_material->SetTexture(r_texture);																			// Setting the Material Component's texture with the newly created one.
+
+	return true;
 }
 
 GameObject* M_Scene::GetRootGameObject() const

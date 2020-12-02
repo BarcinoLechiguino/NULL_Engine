@@ -1,4 +1,5 @@
 #include "Log.h"
+#include "Random.h"
 
 #include "Component.h"
 #include "C_Transform.h"
@@ -10,7 +11,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject() :
-id(0),
+id(Random::LCG::GetRandomUint()),
 name("GameObject"),
 is_active(true),
 is_static(false),
@@ -18,11 +19,12 @@ parent(nullptr),
 is_root_object(false),
 to_delete(false)
 {
-	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
+	id			= Random::LCG::GetRandomUint();
+	transform	= (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
 }
 
-GameObject::GameObject(uint id, std::string name, bool is_active, bool is_static) :
-id(id),
+GameObject::GameObject(std::string name, bool is_active, bool is_static) :
+id(Random::LCG::GetRandomUint()),
 name(name),
 is_active(is_active),
 is_static(is_static),
@@ -30,6 +32,8 @@ parent(nullptr),
 is_root_object(false),
 to_delete(false)
 {
+	id = Random::LCG::GetRandomUint();
+
 	if (name.empty())
 	{
 		name = "GameObject";
@@ -131,8 +135,8 @@ bool GameObject::AddChild(GameObject* child)
 	{	
 		child->parent->DeleteChild(child);
 
-		C_Transform* child_transform			= child->GetTransformComponent();
-		child_transform->update_local_transform	= true;
+		C_Transform* child_transform				= child->GetTransformComponent();
+		child_transform->update_local_transform		= true;
 	}
 
 	child->parent = this;
@@ -364,9 +368,9 @@ bool GameObject::IsStatic() const
 	return is_static;
 }
 
-void GameObject::SetID(uint id)
+void GameObject::SetID()
 {
-
+	id = Random::LCG::GetRandomUint();
 }
 
 void GameObject::SetName(const char* new_name)

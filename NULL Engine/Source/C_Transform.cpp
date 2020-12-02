@@ -158,9 +158,6 @@ void C_Transform::ImportTransform(const float3& position, const Quat& rotation, 
 	local_euler_rotation	= local_rotation.ToEulerXYZ();
 
 	UpdateLocalTransform();
-
-	//local_transform = float4x4::FromTRS(local_position, local_rotation, local_scale);
-	//update_world_transform = true;
 }
 
 // --- POSITION, ROTATION AND SCALE METHODS

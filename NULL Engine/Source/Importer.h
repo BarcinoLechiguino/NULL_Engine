@@ -1,39 +1,31 @@
 #ifndef __IMPORTER_H__
 #define __IMPORTER_H__
 
-#include "VarTypedefs.h"
-
-enum class AXIS_ORIENTATION
-{
-	X_UP,
-	Y_UP,
-	Z_UP
-};
-
-struct ImportSettings
-{
-	ImportSettings();
-	
-	float				global_scale;
-	AXIS_ORIENTATION	axis;
-	bool				ignore_cameras;
-	bool				ignore_lights;
-
-	int					compression;
-	bool				flip_X;
-	bool				flip_Y;
-	int					wrapping;
-	int					filter;
-	bool				generate_mipmaps;
-	bool				anisotropy;
-};
-
 namespace Importer
 {
-	static ImportSettings import_settings;
-	
-	ImportSettings GetImporterSettings();
-	void SetImporterSettings(const ImportSettings& importer_settings);
+	void InitializeImporters			();
+	void ShutDownImporters				();
+
+	bool ImportFile						(const char* path);
+
+	namespace Utilities
+	{
+		bool ImportScene				(const char* path);
+		bool ImportTexture				(const char* path);
+
+		const char* GetValidPath		(const char* path);
+		const char* ValidatePath		(const char* path);
+		bool FileHasModelExtension		(const char* path);
+		bool FileHasTextureExtension	(const char* path);
+	}
+
+	/*namespace Settings
+	{
+		static ImportSettings import_settings;
+
+		ImportSettings GetImporterSettings();
+		void SetImporterSettings(const ImportSettings& importer_settings);
+	}*/
 }
 
 #endif // !__IMPORTER_H__
