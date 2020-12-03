@@ -60,8 +60,7 @@ bool Importer::ImportFile(const char* path)
 
 bool Importer::Utilities::ImportScene(const char* path)
 {
-	//Importer::Scenes::Import(path, App->scene->GetGameObjects());
-	Importer::Scenes::Import(path, App->scene->game_objects);
+	Importer::Scenes::Import(path, *App->scene->GetGameObjects());
 
 	return true;
 }

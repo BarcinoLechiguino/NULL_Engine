@@ -30,7 +30,7 @@ public:
 	GameObject*		CreateGameObject						(const char* name = nullptr, GameObject* parent = nullptr);		// 
 	void			DeleteGameObject						(GameObject* game_object, uint index = -1);						// 
 
-	std::vector<GameObject*> GetGameObjects				() const;
+	std::vector<GameObject*>* GetGameObjects				();
 
 																															// --- ROOT GAME OBJECT METHODS ---
 	GameObject*		GetRootGameObject						() const;														//
@@ -47,11 +47,8 @@ private:
 	void			HandleDebugInput();
 	void			DebugSpawnPrimitive(Primitive* p);
 
-public:
-	std::vector<GameObject*>	game_objects;																				// 
-
 private:
-	//std::vector<GameObject*>	game_objects;																				// 
+	std::vector<GameObject*>	game_objects;																				// 
 	GameObject*					root_object;																				// 
 	GameObject*					selected_game_object;																		// 
 

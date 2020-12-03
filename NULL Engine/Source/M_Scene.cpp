@@ -204,9 +204,9 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 	}
 }
 
-std::vector<GameObject*> M_Scene::GetGameObjects() const
+std::vector<GameObject*>* M_Scene::GetGameObjects()
 {
-	return game_objects;
+	return &game_objects;
 }
 
 bool M_Scene::ApplyNewTextureToSelectedGameObject(R_Texture* r_texture)
