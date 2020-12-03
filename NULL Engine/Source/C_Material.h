@@ -7,9 +7,10 @@
 
 #include "Component.h"
 
-class GameObject;
+class Configuration;
 class R_Material;
 class R_Texture;
+class GameObject;
 
 struct Texture;
 
@@ -32,10 +33,11 @@ public:
 	C_Material(GameObject* owner);
 	~C_Material();
 
-	bool Update() override;
-	bool CleanUp() override;
+	bool Update				() override;
+	bool CleanUp			() override;
 
-
+	bool SaveConfiguration	(Configuration& configuration) const override;
+	bool LoadConfiguration	(Configuration& configuration) override;
 
 public:																						// --- GET/SET RESOURCES
 	R_Material*		GetMaterial				() const;

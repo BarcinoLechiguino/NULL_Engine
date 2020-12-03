@@ -1,6 +1,8 @@
 #include "VarTypedefs.h"
 #include "Macros.h"
+
 #include "Color.h"
+#include "Configuration.h"
 
 #include "R_Material.h"
 #include "R_Texture.h"
@@ -58,6 +60,24 @@ bool C_Material::CleanUp()
 	}
 
 	textures.clear();*/
+
+	return ret;
+}
+
+bool C_Material::SaveConfiguration(Configuration& configuration) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool C_Material::LoadConfiguration(Configuration& configuration)
+{
+	bool ret = true;
+
+
 
 	return ret;
 }

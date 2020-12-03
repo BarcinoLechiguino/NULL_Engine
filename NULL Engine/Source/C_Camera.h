@@ -3,6 +3,7 @@
 
 #include "Component.h"
 
+class Configuration;
 class GameObject;
 
 class C_Camera : public Component
@@ -11,9 +12,11 @@ public:
 	C_Camera(GameObject* owner);
 	~C_Camera();
 
-	bool Update() override;
+	bool Update				() override;
+	bool CleanUp			() override;
 
-	bool CleanUp() override;
+	bool SaveConfiguration	(Configuration& configuration) const override;
+	bool LoadConfiguration	(Configuration& configuration) override;
 
 private:
 

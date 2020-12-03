@@ -1,3 +1,5 @@
+#include "Configuration.h"
+
 #include "GameObject.h"
 
 #include "C_Light.h"
