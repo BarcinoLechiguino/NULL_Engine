@@ -33,10 +33,7 @@ bool Importer::ImportFile(const char* path)
 {
 	bool ret = true;
 
-	const char* path_II = Utilities::GetValidPath(path);
-
-	LOG("Mi pana: %s", path);
-	LOG("Mi pana: %s", path_II);
+	path = Utilities::GetValidPath(path);
 
 	if (path == nullptr)
 	{
@@ -63,7 +60,8 @@ bool Importer::ImportFile(const char* path)
 
 bool Importer::Utilities::ImportScene(const char* path)
 {
-	Importer::Scenes::Import(path, App->scene->GetGameObjects());
+	//Importer::Scenes::Import(path, App->scene->GetGameObjects());
+	Importer::Scenes::Import(path, App->scene->game_objects);
 
 	return true;
 }
@@ -107,11 +105,6 @@ const char* Importer::Utilities::GetValidPath(const char* path)
 	norm_path.clear();
 
 	return path;
-}
-
-const char* Importer::Utilities::ValidatePath(const char* path)
-{
-	return nullptr;
 }
 
 bool Importer::Utilities::FileHasModelExtension(const char* path)

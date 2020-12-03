@@ -14,7 +14,6 @@ namespace Importer
 		bool ImportTexture				(const char* path);
 
 		const char* GetValidPath		(const char* path);
-		const char* ValidatePath		(const char* path);
 		bool FileHasModelExtension		(const char* path);
 		bool FileHasTextureExtension	(const char* path);
 	}

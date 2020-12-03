@@ -10,10 +10,8 @@
 #include "M_FileSystem.h"
 #include "M_Editor.h"
 
-#include "I_Scenes.h"
-#include "I_Meshes.h"
-#include "I_Textures.h"
-#include "R_Mesh.h"
+#include "Importer.h"
+#include "Resource.h"
 #include "R_Texture.h"
 
 #include "Primitive.h"
@@ -60,7 +58,7 @@ bool M_Scene::Start()
 		selected_game_object = root_object;
 	}
 
-	ImportScene("Assets/Models/street/Street Environment_V01.FBX");
+	Importer::ImportFile("Assets/Models/street/Street Environment_V01.FBX");
 
 	return ret;
 }
@@ -204,77 +202,6 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 
 		LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
 	}
-}
-
-bool M_Scene::ImportFile(const char* path)
-{
-	bool ret = true;
-	
-	std::string extension = App->file_system->GetFileExtension(path);
-
-	if (extension == "fbx" || extension == "FBX"												// If the file extension is .fbx or .FBX, then it is a model.
-		|| extension == "obj" || extension == "OBJ")
-	{
-		ImportScene(path);
-	}
-	else if (extension == "png" || extension == "PNG"												// If the file extension is .png, .PNG, .dds or .DDS, then it is a texture.
-			|| extension == "tga" || extension == "TGA"
-			|| extension == "dds" || extension == "DDS")
-	{
-		//ApplyNewTextureToSelectedGameObject(path);
-	}
-	else
-	{
-		LOG("[ERROR] Could not import the dropped file: File extension is not supported!"); 
-		ret = false;
-	}
-
-	extension.clear();
-
-	return ret;
-}
-
-bool M_Scene::ImportScene(const char* path)
-{
-	BROFILER_CATEGORY("M_Scene::ImportScene()", Profiler::Color::LawnGreen);
-
-	bool ret = true;
-
-	Importer::Scenes::Import(path, game_objects);														// Importing the new game objects directly into the game_objects vector.
-
-	//std::vector<GameObject*> nodes;																	// Creating an step in the middle of the import to manipulate the
-	//Importer::Scenes::Import(path, nodes);															// game objects created by the Import Pipeline.
-
-	//for (uint i = 0; i < nodes.size(); ++i)
-	//{	
-	//	game_objects.push_back(nodes[i]);
-	//}
-	//
-	//nodes.clear();
-
-	return ret;
-}
-
-bool M_Scene::ImportTexture(const char* path)
-{
-	bool ret = true;
-
-	R_Texture* r_texture = new R_Texture();
-	uint tex_id = Importer::Textures::Import(path, r_texture);
-
-	if (r_texture != nullptr && r_texture->GetTextureID() != 0)
-	{
-
-	}
-	else
-	{
-		LOG("Could not import the dropped texture! Path: %s", path);
-
-		RELEASE(r_texture);
-		ret = false;
-	}
-
-	return ret;
 }
 
 std::vector<GameObject*> M_Scene::GetGameObjects() const
