@@ -1,6 +1,6 @@
 #include "C_Camera.h"
 
-C_Camera::C_Camera(GameObject* owner) : Component(owner, COMPONENT_TYPE::CAMERA, "Camera")
+C_Camera::C_Camera(GameObject* owner) : Component(owner, COMPONENT_TYPE::CAMERA)
 {
 
 }

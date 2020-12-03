@@ -1,3 +1,5 @@
+#include "Configuration.h"
+
 #include "Application.h"
 #include "E_Scene.h"
 
@@ -5,11 +7,11 @@
 
 #include "C_Transform.h"
 
-C_Transform::C_Transform(GameObject* owner, float4x4 matrix) : Component(owner, COMPONENT_TYPE::TRANSFORM, "Transform"),
-local_transform(matrix),
-world_transform(matrix),
-update_local_transform(false),
-update_world_transform(false)
+C_Transform::C_Transform(GameObject* owner) : Component(owner, COMPONENT_TYPE::TRANSFORM),
+local_transform			(float4x4::identity),
+world_transform			(float4x4::identity),
+update_local_transform	(false),
+update_world_transform	(false)
 {	
 	local_transform.Decompose(local_position, local_rotation, local_scale);
 
@@ -41,6 +43,26 @@ bool C_Transform::Update()
 bool C_Transform::CleanUp()
 {
 	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool C_Transform::SaveConfiguration(Configuration& configuration) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool C_Transform::LoadConfiguration(Configuration& configuration)
+{
+	bool ret = true;
+
+
 
 	return ret;
 }

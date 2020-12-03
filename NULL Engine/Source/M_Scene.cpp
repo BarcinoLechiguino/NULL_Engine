@@ -1,5 +1,5 @@
 #include "Profiler.h"
-#include "MathStructures.h"
+#include "MathGeoTransform.h"
 #include "glmath.h"																// WAITING UNTIL FRUSTUM TO DELETE IT
 
 #include "Application.h"														// ATTENTION: Globals.h already included in Module.h

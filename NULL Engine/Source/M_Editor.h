@@ -31,50 +31,50 @@ public:
 	M_Editor(bool is_active = true);
 	~M_Editor();
 
-	bool			Init(Configuration& config) override;
-	bool			Start() override;
-	UPDATE_STATUS	PreUpdate(float dt) override;
-	UPDATE_STATUS	Update(float dt) override;
-	UPDATE_STATUS	PostUpdate(float dt) override;
-	bool			CleanUp() override;
+	bool			Init				(Configuration& config) override;
+	bool			Start				() override;
+	UPDATE_STATUS	PreUpdate			(float dt) override;
+	UPDATE_STATUS	Update				(float dt) override;
+	UPDATE_STATUS	PostUpdate			(float dt) override;
+	bool			CleanUp				() override;
 
-	bool			LoadConfiguration(Configuration& root) override;
-	bool			SaveConfiguration(Configuration& root) const override;
+	bool			LoadConfiguration	(Configuration& root) override;
+	bool			SaveConfiguration	(Configuration& root) const override;
 
 public:
-	bool			GetEvent(SDL_Event* event) const;								// Will return false if there was no event to read.
+	bool			GetEvent							(SDL_Event* event) const;				// Will return false if there was no event to read.
 
-	void			AddGuiPanel(E_Panel* panel);									// Will add the E_Panel* passed as argument to the gui_panels vector.
+	void			AddGuiPanel							(E_Panel* panel);						// Will add the E_Panel* passed as argument to the gui_panels vector.
 
-	void			EditorShortcuts();												// All the shortcuts related to the editor have been gathered here.
-	void			CheckShowHideFlags();											// Will check whether or not each of the panels must be enabled or disabled.
+	void			EditorShortcuts						();										// All the shortcuts related to the editor have been gathered here.
+	void			CheckShowHideFlags					();										// Will check whether or not each of the panels must be enabled or disabled.
 
-	bool			EditorIsBeingHovered() const;									// Will check whether or not any of the editor panels is being hovered.
-	bool			RenderGuiPanels() const;										// Will call ImGui::Render() to render all the panels on the screen.
-	bool			InitializeImGui() const;										// Creates an ImGui Context and sets an initial configuration for it.
+	bool			EditorIsBeingHovered				() const;								// Will check whether or not any of the editor panels is being hovered.
+	bool			RenderGuiPanels						() const;								// Will call ImGui::Render() to render all the panels on the screen.
+	bool			InitializeImGui						() const;								// Creates an ImGui Context and sets an initial configuration for it.
 
-public:																				// --- Panel/Window Methods. Acts as an interface between other modules and the panels. Avoids dependencies.
-	bool			GetShowWorldGrid() const;										// Will return true if the World Grid is being currently shown.
-	bool			GetShowWorldAxis() const;										// Will return true if the World Axis is being currently shown.
-	bool			GetShowPrimitiveExamples() const;								// Will return true if the Primitive Examples are being currently shown.
-	void			SetShowWorldGrid(bool set_to);									// Will Enable or Disable the World Grid depending on the passed argument.
-	void			SetShowWorldAxis(bool set_to);									// Will Enable or Disable the depending on the passed argument.
-	void			SetShowPrimitiveExamples(bool set_to);							// Will Enable or Disable the depending on the passed argument.
+public:																							// --- Panel/Window Methods. Acts as an interface between other modules and the panels.
+	bool			GetShowWorldGrid					() const;								// Will return true if the World Grid is being currently shown.
+	bool			GetShowWorldAxis					() const;								// Will return true if the World Axis is being currently shown.
+	bool			GetShowPrimitiveExamples			() const;								// Will return true if the Primitive Examples are being currently shown.
+	void			SetShowWorldGrid					(bool set_to);							// Will Enable or Disable the World Grid depending on the passed argument.
+	void			SetShowWorldAxis					(bool set_to);							// Will Enable or Disable the depending on the passed argument.
+	void			SetShowPrimitiveExamples			(bool set_to);							// Will Enable or Disable the depending on the passed argument.
 
-	void			UpdateFrameData(int frames, int ms);							// Configuration: Passing the received frame data to the configuration editor module.
-	void			AddInputLog(uint key, uint state);								// Configuration: Receives an input key and a state and passes a log to the configuration editor module.
+	void			UpdateFrameData						(int frames, int ms);					// Configuration: Passing the received frame data to the configuration editor module.
+	void			AddInputLog							(uint key, uint state);					// Configuration: Receives an input key and a state and passes a log to the configuration editor module.
 
-	void			AddConsoleLog(const char* log);									// Console: Passing the received console log to the console editor module.
+	void			AddConsoleLog						(const char* log);						// Console: Passing the received console log to the console editor module.
 
-	GameObject*		GetRootGameObjectThroughEditor() const;							// Hierarchy & inspector: Will return the current root GameObjcect.
-	void			SetRootGameObjectThroughEditor(GameObject* game_object);		// Hierarchy & inspector: Will set the scene's root GameObject with the one passed as argument.
-	GameObject*		GetSelectedGameObjectThroughEditor() const;						// Hierarchy & Inspector: Will return the currently selected GameObject.
-	void			SetSelectedGameObjectThroughEditor(GameObject* game_object);	// Hierarchy & Inspector: Will set the scene's selected GameObject with the one passed as argument.
-	void			DeleteSelectedGameObject();										// Hierarchy & Inspector: Will call the Module Scene's delete selected GameObject method.
-	void			CreateGameObject(const char* name, GameObject* parent);			// Hierarchy & Inspector: Will call the Module Scene's create GameObject method.
+	GameObject*		GetRootGameObjectThroughEditor		() const;								// Hierarchy & inspector: Will return the current root GameObjcect.
+	void			SetRootGameObjectThroughEditor		(GameObject* game_object);				// Hierarchy & inspector: Will set the scene's root GameObject with the passed one.
+	GameObject*		GetSelectedGameObjectThroughEditor	() const;								// Hierarchy & Inspector: Will return the currently selected GameObject.
+	void			SetSelectedGameObjectThroughEditor	(GameObject* game_object);				// Hierarchy & Inspector: Will set the scene's selected GameObject with the passed one.
+	void			DeleteSelectedGameObject			();										// Hierarchy & Inspector: Will call the Module Scene's delete selected GameObject method.
+	void			CreateGameObject					(const char* name, GameObject* parent);	// Hierarchy & Inspector: Will call the Module Scene's create GameObject method.
 
 private:
-	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);							// Generates a root window for dock.
+	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);							// Generates a root window for docking.
 	void BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNodeFlags docking_flags = ImGuiDockNodeFlags_None, ImVec2 size = { 0.0f, 0.0f });	// Generates a new dockspace.
 
 public:

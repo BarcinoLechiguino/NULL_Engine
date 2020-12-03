@@ -1,7 +1,7 @@
 #ifndef __R_MODEL_H__
 #define __R_MODEL_H__
 
-#include "MathStructures.h"
+#include "MathGeoLib/include/Math/float4.h"
 #include "Resource.h"
 
 struct	aiScene;

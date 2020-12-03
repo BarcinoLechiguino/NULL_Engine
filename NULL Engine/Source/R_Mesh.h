@@ -1,7 +1,10 @@
 #ifndef __R_MESH_H__
 #define __R_MESH_H__
 
+#include "MathGeoBoundingBox.h"
 #include "Resource.h"
+
+typedef unsigned __int32 uint;
 
 class R_Mesh : public Resource
 {

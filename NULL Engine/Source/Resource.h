@@ -2,37 +2,13 @@
 #define __RESOURCE_H__
 
 #include <vector>
-#include <map>
 #include <string>
 
 #include "Log.h"
-#include "VarTypedefs.h"
-#include "MathStructures.h"
+//#include "VarTypedefs.h"
+#include "ImportSettings.h"
 
-enum class AXIS_ORIENTATION
-{
-	X_UP,
-	Y_UP,
-	Z_UP
-};
-
-struct ImportSettings													// TMP. Brought from Importer.h
-{
-	ImportSettings();
-
-	float				global_scale;
-	AXIS_ORIENTATION	axis;
-	bool				ignore_cameras;
-	bool				ignore_lights;
-
-	int					compression;
-	bool				flip_X;
-	bool				flip_Y;
-	int					wrapping;
-	int					filter;
-	bool				generate_mipmaps;
-	bool				anisotropy;
-};
+typedef unsigned __int32 uint32;
 
 enum class RESOURCE_TYPE
 {
@@ -51,7 +27,7 @@ public:
 
 public:
 	uint32				GetID				() const;
-	void				SetID				();
+	void				ResetID				();
 
 	const char*			GetAssetsPath		() const;								// 
 	const char*			GetAssetsFile		() const;								// 
@@ -67,7 +43,7 @@ public:
 	//void				SetImporterSettings	(ImporterSettings importer_settings);
 
 private:
-	uint32				id;
+	uint32				id;															// UID for this Resource.
 
 	std::string			assets_path;												// Path of the file in the Assets directory. Will be used to avoid making duplicates.
 	std::string			assets_file;												// File and extension string of the texture in the Assets directory.

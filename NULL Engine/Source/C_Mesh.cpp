@@ -1,3 +1,5 @@
+#include "Configuration.h"
+
 #include "Application.h"
 #include "M_Renderer3D.h"
 
@@ -9,7 +11,8 @@
 
 #include "C_Mesh.h"
 
-C_Mesh::C_Mesh(GameObject* owner) : Component(owner, COMPONENT_TYPE::MESH, "Mesh"), mesh(nullptr)
+C_Mesh::C_Mesh(GameObject* owner) : Component(owner, COMPONENT_TYPE::MESH),
+mesh	(nullptr)
 {
 
 }
@@ -42,9 +45,22 @@ bool C_Mesh::CleanUp()
 	{
 		mesh->CleanUp();
 
-		delete mesh;
-		mesh = nullptr;
+		RELEASE(mesh);
 	}
+
+	return ret;
+}
+
+bool C_Mesh::SaveConfiguration(Configuration& configuration) const
+{
+	bool ret = true;
+
+	return ret;
+}
+
+bool C_Mesh::LoadConfiguration(Configuration& configuration)
+{
+	bool ret = true;
 
 	return ret;
 }
@@ -72,7 +88,7 @@ void C_Mesh::SetMesh(R_Mesh* r_mesh)
 	mesh = r_mesh;
 }
 
-std::string C_Mesh::GetMeshPath() const
+const char* C_Mesh::GetMeshPath() const
 {
 	if (mesh != nullptr)
 	{

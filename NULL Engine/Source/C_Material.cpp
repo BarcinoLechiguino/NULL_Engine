@@ -1,17 +1,20 @@
+#include "VarTypedefs.h"
+#include "Macros.h"
 #include "Color.h"
 
-#include "GameObject.h"
 #include "R_Material.h"
 #include "R_Texture.h"
+
+#include "GameObject.h"
 
 #include "C_Material.h"
 
 #define MAX_MAPS 7
 
-C_Material::C_Material(GameObject* owner) : Component(owner, COMPONENT_TYPE::MATERIAL, "Material"),
-material(nullptr),
-texture(nullptr),
-use_default_tex(false)
+C_Material::C_Material(GameObject* owner) : Component(owner, COMPONENT_TYPE::MATERIAL),
+material			(nullptr),
+texture				(nullptr),
+use_default_tex		(false)
 {
 	//memset(texture_maps, 0, sizeof(uint) * MAX_MAPS);
 }
@@ -36,16 +39,14 @@ bool C_Material::CleanUp()
 	{
 		material->CleanUp();
 
-		delete material;
-		material = nullptr;
+		RELEASE(material);
 	}
 
 	if (texture != nullptr)
 	{
 		texture->CleanUp();
 
-		delete texture;
-		texture = nullptr;
+		RELEASE(texture);
 	}
 
 	/*for (uint i = 0; i < textures.size(); ++i)
@@ -83,8 +84,7 @@ void C_Material::SetTexture(R_Texture* r_texture)
 	{
 		texture->CleanUp();
 		
-		delete texture;
-		texture = nullptr;
+		RELEASE(texture);
 	}
 
 	texture = r_texture;

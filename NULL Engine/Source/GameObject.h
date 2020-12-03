@@ -2,50 +2,48 @@
 #define __GAME_OBJECT_H__
 
 #include <vector>
-#include <map>
 #include <string>
 
-#include "VarTypedefs.h"
+#include "MathGeoBoundingBox.h"
 
-typedef unsigned int uint;
-
+typedef unsigned __int32 uint32;
 
 class Configuration;
-
 class Component;
 class C_Transform;
 class C_Mesh;
 class C_Material;
 class C_Light;
 class C_Camera;
+
 enum class COMPONENT_TYPE;
 
 class GameObject
 {
 public:
 	GameObject();
-	GameObject(std::string name, bool is_active = true, bool is_static = false);
+	GameObject(std::string name , bool is_active = true, bool is_static = false);
 	~GameObject();
 
-	bool			Update();
-	bool			CleanUp();
+	bool			Update				();
+	bool			CleanUp				();
 
-	bool			SaveConfiguration(Configuration& configuration) const;
-	bool			LoadConfiguration(Configuration& configuration) const;
+	bool			SaveConfiguration	(Configuration& configuration) const;
+	bool			LoadConfiguration	(Configuration& configuration);
 
 public:
 	void			FreeComponents						();
 	void			FreeChilds							();
 
-	bool			AddChild							(GameObject* child);					// Adds the given child to the GO's childs vector. Also deletes it from the prev. parent's childs.
-	bool			NewChildIsOwnParent					(GameObject* child);					// Rets. true if the passed child is being added as a child of one of it's children or ch of chs.
+	bool			AddChild							(GameObject* child);					// Adds the given child to the GO's childs vector. Also deletes it from prev. parent's childs.
+	bool			NewChildIsOwnParent					(GameObject* child);					// Rets. true if passed child is being added as a child of one of it's children or ch of chs.
 	bool			DeleteChild							(GameObject* child);					// Deletes the given child from the childs vector. Returns false upon not finding the child.
 	
 	Component*		CreateComponent						(COMPONENT_TYPE type);					// Creates a component of the given type and adds it to the components vector.
 	bool			DeleteComponent						(Component* component_to_delete);		// Deletes the given component from the Components vector. Returs False on ERROR.
 
 public:																							// --- COMPONENT GETTERS AND SETTERS
-	Component*		GetComponent						(COMPONENT_TYPE type);					// Iterates through the components vector and returns the component that matches the given type.
+	Component*		GetComponent						(COMPONENT_TYPE type);					// Iterates through the components vector and returns the comp. that matches the given type.
 	const char*		GetComponentNameFromType			(COMPONENT_TYPE type);					// Returns a string matching the given type. Mainly used for debug purposes (LOG).
 	
 	C_Transform*	GetTransformComponent				();										// Returns the GameObject's Transform Component.	Returns nullptr on ERROR.
@@ -54,7 +52,7 @@ public:																							// --- COMPONENT GETTERS AND SETTERS
 	C_Light*		GetLightComponent					();										// Returns the GameObject's Light Component.		Returns nullptr on ERROR.
 	C_Camera*		GetCameraComponent					();										// Returns the GameObject's Camera Component.		Returns nullptr on ERROR.
 
-	std::vector<Component*> GetAllComponentsWithType	(COMPONENT_TYPE type);					// Returns a vector with all the components of the given type that the GameObject currently has.
+	std::vector<Component*> GetAllComponentsWithType	(COMPONENT_TYPE type);					// Returns a vector with all the comps. of the given type that the GameObject currently has.
 	std::vector<C_Mesh*>	GetAllMeshComponents		();
 
 public:																								// --- GAME OBJECT GETTERS AND SETTERS
@@ -63,7 +61,7 @@ public:																								// --- GAME OBJECT GETTERS AND SETTERS
 	bool			IsActive							() const;									// 
 	bool			IsStatic							() const;									// 
 
-	void			SetID								();											// 
+	void			ResetID								();											// 
 	void			SetName								(const char* new_name);						// 
 	void			SetIsActive							(const bool& set_to);						// 
 	void			SetIsStatic							(const bool& set_to);						// 
@@ -75,21 +73,18 @@ public:
 	std::vector<GameObject*>	childs;
 
 	GameObject*					parent;
-
-	C_Transform*				transform;													// Don't know what to do with this. Maybe keeping it like Unity? Or have it like the rest of comps?
+	C_Transform*				transform;													// Don't know what to do with this. Maybe like Unity? Or have it like the rest of comps?
 
 	bool						is_root_object;												// Will be set to true if this GameObject is M_Scene's root_object.
 	bool						to_delete;													// Will determine whether or not the GameObject should be deleted. See M_Scene's DeleteGameObject().
 
-	//AABB						obb;
+	OBB							obb;
 
 private:
-	uint						id;
+	uint32						id;
 	std::string					name;
-
 	bool						is_active;
 	bool						is_static;
-
 };
 
 #endif // !__GAME_OBJECT_H__

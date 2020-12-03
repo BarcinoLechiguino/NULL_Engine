@@ -198,8 +198,7 @@ void Importer::Scenes::Utilities::ImportMesh(const char* path, const aiMesh* ai_
 	}
 	else
 	{
-		delete r_mesh;
-		r_mesh = nullptr;
+		RELEASE(r_mesh);
 	}
 }
 
@@ -225,19 +224,15 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* path, const aiMater
 		}
 		else
 		{
-			delete r_texture;
-			r_texture = nullptr;
+			RELEASE(r_texture);
 
 			LOG("[IMPORTER] Imported aiMaterial had no texture!");
 		}
 	}
 	else
 	{
-		delete r_material;
-		r_material = nullptr;
-
-		delete r_texture;
-		r_texture = nullptr;
+		RELEASE(r_material);
+		RELEASE(r_texture);
 
 		LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());
 	}

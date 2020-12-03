@@ -1,5 +1,9 @@
 #include "Log.h"
 #include "Random.h"
+#include "Macros.h"
+#include "VarTypedefs.h"
+
+#include "Configuration.h"
 
 #include "Component.h"
 #include "C_Transform.h"
@@ -11,26 +15,26 @@
 #include "GameObject.h"
 
 GameObject::GameObject() :
-id(Random::LCG::GetRandomUint()),
-name("GameObject"),
-is_active(true),
-is_static(false),
-parent(nullptr),
-is_root_object(false),
-to_delete(false)
+id				(Random::LCG::GetRandomUint()),
+name			("GameObject"),
+is_active		(true),
+is_static		(false),
+parent			(nullptr),
+is_root_object	(false),
+to_delete		(false)
 {
-	id			= Random::LCG::GetRandomUint();
+	//id			= Random::LCG::GetRandomUint();
 	transform	= (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
 }
 
 GameObject::GameObject(std::string name, bool is_active, bool is_static) :
-id(Random::LCG::GetRandomUint()),
-name(name),
-is_active(is_active),
-is_static(is_static),
-parent(nullptr),
-is_root_object(false),
-to_delete(false)
+id				(Random::LCG::GetRandomUint()),
+name			(name),
+is_active		(is_active),
+is_static		(is_static),
+parent			(nullptr),
+is_root_object	(false),
+to_delete		(false)
 {
 	id = Random::LCG::GetRandomUint();
 
@@ -73,6 +77,24 @@ bool GameObject::CleanUp()
 	return ret;
 }
 
+bool GameObject::SaveConfiguration(Configuration& configuration) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool GameObject::LoadConfiguration(Configuration& configuration)
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
 // --- GAMEOBJECT METHODS ---
 void GameObject::FreeComponents()
 {
@@ -82,8 +104,7 @@ void GameObject::FreeComponents()
 	{
 		components[i]->CleanUp();
 
-		delete components[i];
-		components[i] = nullptr;
+		RELEASE(components[i]);
 	}
 
 	components.clear();
@@ -224,10 +245,9 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 			{
 				if (type == components[i]->type)
 				{
-					LOG("[ERROR] %s Component could not be added to %s: No duplicates allowed!", component->GetName(), name.c_str());
+					LOG("[ERROR] %s Component could not be added to %s: No duplicates allowed!", component->GetNameFromType(), name.c_str());
 					
-					delete component;
-					component = nullptr;
+					RELEASE(component);
 
 					return nullptr;
 				}
@@ -242,6 +262,8 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 
 bool GameObject::DeleteComponent(Component* component_to_delete)
 {
+	std::string component_name = component_to_delete->GetNameFromType();
+	
 	if (component_to_delete != nullptr)
 	{
 		for (uint i = 0; i < components.size(); ++i)
@@ -249,9 +271,8 @@ bool GameObject::DeleteComponent(Component* component_to_delete)
 			if (components[i] == component_to_delete)
 			{
 				components[i]->CleanUp();
-
-				delete components[i];
-				components[i] = nullptr;
+				
+				RELEASE(components[i]);
 
 				components.erase(components.begin() + i);
 
@@ -260,7 +281,9 @@ bool GameObject::DeleteComponent(Component* component_to_delete)
 		}
 	}
 
-	LOG("[STATUS] Deleted Component %s of Game Object %s", component_to_delete->GetName(), name.c_str());
+	LOG("[STATUS] Deleted Component %s of Game Object %s", component_name.c_str(), name.c_str());
+
+	component_name.clear();
 
 	return false;
 }
@@ -352,6 +375,11 @@ std::vector<C_Mesh*> GameObject::GetAllMeshComponents()
 	return mesh_components;
 }
 
+uint32 GameObject::GetID() const
+{
+	return id;
+}
+
 // --- GAME OBJECT GETTERS AND SETTERS ---
 const char* GameObject::GetName() const
 {
@@ -368,7 +396,7 @@ bool GameObject::IsStatic() const
 	return is_static;
 }
 
-void GameObject::SetID()
+void GameObject::ResetID()
 {
 	id = Random::LCG::GetRandomUint();
 }

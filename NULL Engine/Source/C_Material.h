@@ -13,6 +13,8 @@ class R_Texture;
 
 struct Texture;
 
+typedef unsigned int uint;
+
 enum class TEXTURE_MAP												// Will correspond with the indexes of the texture_ids vector. Ex: texture_ids[DIFFUSE] = diffuse tex_id;
 {
 	DEFAULT		= 0,												// Will correspond with the Debug Texture (Checkers).
@@ -32,6 +34,8 @@ public:
 
 	bool Update() override;
 	bool CleanUp() override;
+
+
 
 public:																						// --- GET/SET RESOURCES
 	R_Material*		GetMaterial				() const;

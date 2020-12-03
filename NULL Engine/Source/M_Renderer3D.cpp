@@ -135,8 +135,7 @@ bool M_Renderer3D::CleanUp()
 
 	for (uint i = 0; i < primitives.size(); ++i)
 	{
-		delete primitives[i];
-		primitives[i] = nullptr;
+		RELEASE(primitives[i]);
 	}
 	
 	primitives.clear();

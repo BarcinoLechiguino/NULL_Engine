@@ -1,5 +1,7 @@
 #include "OpenGL.h"
 
+#include "VarTypedefs.h"
+
 #include "R_Texture.h"
 
 R_Texture::R_Texture() : Resource()

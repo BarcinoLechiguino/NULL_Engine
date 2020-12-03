@@ -2,7 +2,7 @@
 
 #include "C_Light.h"
 
-C_Light::C_Light(GameObject* owner) : Component(owner, COMPONENT_TYPE::LIGHT, "Light")
+C_Light::C_Light(GameObject* owner) : Component(owner, COMPONENT_TYPE::LIGHT)
 {
 
 }

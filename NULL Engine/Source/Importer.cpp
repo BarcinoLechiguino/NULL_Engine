@@ -1,13 +1,10 @@
 #include <string>
 #include <vector>
 
-#include "Globals.h"
-
 #include "Application.h"
 #include "M_FileSystem.h"
 #include "M_Scene.h"
 
-#include "Resource.h"
 #include "R_Texture.h"
 
 #include "I_Scenes.h"

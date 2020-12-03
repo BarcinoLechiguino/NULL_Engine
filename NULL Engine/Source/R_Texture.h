@@ -3,6 +3,8 @@
 
 #include "Resource.h"
 
+typedef unsigned __int32 uint;
+
 enum class TEXTURE_FORMAT													// The enum values are set according to the values of DevIL's define values/flags.
 {
 	UNKNOWN			= 0,													// Default format. It means that DevIL could not find the format of the imported texture.

@@ -1,5 +1,4 @@
-#include "MathStructures.h"
-
+#include "MathGeoLib/include/Algorithm/Random/LCG.h"
 #include "PCG/include/pcg_basic.h"
 
 #include "Random.h"

@@ -12,64 +12,63 @@ public:
 	M_Camera3D(bool is_active = true);
 	~M_Camera3D();
 
-	bool			Init(Configuration& root) override;
-	bool			Start() override;
-	UPDATE_STATUS	Update(float dt) override;
-	bool			CleanUp() override;
+	bool			Init				(Configuration& root) override;
+	bool			Start				() override;
+	UPDATE_STATUS	Update				(float dt) override;
+	bool			CleanUp				() override;
 
-	bool			LoadConfiguration(Configuration& root) override;
-	bool			SaveConfiguration(Configuration& root) const override;
+	bool			LoadConfiguration	(Configuration& root) override;
+	bool			SaveConfiguration	(Configuration& root) const override;
 
 public:
-	void			PointAt(const vec3 &position, const vec3 &reference, bool RotateAroundReference = false);
-	void			LookAt(const vec3 &Spot);
-	void			Focus(const vec3& target_position);
+	void			PointAt					(const vec3 &position, const vec3 &reference, bool RotateAroundReference = false);
+	void			LookAt					(const vec3 &Spot);
+	void			Focus					(const vec3& target_position);
+	void			Move					(const vec3 &Movement);
 
-	void			Move(const vec3 &Movement);
+	void			ReturnToWorldOrigin		();
 
-	void			ReturnToWorldOrigin();
+public:																		// Camera3D Getters and Setters.
+	float*			GetRawViewMatrix		();
+	mat4x4			GetViewMatrix			();
 
-public:																											// Camera3D Getters and Setters.
-	float*			GetRawViewMatrix();
-	mat4x4			GetViewMatrix();
+	vec3			GetPosition				() const;
+	vec3			GetReference			() const;
+	vec3			GetSpot					() const;
+	void			SetPosition				(const vec3& position);
+	void			SetReference			(const vec3& reference);
+	void			SetSpot					(const vec3& spot);
 
-	vec3			GetPosition() const;
-	vec3			GetReference() const;
-	vec3			GetSpot() const;
-	void			SetPosition(const vec3& position);
-	void			SetReference(const vec3& reference);
-	void			SetSpot(const vec3& spot);
-
-	float			GetMovementSpeed() const;
-	float			GetRotationSpeed() const;
-	float			GetZoomSpeed() const;
-	void			SetMovementSpeed(const float& movement_speed);
-	void			SetRotationSpeed(const float& rotation_speed);
-	void			SetZoomSpeed(const float& zoom_speed);
+	float			GetMovementSpeed		() const;
+	float			GetRotationSpeed		() const;
+	float			GetZoomSpeed			() const;
+	void			SetMovementSpeed		(const float& movement_speed);
+	void			SetRotationSpeed		(const float& rotation_speed);
+	void			SetZoomSpeed			(const float& zoom_speed);
 
 
 private:
-	void			CalculateViewMatrix();							// Calculates both the worldspace matrix and the viewspace matrix.
+	void			CalculateViewMatrix		();								// Calculates both the worldspace matrix and the viewspace matrix.
 
-	void			WASDMovement();									// Translates the camera along XYZ (Right, Up, Forward), which will act as the camera's axis.
-	void			FreeLookAround();								// Receives information about the mouse's motion values and rotates the camera on it's axis.
-	void			RotateAroundReference();						// Will rotate the camera around the point specified by the reference variable. Almost identical to FreeLookAround();
-	void			PanCamera();									// Will translate the camera along XY (Right, Up). The movement can be described as moving in the plane of the camera frame.
-	void			Zoom();											// Will translate the camera along the Z (Forward) axis. This means that the camera will move forwards and backwards. 
+	void			WASDMovement			();								// Translates the camera along XYZ (Right, Up, Forward), which will act as the camera's axis.
+	void			FreeLookAround			();								// Receives information about the mouse's motion values and rotates the camera on it's axis.
+	void			RotateAroundReference	();								// Will rotate the camera around the point specified by the reference var.. Almost identical to FreeLookAround();
+	void			PanCamera				();								// Will translate the camera along XY (Right, Up). Moving the camera in the plane of the camera frame.
+	void			Zoom					();								// Will translate the camera along the Z (Forward) axis. The camera will move forwards and backwards. 
 
 public:
-	vec3 X;															// Right vector of the Camera. Will always remain axis aligned in this implementation.
-	vec3 Y;															// Up vector of the Camera.
-	vec3 Z;															// Forward Vector of the Camera. Represents where the camera is pointing to.
+	vec3 X;																	// Right vector of the Camera. Will always remain axis aligned in this implementation.
+	vec3 Y;																	// Up vector of the Camera.
+	vec3 Z;																	// Forward Vector of the Camera. Represents where the camera is pointing to.
 
-	vec3 position_origin;											// 
-	vec3 reference_origin;
-	vec3 position;													// Position of the Camera in the World Space.
-	vec3 reference;													// Point where the camera will look at and rotate around.
+	vec3 position_origin;													// 
+	vec3 reference_origin;													//
+	vec3 position;															// Position of the Camera in the World Space.
+	vec3 reference;															// Point where the camera will look at and rotate around.
 
-	float movement_speed;											// 
-	float rotation_speed;											// 
-	float zoom_speed;												// 
+	float movement_speed;													// 
+	float rotation_speed;													// 
+	float zoom_speed;														// 
 
 private:
 	mat4x4 ViewMatrix;

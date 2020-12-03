@@ -6,7 +6,7 @@
 
 #include "Color.h"
 #include "VarTypedefs.h"
-#include "MathStructures.h"
+#include "MathGeoTransform.h"
 
 enum class PRIMITIVE_TYPES
 {

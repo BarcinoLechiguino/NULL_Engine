@@ -4,6 +4,8 @@
 #include "Resource.h"
 #include "Color.h"
 
+typedef unsigned int uint;
+
 enum class TEXTURE_TYPE									// The enum values are set according to the values of Assimp's aiTextureType enum.
 {
 	NONE			= 0x0,								// 0x0 = aiTextureType_NONE			--> No texture. The value will be used for all material properties non-related to textures.

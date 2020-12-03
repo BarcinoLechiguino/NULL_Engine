@@ -4,7 +4,9 @@
 // ----------------------------------------------------
 
 #include "Assimp.h"
+
 #include "Log.h"
+#include "VarTypedefs.h"
 
 #include "Application.h"
 #include "M_FileSystem.h"

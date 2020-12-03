@@ -86,6 +86,7 @@
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\HardwareInfo.cpp" />
     <ClCompile Include="Source\Importer.cpp" />
+    <ClCompile Include="Source\ImportSettings.cpp" />
     <ClCompile Include="Source\I_Materials.cpp" />
     <ClCompile Include="Source\I_Meshes.cpp" />
     <ClCompile Include="Source\I_Scenes.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Component.h" />
     <ClInclude Include="Source\Configuration.h" />
+    <ClInclude Include="Source\ConfigurationSettings.h" />
     <ClInclude Include="Source\C_Camera.h" />
     <ClInclude Include="Source\C_Light.h" />
     <ClInclude Include="Source\C_Material.h" />
@@ -233,6 +235,7 @@
     <ClInclude Include="Source\Dependencies\PCG\include\pcg_basic.h" />
     <ClInclude Include="Source\Dependencies\PhysFS\include\physfs.h" />
     <ClInclude Include="Source\DevIL.h" />
+    <ClInclude Include="Source\FileSystemDefinitions.h" />
     <ClInclude Include="Source\E_About.h" />
     <ClInclude Include="Source\E_EngineConfiguration.h" />
     <ClInclude Include="Source\E_Console.h" />
@@ -246,12 +249,16 @@
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\HardwareInfo.h" />
     <ClInclude Include="Source\Importer.h" />
+    <ClInclude Include="Source\ImportSettings.h" />
     <ClInclude Include="Source\I_Materials.h" />
     <ClInclude Include="Source\I_Meshes.h" />
     <ClInclude Include="Source\I_Scenes.h" />
     <ClInclude Include="Source\I_Textures.h" />
     <ClInclude Include="Source\Log.h" />
-    <ClInclude Include="Source\MathStructures.h" />
+    <ClInclude Include="Source\Macros.h" />
+    <ClInclude Include="Source\MathGeoBoundingBox.h" />
+    <ClInclude Include="Source\MathGeoFrustum.h" />
+    <ClInclude Include="Source\MathGeoTransform.h" />
     <ClInclude Include="Source\MemoryManager.h" />
     <ClInclude Include="Source\M_Editor.h" />
     <ClInclude Include="Source\glmath.h" />
@@ -278,6 +285,8 @@
     <ClInclude Include="Source\R_Mesh.h" />
     <ClInclude Include="Source\R_Model.h" />
     <ClInclude Include="Source\T_Timer.h" />
+    <ClInclude Include="Source\UpdateStatus.h" />
+    <ClInclude Include="Source\VariableDefinitions.h" />
     <ClInclude Include="Source\VarTypedefs.h" />
   </ItemGroup>
   <ItemGroup>

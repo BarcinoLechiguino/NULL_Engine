@@ -9,8 +9,6 @@ class Primitive;
 class GameObject;
 class R_Texture;
 
-struct Transform;
-
 class M_Scene : public Module
 {
 public:

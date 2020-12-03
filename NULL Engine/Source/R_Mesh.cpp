@@ -1,5 +1,6 @@
 #include "OpenGL.h"
-#include "MathStructures.h"
+
+#include "VarTypedefs.h"
 
 #include "R_Mesh.h"
 

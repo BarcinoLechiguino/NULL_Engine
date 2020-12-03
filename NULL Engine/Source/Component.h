@@ -1,11 +1,9 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
-#include <string>
+typedef unsigned __int32 uint32;
 
-#include "Log.h"
-#include "VarTypedefs.h"
-
+class Configuration;
 class GameObject;
 
 enum class COMPONENT_TYPE
@@ -22,27 +20,31 @@ enum class COMPONENT_TYPE
 class Component
 {
 public:
-	Component(GameObject* owner, COMPONENT_TYPE type, const char* name, bool is_active = true);
+	Component(GameObject* owner, COMPONENT_TYPE type, bool is_active = true);
 	virtual ~Component();
 
-	virtual bool	Update();
-	virtual bool	CleanUp();
+	virtual bool Update				();
+	virtual bool CleanUp			();
+
+	virtual bool SaveConfiguration	(Configuration& configuration) const;
+	virtual bool LoadConfiguration	(Configuration& configuration);
 
 public:
-	const char*		GetName() const;
-	void			SetName(const char* new_name);
+	const char*		GetNameFromType		() const;										// Will return a string with the name of the component. Depends on COMPONENT_TYPE.
+	
+	uint32			GetID				() const;										// Will return the component's ID.
+	void			ResetID				();												// Will reset the component's ID. WARNING: All references to this comp. will be lost (serialization).
 
-	bool			IsActive() const;
-	void			SetIsActive(const bool& is_active);
+	bool			IsActive			() const;										// 
+	void			SetIsActive			(const bool& set_to);							// 
 
 public:
-	COMPONENT_TYPE	type;
-
-	GameObject* owner;
+	COMPONENT_TYPE	type;																// 
+	GameObject*		owner;																// 
 
 private:
-	const char* name;
-	bool		is_active;
+	uint32			id;																	// 
+	bool			is_active;															// 
 };
 
 #endif // !__COMPONENT_H__

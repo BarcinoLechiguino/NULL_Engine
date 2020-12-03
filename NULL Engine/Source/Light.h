@@ -2,7 +2,8 @@
 #define __LIGHT_H__
 
 #include "Color.h"
-#include "MathStructures.h"
+#include "MathGeoTransform.h"
+//#include "MathGeoLib/include/Math/float3.h"
 
 struct Light
 {

@@ -1,4 +1,4 @@
-#include "MathStructures.h"
+#include "MathGeoTransform.h"
 #include "Color.h"
 
 #include "Application.h"
@@ -146,7 +146,7 @@ void E_Inspector::DrawComponents(GameObject* selected_game_object)
 
 			if (component->type == COMPONENT_TYPE::NONE || component->type == COMPONENT_TYPE::UNKNOWN)
 			{
-				LOG("[WARNING] Selected Object %s has invalid component: %s", selected_game_object->GetName(), component->GetName());
+				LOG("[WARNING] Selected Object %s has invalid component: %s", selected_game_object->GetName(), component->GetNameFromType());
 			}
 		}
 	}
@@ -235,7 +235,7 @@ void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 			ImGui::Separator();
 
 			// --- FILE PATH ---
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_mesh->GetMeshPath().c_str());
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_mesh->GetMeshPath());
 
 			ImGui::Separator();
 
@@ -434,7 +434,7 @@ void E_Inspector::AddComponentCombo(GameObject* selected_game_object)
 void E_Inspector::DeleteComponentPopup(GameObject* selected_game_object)
 {
 	std::string title	=	"Delete ";																// Generating the specific string for the Popup title.
-	title				+=	component_to_delete->GetName();											// The string will be specific to the component to delete.
+	title				+=	component_to_delete->GetNameFromType();									// The string will be specific to the component to delete.
 	title				+=	" Component?";															// -------------------------------------------------------
 	
 	ImGui::OpenPopup(title.c_str());

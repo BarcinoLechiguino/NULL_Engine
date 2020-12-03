@@ -47,8 +47,6 @@ public:
 	int				GetMouseXWheel			() const;
 	int				GetMouseYWheel			() const;
 
-	const char*		GetDroppedFilePath		() const;
-
 private:
 	KEY_STATE*		keyboard;
 	KEY_STATE		mouse_buttons[MAX_MOUSE_BUTTONS];

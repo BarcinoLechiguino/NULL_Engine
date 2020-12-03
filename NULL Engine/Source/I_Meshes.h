@@ -11,6 +11,8 @@ struct aiMesh;
 
 class R_Mesh;
 
+typedef unsigned __int64 uint64;
+
 enum class HEADER_DATA
 {
 	VERTICES,

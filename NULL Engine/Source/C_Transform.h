@@ -1,22 +1,25 @@
 #ifndef __C_TRANSFORM_H__
 #define __C_TRANSFORM_H__
 
-#include "MathStructures.h"
-
+#include "MathGeoTransform.h"
 #include "Component.h"
 
+class Configuration;
 class GameObject;
 
 class C_Transform : public Component
 {
 public:
-	C_Transform(GameObject* owner, float4x4 matrix = float4x4::identity);
+	C_Transform(GameObject* owner);
 	~C_Transform();
 
-	bool		Update() override;
-	bool		CleanUp() override;
+	bool Update				() override;
+	bool CleanUp			() override;
 
-public:
+	bool SaveConfiguration	(Configuration& configuration) const override;
+	bool LoadConfiguration	(Configuration& configuration) override;
+
+public:																				// --- C_TRANSFORM METHODS ---
 	float4x4	GetLocalTransform		() const;									// Returns the local transform's 4x4 matrix. 
 	float4x4	GetWorldTransform		() const;									// Returns the world transform's 4x4 matrix.
 
