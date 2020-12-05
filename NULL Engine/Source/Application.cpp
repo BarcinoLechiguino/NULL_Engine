@@ -121,13 +121,13 @@ bool Application::Init()
 		frames_are_capped	= true;
 	}
 
-	engine_name = TITLE;														// Change Later?
-	organization = ORGANIZATION;
-	frame_cap = 60;
-	frames_are_capped = true;
+	engine_name			= TITLE;														// Change Later?
+	organization		= ORGANIZATION;
+	frame_cap			= 60;
+	frames_are_capped	= true;
 
-	Configuration config(buffer);
-	Configuration node = config.GetNode("EditorState");
+	ParsonNode config(buffer);
+	ParsonNode node = config.GetNode("EditorState");
 
 	std::vector<Module*>::iterator item = modules.begin();
 
@@ -561,8 +561,8 @@ void Application::LoadConfigurationNow(const char* file)
 
 void Application::SaveConfigurationNow(const char* file)
 {
-	Configuration config;
-	Configuration node = config.SetNode("EditorState");
+	ParsonNode config;
+	ParsonNode node = config.SetNode("EditorState");
 	
 	for (uint i = 0; i < modules.size(); ++i)
 	{

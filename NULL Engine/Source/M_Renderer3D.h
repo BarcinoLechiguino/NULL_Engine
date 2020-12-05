@@ -7,7 +7,7 @@
 #include "Module.h"
 #include "Light.h"
 
-class Configuration;
+class ParsonNode;
 
 class R_Mesh;
 class R_Material;
@@ -40,13 +40,13 @@ public:
 	M_Renderer3D(bool is_active = true);
 	~M_Renderer3D();
 
-	bool			Init				(Configuration& config) override;
+	bool			Init				(ParsonNode& config) override;
 	UPDATE_STATUS	PreUpdate			(float dt) override;
 	UPDATE_STATUS	PostUpdate			(float dt) override;
 	bool			CleanUp				() override;
 	
-	bool			LoadConfiguration	(Configuration& root) override;
-	bool			SaveConfiguration	(Configuration& root) const override;
+	bool			LoadConfiguration	(ParsonNode& root) override;
+	bool			SaveConfiguration	(ParsonNode& root) const override;
 
 public:
 	bool			InitOpenGL					();

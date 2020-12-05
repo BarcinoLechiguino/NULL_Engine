@@ -4,7 +4,7 @@
 #include "ImGui/include/imgui.h"
 #include "Module.h"
 
-class Configuration;
+class ParsonNode;
 
 class GameObject;
 
@@ -31,15 +31,15 @@ public:
 	M_Editor(bool is_active = true);
 	~M_Editor();
 
-	bool			Init				(Configuration& config) override;
+	bool			Init				(ParsonNode& config) override;
 	bool			Start				() override;
 	UPDATE_STATUS	PreUpdate			(float dt) override;
 	UPDATE_STATUS	Update				(float dt) override;
 	UPDATE_STATUS	PostUpdate			(float dt) override;
 	bool			CleanUp				() override;
 
-	bool			LoadConfiguration	(Configuration& root) override;
-	bool			SaveConfiguration	(Configuration& root) const override;
+	bool			LoadConfiguration	(ParsonNode& root) override;
+	bool			SaveConfiguration	(ParsonNode& root) const override;
 
 public:
 	bool			GetEvent							(SDL_Event* event) const;				// Will return false if there was no event to read.

@@ -34,7 +34,7 @@ bool Component::CleanUp()
 	return ret;
 }
 
-bool Component::SaveConfiguration(Configuration& configuration) const
+bool Component::SaveConfiguration(ParsonNode& configuration) const
 {
 	bool ret = true;
 
@@ -43,7 +43,7 @@ bool Component::SaveConfiguration(Configuration& configuration) const
 	return ret;
 }
 
-bool Component::LoadConfiguration(Configuration& configuration)
+bool Component::LoadConfiguration(ParsonNode& configuration)
 {
 	bool ret = true;
 

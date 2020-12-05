@@ -12,7 +12,7 @@ Module::~Module()
 
 }
 
-bool Module::Init(Configuration& config)
+bool Module::Init(ParsonNode& config)
 {
 	return true;
 }
@@ -42,12 +42,12 @@ bool Module::CleanUp()
 	return true;
 }
 
-bool Module::LoadConfiguration(Configuration& file)
+bool Module::LoadConfiguration(ParsonNode& file)
 {
 	return true;
 }
 
-bool Module::SaveConfiguration(Configuration& file) const
+bool Module::SaveConfiguration(ParsonNode& file) const
 {
 	return true;
 }

@@ -1,8 +1,8 @@
 #include "Profiler.h"																			// Libraries & Other 3rd Party Softwares
 #include "OpenGL.h"																				// -------------------------------------
 
-#include "Color.h"																				// Own independent macros and structures
-#include "Primitive.h"																			// -------------------------------------
+#include "Color.h"																				// Containers
+#include "Primitive.h"																			// ----------
 
 #include "Application.h"																		// Application and Modules
 #include "M_Window.h"																			// 
@@ -32,17 +32,16 @@
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
 
-M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), context()
+M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), 
+context					(),
+vsync					(VSYNC),
+draw_world_grid			(true),
+draw_world_axis			(true),
+show_wireframe			(false),
+draw_primitive_examples	(false),
+debug_texture_id		(0)
 {
-	vsync = VSYNC;
 
-	draw_world_grid		= true;
-	draw_world_axis		= true;
-	show_wireframe		= false;
-
-	draw_primitive_examples = false;
-
-	debug_texture_id	= 0;
 }
 
 // Destructor
@@ -52,7 +51,7 @@ M_Renderer3D::~M_Renderer3D()
 }
 
 // Called before render is available
-bool M_Renderer3D::Init(Configuration& config)
+bool M_Renderer3D::Init(ParsonNode& config)
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
@@ -147,14 +146,14 @@ bool M_Renderer3D::CleanUp()
 	return true;
 }
 
-bool M_Renderer3D::LoadConfiguration(Configuration& root)
+bool M_Renderer3D::LoadConfiguration(ParsonNode& root)
 {
 	bool ret = true;
 
 	return ret;
 }
 
-bool M_Renderer3D::SaveConfiguration(Configuration& root) const
+bool M_Renderer3D::SaveConfiguration(ParsonNode& root) const
 {
 	bool ret = true;
 

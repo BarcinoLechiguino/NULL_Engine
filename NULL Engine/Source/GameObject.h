@@ -8,7 +8,7 @@
 
 typedef unsigned __int32 uint32;
 
-class Configuration;
+class ParsonNode;
 class Component;
 class C_Transform;
 class C_Mesh;
@@ -28,8 +28,8 @@ public:
 	bool			Update				();
 	bool			CleanUp				();
 
-	bool			SaveConfiguration	(Configuration& configuration) const;
-	bool			LoadConfiguration	(Configuration& configuration);
+	bool			SaveConfiguration	(ParsonNode& configuration) const;
+	bool			LoadConfiguration	(ParsonNode& configuration);
 
 public:
 	void			FreeComponents						();

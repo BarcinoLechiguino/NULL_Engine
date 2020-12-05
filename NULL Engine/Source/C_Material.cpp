@@ -64,7 +64,7 @@ bool C_Material::CleanUp()
 	return ret;
 }
 
-bool C_Material::SaveConfiguration(Configuration& configuration) const
+bool C_Material::SaveConfiguration(ParsonNode& configuration) const
 {
 	bool ret = true;
 
@@ -73,7 +73,7 @@ bool C_Material::SaveConfiguration(Configuration& configuration) const
 	return ret;
 }
 
-bool C_Material::LoadConfiguration(Configuration& configuration)
+bool C_Material::LoadConfiguration(ParsonNode& configuration)
 {
 	bool ret = true;
 

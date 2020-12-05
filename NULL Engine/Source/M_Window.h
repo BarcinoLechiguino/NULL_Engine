@@ -3,7 +3,7 @@
 
 #include "Module.h"
 
-class Configuration;
+class ParsonNode;
 
 class M_Window : public Module
 {
@@ -11,11 +11,11 @@ public:
 	M_Window(bool is_active = true);
 	virtual ~M_Window();
 
-	bool Init				(Configuration& config) override;
+	bool Init				(ParsonNode& config) override;
 	bool CleanUp			() override;
 
-	bool LoadConfiguration	(Configuration& root) override;
-	bool SaveConfiguration	(Configuration& root) const override;
+	bool LoadConfiguration	(ParsonNode& root) override;
+	bool SaveConfiguration	(ParsonNode& root) const override;
 	
 public:
 	SDL_Window* GetWindow				() const;								// 

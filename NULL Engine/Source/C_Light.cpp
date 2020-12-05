@@ -27,3 +27,21 @@ bool C_Light::CleanUp()
 
 	return ret;
 }
+
+bool C_Light::SaveConfiguration(ParsonNode& configuration) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool C_Light::LoadConfiguration(ParsonNode& configuration)
+{
+	bool ret = true;
+
+
+
+	return ret;
+}

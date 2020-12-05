@@ -23,7 +23,7 @@ using namespace Importer::Materials;																	// Not a good thing to do b
 
 void Importer::Materials::Import(const char* path, const aiMaterial* ai_material, R_Material* r_material, R_Texture* r_texture)		// R_Texture* TMP until the Resource Manager is in place.
 {
-	std::string dir_path	= std::string(ASSET_TEXTURES_PATH) + App->file_system->GetLastDirectory(path);				// Dirty setting of the assets path.
+	std::string dir_path	= std::string(ASSETS_TEXTURES_PATH) + App->file_system->GetLastDirectory(path);				// Dirty setting of the assets path.
 	std::string file		= "";
 	std::string full_path	= "";
 	

@@ -4,7 +4,7 @@
 #include "Module.h"
 #include "glmath.h"
 
-class Configuration;
+class ParsonNode;
 
 class M_Camera3D : public Module
 {
@@ -12,13 +12,13 @@ public:
 	M_Camera3D(bool is_active = true);
 	~M_Camera3D();
 
-	bool			Init				(Configuration& root) override;
+	bool			Init				(ParsonNode& root) override;
 	bool			Start				() override;
 	UPDATE_STATUS	Update				(float dt) override;
 	bool			CleanUp				() override;
 
-	bool			LoadConfiguration	(Configuration& root) override;
-	bool			SaveConfiguration	(Configuration& root) const override;
+	bool			LoadConfiguration	(ParsonNode& root) override;
+	bool			SaveConfiguration	(ParsonNode& root) const override;
 
 public:
 	void			PointAt					(const vec3 &position, const vec3 &reference, bool RotateAroundReference = false);

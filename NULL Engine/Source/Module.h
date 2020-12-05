@@ -15,7 +15,7 @@
 
 #include "Globals.h"																// TMP. Delete later
 
-class Configuration;
+class ParsonNode;
 
 #define MAX_MODULE_NAME_LENGTH 25
 
@@ -25,15 +25,15 @@ public:
 	Module(const char* name, bool is_active = true);
 	virtual ~Module();
 
-	virtual bool			Init				(Configuration& config);			// Called immediately after the constructor.
+	virtual bool			Init				(ParsonNode& config);			// Called immediately after the constructor.
 	virtual bool			Start				();									// Called before the first frame.
 	virtual UPDATE_STATUS	PreUpdate			(float dt);							// Called every frame.
 	virtual UPDATE_STATUS	Update				(float dt);							// Called every frame.
 	virtual UPDATE_STATUS	PostUpdate			(float dt);							// Called every frame.
 	virtual bool			CleanUp				();									// Called after the last frame.
 
-	virtual bool			SaveConfiguration	(Configuration& root) const;		// Will save the current configuration of the calling module in a JSON file.
-	virtual bool			LoadConfiguration	(Configuration& root);				// Will load the configuration of the calling module from a JSON file.
+	virtual bool			SaveConfiguration	(ParsonNode& root) const;		// Will save the current configuration of the calling module in a JSON file.
+	virtual bool			LoadConfiguration	(ParsonNode& root);				// Will load the configuration of the calling module from a JSON file.
 
 public:
 	bool					IsActive			() const;

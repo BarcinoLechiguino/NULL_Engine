@@ -49,7 +49,7 @@ bool C_Transform::CleanUp()
 	return ret;
 }
 
-bool C_Transform::SaveConfiguration(Configuration& configuration) const
+bool C_Transform::SaveConfiguration(ParsonNode& configuration) const
 {
 	bool ret = true;
 
@@ -58,7 +58,7 @@ bool C_Transform::SaveConfiguration(Configuration& configuration) const
 	return ret;
 }
 
-bool C_Transform::LoadConfiguration(Configuration& configuration)
+bool C_Transform::LoadConfiguration(ParsonNode& configuration)
 {
 	bool ret = true;
 

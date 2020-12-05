@@ -38,7 +38,7 @@ M_Input::~M_Input()
 }
 
 // Called before render is available
-bool M_Input::Init(Configuration& config)
+bool M_Input::Init(ParsonNode& config)
 {
 	LOG("Init SDL input event system");
 	bool ret = true;
@@ -212,14 +212,14 @@ bool M_Input::CleanUp()
 	return true;
 }
 
-bool M_Input::LoadConfiguration(Configuration& root)
+bool M_Input::LoadConfiguration(ParsonNode& root)
 {
 	bool ret = true;
 
 	return ret;
 }
 
-bool M_Input::SaveConfiguration(Configuration& root) const
+bool M_Input::SaveConfiguration(ParsonNode& root) const
 {
 	bool ret = true;
 

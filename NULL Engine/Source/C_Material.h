@@ -7,7 +7,7 @@
 
 #include "Component.h"
 
-class Configuration;
+class ParsonNode;
 class R_Material;
 class R_Texture;
 class GameObject;
@@ -36,8 +36,8 @@ public:
 	bool Update				() override;
 	bool CleanUp			() override;
 
-	bool SaveConfiguration	(Configuration& configuration) const override;
-	bool LoadConfiguration	(Configuration& configuration) override;
+	bool SaveConfiguration	(ParsonNode& configuration) const override;
+	bool LoadConfiguration	(ParsonNode& configuration) override;
 
 public:																						// --- GET/SET RESOURCES
 	R_Material*		GetMaterial				() const;

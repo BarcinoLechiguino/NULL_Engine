@@ -3,8 +3,9 @@
 
 // File Directories ---------------------------------
 #define ASSETS_PATH				"Assets/"
-#define ASSET_MODELS_PATH		"Assets/Models/"
-#define ASSET_TEXTURES_PATH		"Assets/Textures/"
+#define ASSETS_MODELS_PATH		"Assets/Models/"
+#define ASSETS_SCENES_PATH		"Assets/Scenes/"
+#define ASSETS_TEXTURES_PATH	"Assets/Textures/"
 
 #define LIBRARY_PATH			"Library/"
 #define ANIMATIONS_PATH			"Library/Animations/"
@@ -21,7 +22,7 @@
 // File Extensions ----------------------------------
 #define MESH_EXTENSION			".nemesh"
 #define MATERIAL_EXTENSION		".nemat"
-#define TEXTURE_EXTENSION		".netex"
 #define SCENE_EXTENSION			".nescene"
+#define TEXTURE_EXTENSION		".netex"
 
 #endif // !__FILE_SYSTEM_DEFINITIONS_H__

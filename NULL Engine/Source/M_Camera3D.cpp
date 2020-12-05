@@ -33,7 +33,7 @@ M_Camera3D::~M_Camera3D()
 {}
 
 // -----------------------------------------------------------------
-bool M_Camera3D::Init(Configuration& root)
+bool M_Camera3D::Init(ParsonNode& root)
 {
 	//Position.x = root.GetNumber("X");
 	//Position.y = root.GetNumber("Y");
@@ -60,7 +60,7 @@ bool M_Camera3D::CleanUp()
 }
 
 // -----------------------------------------------------------------
-bool M_Camera3D::LoadConfiguration(Configuration& root)
+bool M_Camera3D::LoadConfiguration(ParsonNode& root)
 {
 	bool ret = true;
 
@@ -71,7 +71,7 @@ bool M_Camera3D::LoadConfiguration(Configuration& root)
 	return ret;
 }
 
-bool M_Camera3D::SaveConfiguration(Configuration& root) const
+bool M_Camera3D::SaveConfiguration(ParsonNode& root) const
 {
 	bool ret = true;
 

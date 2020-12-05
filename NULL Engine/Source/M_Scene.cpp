@@ -38,7 +38,7 @@ M_Scene::~M_Scene()
 
 }
 
-bool M_Scene::Init(Configuration& config)
+bool M_Scene::Init(ParsonNode& config)
 {
 	return true;
 }
@@ -128,21 +128,51 @@ bool M_Scene::CleanUp()
 	return true;
 }
 
-bool M_Scene::LoadConfiguration(Configuration& root)
+bool M_Scene::SaveConfiguration(ParsonNode& root) const
 {
 	bool ret = true;
+
+	//SaveScene();
 
 	return ret;
 }
 
-bool M_Scene::SaveConfiguration(Configuration& root) const
+bool M_Scene::LoadConfiguration(ParsonNode& root)
 {
 	bool ret = true;
+
+	//LoadScene();
 
 	return ret;
 }
 
 // -------------- SCENE METHODS --------------
+bool M_Scene::SaveScene(ParsonNode& configuration) const
+{
+	bool ret = true;
+
+	for (uint i = 0; i < game_objects.size(); ++i)
+	{
+		game_objects[i]->SaveConfiguration(configuration);
+	}
+
+	return ret;
+}
+
+bool M_Scene::LoadScene(ParsonNode& configuration)
+{
+	bool ret = true;
+
+	// DISCARD CURRENT HERE?
+
+	for (uint i = 0; game_objects.size(); ++i)
+	{
+		game_objects[i]->LoadConfiguration(configuration);
+	}
+
+	return ret;
+}
+
 GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 {	
 	std::string complete_name = name;

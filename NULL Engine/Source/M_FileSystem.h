@@ -4,7 +4,7 @@
 #include <vector>
 #include "Module.h"
 
-class Configuration;
+class ParsonNode;
 struct PathNode;
 
 enum class PHYSFS_RESULT																	// Every PhysFS method that returns 1 or 0 upon success/failure will be cast to this type.
@@ -19,11 +19,11 @@ public:
 	M_FileSystem(bool is_active = true);
 	~M_FileSystem();
 
-	bool Init				(Configuration& config) override;
+	bool Init				(ParsonNode& config) override;
 	bool CleanUp			() override;
 
-	bool SaveConfiguration	(Configuration& root) const override;								// Necessary?
-	bool LoadConfiguration	(Configuration& root) override;										// ----------
+	bool SaveConfiguration	(ParsonNode& root) const override;								// Necessary?
+	bool LoadConfiguration	(ParsonNode& root) override;										// ----------
 
 public:
 	// Utility functions

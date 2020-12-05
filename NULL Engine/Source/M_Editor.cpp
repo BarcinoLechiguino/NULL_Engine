@@ -65,7 +65,7 @@ M_Editor::~M_Editor()
 
 }
 
-bool M_Editor::Init(Configuration& config)
+bool M_Editor::Init(ParsonNode& config)
 {
 	bool ret = true;
 
@@ -153,14 +153,14 @@ bool M_Editor::CleanUp()
 	return true;
 }
 
-bool M_Editor::LoadConfiguration(Configuration& root)
+bool M_Editor::LoadConfiguration(ParsonNode& root)
 {
 	bool ret = true;
 
 	return ret;
 }
 
-bool M_Editor::SaveConfiguration(Configuration& root) const
+bool M_Editor::SaveConfiguration(ParsonNode& root) const
 {
 	bool ret = true;
 

@@ -103,7 +103,7 @@ private:
 	std::string				organization;								// String that will store the name of the organization behind the development of this application.
 
 	// --- LOAD & SAVE
-	Configuration			config;										// Interface class that will be used to modify .json files with the parson library.
+	ParsonNode			config;										// Interface class that will be used to modify .json files with the parson library.
 	
 	bool					want_to_load;								// Will keep track of whether or not the user wants to load a configuration.
 	bool					want_to_save;								// Will keep track of whether or not the user wants to save a configuration.

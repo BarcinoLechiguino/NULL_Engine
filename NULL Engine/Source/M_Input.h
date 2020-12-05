@@ -3,7 +3,7 @@
 
 #include "Module.h"
 
-class Configuration;
+class ParsonNode;
 typedef unsigned int uint;
 
 enum class KEY_STATE
@@ -23,14 +23,14 @@ public:
 	M_Input(bool is_active = true);
 	~M_Input();
 
-	bool			Init					(Configuration& config) override;
+	bool			Init					(ParsonNode& config) override;
 	UPDATE_STATUS	PreUpdate				(float dt) override;
 	UPDATE_STATUS	Update					(float dt) override;
 	UPDATE_STATUS	PostUpdate				(float dt) override;
 	bool			CleanUp					() override;
 
-	bool			LoadConfiguration		(Configuration& root) override;
-	bool			SaveConfiguration		(Configuration& root) const override;
+	bool			LoadConfiguration		(ParsonNode& root) override;
+	bool			SaveConfiguration		(ParsonNode& root) const override;
 
 public:
 	KEY_STATE		GetKey					(int id) const;

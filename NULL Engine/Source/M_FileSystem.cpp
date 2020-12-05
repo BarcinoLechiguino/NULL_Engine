@@ -34,7 +34,7 @@ M_FileSystem::~M_FileSystem()
 	PHYSFS_deinit();																		// Deinitializes the PhysFS library. Cleans everything related to the library.
 }
 
-bool M_FileSystem::Init(Configuration& config)
+bool M_FileSystem::Init(ParsonNode& config)
 {
 	LOG("Loading File System");
 	
@@ -64,14 +64,14 @@ bool M_FileSystem::CleanUp()
 	return ret;
 }
 
-bool M_FileSystem::LoadConfiguration(Configuration& root)
+bool M_FileSystem::LoadConfiguration(ParsonNode& root)
 {
 	bool ret = true;
 
 	return true;
 }
 
-bool M_FileSystem::SaveConfiguration(Configuration& root) const
+bool M_FileSystem::SaveConfiguration(ParsonNode& root) const
 {
 	bool ret = true;
 

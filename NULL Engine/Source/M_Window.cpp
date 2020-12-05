@@ -23,7 +23,7 @@ M_Window::~M_Window()
 }
 
 // Called before render is available
-bool M_Window::Init(Configuration& config)
+bool M_Window::Init(ParsonNode& config)
 {
 	LOG("Init SDL window & surface");
 	bool ret = true;
@@ -102,14 +102,14 @@ bool M_Window::CleanUp()
 	return true;
 }
 
-bool M_Window::LoadConfiguration(Configuration& root)
+bool M_Window::LoadConfiguration(ParsonNode& root)
 {
 	bool ret = true;
 
 	return ret;
 }
 
-bool M_Window::SaveConfiguration(Configuration& root) const
+bool M_Window::SaveConfiguration(ParsonNode& root) const
 {
 	bool ret = true;
 

@@ -3,7 +3,7 @@
 
 typedef unsigned __int32 uint32;
 
-class Configuration;
+class ParsonNode;
 class GameObject;
 
 enum class COMPONENT_TYPE
@@ -26,8 +26,8 @@ public:
 	virtual bool Update				();
 	virtual bool CleanUp			();
 
-	virtual bool SaveConfiguration	(Configuration& configuration) const;
-	virtual bool LoadConfiguration	(Configuration& configuration);
+	virtual bool SaveConfiguration	(ParsonNode& configuration) const;
+	virtual bool LoadConfiguration	(ParsonNode& configuration);
 
 public:
 	const char*		GetNameFromType		() const;										// Will return a string with the name of the component. Depends on COMPONENT_TYPE.

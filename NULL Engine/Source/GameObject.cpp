@@ -77,20 +77,38 @@ bool GameObject::CleanUp()
 	return ret;
 }
 
-bool GameObject::SaveConfiguration(Configuration& configuration) const
+bool GameObject::SaveConfiguration(ParsonNode& configuration) const
 {
 	bool ret = true;
 
+	// --- NAME
+	// --- IS_ACTIVE
+	// --- IS_STATIC
+	// --- AABB
+	// --- UUID
 
+	for (uint i = 0; i < components.size(); ++i)
+	{
+		components[i]->SaveConfiguration(configuration);
+	}
 
 	return ret;
 }
 
-bool GameObject::LoadConfiguration(Configuration& configuration)
+bool GameObject::LoadConfiguration(ParsonNode& configuration)
 {
 	bool ret = true;
 
+	// --- NAME
+	// --- IS_ACTIVE
+	// --- IS_STATIC
+	// --- AABB
+	// --- UUID
 
+	for (uint i = 0; i < components.size(); ++i)
+	{
+		components[i]->LoadConfiguration(configuration);
+	}
 
 	return ret;
 }
