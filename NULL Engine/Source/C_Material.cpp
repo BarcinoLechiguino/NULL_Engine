@@ -1,8 +1,9 @@
 #include "VarTypedefs.h"
 #include "Macros.h"
 
+#include "JSONParser.h"
+
 #include "Color.h"
-#include "Configuration.h"
 
 #include "R_Material.h"
 #include "R_Texture.h"

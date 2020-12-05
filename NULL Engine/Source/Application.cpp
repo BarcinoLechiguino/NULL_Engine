@@ -2,6 +2,8 @@
 #include <algorithm>			//for_each()
 #include <memory>				//Smart pointers
 
+#include "JSONParser.h"
+
 #include "Module.h"
 #include "M_Window.h"
 #include "M_Input.h"
@@ -10,7 +12,6 @@
 #include "M_Editor.h"
 #include "M_Camera3D.h"
 #include "M_FileSystem.h"
-#include "Configuration.h"
 
 #include "Application.h"
 
@@ -398,11 +399,89 @@ void Application::FinishUpdate()
 }
 // ---------------------------------------------
 
+// --- SAVE & LOAD ENGINE CONFIGURATION ---
+void Application::SaveConfiguration(const char* file)
+{
+	want_to_save = true;
+	save_config_file = ("Configuration/configuration.json");
+}
+
+void Application::LoadConfiguration(const char* file)
+{
+	want_to_load = true;
+
+	if (user_has_saved)
+	{
+		load_config_file = ("Configuration.json");
+	}
+	else
+	{
+		load_config_file = ("DefaultConfiguration.json");
+	}
+}
+
+void Application::SaveConfigurationNow(const char* file)
+{
+	ParsonNode config;
+	ParsonNode node = config.SetNode("EditorState");
+
+	for (uint i = 0; i < modules.size(); ++i)
+	{
+		modules[i]->SaveConfiguration(config.SetNode(modules[i]->GetName()));
+	}
+
+	char* buffer = nullptr;
+	uint size = config.SerializeToBuffer(&buffer);
+
+	file_system->Save(file, buffer, size);
+
+	RELEASE_ARRAY(buffer);
+}
+
+void Application::LoadConfigurationNow(const char* file)
+{
+	for (uint i = 0; i < modules.size(); ++i)
+	{
+		//JSON_Object* obj = 
+
+		//modules[i]->LoadConfiguration(Configuration());
+	}
+}
+
+// --- APPLICATION & ENGINE STATE ---
 void Application::AddModule(Module* module)
 {
 	modules.push_back(module);
 }
 
+const char* Application::GetEngineName() const
+{
+	return engine_name.c_str();
+}
+
+const char* Application::GetOrganizationName() const
+{
+	return organization.c_str();
+}
+
+void Application::SetEngineName(const char* name)
+{
+	engine_name = name;
+
+	App->window->SetTitle(engine_name.c_str());
+}
+
+void Application::SetOrganizationName(const char* name)
+{
+	organization = name;
+}
+
+void Application::EngineShortcuts()
+{
+
+}
+
+// --- FRAMERATE METHODS ---
 float Application::GetDt() const
 {
 	if (!pause)
@@ -430,36 +509,15 @@ void Application::SetFrameCap(uint new_cap)
 	frame_cap = new_cap;
 }
 
-const char* Application::GetEngineName() const
-{
-	return engine_name.c_str();
-}
-
-void Application::SetEngineName(const char* name)
-{
-	engine_name = name;
-
-	App->window->SetTitle(engine_name.c_str());
-}
-
-const char* Application::GetOrganizationName() const
-{
-	return organization.c_str();
-}
-
-void Application::SetOrganizationName(const char* name)
-{
-	organization = name;
-}
-
+// --- EDITOR METHODS ---
 void Application::AddEditorLog(const char* log)
 {
 	if (!quit && editor != nullptr)													// Second condition is not really necessary. It's more of a reminder to keep it in mind.
 	{
-		std::string full_log = log;
+		std::string full_log = App->file_system->NormalizePath(log);				// Switching all "\\" for "/". They need to be changed due to "\" being a Windows-specific thing.
 
-		uint log_start = full_log.find_last_of("\\") + 1;							// Gets the position of the last "\" in the log string.
-		uint log_end = full_log.size();												// The last position of the log will be equal to the size of it.
+		uint log_start	= full_log.find_last_of("/") + 1;							// Gets the position of the last "\" in the log string.
+		uint log_end	= full_log.size();											// The last position of the log will be equal to the size of it.
 
 		std::string short_log = full_log.substr(log_start, log_end);				// Returns the string that is within the given positions.
 
@@ -470,7 +528,18 @@ void Application::AddEditorLog(const char* log)
 	}
 }
 
-void Application::LogHardwareInfo()
+void Application::RequestBrowser(const char* link)
+{
+	ShellExecuteA(NULL, "open", link, NULL, "", 0);
+}
+
+void Application::UpdateFrameData(int frames, int ms)
+{
+	editor->UpdateFrameData(frames, ms);
+}
+
+
+void Application::LogHardwareInfo() const
 {
 	LOG(" ------------- CPU INFO ------------- ");
 	LOG("CPU Cores: %d",						hardware_info.CPU.cpu_count);
@@ -514,65 +583,7 @@ void Application::LogHardwareInfo()
 	}*/
 }
 
-void Application::RequestBrowser(const char* link)
-{
-	ShellExecuteA(NULL, "open", link, NULL, "", 0);
-}
-
-void Application::UpdateFrameData(int frames, int ms)
-{
-	editor->UpdateFrameData(frames, ms);
-}
-
 HardwareInfo Application::GetHardwareInfo() const
 {
 	return hardware_info;
-}
-
-void Application::LoadConfiguration(const char* file)
-{
-	want_to_load = true;
-
-	if (user_has_saved)
-	{
-		load_config_file = ("Configuration.json");
-	}
-	else
-	{
-		load_config_file = ("DefaultConfiguration.json");
-	}
-}
-
-void Application::SaveConfiguration(const char* file)
-{
-	want_to_save = true;
-	save_config_file = ("Configuration/configuration.json");
-}
-
-void Application::LoadConfigurationNow(const char* file)
-{
-	for (uint i = 0; i < modules.size(); ++i)
-	{
-		//JSON_Object* obj = 
-
-		//modules[i]->LoadConfiguration(Configuration());
-	}
-}
-
-void Application::SaveConfigurationNow(const char* file)
-{
-	ParsonNode config;
-	ParsonNode node = config.SetNode("EditorState");
-	
-	for (uint i = 0; i < modules.size(); ++i)
-	{
-		modules[i]->SaveConfiguration(config.SetNode(modules[i]->GetName()));
-	}
-
-	char* buffer = nullptr;
-	uint size = config.SerializeToBuffer(&buffer);
-
-	file_system->Save(file, buffer, size);
-
-	RELEASE_ARRAY(buffer);
 }

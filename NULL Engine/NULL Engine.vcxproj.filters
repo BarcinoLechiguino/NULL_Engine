@@ -115,14 +115,14 @@
     <Filter Include="Source\6_Containers\Color">
       <UniqueIdentifier>{035f876d-323b-42ef-a97f-8702ac5a3b15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\6_Containers\Configuration">
-      <UniqueIdentifier>{3aaf0e0f-c001-4818-9168-7d1beb976c6c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\6_Containers\FileSystem">
       <UniqueIdentifier>{e638518c-d6dd-48d1-a4c4-68f23131e7e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\6_Containers\ImportSettings">
       <UniqueIdentifier>{57aa68b1-2384-413d-8b44-b82b932557b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\7_Tools\Parsers">
+      <UniqueIdentifier>{3aaf0e0f-c001-4818-9168-7d1beb976c6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -426,14 +426,14 @@
     <ClCompile Include="Source\Color.cpp">
       <Filter>Source\6_Containers\Color</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Configuration.cpp">
-      <Filter>Source\6_Containers\Configuration</Filter>
-    </ClCompile>
     <ClCompile Include="Source\PathNode.cpp">
       <Filter>Source\6_Containers\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="Source\ImportSettings.cpp">
       <Filter>Source\6_Containers\ImportSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\JSONParser.cpp">
+      <Filter>Source\7_Tools\Parsers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -917,9 +917,6 @@
     <ClInclude Include="Source\Color.h">
       <Filter>Source\6_Containers\Color</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Configuration.h">
-      <Filter>Source\6_Containers\Configuration</Filter>
-    </ClInclude>
     <ClInclude Include="Source\PathNode.h">
       <Filter>Source\6_Containers\FileSystem</Filter>
     </ClInclude>
@@ -952,6 +949,9 @@
     </ClInclude>
     <ClInclude Include="Source\ImportSettings.h">
       <Filter>Source\6_Containers\ImportSettings</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\JSONParser.h">
+      <Filter>Source\7_Tools\Parsers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

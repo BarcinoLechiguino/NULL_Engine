@@ -1,5 +1,5 @@
-#ifndef __CONFIGURATION_H__
-#define __CONFIGURATION_H__
+#ifndef __JSON_PARSER_H__
+#define __JSON_PARSER_H__
 
 #include "parson/include/parson.h"
 
@@ -52,7 +52,7 @@ class ParsonArray
 {
 public:
 	ParsonArray();
-	ParsonArray(JSON_Array* json_array);
+	ParsonArray(JSON_Array* json_array, const char* name = "Array");
 
 public:																										// --- GETTERS, SETTERS & UTILITIES
 	double					GetNumber				(const uint& index) const;								//
@@ -63,12 +63,12 @@ public:																										// --- GETTERS, SETTERS & UTILITIES
 	void					GetFloat4				(const uint& index, math::float4& vec4) const;
 	ParsonNode				GetNode					(const uint& index) const;								//
 
-	void					SetNumber				(const char* name, const double& number);				//
-	void					SetString				(const char* name, const char* string);					//
-	void					SetBool					(const char* name, const bool& value);					//
-	void					SetColor				(const char* name, const Color& color);
-	void					SetFloat3				(const char* name, const math::float3& vec3);
-	void					SetFloat4				(const char* name, const math::float4& vec4);
+	void					SetNumber				(const double& number);									//
+	void					SetString				(const char* string);									//
+	void					SetBool					(const bool& value);									//
+	void					SetColor				(const Color& color);
+	void					SetFloat3				(const math::float3& vec3);
+	void					SetFloat4				(const math::float4& vec4);
 	ParsonNode				SetNode					(const char* name);										//
 
 public:
@@ -79,5 +79,7 @@ public:
 public:
 	JSON_Array*			json_array;																			//
 	uint				size;																				//
+
+	const char*			name;
 };
-#endif // !__CONFIGURATION_H__
+#endif // !__JSON_PARSER_H__

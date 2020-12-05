@@ -14,7 +14,6 @@
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Component.cpp" />
-    <ClCompile Include="Source\Configuration.cpp" />
     <ClCompile Include="Source\C_Camera.cpp" />
     <ClCompile Include="Source\C_Light.cpp" />
     <ClCompile Include="Source\C_Material.cpp" />
@@ -91,6 +90,7 @@
     <ClCompile Include="Source\I_Meshes.cpp" />
     <ClCompile Include="Source\I_Scenes.cpp" />
     <ClCompile Include="Source\I_Textures.cpp" />
+    <ClCompile Include="Source\JSONParser.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\M_Editor.cpp" />
     <ClCompile Include="Source\glmath.cpp" />
@@ -120,7 +120,6 @@
     <ClInclude Include="Source\Assimp.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Component.h" />
-    <ClInclude Include="Source\Configuration.h" />
     <ClInclude Include="Source\ConfigurationSettings.h" />
     <ClInclude Include="Source\C_Camera.h" />
     <ClInclude Include="Source\C_Light.h" />
@@ -254,6 +253,7 @@
     <ClInclude Include="Source\I_Meshes.h" />
     <ClInclude Include="Source\I_Scenes.h" />
     <ClInclude Include="Source\I_Textures.h" />
+    <ClInclude Include="Source\JSONParser.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\Macros.h" />
     <ClInclude Include="Source\MathGeoBoundingBox.h" />

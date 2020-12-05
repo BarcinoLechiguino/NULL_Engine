@@ -3,7 +3,7 @@
 #include "Macros.h"
 #include "VarTypedefs.h"
 
-#include "Configuration.h"
+#include "JSONParser.h"
 
 #include "Component.h"
 #include "C_Transform.h"
