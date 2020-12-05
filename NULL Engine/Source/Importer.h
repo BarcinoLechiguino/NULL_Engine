@@ -3,10 +3,10 @@
 
 namespace Importer
 {
-	void InitializeImporters			();
-	void ShutDownImporters				();
+	void InitializeImporters	();
+	void ShutDownImporters		();
 
-	bool ImportFile						(const char* path);
+	bool ImportFile				(const char* path);
 
 	namespace Utilities
 	{

@@ -2,7 +2,7 @@
 #define __RANDOM_H__
 
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 namespace Random
 {

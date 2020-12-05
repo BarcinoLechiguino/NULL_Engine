@@ -5,7 +5,7 @@
 #include <cmath>
 
 #include "Color.h"
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 #include "MathGeoTransform.h"
 
 enum class PRIMITIVE_TYPES

@@ -1,5 +1,7 @@
 #include "Profiler.h"
 #include "MathGeoTransform.h"
+
+#include "JSONParser.h"
 #include "glmath.h"																// WAITING UNTIL FRUSTUM TO DELETE IT
 
 #include "Application.h"														// ATTENTION: Globals.h already included in Module.h
@@ -147,19 +149,37 @@ bool M_Scene::LoadConfiguration(ParsonNode& root)
 }
 
 // -------------- SCENE METHODS --------------
-bool M_Scene::SaveScene(ParsonNode& configuration) const
+bool M_Scene::SaveScene() const
 {
 	bool ret = true;
 
+	ParsonNode root_node		= ParsonNode();
+	ParsonArray object_array	= root_node.SetArray("Game Objects");
+
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
-		game_objects[i]->SaveConfiguration(configuration);
+		ParsonNode array_node = object_array.SetNode(game_objects[i]->GetName());
+		game_objects[i]->SaveState(array_node);
+	}
+
+	char* buffer		= nullptr;
+	uint size			= root_node.SerializeToBuffer(&buffer);
+	std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(root_object->GetName()) + std::string(".json");
+
+	uint written = App->file_system->Save(path.c_str(), buffer, size);
+	if (written > 0)
+	{
+		LOG("[SCENE] Successfully saved the current scene! Path: %s", path.c_str());
+	}
+	else
+	{
+		LOG("[ERROR] Could not save the current scene! Error: FileSystem could not write any data!");
 	}
 
 	return ret;
 }
 
-bool M_Scene::LoadScene(ParsonNode& configuration)
+bool M_Scene::LoadScene(ParsonNode& root)
 {
 	bool ret = true;
 
@@ -167,7 +187,7 @@ bool M_Scene::LoadScene(ParsonNode& configuration)
 
 	for (uint i = 0; game_objects.size(); ++i)
 	{
-		game_objects[i]->LoadConfiguration(configuration);
+		game_objects[i]->LoadState(root);
 	}
 
 	return ret;

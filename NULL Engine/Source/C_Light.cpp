@@ -28,7 +28,7 @@ bool C_Light::CleanUp()
 	return ret;
 }
 
-bool C_Light::SaveConfiguration(ParsonNode& configuration) const
+bool C_Light::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
@@ -37,7 +37,7 @@ bool C_Light::SaveConfiguration(ParsonNode& configuration) const
 	return ret;
 }
 
-bool C_Light::LoadConfiguration(ParsonNode& configuration)
+bool C_Light::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 

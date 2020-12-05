@@ -3,7 +3,7 @@
 // Employed by M_FileSystem.
 // ----------------------------------------------------
 
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "PathNode.h"
 

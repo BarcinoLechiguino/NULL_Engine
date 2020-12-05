@@ -1,6 +1,6 @@
 #include "Log.h"
 #include "Random.h"
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "GameObject.h"
 
@@ -34,7 +34,7 @@ bool Component::CleanUp()
 	return ret;
 }
 
-bool Component::SaveConfiguration(ParsonNode& configuration) const
+bool Component::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
@@ -43,7 +43,7 @@ bool Component::SaveConfiguration(ParsonNode& configuration) const
 	return ret;
 }
 
-bool Component::LoadConfiguration(ParsonNode& configuration)
+bool Component::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 

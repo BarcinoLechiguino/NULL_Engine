@@ -106,6 +106,8 @@
     <ClCompile Include="Source\PathNode.cpp" />
     <ClCompile Include="Source\Random.cpp" />
     <ClCompile Include="Source\R_Texture.cpp" />
+    <ClCompile Include="Source\SoftwareInfo.cpp" />
+    <ClCompile Include="Source\SystemInfo.cpp" />
     <ClCompile Include="Source\Time.cpp" />
     <ClCompile Include="Source\T_PerfectTimer.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
@@ -277,6 +279,8 @@
     <ClInclude Include="Source\Profiler.h" />
     <ClInclude Include="Source\Random.h" />
     <ClInclude Include="Source\R_Texture.h" />
+    <ClInclude Include="Source\SoftwareInfo.h" />
+    <ClInclude Include="Source\SystemInfo.h" />
     <ClInclude Include="Source\Time.h" />
     <ClInclude Include="Source\T_PerfectTimer.h" />
     <ClInclude Include="Source\Primitive.h" />
@@ -287,7 +291,7 @@
     <ClInclude Include="Source\T_Timer.h" />
     <ClInclude Include="Source\UpdateStatus.h" />
     <ClInclude Include="Source\VariableDefinitions.h" />
-    <ClInclude Include="Source\VarTypedefs.h" />
+    <ClInclude Include="Source\VariableTypedefs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Configuration\configuration.JSON" />

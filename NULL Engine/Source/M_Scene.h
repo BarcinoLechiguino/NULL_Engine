@@ -26,13 +26,14 @@ public:
 	bool			LoadConfiguration	(ParsonNode& root) override;
 
 public:
-	bool			SaveScene								(ParsonNode& configuration) const;							// 
+	bool			SaveScene								() const;														// 
 	bool			LoadScene								(ParsonNode& configuration);									// 
 
 	std::vector<GameObject*>* GetGameObjects				();
 	
 	GameObject*		CreateGameObject						(const char* name = nullptr, GameObject* parent = nullptr);		// 
 	void			DeleteGameObject						(GameObject* game_object, uint index = -1);						// 
+	
 																															// --- ROOT GAME OBJECT METHODS ---
 	GameObject*		GetRootGameObject						() const;														//
 	void			SetRootGameObject						(GameObject* game_object);										//

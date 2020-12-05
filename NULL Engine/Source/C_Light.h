@@ -15,8 +15,8 @@ public:
 	bool Update		() override;
 	bool CleanUp	() override;
 
-	bool SaveConfiguration(ParsonNode& configuration) const override;
-	bool LoadConfiguration(ParsonNode& configuration) override;
+	bool SaveState	(ParsonNode& root) const override;
+	bool LoadState	(ParsonNode& root) override;
 
 private:
 

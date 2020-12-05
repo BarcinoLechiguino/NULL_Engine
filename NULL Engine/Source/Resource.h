@@ -5,7 +5,6 @@
 #include <string>
 
 #include "Log.h"
-//#include "VarTypedefs.h"
 #include "ImportSettings.h"
 
 typedef unsigned __int32 uint32;
@@ -44,6 +43,8 @@ public:
 
 private:
 	uint32				id;															// UID for this Resource.
+
+	const char*			name;
 
 	std::string			assets_path;												// Path of the file in the Assets directory. Will be used to avoid making duplicates.
 	std::string			assets_file;												// File and extension string of the texture in the Assets directory.

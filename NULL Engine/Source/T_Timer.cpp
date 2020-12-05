@@ -5,10 +5,12 @@
 
 #include "SDL/include/SDL.h"
 
+#include "VariableTypedefs.h"
+
 #include "T_Timer.h"
 
 // ---------------------------------------------
-T_Timer::T_Timer() : running(false), started_at(0), stopped_at(0), clock(0, 0, 0)
+T_Timer::T_Timer() : running(false), started_at(0), stopped_at(0), clock(0, 0, 0.0f)
 {
 	Start();
 }

@@ -1,6 +1,6 @@
 #include "OpenGL.h"
 
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "R_Mesh.h"
 
@@ -8,12 +8,12 @@
 #define CHECKERS_HEIGHT 64
 
 R_Mesh::R_Mesh() : Resource(), 
-VBO(0),																										// Initializing the buffers.
-NBO(0), 																									// 
-TBO(0), 																									//
-IBO(0), 																									// -------------------------
-draw_vertex_normals(false), 
-draw_face_normals(false)
+VBO					(0),																								// Initializing the buffers.
+NBO					(0), 																								// 
+TBO					(0), 																								//
+IBO					(0), 																								// -------------------------
+draw_vertex_normals	(false), 
+draw_face_normals	(false)
 {
 
 }

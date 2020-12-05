@@ -1,9 +1,9 @@
-#include "Log.h"
-#include "Random.h"
+#include "VariableTypedefs.h"
 #include "Macros.h"
-#include "VarTypedefs.h"
+#include "Log.h"
 
 #include "JSONParser.h"
+#include "Random.h"
 
 #include "Component.h"
 #include "C_Transform.h"
@@ -25,6 +25,9 @@ to_delete		(false)
 {
 	//id			= Random::LCG::GetRandomUint();
 	transform	= (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
+
+	obb.SetNegativeInfinity();
+	aabb.SetNegativeInfinity();
 }
 
 GameObject::GameObject(std::string name, bool is_active, bool is_static) :
@@ -44,6 +47,9 @@ to_delete		(false)
 	}
 
 	transform = (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
+
+	obb.SetNegativeInfinity();
+	aabb.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()
@@ -77,25 +83,63 @@ bool GameObject::CleanUp()
 	return ret;
 }
 
-bool GameObject::SaveConfiguration(ParsonNode& configuration) const
+bool GameObject::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
+
+	root.SetNumber("UID", id);
+	(parent != nullptr) ? root.SetNumber("ParentUID", parent->id) : 0;
+	
+	root.SetString("Name", name.c_str());
+	root.SetBool("IsActive", is_active);
+	root.SetBool("IsStatic", is_static);
+	
+	// --- OBB ---
+	/*ParsonArray obb_array = root.SetArray("OBB");
+
+	math::vec* obb_points = new math::vec[8];
+	obb.GetCornerPoints(obb_points);
+
+	for (uint i = 0; i < 8; ++i)
+	{
+		obb_array.SetNumber(obb_points[i].x);
+		obb_array.SetNumber(obb_points[i].y);
+		obb_array.SetNumber(obb_points[i].z);
+	}
+
+	delete[] obb_points;
+
+	// --- AABB ---
+	ParsonArray aabb_array = root.SetArray("AABB");
+
+	math::vec* aabb_points = new math::vec[8];
+	aabb.GetCornerPoints(aabb_points);
+
+	for (uint i = 0; i < 8; ++i)
+	{
+		aabb_array.SetNumber(aabb_points[i].x);
+		aabb_array.SetNumber(aabb_points[i].y);
+		aabb_array.SetNumber(aabb_points[i].z);
+	}
+
+	delete[] aabb_points;*/
 
 	// --- NAME
 	// --- IS_ACTIVE
 	// --- IS_STATIC
+	// --- OBB
 	// --- AABB
 	// --- UUID
 
 	for (uint i = 0; i < components.size(); ++i)
 	{
-		components[i]->SaveConfiguration(configuration);
+		components[i]->SaveState(root);
 	}
 
 	return ret;
 }
 
-bool GameObject::LoadConfiguration(ParsonNode& configuration)
+bool GameObject::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 
@@ -107,7 +151,7 @@ bool GameObject::LoadConfiguration(ParsonNode& configuration)
 
 	for (uint i = 0; i < components.size(); ++i)
 	{
-		components[i]->LoadConfiguration(configuration);
+		components[i]->LoadState(root);
 	}
 
 	return ret;

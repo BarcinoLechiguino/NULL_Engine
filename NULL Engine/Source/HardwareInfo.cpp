@@ -8,7 +8,7 @@
 #include "OpenGL.h"
 #include "DevIL.h"
 #include "Log.h"
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "HardwareInfo.h"
 

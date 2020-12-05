@@ -435,6 +435,12 @@
     <ClCompile Include="Source\JSONParser.cpp">
       <Filter>Source\7_Tools\Parsers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SystemInfo.cpp">
+      <Filter>Source\6_Containers\SystemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SoftwareInfo.cpp">
+      <Filter>Source\6_Containers\SystemInfo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -923,9 +929,6 @@
     <ClInclude Include="Source\Macros.h">
       <Filter>Source\7_Tools\Globals</Filter>
     </ClInclude>
-    <ClInclude Include="Source\VarTypedefs.h">
-      <Filter>Source\7_Tools\Globals</Filter>
-    </ClInclude>
     <ClInclude Include="Source\VariableDefinitions.h">
       <Filter>Source\7_Tools\Globals</Filter>
     </ClInclude>
@@ -952,6 +955,15 @@
     </ClInclude>
     <ClInclude Include="Source\JSONParser.h">
       <Filter>Source\7_Tools\Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\VariableTypedefs.h">
+      <Filter>Source\7_Tools\Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SystemInfo.h">
+      <Filter>Source\6_Containers\SystemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SoftwareInfo.h">
+      <Filter>Source\6_Containers\SystemInfo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

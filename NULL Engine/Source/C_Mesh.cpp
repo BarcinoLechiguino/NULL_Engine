@@ -51,14 +51,14 @@ bool C_Mesh::CleanUp()
 	return ret;
 }
 
-bool C_Mesh::SaveConfiguration(ParsonNode& configuration) const
+bool C_Mesh::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
 	return ret;
 }
 
-bool C_Mesh::LoadConfiguration(ParsonNode& configuration)
+bool C_Mesh::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 

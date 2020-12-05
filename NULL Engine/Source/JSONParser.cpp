@@ -1,12 +1,14 @@
 // ----------------------------------------------------
 // Interface module for parson. (Wrapper)
 // Employed to load/save engine configurations.
+// Employed to serialize scenes and game objects.
 // ----------------------------------------------------
 
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/float4.h"
 
-#include "VarTypedefs.h"																		// Globals										
+#include "VariableTypedefs.h"																	// Globals										
+#include "Macros.h"																				// 
 #include "Log.h"																				// -------
 
 #include "Color.h"																				// Containers
@@ -25,7 +27,7 @@ ParsonNode::ParsonNode(const char* buffer) :
 root_value	(nullptr), 
 root_node	(nullptr)
 {
-	root_value = json_parse_string(buffer);														// Creates a JSON_Object out of a given buffer. Used to load a previous configuration.
+	root_value = json_parse_string(buffer);														// Creates a JSON_Object out of a given buffer. Used to load a previous .json file.
 	
 	if (root_value != NULL)																		// Using NULL instead of nullptr as parson is a library written in C, not C++.
 	{
@@ -46,7 +48,7 @@ root_node	(object)
 
 ParsonNode::~ParsonNode()
 {
-	Release();																					// Will clean up any allocated memory in this specific Configuration().
+	Release();																					// Will clean up any allocated memory in this specific ParsonNode().
 }
 
 uint ParsonNode::SerializeToBuffer(char** buffer)
@@ -59,6 +61,8 @@ uint ParsonNode::SerializeToBuffer(char** buffer)
 	if (status == JSONFailure)
 	{
 		LOG("[ERROR] Could not serialize the buffer! Error: Parson could not allocate or write the buffer.");
+		RELEASE_ARRAY(buffer);
+		size = 0;
 	}
 
 	return size;
@@ -74,7 +78,7 @@ bool ParsonNode::Release()
 	return true;
 }
 
-// --- CONFIGURATION METHODS ---
+// --- PARSON NODE METHODS ---
 // --- GETTERS AND SETTERS
 double ParsonNode::GetNumber(const char* name) const
 {	
@@ -85,7 +89,7 @@ double ParsonNode::GetNumber(const char* name) const
 	else
 	{
 		const char* node_name = json_object_get_name(root_node, 0);
-		LOG("[ERROR] Configuration: Node %s's %s did not have a Number variable!", node_name, name);
+		LOG("[ERROR] JSON Parser: Node %s's %s did not have a Number variable!", node_name, name);
 	}
 
 	return JSONError;
@@ -99,7 +103,7 @@ const char* ParsonNode::GetString(const char* name) const
 	}
 	else
 	{
-		LOG("[ERROR] Configuration: %s did not have a String variable!", name);
+		LOG("[ERROR] JSON Parser: %s did not have a String variable!", name);
 	}
 
 	return "NOT FOUND";
@@ -113,7 +117,7 @@ bool ParsonNode::GetBool(const char* name) const
 	}
 	else
 	{
-		LOG("[ERROR] Configuration: %s did not have a Bool variable!", name);
+		LOG("[ERROR] JSON Parser: %s did not have a Bool variable!", name);
 	}
 
 	return false;
@@ -127,7 +131,7 @@ ParsonArray ParsonNode::GetArray(const char* name) const
 	}
 	else
 	{
-		LOG("[ERROR] Configuration: %s did not have a JSON_Array variable!", name);
+		LOG("[ERROR] JSON Parser: %s did not have a JSON_Array variable!", name);
 	}
 
 	return ParsonArray();																		// If an empty config array is returned then check that json_array == nullptr and size == 0.
@@ -137,7 +141,7 @@ ParsonNode ParsonNode::GetNode(const char* name) const
 {
 	if (!NodeHasValueOfType(name, JSONObject))
 	{
-		LOG("[ERROR] Configuration: %s did not have a JSON_Object variable!", name);			// Just for display purposes.
+		LOG("[ERROR] JSON Parser: %s did not have a JSON_Object variable!", name);			// Just for display purposes.
 	}
 	
 	return ParsonNode(json_object_get_object(root_node, name));									// json_object_get_object() returns NULL if no JSON_Object can be found. Remember to check!
@@ -149,7 +153,7 @@ void ParsonNode::SetNumber(const char* name, double number)
 
 	if (status == JSONFailure)
 	{
-		LOG("[ERROR] Configuration: Could not set %s with the given Number!", name);
+		LOG("[ERROR] JSON Parser: Could not set %s with the given Number!", name);
 	}
 }
 
@@ -159,7 +163,7 @@ void ParsonNode::SetString(const char* name, const char* string)
 
 	if (status == JSONFailure)
 	{
-		LOG("[ERROR] Configuration: Could not set %s with the given String!", name);
+		LOG("[ERROR] JSON Parser: Could not set %s with the given String!", name);
 	}
 }
 
@@ -169,7 +173,7 @@ void ParsonNode::SetBool(const char* name, bool value)
 
 	if (status == JSONFailure)
 	{
-		LOG("[ERROR] Configuration: Could not set %s with the given Bool!", name);
+		LOG("[ERROR] JSON Parser: Could not set %s with the given Bool!", name);
 	}
 }
 
@@ -179,7 +183,7 @@ ParsonArray ParsonNode::SetArray(const char* name)
 
 	if (status == JSONFailure)
 	{
-		LOG("[ERROR] Configuration: Could not set %s with an JSON_Array!", name);
+		LOG("[ERROR] JSON Parser: Could not set %s with an JSON_Array!", name);
 	}
 	
 	return ParsonArray(json_object_get_array(root_node, name), name);							// Constructing and returning a handle to the created array.
@@ -216,11 +220,12 @@ JSON_Value* ParsonNode::FindValue(const char* name, int index)
 	return nullptr;
 }
 
-// ------------------ CONFIGURATION_ARRAY METHODS ------------------
+// ------------------ PARSON ARRAY METHODS ------------------
 ParsonArray::ParsonArray()
 {
-	json_array = nullptr;
-	size = 0;
+	json_array	= nullptr;
+	size		= 0;
+	name		= "NONE";
 }
 
 ParsonArray::ParsonArray(JSON_Array* json_array, const char* name) : 
@@ -247,7 +252,7 @@ double ParsonArray::GetNumber(const uint& index) const
 	}
 	else
 	{
-		LOG("[ERROR] Configuration: Array Index %u did not have a Number variable!", index);
+		LOG("[ERROR] JSON Parser: Array Index %u did not have a Number variable!", index);
 	}
 
 	return JSONError;
@@ -261,7 +266,7 @@ const char* ParsonArray::GetString(const uint& index) const
 	}
 	else
 	{
-		LOG("[ERROR] Configuration: Array Index %u did not have a String variable!", index);
+		LOG("[ERROR] JSON Parser: Array Index %u did not have a String variable!", index);
 	}
 	
 	return "NOT FOUND";
@@ -275,7 +280,7 @@ bool ParsonArray::GetBool(const uint& index) const
 	}
 	else
 	{
-		LOG("[ERROR] Configuration: Array Index %u did not have a Bool variable!", index);
+		LOG("[ERROR] JSON Parser: Array Index %u did not have a Bool variable!", index);
 	}
 
 	return false;
@@ -329,10 +334,12 @@ void ParsonArray::GetFloat4(const uint& index, float4& vec4) const
 
 ParsonNode ParsonArray::GetNode(const uint& index) const
 {
-	if (HasValueOfTypeAtIndex(index, JSONObject))
+	if (!HasValueOfTypeAtIndex(index, JSONObject))
 	{
-		return json_array_get_object(json_array, index);
+		LOG("[ERROR] JSON Parser: Could not get the Node at %u index in the %s Array!", name);
 	}
+
+	return json_array_get_object(json_array, index);
 }
 
 void ParsonArray::SetNumber(const double& number)
@@ -341,7 +348,7 @@ void ParsonArray::SetNumber(const double& number)
 
 	if (status == JSONFailure)
 	{
-		LOG("[ERROR] Configuration: Could not append Number to %s Array!", name);
+		LOG("[ERROR] JSON Parser: Could not append Number to %s Array!", name);
 	}
 	else
 	{
@@ -355,7 +362,7 @@ void ParsonArray::SetString(const char* string)
 
 	if (status == JSONFailure)
 	{
-		LOG("[ERROR] Configuration: Could not append String to %s Array!", name);
+		LOG("[ERROR] JSON Parser: Could not append String to %s Array!", name);
 	}
 	else
 	{
@@ -369,7 +376,7 @@ void ParsonArray::SetBool(const bool& value)
 
 	if (status == JSONFailure)
 	{
-		LOG("[ERROR] Configuration: Could not append Boolean to %s Array!", name);
+		LOG("[ERROR] JSON Parser: Could not append Boolean to %s Array!", name);
 	}
 	else
 	{
@@ -384,10 +391,10 @@ void ParsonArray::SetColor(const Color& color)
 	JSON_Status status_b = json_array_append_number(json_array, color.b);													// not the operation was a success.
 	JSON_Status status_a = json_array_append_number(json_array, color.a);													// --------------------------------------------
 
-	(status_r == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Red to %s Array!", name)	: ++size;			// If an operation was not successful then an ERROR is sent
-	(status_g == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Green to %s Array!", name)	: ++size;			// to the console.
-	(status_b == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Blue to %s Array!", name)	: ++size;			// On success the size variable will be updated.
-	(status_a == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Alpha to %s Array!", name)	: ++size;			// ---------------------------------------------------------
+	(status_r == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Red to %s Array!", name)		: ++size;			// If an operation was not successful then an ERROR is sent
+	(status_g == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Green to %s Array!", name)	: ++size;			// to the console.
+	(status_b == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Blue to %s Array!", name)	: ++size;			// On success the size variable will be updated.
+	(status_a == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Alpha to %s Array!", name)	: ++size;			// ---------------------------------------------------------
 }
 
 void ParsonArray::SetFloat3(const math::float3& vec3)
@@ -396,9 +403,9 @@ void ParsonArray::SetFloat3(const math::float3& vec3)
 	JSON_Status status_y = json_array_append_number(json_array, vec3.y);													//
 	JSON_Status status_z = json_array_append_number(json_array, vec3.z);													// -------------------------------------------
 
-	(status_x == JSONFailure) ? LOG("[ERROR] Configuration: Could not append X to %s Array!", name) : ++size;				// If an operation was not successful then an ERROR is sent
-	(status_y == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Y to %s Array!", name) : ++size;				// to the console. On success the size var. will be updated.
-	(status_z == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Z to %s Array!", name) : ++size;				// ---------------------------------------------------------
+	(status_x == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append X to %s Array!", name) : ++size;					// If an operation was not successful then an ERROR is sent
+	(status_y == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Y to %s Array!", name) : ++size;					// to the console. On success the size var. will be updated.
+	(status_z == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Z to %s Array!", name) : ++size;					// ---------------------------------------------------------
 }
 
 void ParsonArray::SetFloat4(const math::float4& vec4)
@@ -408,24 +415,17 @@ void ParsonArray::SetFloat4(const math::float4& vec4)
 	JSON_Status status_z = json_array_append_number(json_array, vec4.z);													//
 	JSON_Status status_w = json_array_append_number(json_array, vec4.w);													// --------------------------------------------
 
-	(status_x == JSONFailure) ? LOG("[ERROR] Configuration: Could not append X to %s Array!", name) : ++size;				// If an operation was not successful then an ERROR is sent
-	(status_y == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Y to %s Array!", name) : ++size;				// to the console.
-	(status_z == JSONFailure) ? LOG("[ERROR] Configuration: Could not append Z to %s Array!", name) : ++size;				// On success the size variable will be updated.
-	(status_w == JSONFailure) ? LOG("[ERROR] Configuration: Could not append W to %s Array!", name) : ++size;				// --------------------------------------------------------
+	(status_x == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append X to %s Array!", name) : ++size;					// If an operation was not successful then an ERROR is sent
+	(status_y == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Y to %s Array!", name) : ++size;					// to the console.
+	(status_z == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Z to %s Array!", name) : ++size;					// On success the size variable will be updated.
+	(status_w == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append W to %s Array!", name) : ++size;					// --------------------------------------------------------
 }
 
 ParsonNode ParsonArray::SetNode(const char* name)
 {	
 	JSON_Status status = json_array_append_value(json_array, json_value_init_object());
 
-	if (status == JSONFailure)
-	{
-		LOG("[ERROR] Configuration: Could not append Node to %s Array!", name);
-	}
-	else
-	{
-		++size;
-	}
+	(status == JSONFailure) ? LOG("[ERROR] JSON Parser: Could not append Node to %s Array!", name) : ++size;
 
 	return ParsonNode(json_array_get_object(json_array, size - 1));															// As the object was just appended, it will be located at the end.
 }

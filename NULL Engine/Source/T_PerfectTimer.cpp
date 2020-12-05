@@ -5,6 +5,8 @@
 
 #include "SDL/include/SDL.h"
 
+#include "VariableTypedefs.h"
+
 #include "T_PerfectTimer.h"
 
 uint64 T_PerfectTimer::frequency = 0;

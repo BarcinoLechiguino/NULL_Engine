@@ -3,6 +3,8 @@
 
 #include <vector>
 
+typedef unsigned int uint;
+
 struct CPU
 {
 	int		cpu_count;							// Number of available CPU cores. SDL_GetCPUCount() returns the number of available CPU cores.

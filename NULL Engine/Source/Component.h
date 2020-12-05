@@ -23,11 +23,11 @@ public:
 	Component(GameObject* owner, COMPONENT_TYPE type, bool is_active = true);
 	virtual ~Component();
 
-	virtual bool Update				();
-	virtual bool CleanUp			();
+	virtual bool Update		();
+	virtual bool CleanUp	();
 
-	virtual bool SaveConfiguration	(ParsonNode& configuration) const;
-	virtual bool LoadConfiguration	(ParsonNode& configuration);
+	virtual bool SaveState	(ParsonNode& root) const;
+	virtual bool LoadState	(ParsonNode& root);
 
 public:
 	const char*		GetNameFromType		() const;										// Will return a string with the name of the component. Depends on COMPONENT_TYPE.

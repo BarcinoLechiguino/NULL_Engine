@@ -1,4 +1,4 @@
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 #include "Macros.h"
 
 #include "JSONParser.h"
@@ -17,7 +17,8 @@
 C_Material::C_Material(GameObject* owner) : Component(owner, COMPONENT_TYPE::MATERIAL),
 material			(nullptr),
 texture				(nullptr),
-use_default_tex		(false)
+use_default_tex		(false),
+use_albedo_tex		(true)
 {
 	//memset(texture_maps, 0, sizeof(uint) * MAX_MAPS);
 }
@@ -65,7 +66,7 @@ bool C_Material::CleanUp()
 	return ret;
 }
 
-bool C_Material::SaveConfiguration(ParsonNode& configuration) const
+bool C_Material::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
@@ -74,7 +75,7 @@ bool C_Material::SaveConfiguration(ParsonNode& configuration) const
 	return ret;
 }
 
-bool C_Material::LoadConfiguration(ParsonNode& configuration)
+bool C_Material::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 

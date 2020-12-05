@@ -7,7 +7,7 @@
 
 #include "Assimp.h"
 
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 #include "Log.h"
 
 #include "Application.h"

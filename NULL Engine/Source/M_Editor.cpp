@@ -26,14 +26,14 @@
 #pragma comment (lib, "Source/Dependencies/glew/libx86/glew32.lib")
 
 M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),
-clear_color(0.0f, 0.0f, 0.0f, 1.0f),
-toolbar(nullptr),
-configuration(nullptr),
-hierarchy(nullptr),
-inspector(nullptr),
-console(nullptr),
-imgui_demo(nullptr),
-about(nullptr)
+clear_color		(0.0f, 0.0f, 0.0f, 1.0f),
+toolbar			(nullptr),
+configuration	(nullptr),
+hierarchy		(nullptr),
+inspector		(nullptr),
+console			(nullptr),
+imgui_demo		(nullptr),
+about			(nullptr)
 {
 	toolbar			= new E_Toolbar();
 	configuration	= new E_EngineConfiguration();
@@ -213,6 +213,14 @@ void M_Editor::EditorShortcuts()
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_STATE::KEY_DOWN)
 	{
 		show_close_app_popup = !show_close_app_popup;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_STATE::KEY_REPEAT)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_DOWN)
+		{
+			App->scene->SaveScene();
+		}
 	}
 }
 

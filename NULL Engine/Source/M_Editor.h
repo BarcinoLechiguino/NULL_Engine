@@ -62,7 +62,7 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	void			SetShowPrimitiveExamples			(bool set_to);							// Will Enable or Disable the depending on the passed argument.
 
 	void			UpdateFrameData						(int frames, int ms);					// Configuration: Passing the received frame data to the configuration editor module.
-	void			AddInputLog							(uint key, uint state);					// Configuration: Receives an input key and a state and passes a log to the configuration editor module.
+	void			AddInputLog							(uint key, uint state);					// Configuration: Receives an input key and a state and passes a log to the config editor mod.
 
 	void			AddConsoleLog						(const char* log);						// Console: Passing the received console log to the console editor module.
 
@@ -78,7 +78,7 @@ private:
 	void BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNodeFlags docking_flags = ImGuiDockNodeFlags_None, ImVec2 size = { 0.0f, 0.0f });	// Generates a new dockspace.
 
 public:
-	std::vector<E_Panel*>	gui_panels;												// Will store all the editor modules. Will be iterated for drawing all the panels.
+	std::vector<E_Panel*>	gui_panels;															// Will store all the editor modules. Will be iterated for drawing all the panels.
 
 	E_Toolbar*				toolbar; 
 	E_EngineConfiguration*	configuration;
@@ -88,15 +88,15 @@ public:
 	E_ImGuiDemo*			imgui_demo;
 	E_About*				about;
 
-	ImVec4					clear_color;											// Will be used to set the clear color of the rendering environment.
+	ImVec4					clear_color;														// Will be used to set the clear color of the rendering environment.
 
-	bool					show_configuration;										// Will keep track of whether or not to show the Configuration window.
-	bool					show_hierarchy;											// Will keep track of whether or not to show the Hierarchy window.
-	bool					show_inspector;											// Will keep track of whether or not to show the Inspector window.
-	bool					show_console;											// Will keep track of whether or not to show the Console window.
-	bool					show_imgui_demo;										// Will keep track of whether or not to show the ImGui Demo window.
-	bool					show_about_popup;										// Will keep track of whether or not to show the About window popup.
-	bool					show_close_app_popup;									// Will keep track of whether or not to show the Close App windowwindow.
+	bool					show_configuration;													// Will keep track of whether or not to show the Configuration window.
+	bool					show_hierarchy;														// Will keep track of whether or not to show the Hierarchy window.
+	bool					show_inspector;														// Will keep track of whether or not to show the Inspector window.
+	bool					show_console;														// Will keep track of whether or not to show the Console window.
+	bool					show_imgui_demo;													// Will keep track of whether or not to show the ImGui Demo window.
+	bool					show_about_popup;													// Will keep track of whether or not to show the About window popup.
+	bool					show_close_app_popup;												// Will keep track of whether or not to show the Close App windowwindow.
 };
 
 #endif // !__M_EDITOR_H__

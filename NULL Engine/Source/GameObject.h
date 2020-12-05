@@ -28,8 +28,8 @@ public:
 	bool			Update				();
 	bool			CleanUp				();
 
-	bool			SaveConfiguration	(ParsonNode& configuration) const;
-	bool			LoadConfiguration	(ParsonNode& configuration);
+	bool			SaveState			(ParsonNode& root) const;
+	bool			LoadState			(ParsonNode& root);
 
 public:
 	void			FreeComponents						();
@@ -79,6 +79,7 @@ public:
 	bool						to_delete;													// Will determine whether or not the GameObject should be deleted. See M_Scene's DeleteGameObject().
 
 	OBB							obb;
+	AABB						aabb;
 
 private:
 	uint32						id;

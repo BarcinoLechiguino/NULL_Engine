@@ -1,6 +1,6 @@
 #include "OpenGL.h"
 
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "R_Texture.h"
 

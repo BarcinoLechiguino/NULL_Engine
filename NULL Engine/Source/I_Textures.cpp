@@ -5,6 +5,8 @@
 
 #include "OpenGL.h"
 #include "DevIL.h"
+
+#include "VariableTypedefs.h"
 #include "Log.h"
 
 #include "Random.h"

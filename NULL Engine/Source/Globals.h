@@ -11,7 +11,7 @@
 #include "ConfigurationSettings.h"
 #include "FileSystemDefinitions.h"
 #include "VariableDefinitions.h"
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 #include "UpdateStatus.h"
 #include "Macros.h"
 #include "Log.h"

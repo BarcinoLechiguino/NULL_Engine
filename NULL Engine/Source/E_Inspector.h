@@ -17,9 +17,8 @@ public:
 	E_Inspector();
 	~E_Inspector();
 
-	bool Draw(ImGuiIO& io) override;
-
-	bool CleanUp() override;
+	bool Draw		(ImGuiIO& io) override;
+	bool CleanUp	() override;
 
 private:
 	void DrawGameObjectInfo			(GameObject* selected_game_object);
@@ -44,7 +43,7 @@ private:
 
 	int			map_to_display;
 
-	Component* component_to_delete;
+	Component*	component_to_delete;
 };
 
 #endif // !__E_INSPECTOR_H__

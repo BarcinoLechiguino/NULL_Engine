@@ -16,27 +16,27 @@
 #include "Application.h"
 
 Application::Application() :
-quit(false),
-debug(false), 
-dt(0.0f),
-hardware_info(),
-window(nullptr),
-input(nullptr),
-scene(nullptr),
-editor(nullptr),
-renderer(nullptr),
-camera(nullptr),
-file_system(nullptr)
+quit			(false),
+debug			(false), 
+dt				(0.0f),
+hardware_info	(),
+window			(nullptr),
+input			(nullptr),
+scene			(nullptr),
+editor			(nullptr),
+renderer		(nullptr),
+camera			(nullptr),
+file_system		(nullptr)
 {
 	PERF_TIMER_START(perf_timer);
 	
 	// Modules -----------------------------------
 	window			= new M_Window();
 	input			= new M_Input();
+	camera			= new M_Camera3D();
+	renderer		= new M_Renderer3D();
 	scene			= new M_Scene();
 	editor			= new M_Editor();
-	renderer		= new M_Renderer3D();
-	camera			= new M_Camera3D();
 	file_system		= new M_FileSystem();
 
 	// The order of calls is very important!
@@ -514,9 +514,11 @@ void Application::AddEditorLog(const char* log)
 {
 	if (!quit && editor != nullptr)													// Second condition is not really necessary. It's more of a reminder to keep it in mind.
 	{
-		std::string full_log = App->file_system->NormalizePath(log);				// Switching all "\\" for "/". They need to be changed due to "\" being a Windows-specific thing.
+		//std::string full_log = App->file_system->NormalizePath(log);				// Switching all "\\" for "/". They need to be changed due to "\" being a Windows-specific thing.
 
-		uint log_start	= full_log.find_last_of("/") + 1;							// Gets the position of the last "\" in the log string.
+		std::string full_log = log;													// TMP. Switch to normalize later.
+
+		uint log_start	= full_log.find_last_of("\\") + 1;							// Gets the position of the last "\" in the log string.
 		uint log_end	= full_log.size();											// The last position of the log will be equal to the size of it.
 
 		std::string short_log = full_log.substr(log_start, log_end);				// Returns the string that is within the given positions.

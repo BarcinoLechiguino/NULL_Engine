@@ -22,8 +22,8 @@ public:
 	bool Init				(ParsonNode& config) override;
 	bool CleanUp			() override;
 
-	bool SaveConfiguration	(ParsonNode& root) const override;								// Necessary?
-	bool LoadConfiguration	(ParsonNode& root) override;										// ----------
+	bool SaveConfiguration	(ParsonNode& root) const override;																	// Necessary?
+	bool LoadConfiguration	(ParsonNode& root) override;																		// ----------
 
 public:
 	// Utility functions
@@ -41,7 +41,7 @@ public:
 
 	void			DiscoverFiles				(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const;							// Will return two lists with every file in a given directory.
 	void			GetAllFilesWithExtension	(const char* directory, const char* extension, std::vector<std::string>& file_list) const;										// Will return a list with all files with the given extension.
-	PathNode		GetAllFiles					(const char* directory, std::vector<std::string>* filter_ext = nullptr, std::vector<std::string>* ignore_ext = nullptr) const;
+	PathNode		GetAllFiles					(const char* directory, std::vector<std::string>* filter_ext = nullptr, std::vector<std::string>* ignore_ext = nullptr) const;	// 
 
 	bool			HasExtension				(const char* path) const;														// Will check whether or not the given path has any extension in it.
 	bool			HasExtension				(const char* path, std::string extension) const;								// Will check whether or not the given path has the given extension in it.

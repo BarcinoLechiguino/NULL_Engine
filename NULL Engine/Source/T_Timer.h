@@ -1,7 +1,8 @@
 #ifndef __T_TIMER_H__
 #define __T_TIMER_H__
 
-#include "VarTypedefs.h"
+typedef unsigned int		uint;
+typedef unsigned __int32	uint32;
 
 struct Clock
 {

@@ -13,11 +13,11 @@ public:
 	C_Transform(GameObject* owner);
 	~C_Transform();
 
-	bool Update				() override;
-	bool CleanUp			() override;
+	bool Update		() override;
+	bool CleanUp	() override;
 
-	bool SaveConfiguration	(ParsonNode& configuration) const override;
-	bool LoadConfiguration	(ParsonNode& configuration) override;
+	bool SaveState	(ParsonNode& root) const override;
+	bool LoadState	(ParsonNode& root) override;
 
 public:																				// --- C_TRANSFORM METHODS ---
 	float4x4	GetLocalTransform		() const;									// Returns the local transform's 4x4 matrix. 

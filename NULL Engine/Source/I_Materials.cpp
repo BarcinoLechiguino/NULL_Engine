@@ -5,6 +5,8 @@
 
 #include "OpenGL.h"
 #include "Assimp.h"
+
+#include "VariableTypedefs.h"
 #include "Log.h"
 #include "Color.h"
 

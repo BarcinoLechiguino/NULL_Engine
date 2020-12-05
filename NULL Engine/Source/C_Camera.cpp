@@ -32,14 +32,14 @@ bool C_Camera::CleanUp()
 	return ret;
 }
 
-bool C_Camera::SaveConfiguration(ParsonNode& configuration) const
+bool C_Camera::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
 	return ret;
 }
 
-bool C_Camera::LoadConfiguration(ParsonNode& configuration)
+bool C_Camera::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 

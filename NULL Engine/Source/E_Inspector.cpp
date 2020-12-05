@@ -19,10 +19,10 @@
 #define MIN_VALUE -100000
 
 E_Inspector::E_Inspector() : E_Panel("Inspector"),
-show_delete_component_popup(false),
-component_type(0),
-map_to_display(0),
-component_to_delete(nullptr)
+show_delete_component_popup	(false),
+component_type				(0),
+map_to_display				(0),
+component_to_delete			(nullptr)
 {
 
 }

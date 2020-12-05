@@ -5,7 +5,9 @@
 
 #include "E_Hierarchy.h"
 
-E_Hierarchy::E_Hierarchy() : E_Panel("Hierarchy"), dragged_game_object(nullptr), open_hierarchy_tools_popup(false)
+E_Hierarchy::E_Hierarchy() : E_Panel("Hierarchy"), 
+dragged_game_object			(nullptr), 
+open_hierarchy_tools_popup	(false)
 {
 	default_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 }

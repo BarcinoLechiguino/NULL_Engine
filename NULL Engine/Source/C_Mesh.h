@@ -13,11 +13,11 @@ public:
 	C_Mesh(GameObject* owner);
 	~C_Mesh();
 
-	bool Update				() override;
-	bool CleanUp			() override;
+	bool Update		() override;
+	bool CleanUp	() override;
 
-	bool SaveConfiguration	(ParsonNode& configuration) const override;
-	bool LoadConfiguration	(ParsonNode& configuration) override;
+	bool SaveState	(ParsonNode& root) const override;
+	bool LoadState	(ParsonNode& root) override;
 
 public:
 	bool			Render					();										// Will render the mesh along with the corresponding textures and transform.

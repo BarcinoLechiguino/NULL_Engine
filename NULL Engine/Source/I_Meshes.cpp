@@ -6,7 +6,7 @@
 #include "Assimp.h"
 
 #include "Log.h"
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "Application.h"
 #include "M_FileSystem.h"
@@ -203,12 +203,14 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 	cursor += bytes;
 
 	// --- PRECALCULATED DATA ---
-	float3 aabb_corners[8];
+	math::vec* aabb_corners = new math::vec[8];
 	r_mesh->aabb.GetCornerPoints(aabb_corners);
 
 	bytes = r_mesh->aabb.NumVertices() * sizeof(float) * 3;
 	memcpy_s(cursor, size, aabb_corners, bytes);
 	cursor += bytes;
+
+	delete[] aabb_corners;
 
 	// --- SAVING THE BUFFER ---
 	std::string path = std::string(MESHES_PATH) + std::to_string(r_mesh->GetID()) + std::string(MESH_EXTENSION);

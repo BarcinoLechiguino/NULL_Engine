@@ -1,10 +1,11 @@
 #include "Random.h"
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "Resource.h"
 
 Resource::Resource() : 
-id				(Random::LCG::GetRandomUint()), 
+id				(Random::LCG::GetRandomUint()),
+name			("[NONE]"),
 assets_path		("[NONE]"), 
 assets_file		("[NONE]"), 
 library_path	("[NONE]"), 

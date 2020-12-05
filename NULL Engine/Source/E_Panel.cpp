@@ -1,6 +1,9 @@
 #include "E_Panel.h"
 
-E_Panel::E_Panel(const char* name, bool is_active) : name(name), is_active(is_active), is_hovered(false)
+E_Panel::E_Panel(const char* name, bool is_active) : 
+name		(name), 
+is_active	(is_active), 
+is_hovered	(false)
 {
 
 }

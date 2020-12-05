@@ -1,4 +1,4 @@
-#include "VarTypedefs.h"
+#include "VariableTypedefs.h"
 
 #include "R_Material.h"
 

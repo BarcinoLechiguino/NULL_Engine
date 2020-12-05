@@ -59,7 +59,13 @@ bool E_Toolbar::FileMainMenuItem()
 
 		ImGui::Separator();
 
-		ImGui::MenuItem("Save", "Ctrl+S");
+		if (ImGui::MenuItem("Save", "Ctrl+S"))
+		{
+			App->scene->SaveScene();
+			
+			LOG("[SCENE] SAVED THE SCENE >:DDD");
+		}
+		
 		ImGui::MenuItem("Save As...", "Ctrl+Shift+S", nullptr, false);
 
 		ImGui::Separator();
