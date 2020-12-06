@@ -11,6 +11,7 @@ typedef unsigned __int32 uint32;
 
 enum class RESOURCE_TYPE
 {
+	NONE,
 	MESH,
 	MATERIAL,
 	TEXTURE
@@ -19,31 +20,37 @@ enum class RESOURCE_TYPE
 class Resource
 {
 public:
-	Resource();
+	Resource(RESOURCE_TYPE type);
 	virtual ~Resource();
 
 	virtual bool CleanUp();
 
 public:
-	uint32				GetID				() const;
-	void				ResetID				();
+	RESOURCE_TYPE		GetType					() const;
+	const char*			GetTypeAsString			() const;
+	
+	uint32				GetID					() const;
+	void				ResetID					();
 
-	const char*			GetAssetsPath		() const;								// 
-	const char*			GetAssetsFile		() const;								// 
-	const char*			GetLibraryPath		() const;								// 
-	const char*			GetLibraryFile		() const;								// 
+	const char*			GetAssetsPath			() const;								// 
+	const char*			GetAssetsFile			() const;								// 
+	const char*			GetLibraryPath			() const;								// 
+	const char*			GetLibraryFile			() const;								// 
 
-	void				SetAssetsPath		(const char* assets_path);				// 
-	void				SetAssetsFile		(const char* assets_file);				// 
-	void				SetLibraryPath		(const char* library_path);				// 
-	void				SetLibraryFile		(const char* library_file);				// 
+	void				SetAssetsPath			(const char* assets_path);				// 
+	void				SetAssetsFile			(const char* assets_file);				// 
+	void				SetLibraryPath			(const char* library_path);				// 
+	void				SetLibraryFile			(const char* library_file);				// 
+
+	void				SetLibraryPathAndFile	();
 
 	//ImporterSettings	GetImporterSettings	();
 	//void				SetImporterSettings	(ImporterSettings importer_settings);
 
 private:
-	uint32				id;															// UID for this Resource.
+	RESOURCE_TYPE		type;
 
+	uint32				id;															// UID for this Resource.
 	const char*			name;
 
 	std::string			assets_path;												// Path of the file in the Assets directory. Will be used to avoid making duplicates.

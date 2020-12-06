@@ -22,34 +22,22 @@ Component::~Component()
 
 bool Component::Update()
 {
-	bool ret = true;
-
-	return ret;
+	return true;
 }
 
 bool Component::CleanUp()
 {
-	bool ret = true;
-
-	return ret;
+	return true;
 }
 
 bool Component::SaveState(ParsonNode& root) const
 {
-	bool ret = true;
-
-
-
-	return ret;
+	return true;
 }
 
 bool Component::LoadState(ParsonNode& root)
 {
-	bool ret = true;
-
-
-
-	return ret;
+	return true;
 }
 
 // --- COMPONENT METHODS ---

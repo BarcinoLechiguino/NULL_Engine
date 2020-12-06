@@ -4,7 +4,7 @@
 
 #include "R_Texture.h"
 
-R_Texture::R_Texture() : Resource()
+R_Texture::R_Texture() : Resource(RESOURCE_TYPE::TEXTURE)
 {
 
 }

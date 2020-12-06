@@ -36,7 +36,7 @@ public:
 	void			SetDrawFaceNormals		(const bool& set_to);
 
 private:
-	R_Mesh* mesh;
+	R_Mesh* r_mesh;
 };
 
 #endif // !__C_MESH_H__

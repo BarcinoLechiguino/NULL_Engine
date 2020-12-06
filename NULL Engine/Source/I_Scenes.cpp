@@ -191,6 +191,8 @@ void Importer::Scenes::Utilities::ImportMesh(const char* path, const aiMesh* ai_
 
 	if (r_mesh != nullptr)
 	{
+		r_mesh->SetLibraryPathAndFile();
+
 		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
 
 		c_mesh->SetMesh(r_mesh);
@@ -212,29 +214,34 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* path, const aiMater
 
 	Importer::Materials::Import(path, ai_material, r_material, r_texture);
 
-	C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
-
-	if (c_material != nullptr)
+	if (r_material != nullptr)
 	{
-		c_material->SetMaterial(r_material);														// C_Material will always have a R_Material*.
+		r_material->SetLibraryPathAndFile();
 
-		if (r_texture->GetTextureID() != 0)
+		C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
+
+		if (c_material != nullptr)
 		{
-			c_material->SetTexture(r_texture);
+			c_material->SetMaterial(r_material);														// C_Material will always have a R_Material*.
+
+			if (r_texture->GetTextureID() != 0)
+			{
+				c_material->SetTexture(r_texture);
+			}
+			else
+			{
+				RELEASE(r_texture);
+
+				LOG("[IMPORTER] Imported aiMaterial had no texture!");
+			}
 		}
 		else
 		{
+			RELEASE(r_material);
 			RELEASE(r_texture);
 
-			LOG("[IMPORTER] Imported aiMaterial had no texture!");
+			LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());
 		}
-	}
-	else
-	{
-		RELEASE(r_material);
-		RELEASE(r_texture);
-
-		LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());
 	}
 }
 

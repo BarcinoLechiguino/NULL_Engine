@@ -9,7 +9,7 @@
 
 #include "R_Model.h"
 
-R_Model::R_Model(std::string full_path, float4 colour) : Resource(), full_path(full_path), colour(colour)
+R_Model::R_Model(std::string full_path, float4 colour) : Resource(RESOURCE_TYPE::NONE), full_path(full_path), colour(colour)
 {
 
 }

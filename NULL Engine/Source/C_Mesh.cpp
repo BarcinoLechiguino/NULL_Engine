@@ -12,7 +12,7 @@
 #include "C_Mesh.h"
 
 C_Mesh::C_Mesh(GameObject* owner) : Component(owner, COMPONENT_TYPE::MESH),
-mesh	(nullptr)
+r_mesh	(nullptr)
 {
 
 }
@@ -28,7 +28,7 @@ bool C_Mesh::Update()
 
 	if (IsActive())
 	{
-		if (mesh != nullptr)
+		if (r_mesh != nullptr)
 		{
 			Render();
 		}
@@ -41,11 +41,11 @@ bool C_Mesh::CleanUp()
 {
 	bool ret = true;
 
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		mesh->CleanUp();
+		r_mesh->CleanUp();
 
-		RELEASE(mesh);
+		RELEASE(r_mesh);
 	}
 
 	return ret;
@@ -55,12 +55,20 @@ bool C_Mesh::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
+	if (r_mesh != nullptr)
+	{
+		root.SetNumber("Type", (uint)type);
+		root.SetString("Path", r_mesh->GetLibraryPath());
+	}
+
 	return ret;
 }
 
 bool C_Mesh::LoadState(ParsonNode& root)
 {
 	bool ret = true;
+
+
 
 	return ret;
 }
@@ -80,19 +88,19 @@ bool C_Mesh::Render()
 
 R_Mesh* C_Mesh::GetMesh() const
 {
-	return mesh;
+	return r_mesh;
 }
 
 void C_Mesh::SetMesh(R_Mesh* r_mesh)
 {
-	mesh = r_mesh;
+	this->r_mesh = r_mesh;
 }
 
 const char* C_Mesh::GetMeshPath() const
 {
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		return mesh->GetAssetsPath();
+		return r_mesh->GetAssetsPath();
 	}
 
 	return "NONE";
@@ -100,28 +108,28 @@ const char* C_Mesh::GetMeshPath() const
 
 void C_Mesh::SetMeshPath(const char* path)
 {
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		mesh->SetAssetsPath(path);
+		r_mesh->SetAssetsPath(path);
 	}
 }
 
 void C_Mesh::GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices)
 {
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		num_vertices	= mesh->vertices.size();
-		num_normals		= mesh->normals.size();
-		num_tex_coords	= mesh->tex_coords.size();
-		num_indices		= mesh->indices.size();
+		num_vertices	= r_mesh->vertices.size();
+		num_normals		= r_mesh->normals.size();
+		num_tex_coords	= r_mesh->tex_coords.size();
+		num_indices		= r_mesh->indices.size();
 	}
 }
 
 bool C_Mesh::GetDrawVertexNormals() const
 {
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		return mesh->draw_vertex_normals;
+		return r_mesh->draw_vertex_normals;
 	}
 
 	return false;
@@ -129,9 +137,9 @@ bool C_Mesh::GetDrawVertexNormals() const
 
 bool C_Mesh::GetDrawFaceNormals() const
 {
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		return mesh->draw_face_normals;
+		return r_mesh->draw_face_normals;
 	}
 
 	return false;
@@ -139,16 +147,16 @@ bool C_Mesh::GetDrawFaceNormals() const
 
 void C_Mesh::SetDrawVertexNormals(const bool& set_to)
 {
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		mesh->draw_vertex_normals = set_to;
+		r_mesh->draw_vertex_normals = set_to;
 	}
 }
 
 void C_Mesh::SetDrawFaceNormals(const bool& set_to)
 {
-	if (mesh != nullptr)
+	if (r_mesh != nullptr)
 	{
-		mesh->draw_face_normals = set_to;
+		r_mesh->draw_face_normals = set_to;
 	}
 }

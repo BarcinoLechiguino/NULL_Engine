@@ -1,9 +1,12 @@
-#include "Random.h"
 #include "VariableTypedefs.h"
+#include "FileSystemDefinitions.h"
+
+#include "Random.h"
 
 #include "Resource.h"
 
-Resource::Resource() : 
+Resource::Resource(RESOURCE_TYPE type) : 
+type			(type),
 id				(Random::LCG::GetRandomUint()),
 name			("[NONE]"),
 assets_path		("[NONE]"), 
@@ -32,6 +35,23 @@ bool Resource::CleanUp()
 }
 
 // --- RESOURCE METHODS ---
+RESOURCE_TYPE Resource::GetType() const
+{
+	return type;
+}
+
+const char* Resource::GetTypeAsString() const
+{
+	switch (type)
+	{
+	case RESOURCE_TYPE::MESH:		{ return "MESH"; }		break;
+	case RESOURCE_TYPE::MATERIAL:	{ return "MATERIAL"; }	break;
+	case RESOURCE_TYPE::TEXTURE:	{ return "TEXTURE"; }	break;
+	}
+
+	return "NONE";
+}
+
 uint32 Resource::GetID() const
 {
 	return id;
@@ -77,4 +97,36 @@ void Resource::SetLibraryPath(const char* library_path)
 void Resource::SetLibraryFile(const char* library_file)
 {
 	this->library_file = library_file;
+}
+
+void Resource::SetLibraryPathAndFile()
+{
+	std::string directory	= "";
+	std::string file		= std::to_string(id);
+	std::string extension	= "";
+	
+	switch (type)
+	{
+	case RESOURCE_TYPE::MESH:
+		directory = MESHES_PATH;
+		extension = MESH_EXTENSION;
+		break;
+
+	case RESOURCE_TYPE::MATERIAL:
+		directory = MATERIALS_PATH;
+		extension = MATERIAL_EXTENSION;
+		break;
+
+	case RESOURCE_TYPE::TEXTURE:
+		directory = TEXTURES_PATH;
+		extension = TEXTURE_EXTENSION;
+		break;
+	}
+	
+	library_path = directory + file + extension;
+	library_file = file + extension;
+
+	directory.clear();
+	file.clear();
+	extension.clear();
 }

@@ -53,7 +53,26 @@ bool C_Transform::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
+	root.SetNumber("Type", (uint)type);
 
+	ParsonArray position = root.SetArray("LocalPosition");
+
+	position.SetNumber(local_position.x);
+	position.SetNumber(local_position.y);
+	position.SetNumber(local_position.z);
+
+	ParsonArray rotation = root.SetArray("LocalRotation");
+
+	rotation.SetNumber(local_rotation.x);
+	rotation.SetNumber(local_rotation.y);
+	rotation.SetNumber(local_rotation.z);
+	rotation.SetNumber(local_rotation.w);
+
+	ParsonArray scale = root.SetArray("LocalScale");
+
+	scale.SetNumber(local_scale.x);
+	scale.SetNumber(local_scale.y);
+	scale.SetNumber(local_scale.z);
 
 	return ret;
 }

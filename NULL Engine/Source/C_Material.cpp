@@ -15,8 +15,8 @@
 #define MAX_MAPS 7
 
 C_Material::C_Material(GameObject* owner) : Component(owner, COMPONENT_TYPE::MATERIAL),
-material			(nullptr),
-texture				(nullptr),
+r_material			(nullptr),
+r_texture				(nullptr),
 use_default_tex		(false),
 use_albedo_tex		(true)
 {
@@ -39,18 +39,18 @@ bool C_Material::CleanUp()
 {
 	bool ret = true;
 
-	if (material != nullptr)
+	if (r_material != nullptr)
 	{
-		material->CleanUp();
+		r_material->CleanUp();
 
-		RELEASE(material);
+		RELEASE(r_material);
 	}
 
-	if (texture != nullptr)
+	if (r_texture != nullptr)
 	{
-		texture->CleanUp();
+		r_texture->CleanUp();
 
-		RELEASE(texture);
+		RELEASE(r_texture);
 	}
 
 	/*for (uint i = 0; i < textures.size(); ++i)
@@ -70,7 +70,33 @@ bool C_Material::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
+	root.SetNumber("Type", (uint)type);
+	
+	// --- R_MATERIAL ---
+	if (r_material != nullptr)
+	{
+		ParsonNode material = root.SetNode("Material");
 
+		material.SetString("Path", r_material->GetLibraryPath());
+
+		ParsonArray color = material.SetArray("Color");
+
+		color.SetNumber(r_material->diffuse_color.r);
+		color.SetNumber(r_material->diffuse_color.g);
+		color.SetNumber(r_material->diffuse_color.b);
+		color.SetNumber(r_material->diffuse_color.a);
+	}
+
+	// --- R_TEXTURE ---
+	if (r_texture != nullptr)
+	{
+		ParsonNode texture = root.SetNode("Texture");
+
+		texture.SetNumber("TextureID", r_texture->GetID());
+		texture.SetString("Path", r_texture->GetLibraryPath());
+	}
+
+	//root.
 
 	return ret;
 }
@@ -87,36 +113,36 @@ bool C_Material::LoadState(ParsonNode& root)
 // --- C_MATERIAL METHODS ---
 R_Material* C_Material::GetMaterial() const
 {
-	return material;
+	return r_material;
 }
 
 R_Texture* C_Material::GetTexture() const
 {
-	return texture;
+	return r_texture;
 }
 
 void C_Material::SetMaterial(R_Material* r_material)
 {
-	material = r_material;
+	this->r_material = r_material;
 }
 
 void C_Material::SetTexture(R_Texture* r_texture)
 {
-	if (texture != nullptr)												// Change later to tex_id array.
+	if (this->r_texture != nullptr)												// Change later to tex_id array.
 	{
-		texture->CleanUp();
+		this->r_texture->CleanUp();
 		
-		RELEASE(texture);
+		RELEASE(this->r_texture);
 	}
 
-	texture = r_texture;
+	this->r_texture = r_texture;
 }
 
 Color C_Material::GetMaterialColour()
 {
-	if (material != nullptr)
+	if (r_material != nullptr)
 	{
-		return material->diffuse_color;
+		return r_material->diffuse_color;
 	}
 
 	return Color();
@@ -124,15 +150,15 @@ Color C_Material::GetMaterialColour()
 
 void C_Material::SetMaterialColour(const Color& color)
 {
-	material->diffuse_color = color;
+	r_material->diffuse_color = color;
 }
 
 // --- MATERIAL AND TEXTURE GET/SET DATA METHODS
 void C_Material::SetMaterialColour(float r, float g, float b, float a)
 {
-	if (material != nullptr)
+	if (r_material != nullptr)
 	{
-		material->diffuse_color = Color(r, g, b, a);
+		r_material->diffuse_color = Color(r, g, b, a);
 	}
 	else
 	{
@@ -163,25 +189,25 @@ void C_Material::SetUseDefaultTexture(const bool& set_to)
 
 const char* C_Material::GetTexturePath() const
 {
-	return (texture != nullptr) ? texture->GetAssetsPath() : "NONE";
+	return (r_texture != nullptr) ? r_texture->GetAssetsPath() : "NONE";
 }
 
 const char* C_Material::GetTextureFile() const
 {
-	return (texture != nullptr) ? texture->GetAssetsFile() : "NONE";
+	return (r_texture != nullptr) ? r_texture->GetAssetsFile() : "NONE";
 }
 
 uint C_Material::GetTextureID() const
 {
-	return (texture != nullptr) ? texture->GetTextureID() : 0;
+	return (r_texture != nullptr) ? r_texture->GetTextureID() : 0;
 }
 
 void C_Material::GetTextureSize(uint& width, uint& height)
 {
-	if (texture != nullptr)
+	if (r_texture != nullptr)
 	{
-		width	= texture->GetTextureWidth();
-		height	= texture->GetTextureHeight();
+		width	= r_texture->GetTextureWidth();
+		height	= r_texture->GetTextureHeight();
 	}
 	else
 	{
@@ -191,16 +217,16 @@ void C_Material::GetTextureSize(uint& width, uint& height)
 
 void C_Material::GetTextureInfo(uint& id, uint& width, uint& height, uint& depth, uint& bpp, uint& bytes, std::string& format, bool& compressed)
 {
-	if (texture != nullptr)
+	if (r_texture != nullptr)
 	{
-		id			= texture->GetTextureID();
-		width		= texture->GetTextureWidth();
-		height		= texture->GetTextureHeight();
-		depth		= texture->GetTextureDepth();
-		bpp			= texture->GetTextureBpp();
-		bytes		= texture->GetTextureBytes();
-		format		= texture->GetTextureFormatString();
-		compressed	= texture->TextureIsCompressed();
+		id			= r_texture->GetTextureID();
+		width		= r_texture->GetTextureWidth();
+		height		= r_texture->GetTextureHeight();
+		depth		= r_texture->GetTextureDepth();
+		bpp			= r_texture->GetTextureBpp();
+		bytes		= r_texture->GetTextureBytes();
+		format		= r_texture->GetTextureFormatString();
+		compressed	= r_texture->TextureIsCompressed();
 	}
 	else
 	{

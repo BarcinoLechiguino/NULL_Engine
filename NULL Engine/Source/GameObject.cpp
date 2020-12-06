@@ -125,16 +125,12 @@ bool GameObject::SaveState(ParsonNode& root) const
 
 	delete[] aabb_points;*/
 
-	// --- NAME
-	// --- IS_ACTIVE
-	// --- IS_STATIC
-	// --- OBB
-	// --- AABB
-	// --- UUID
+	ParsonArray component_array = root.SetArray("Components");
 
 	for (uint i = 0; i < components.size(); ++i)
 	{
-		components[i]->SaveState(root);
+		ParsonNode component_node = component_array.SetNode(components[i]->GetNameFromType());
+		components[i]->SaveState(component_node);
 	}
 
 	return ret;

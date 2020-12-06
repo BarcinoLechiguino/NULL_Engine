@@ -74,8 +74,8 @@ public:
 	//TEXTURE_MAP					current_map;
 
 private:
-	R_Material*					material;													// Currently used material.
-	R_Texture*					texture;													// Currently used texture.
+	R_Material*					r_material;													// Currently used material.
+	R_Texture*					r_texture;													// Currently used texture.
 
 	bool						use_default_tex;
 	bool						use_albedo_tex;

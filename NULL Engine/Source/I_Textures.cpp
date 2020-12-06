@@ -117,9 +117,9 @@ uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
 {
 	uint64 written = 0;
 	
-	std::string dir_path	= TEXTURES_PATH;																	// --- Getting the path to which save the texture.
+	std::string directory	= TEXTURES_PATH;																	// --- Getting the path to which save the texture.
 	std::string file		= std::to_string(r_texture->GetID()) + std::string(TEXTURE_EXTENSION);				// 
-	std::string full_path	= dir_path + file;																	// -----------------------------------------------
+	std::string full_path	= directory + file;																	// -----------------------------------------------
 
 	ilEnable(IL_FILE_OVERWRITE);																				// Allowing DevIL to overwrite existing files.
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);																		// Choosing a specific DXT compression.
@@ -128,7 +128,7 @@ uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
 	if (size > 0)
 	{
 		LOG("[IMPORTER] Size: %d x %d", ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
-		
+
 		ILubyte* data = new ILubyte[size];																		// Allocating the required memory to the data buffer.
 
 		if (ilSaveL(IL_DDS, data, size) > 0)																	// ilSaveL() will save the current image as the specified type.
@@ -143,7 +143,7 @@ uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
 				r_texture->SetLibraryPath(full_path.c_str());													// Storing the library_path and the library_file name of the texture.
 				r_texture->SetLibraryFile(file.c_str());
 				
-				LOG("[IMPORTER] Successfully saved %s in %s", file.c_str(), dir_path.c_str());
+				LOG("[IMPORTER] Successfully saved %s in %s", file.c_str(), directory.c_str());
 			}
 			else
 			{
@@ -161,7 +161,7 @@ uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
 		LOG("[ERROR] Could not get the size of the texture to save! ilSaveL() Error: %s", iluErrorString(ilGetError()));
 	}
 
-	dir_path.clear();
+	directory.clear();
 	file.clear();
 	full_path.clear();
 

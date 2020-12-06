@@ -36,12 +36,16 @@ bool C_Camera::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
+	root.SetNumber("Type", (uint)type);
+
 	return ret;
 }
 
 bool C_Camera::LoadState(ParsonNode& root)
 {
 	bool ret = true;
+
+
 
 	return ret;
 }
