@@ -29,10 +29,13 @@
 #include "MemoryManager.h"
 
 M_Scene::M_Scene(bool is_active) : Module("SceneManager", is_active),
-root_object(nullptr),
-selected_game_object(nullptr)
+master_root				(nullptr),
+scene_root				(nullptr),
+selected_game_object	(nullptr)
 {
-
+	CreateMasterRoot();
+	CreateSceneRoot("MainScene");
+	selected_game_object = scene_root;
 }
 
 M_Scene::~M_Scene()
@@ -53,11 +56,11 @@ bool M_Scene::Start()
 
 	App->camera->LookAt(vec3(0.0f, 0.0f, 0.0f) /*float3::zero*/);
 
-	if (root_object == nullptr)
+	if (scene_root == nullptr)
 	{
-		root_object = CreateGameObject("Main Scene");
+		scene_root = CreateGameObject("Main Scene");
 
-		selected_game_object = root_object;
+		selected_game_object = scene_root;
 	}
 
 	Importer::ImportFile("Assets/Models/street/Street Environment_V01.FBX");
@@ -164,7 +167,7 @@ bool M_Scene::SaveScene() const
 
 	char* buffer		= nullptr;
 	uint size			= root_node.SerializeToBuffer(&buffer);
-	std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(root_object->GetName()) + std::string(".json");
+	std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(scene_root->GetName()) + std::string(".json");
 
 	uint written = App->file_system->Save(path.c_str(), buffer, size);
 	if (written > 0)
@@ -195,28 +198,22 @@ bool M_Scene::LoadScene(ParsonNode& root)
 
 GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 {	
-	std::string complete_name = name;
-
-	if (!game_objects.empty())
+	if (game_objects.empty())
 	{
-		complete_name += std::to_string(game_objects.size());
+		CreateSceneRoot(name);
+		return scene_root;
 	}
 	
-	GameObject* game_object = new GameObject(complete_name);
+	GameObject* game_object = new GameObject(name);
 
 	if (game_object != nullptr)
 	{
-		if (game_objects.empty())
-		{
-			game_object->is_root_object = true;
-		}
-		
-		game_objects.push_back(game_object);
-
 		if (parent != nullptr)
 		{
 			parent->AddChild(game_object);
 		}
+
+		game_objects.push_back(game_object);
 	}
 
 	return game_object;
@@ -295,22 +292,55 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(R_Texture* r_texture)
 	return true;
 }
 
-GameObject* M_Scene::GetRootGameObject() const
+void M_Scene::CreateMasterRoot()
 {
-	return root_object;
+	master_root = new GameObject("MasterRoot");
+	master_root->is_master_root = true;
 }
 
-void M_Scene::SetRootGameObject(GameObject* game_object)
+void M_Scene::DeleteMasterRoot()
 {
-	if (game_object != root_object)
+	RELEASE(master_root);
+}
+
+GameObject* M_Scene::GetMasterRoot() const
+{
+	return master_root;
+}
+
+void M_Scene::CreateSceneRoot(const char* scene_name)
+{
+	if (master_root == nullptr)
 	{
-		root_object = game_object;
+		CreateMasterRoot();																	// Safety Check.
+	}
+	
+	scene_root = new GameObject(scene_name);
+
+	scene_root->is_scene_root = true;
+
+	scene_root->parent = master_root;
+	master_root->AddChild(scene_root);
+
+	game_objects.push_back(scene_root);
+}
+
+GameObject* M_Scene::GetSceneRoot() const
+{
+	return scene_root;
+}
+
+void M_Scene::SetSceneRoot(GameObject* game_object)
+{
+	if (game_object != scene_root)
+	{
+		scene_root = game_object;
 	}
 }
 
 void M_Scene::ChangeSceneName(const char* name)
 {
-	root_object->SetName(name);
+	scene_root->SetName(name);
 }
 
 GameObject* M_Scene::GetSelectedGameObject() const

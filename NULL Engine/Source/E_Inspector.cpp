@@ -40,20 +40,20 @@ bool E_Inspector::Draw(ImGuiIO& io)
 
 	SetIsHovered();
 	
-	GameObject* selected_game_object = App->editor->GetSelectedGameObjectThroughEditor();
-	
-	if (selected_game_object != nullptr)
-	{
-		DrawGameObjectInfo(selected_game_object);
-		DrawComponents(selected_game_object);
+	GameObject* selected = App->editor->GetSelectedGameObjectThroughEditor();
+
+	if (selected != nullptr && !selected->is_master_root && !selected->is_scene_root)
+	{	
+		DrawGameObjectInfo(selected);
+		DrawComponents(selected);
 
 		ImGui::Separator();
 
-		AddComponentCombo(selected_game_object);
+		AddComponentCombo(selected);
 
 		if (show_delete_component_popup)
 		{
-			DeleteComponentPopup(selected_game_object);
+			DeleteComponentPopup(selected);
 		}
 	}
 

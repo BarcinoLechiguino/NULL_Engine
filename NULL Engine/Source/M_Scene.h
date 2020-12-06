@@ -25,7 +25,7 @@ public:
 	bool			SaveConfiguration	(ParsonNode& root) const override;
 	bool			LoadConfiguration	(ParsonNode& root) override;
 
-public:
+public:																														// --- GAME OBJECTS METHODS ---
 	bool			SaveScene								() const;														// 
 	bool			LoadScene								(ParsonNode& configuration);									// 
 
@@ -34,12 +34,17 @@ public:
 	GameObject*		CreateGameObject						(const char* name = nullptr, GameObject* parent = nullptr);		// 
 	void			DeleteGameObject						(GameObject* game_object, uint index = -1);						// 
 	
-																															// --- ROOT GAME OBJECT METHODS ---
-	GameObject*		GetRootGameObject						() const;														//
-	void			SetRootGameObject						(GameObject* game_object);										//
+public:																														// --- MASTER ROOT & SCENE ROOT METHODS ---
+	void			CreateMasterRoot						();																// 
+	void			DeleteMasterRoot						();																// 
+	GameObject*		GetMasterRoot							() const;														// 
+
+	void			CreateSceneRoot							(const char* scene_name);										//
+	GameObject*		GetSceneRoot							() const;														//
+	void			SetSceneRoot							(GameObject* game_object);										//
 	void			ChangeSceneName							(const char* new_name);											//
 
-																															// --- SELECTED GAME OBJECT METHODS ---
+public:																														// --- SELECTED GAME OBJECT METHODS ---
 	void			DeleteSelectedGameObject				();																// 
 	GameObject*		GetSelectedGameObject					() const;														// 
 	void			SetSelectedGameObject					(GameObject* game_object);										// 
@@ -53,8 +58,9 @@ private:
 	std::vector<GameObject*>		game_objects;																			// 
 	//std::map<uint32, GameObject*>	game_objects;																			//
 
-	GameObject*					root_object;																				// 
-	GameObject*					selected_game_object;																		// 
+	GameObject*					master_root;																				// Root of everything. Parent of all scenes.
+	GameObject*					scene_root;																					// Root of the current scene.
+	GameObject*					selected_game_object;																		// Represents the game object that's currently being selected.
 
 	std::vector<Primitive*>		primitives;
 };

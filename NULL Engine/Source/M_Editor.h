@@ -66,12 +66,13 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 
 	void			AddConsoleLog						(const char* log);						// Console: Passing the received console log to the console editor module.
 
-	GameObject*		GetRootGameObjectThroughEditor		() const;								// Hierarchy & inspector: Will return the current root GameObjcect.
-	void			SetRootGameObjectThroughEditor		(GameObject* game_object);				// Hierarchy & inspector: Will set the scene's root GameObject with the passed one.
+	GameObject*		GetSceneRootThroughEditor			() const;								// Hierarchy & inspector: Will return the current root GameObjcect.
+	void			SetSceneRootThroughEditor			(GameObject* game_object);				// Hierarchy & inspector: Will set the scene's root GameObject with the passed one.
 	GameObject*		GetSelectedGameObjectThroughEditor	() const;								// Hierarchy & Inspector: Will return the currently selected GameObject.
 	void			SetSelectedGameObjectThroughEditor	(GameObject* game_object);				// Hierarchy & Inspector: Will set the scene's selected GameObject with the passed one.
 	void			DeleteSelectedGameObject			();										// Hierarchy & Inspector: Will call the Module Scene's delete selected GameObject method.
 	void			CreateGameObject					(const char* name, GameObject* parent);	// Hierarchy & Inspector: Will call the Module Scene's create GameObject method.
+	bool			SelectedIsSceneRoot					() const;
 
 private:
 	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);							// Generates a root window for docking.

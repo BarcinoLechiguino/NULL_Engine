@@ -373,14 +373,14 @@ void M_Editor::AddInputLog(uint key, uint state)
 	}
 }
 
-GameObject* M_Editor::GetRootGameObjectThroughEditor() const
+GameObject* M_Editor::GetSceneRootThroughEditor() const
 {
-	return App->scene->GetRootGameObject();
+	return App->scene->GetSceneRoot();
 }
 
-void M_Editor::SetRootGameObjectThroughEditor(GameObject* game_object)
+void M_Editor::SetSceneRootThroughEditor(GameObject* game_object)
 {
-	App->scene->SetRootGameObject(game_object);
+	App->scene->SetSceneRoot(game_object);
 }
 
 GameObject* M_Editor::GetSelectedGameObjectThroughEditor() const
@@ -401,6 +401,11 @@ void M_Editor::DeleteSelectedGameObject()
 void M_Editor::CreateGameObject(const char* name, GameObject* parent)
 {
 	App->scene->CreateGameObject(name, parent);
+}
+
+bool M_Editor::SelectedIsSceneRoot() const
+{
+	return (App->scene->GetSelectedGameObject() == App->scene->GetSceneRoot());
 }
 
 bool M_Editor::BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags)

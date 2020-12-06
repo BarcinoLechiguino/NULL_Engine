@@ -132,12 +132,13 @@ void C_Transform::SyncLocalToWorld()
 	local_scale				= local_transform.GetScale();
 
 	local_euler_rotation	= euler;
-	//local_euler_rotation = local_rotation.ToEulerXYZ();
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
 		owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
+
+	update_local_transform = false;
 }
 
 float4x4 C_Transform::GetLocalTransform() const

@@ -20,7 +20,8 @@ name			("GameObject"),
 is_active		(true),
 is_static		(false),
 parent			(nullptr),
-is_root_object	(false),
+is_master_root	(false),
+is_scene_root	(false),
 to_delete		(false)
 {
 	//id			= Random::LCG::GetRandomUint();
@@ -36,7 +37,7 @@ name			(name),
 is_active		(is_active),
 is_static		(is_static),
 parent			(nullptr),
-is_root_object	(false),
+is_scene_root	(false),
 to_delete		(false)
 {
 	id = Random::LCG::GetRandomUint();
@@ -195,31 +196,31 @@ bool GameObject::AddChild(GameObject* child)
 {
 	bool ret = true;
 	
-	if (child->is_root_object)
+	if (child->is_master_root)
 	{
-		LOG("[ERROR] Could not add child %s to %s: %s is current root object!", child->name.c_str(), name.c_str(), child->name.c_str());
+		LOG("[ERROR] Could not add child %s to %s! Error: %s is the master root object!", child->name.c_str(), name.c_str(), child->name.c_str());
 		return false;
 	}
 	
-	if (NewChildIsOwnParent(child))
+	if (!is_master_root && child->is_scene_root)
 	{
-		/*for (uint i = 0; i < child->childs.size(); ++i)				// Iterating all the childs of the child.
-		{
-			child->parent->AddChild(child->childs[i]);				// Re-setting the parent of the childs to the parent of the passed child (root->GO->childs => root->childs->GO)
-		}
-
-		child->childs.clear();*/
-		
-		LOG("[ERROR] Cannot re-parent parents into their own children!");
+		LOG("[ERROR] Could not add child %s to %s: %s is current scene root object!", child->name.c_str(), name.c_str(), child->name.c_str());
 		return false;
+	}
+	
+	if (!is_master_root && !is_scene_root)
+	{
+		if (NewChildIsOwnParent(child))
+		{
+			LOG("[ERROR] Cannot re-parent parents into their own children!");
+			return false;
+		}
 	}
 
 	if (child->parent != nullptr)
 	{	
 		child->parent->DeleteChild(child);
-
-		C_Transform* child_transform				= child->GetTransformComponent();
-		child_transform->update_local_transform		= true;
+		child->GetTransformComponent()->update_local_transform = true;
 	}
 
 	child->parent = this;
@@ -236,7 +237,7 @@ bool GameObject::NewChildIsOwnParent(GameObject* child)
 	
 	if (parent_item != nullptr)												// Will check if the child is the parent or parent of the parents of the one who called AddChild()
 	{
-		while (!parent_item->is_root_object)								// Iterate back up to the root object, as it is the parent of everything in the scene.
+		while (!parent_item->is_scene_root)									// Iterate back up to the root object, as it is the parent of everything in the scene.
 		{
 			if (parent_item == child)										// Child is the parent of one of the parent objects of this object (the one which called AddChild())
 			{
@@ -247,6 +248,13 @@ bool GameObject::NewChildIsOwnParent(GameObject* child)
 			parent_item = parent_item->parent;								// Setting the next parent GameObject to iterate.
 		}
 	}
+
+	/*for (uint i = 0; i < child->childs.size(); ++i)						// Iterating all the childs of the child.
+	{
+		child->parent->AddChild(child->childs[i]);							// Re-setting the parent of the childs to the parent of the passed child (root->GO->childs => root->childs->GO)
+	}
+
+	child->childs.clear();*/
 
 	return ret;
 }

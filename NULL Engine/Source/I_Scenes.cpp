@@ -91,7 +91,7 @@ void Importer::Scenes::Utilities::ImportFromAssets(const char* path, std::vector
 			return;
 		}
 
-		Utilities::ProcessNode(path, ai_scene, ai_scene->mRootNode, game_objects, App->scene->GetRootGameObject());
+		Utilities::ProcessNode(path, ai_scene, ai_scene->mRootNode, game_objects, App->scene->GetSceneRoot());
 	}
 }
 

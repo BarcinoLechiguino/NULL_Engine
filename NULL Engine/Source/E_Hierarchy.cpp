@@ -41,14 +41,14 @@ bool E_Hierarchy::CleanUp()
 
 void E_Hierarchy::PrintGameObjectsOnHierarchy()
 {	
-	if (App->editor->GetRootGameObjectThroughEditor() != nullptr)
+	if (App->editor->GetSceneRootThroughEditor() != nullptr)
 	{
 		if (open_hierarchy_tools_popup)
 		{
 			HierarchyToolsPopup();
 		}
 		
-		ProcessGameObject(App->editor->GetRootGameObjectThroughEditor());
+		ProcessGameObject(App->editor->GetSceneRootThroughEditor());
 	}
 }
 
@@ -77,7 +77,7 @@ void E_Hierarchy::ProcessGameObject(GameObject* game_object)
 		node_flags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	if (game_object == App->editor->GetRootGameObjectThroughEditor())
+	if (game_object == App->editor->GetSceneRootThroughEditor())
 	{
 		node_flags |= ImGuiTreeNodeFlags_DefaultOpen;
 	}
@@ -140,7 +140,7 @@ void E_Hierarchy::HierarchyToolsPopup()
 	{
 		if (ImGui::MenuItem("Delete Selected"))
 		{
-			if (App->editor->GetSelectedGameObjectThroughEditor() != App->editor->GetRootGameObjectThroughEditor())
+			if (!App->editor->SelectedIsSceneRoot())
 			{
 				App->editor->DeleteSelectedGameObject();
 				open_hierarchy_tools_popup = false;
@@ -168,5 +168,5 @@ void E_Hierarchy::HierarchyToolsPopup()
 
 bool E_Hierarchy::NodeIsRootObject(GameObject* node)
 {
-	return node == App->editor->GetRootGameObjectThroughEditor();
+	return node == App->editor->GetSceneRootThroughEditor();
 }

@@ -75,7 +75,8 @@ public:
 	GameObject*					parent;
 	C_Transform*				transform;													// Don't know what to do with this. Maybe like Unity? Or have it like the rest of comps?
 
-	bool						is_root_object;												// Will be set to true if this GameObject is M_Scene's root_object.
+	bool						is_master_root;												//
+	bool						is_scene_root;												// Will be set to true if this GameObject is M_Scene's scene root object.
 	bool						to_delete;													// Will determine whether or not the GameObject should be deleted. See M_Scene's DeleteGameObject().
 
 	OBB							obb;
