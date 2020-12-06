@@ -1,13 +1,13 @@
 #ifndef __E_ENGINE_CONFIGURATION_H__
 #define __E_ENGINE_CONFIGURATION_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
 struct HardwareInfo;
 
 #define MAX_HISTOGRAM_SIZE 100
 
-class E_Configuration : public E_Panel
+class E_Configuration : public EditorPanel
 {
 public:
 	E_Configuration();

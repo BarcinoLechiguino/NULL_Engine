@@ -1,9 +1,9 @@
 #ifndef __E_TOOLBAR_H__
 #define __E_TOOLBAR_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
-class E_Toolbar : public E_Panel
+class E_Toolbar : public EditorPanel
 {
 public:
 	E_Toolbar();

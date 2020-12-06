@@ -8,14 +8,16 @@ class ParsonNode;
 
 class GameObject;
 
-class E_Panel;
+class EditorPanel;
 class E_Toolbar;
 class E_Configuration;
 class E_Hierarchy;
 class E_Inspector;
 class E_Console;
+class E_Project;
 class E_ImGuiDemo;
 class E_About;
+class E_LoadFile;
 
 enum class IMGUI_STYLE
 {
@@ -44,13 +46,13 @@ public:
 public:
 	bool			GetEvent							(SDL_Event* event) const;				// Will return false if there was no event to read.
 
-	void			AddGuiPanel							(E_Panel* panel);						// Will add the E_Panel* passed as argument to the gui_panels vector.
+	void			AddEditorPanel						(EditorPanel* panel);					// Will add the E_Panel* passed as argument to the gui_panels vector.
 
 	void			EditorShortcuts						();										// All the shortcuts related to the editor have been gathered here.
 	void			CheckShowHideFlags					();										// Will check whether or not each of the panels must be enabled or disabled.
 
 	bool			EditorIsBeingHovered				() const;								// Will check whether or not any of the editor panels is being hovered.
-	bool			RenderGuiPanels						() const;								// Will call ImGui::Render() to render all the panels on the screen.
+	bool			RenderEditorPanels					() const;								// Will call ImGui::Render() to render all the panels on the screen.
 	bool			InitializeImGui						() const;								// Creates an ImGui Context and sets an initial configuration for it.
 
 public:																							// --- Panel/Window Methods. Acts as an interface between other modules and the panels.
@@ -79,25 +81,27 @@ private:
 	void BeginDockspace(ImGuiIO& io, const char* dockspace_id, ImGuiDockNodeFlags docking_flags = ImGuiDockNodeFlags_None, ImVec2 size = { 0.0f, 0.0f });	// Generates a new dockspace.
 
 public:
-	std::vector<E_Panel*>	gui_panels;															// Will store all the editor modules. Will be iterated for drawing all the panels.
+	std::vector<EditorPanel*>	editor_panels;													// Will store all the editor modules. Will be iterated for drawing all the panels.
 
-	E_Toolbar*				toolbar; 
-	E_Configuration*		configuration;
-	E_Hierarchy*			hierarchy;
-	E_Inspector*			inspector;
-	E_Console*				console;
-	E_ImGuiDemo*			imgui_demo;
-	E_About*				about;
+	E_Toolbar*					toolbar; 
+	E_Configuration*			configuration;
+	E_Hierarchy*				hierarchy;
+	E_Inspector*				inspector;
+	E_Console*					console;
+	E_Project*					project;
+	E_ImGuiDemo*				imgui_demo;
+	E_About*					about;
+	E_LoadFile*					load_file;
 
-	ImVec4					clear_color;														// Will be used to set the clear color of the rendering environment.
+	ImVec4						clear_color;													// Will be used to set the clear color of the rendering environment.
 
-	bool					show_configuration;													// Will keep track of whether or not to show the Configuration window.
-	bool					show_hierarchy;														// Will keep track of whether or not to show the Hierarchy window.
-	bool					show_inspector;														// Will keep track of whether or not to show the Inspector window.
-	bool					show_console;														// Will keep track of whether or not to show the Console window.
-	bool					show_imgui_demo;													// Will keep track of whether or not to show the ImGui Demo window.
-	bool					show_about_popup;													// Will keep track of whether or not to show the About window popup.
-	bool					show_close_app_popup;												// Will keep track of whether or not to show the Close App windowwindow.
+	bool						show_configuration;												// Will keep track of whether or not to show the Configuration window.
+	bool						show_hierarchy;													// Will keep track of whether or not to show the Hierarchy window.
+	bool						show_inspector;													// Will keep track of whether or not to show the Inspector window.
+	bool						show_console;													// Will keep track of whether or not to show the Console window.
+	bool						show_imgui_demo;												// Will keep track of whether or not to show the ImGui Demo window.
+	bool						show_about_popup;												// Will keep track of whether or not to show the About window popup.
+	bool						show_close_app_popup;											// Will keep track of whether or not to show the Close App windowwindow.
 };
 
 #endif // !__M_EDITOR_H__

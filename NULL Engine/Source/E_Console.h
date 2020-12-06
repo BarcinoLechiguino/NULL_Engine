@@ -1,9 +1,9 @@
 #ifndef __E_CONSOLE_H__
 #define __E_CONSOLE_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
-class E_Console : public E_Panel
+class E_Console : public EditorPanel
 {
 public:
 	E_Console();

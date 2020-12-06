@@ -1,9 +1,9 @@
-#ifndef __E_TEST_H__
-#define __E_TEST_H__
+#ifndef __E_IMGUI_DEMO_H__
+#define __E_IMGUI_DEMO_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
-class E_ImGuiDemo : public E_Panel
+class E_ImGuiDemo : public EditorPanel
 {
 public:
 	E_ImGuiDemo();
@@ -24,4 +24,4 @@ private:
 	int				counter;
 };
 
-#endif // !_E_TEST_H__
+#endif // !_E_IMGUI_DEMO_H__

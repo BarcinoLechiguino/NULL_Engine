@@ -4,7 +4,7 @@
 
 #include "E_Console.h"
 
-E_Console::E_Console() : E_Panel("Console")
+E_Console::E_Console() : EditorPanel("Console")
 {
 	scroll_to_bottom = true;
 	show_console = IsActive();

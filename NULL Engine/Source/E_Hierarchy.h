@@ -1,11 +1,11 @@
 #ifndef __E_HIERARCHY_H__
 #define __E_HIERARCHY_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
 class GameObject;
 
-class E_Hierarchy : public E_Panel
+class E_Hierarchy : public EditorPanel
 {
 public:
 	E_Hierarchy();

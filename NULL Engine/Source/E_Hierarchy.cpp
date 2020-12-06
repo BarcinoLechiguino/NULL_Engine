@@ -5,7 +5,7 @@
 
 #include "E_Hierarchy.h"
 
-E_Hierarchy::E_Hierarchy() : E_Panel("Hierarchy"), 
+E_Hierarchy::E_Hierarchy() : EditorPanel("Hierarchy"), 
 dragged_game_object			(nullptr), 
 open_hierarchy_tools_popup	(false)
 {

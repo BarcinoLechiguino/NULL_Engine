@@ -12,7 +12,7 @@
 
 #define MAX_INPUT_LOG_SIZE 1000
 
-E_Configuration::E_Configuration() : E_Panel("Configuration")
+E_Configuration::E_Configuration() : EditorPanel("Configuration")
 {
 	for (int i = 0; i < MAX_HISTOGRAM_SIZE; ++i)
 	{

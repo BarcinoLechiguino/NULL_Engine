@@ -8,7 +8,7 @@
 
 #include "E_About.h"
 
-E_About::E_About() : E_Panel("About", false)
+E_About::E_About() : EditorPanel("About", false)
 {
 
 }

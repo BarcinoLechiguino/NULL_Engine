@@ -165,9 +165,6 @@
     <ClCompile Include="Source\Resource.cpp">
       <Filter>Source\3_Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\E_Panel.cpp">
-      <Filter>Source\2_Editor</Filter>
-    </ClCompile>
     <ClCompile Include="Source\E_About.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
@@ -441,14 +438,17 @@
     <ClCompile Include="Source\M_ResourceManager.cpp">
       <Filter>Source\1_Modules</Filter>
     </ClCompile>
-    <ClCompile Include="E_Project.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
-    <ClCompile Include="E_LoadFile.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
     <ClCompile Include="Source\E_Configuration.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_LoadFile.cpp">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Project.cpp">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EditorPanel.cpp">
+      <Filter>Source\2_Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -529,9 +529,6 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\DevIL\include\ilut_config.h">
       <Filter>Dependencies\DevIL</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_Panel.h">
-      <Filter>Source\2_Editor</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_About.h">
       <Filter>Source\2_Editor\Panels</Filter>
@@ -974,14 +971,17 @@
     <ClInclude Include="Source\M_ResourceManager.h">
       <Filter>Source\1_Modules</Filter>
     </ClInclude>
-    <ClInclude Include="E_Project.h">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClInclude>
-    <ClInclude Include="E_LoadFile.h">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClInclude>
     <ClInclude Include="Source\E_Configuration.h">
       <Filter>Source\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_LoadFile.h">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Project.h">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EditorPanel.h">
+      <Filter>Source\2_Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

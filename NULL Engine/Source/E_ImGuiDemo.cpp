@@ -4,7 +4,7 @@
 
 #include "E_ImGuiDemo.h"
 
-E_ImGuiDemo::E_ImGuiDemo() : E_Panel("Test")
+E_ImGuiDemo::E_ImGuiDemo() : EditorPanel("ImGuiDemo")
 {
 	show_demo_window		= true;
 	show_another_window		= false;

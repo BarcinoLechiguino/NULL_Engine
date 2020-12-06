@@ -5,7 +5,7 @@
 
 #include "E_Toolbar.h"
 
-E_Toolbar::E_Toolbar() : E_Panel("Toolbar")
+E_Toolbar::E_Toolbar() : EditorPanel("Toolbar")
 {
 
 }

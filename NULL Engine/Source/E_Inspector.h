@@ -1,7 +1,7 @@
 #ifndef __E_INSPECTOR_H__
 #define __E_INSPECTOR_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
 class GameObject;
 class Component;
@@ -11,7 +11,7 @@ class C_Material;
 class C_Light;
 class C_Camera;
 
-class E_Inspector : public E_Panel
+class E_Inspector : public EditorPanel
 {
 public:
 	E_Inspector();

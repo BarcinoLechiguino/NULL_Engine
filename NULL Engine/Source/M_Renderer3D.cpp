@@ -120,7 +120,7 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 		}
 	}
 
-	App->editor->RenderGuiPanels();
+	App->editor->RenderEditorPanels();
 
 	SDL_GL_SwapWindow(App->window->GetWindow());
 

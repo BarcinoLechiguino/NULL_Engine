@@ -10,14 +10,16 @@
 #include "M_Scene.h"
 #include "GameObject.h"
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 #include "E_Toolbar.h"
 #include "E_Configuration.h"
 #include "E_Hierarchy.h"
 #include "E_Inspector.h"
 #include "E_Console.h"
+#include "E_Project.h"
 #include "E_ImGuiDemo.h"
 #include "E_About.h"
+#include "E_LoadFile.h"
 
 #include "M_Editor.h"
 
@@ -32,24 +34,30 @@ configuration	(nullptr),
 hierarchy		(nullptr),
 inspector		(nullptr),
 console			(nullptr),
+project			(nullptr),
 imgui_demo		(nullptr),
-about			(nullptr)
+about			(nullptr),
+load_file		(nullptr)
 {
 	toolbar			= new E_Toolbar();
 	configuration	= new E_Configuration();
 	hierarchy		= new E_Hierarchy();
 	inspector		= new E_Inspector();
 	console			= new E_Console();
+	project			= new E_Project();
 	imgui_demo		= new E_ImGuiDemo();
 	about			= new E_About();
+	load_file		= new E_LoadFile();
 
-	AddGuiPanel(toolbar);
-	AddGuiPanel(configuration);
-	AddGuiPanel(hierarchy);
-	AddGuiPanel(inspector);
-	AddGuiPanel(console);
-	AddGuiPanel(imgui_demo);
-	AddGuiPanel(about);
+	AddEditorPanel(toolbar);
+	AddEditorPanel(configuration);
+	AddEditorPanel(hierarchy);
+	AddEditorPanel(inspector);
+	AddEditorPanel(console);
+	AddEditorPanel(project);
+	AddEditorPanel(imgui_demo);
+	AddEditorPanel(about);
+	AddEditorPanel(load_file);
 
 	show_configuration		= true;
 	show_hierarchy			= true;
@@ -114,16 +122,16 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 	if (BeginRootWindow(io, "Root window", true, ImGuiWindowFlags_MenuBar))
 	{
 		bool draw = true;
-		for (uint i = 0; i < gui_panels.size(); ++i)
+		for (uint i = 0; i < editor_panels.size(); ++i)
 		{
-			if (gui_panels[i]->IsActive())
+			if (editor_panels[i]->IsActive())
 			{
-				draw = gui_panels[i]->Draw(io);
+				draw = editor_panels[i]->Draw(io);
 
 				if (!draw)
 				{
 					ret = UPDATE_STATUS::STOP;
-					LOG("[EDITOR] Exited through %s Panel", gui_panels[i]->GetName());
+					LOG("[EDITOR] Exited through %s Panel", editor_panels[i]->GetName());
 					break;
 				}
 			}
@@ -137,13 +145,13 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 
 bool M_Editor::CleanUp()
 {
-	for (uint i = 0; i < gui_panels.size(); ++i)
+	for (uint i = 0; i < editor_panels.size(); ++i)
 	{
-		gui_panels[i]->CleanUp();
-		RELEASE(gui_panels[i]);
+		editor_panels[i]->CleanUp();
+		RELEASE(editor_panels[i]);
 	}
 
-	gui_panels.clear();
+	editor_panels.clear();
 	
 	// ImGui CleanUp()
 	ImGui_ImplOpenGL3_Shutdown();
@@ -173,9 +181,9 @@ bool M_Editor::GetEvent(SDL_Event* event) const
 	return ImGui_ImplSDL2_ProcessEvent(event);											
 }
 
-void M_Editor::AddGuiPanel(E_Panel* panel)
+void M_Editor::AddEditorPanel(EditorPanel* panel)
 {
-	gui_panels.push_back(panel);
+	editor_panels.push_back(panel);
 }
 
 void M_Editor::EditorShortcuts()
@@ -236,9 +244,9 @@ void M_Editor::CheckShowHideFlags()
 
 bool M_Editor::EditorIsBeingHovered() const
 {
-	for (uint i = 0; i < gui_panels.size(); ++i)
+	for (uint i = 0; i < editor_panels.size(); ++i)
 	{
-		if (gui_panels[i]->IsHovered())
+		if (editor_panels[i]->IsHovered())
 		{
 			return true;
 		}
@@ -247,7 +255,7 @@ bool M_Editor::EditorIsBeingHovered() const
 	return false;
 }
 
-bool M_Editor::RenderGuiPanels() const
+bool M_Editor::RenderEditorPanels() const
 {
 	// Rendering all ImGui elements
 	ImGuiIO& io = ImGui::GetIO();
@@ -340,7 +348,7 @@ void M_Editor::UpdateFrameData(int frames, int ms)
 
 void M_Editor::AddConsoleLog(const char* log)
 {
-	if (gui_panels.size() > 0)
+	if (editor_panels.size() > 0)
 	{
 		if (console != nullptr)
 		{

@@ -1,9 +1,9 @@
 #ifndef __E_VIEWPORT_H__
 #define __E_VIEWPORT_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
-class E_Viewport : public E_Panel
+class E_Viewport : public EditorPanel
 {
 public:
 	E_Viewport();

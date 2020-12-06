@@ -1,9 +1,9 @@
 #ifndef __E_ABOUT_H__
 #define __E_ABOUT_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
-class E_About : public E_Panel
+class E_About : public EditorPanel
 {
 public:
 	E_About();

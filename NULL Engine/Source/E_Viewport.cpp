@@ -1,6 +1,6 @@
 #include "E_Viewport.h"
 
-E_Viewport::E_Viewport() : E_Panel("Viewport")
+E_Viewport::E_Viewport() : EditorPanel("Viewport")
 {
 
 }

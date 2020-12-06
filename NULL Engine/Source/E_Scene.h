@@ -1,9 +1,9 @@
 #ifndef __E_SCENE_H__
 #define __E_SCENE_H__
 
-#include "E_Panel.h"
+#include "EditorPanel.h"
 
-class E_Scene : public E_Panel
+class E_Scene : public EditorPanel
 {
 public:
 	E_Scene();

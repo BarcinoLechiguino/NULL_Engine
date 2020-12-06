@@ -1,6 +1,6 @@
 #include "E_Scene.h"
 
-E_Scene::E_Scene() : E_Panel("Scene")
+E_Scene::E_Scene() : EditorPanel("Scene")
 {
 
 }

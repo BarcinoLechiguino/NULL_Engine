@@ -18,7 +18,7 @@
 #define MAX_VALUE 100000
 #define MIN_VALUE -100000
 
-E_Inspector::E_Inspector() : E_Panel("Inspector"),
+E_Inspector::E_Inspector() : EditorPanel("Inspector"),
 show_delete_component_popup	(false),
 component_type				(0),
 map_to_display				(0),
