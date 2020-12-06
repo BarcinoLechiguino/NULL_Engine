@@ -15,7 +15,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject() :
-id				(Random::LCG::GetRandomUint()),
+uid				(Random::LCG::GetRandomUint()),
 name			("GameObject"),
 is_active		(true),
 is_static		(false),
@@ -32,7 +32,7 @@ to_delete		(false)
 }
 
 GameObject::GameObject(std::string name, bool is_active, bool is_static) :
-id				(Random::LCG::GetRandomUint()),
+uid				(Random::LCG::GetRandomUint()),
 name			(name),
 is_active		(is_active),
 is_static		(is_static),
@@ -40,7 +40,7 @@ parent			(nullptr),
 is_scene_root	(false),
 to_delete		(false)
 {
-	id = Random::LCG::GetRandomUint();
+	uid = Random::LCG::GetRandomUint();
 
 	if (name.empty())
 	{
@@ -88,9 +88,13 @@ bool GameObject::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
-	root.SetNumber("UID", id);
-	(parent != nullptr) ? root.SetNumber("ParentUID", parent->id) : 0;
-	
+	root.SetNumber("UID", uid);
+
+	if (parent != nullptr)
+	{
+		root.SetNumber("ParentUID", parent->uid);
+	}
+
 	root.SetString("Name", name.c_str());
 	root.SetBool("IsActive", is_active);
 	root.SetBool("IsStatic", is_static);
@@ -441,9 +445,9 @@ std::vector<C_Mesh*> GameObject::GetAllMeshComponents()
 	return mesh_components;
 }
 
-uint32 GameObject::GetID() const
+uint32 GameObject::GetUID() const
 {
-	return id;
+	return uid;
 }
 
 // --- GAME OBJECT GETTERS AND SETTERS ---
@@ -462,9 +466,9 @@ bool GameObject::IsStatic() const
 	return is_static;
 }
 
-void GameObject::ResetID()
+void GameObject::ResetUID()
 {
-	id = Random::LCG::GetRandomUint();
+	uid = Random::LCG::GetRandomUint();
 }
 
 void GameObject::SetName(const char* new_name)

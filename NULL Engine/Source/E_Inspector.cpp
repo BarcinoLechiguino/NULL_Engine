@@ -57,8 +57,6 @@ bool E_Inspector::Draw(ImGuiIO& io)
 		}
 	}
 
-	//ImGui::ShowStyleEditor();
-
 	//ImGui::Text("WantCaptureMouse: %d", io.WantCaptureMouse);
 	//ImGui::Text("WantCaptureKeyboard: %d", io.WantCaptureKeyboard);
 	//ImGui::Text("WantTextInput: %d", io.WantTextInput);

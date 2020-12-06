@@ -56,12 +56,12 @@ public:																							// --- COMPONENT GETTERS AND SETTERS
 	std::vector<C_Mesh*>	GetAllMeshComponents		();
 
 public:																								// --- GAME OBJECT GETTERS AND SETTERS
-	uint32			GetID								() const;
+	uint32			GetUID								() const;
 	const char*		GetName								() const;									// 
 	bool			IsActive							() const;									// 
 	bool			IsStatic							() const;									// 
 
-	void			ResetID								();											// 
+	void			ResetUID							();											// 
 	void			SetName								(const char* new_name);						// 
 	void			SetIsActive							(const bool& set_to);						// 
 	void			SetIsStatic							(const bool& set_to);						// 
@@ -83,7 +83,7 @@ public:
 	AABB						aabb;
 
 private:
-	uint32						id;
+	uint32						uid;
 	std::string					name;
 	bool						is_active;
 	bool						is_static;

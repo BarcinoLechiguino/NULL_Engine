@@ -12,7 +12,7 @@
 
 #include "E_Panel.h"
 #include "E_Toolbar.h"
-#include "E_EngineConfiguration.h"
+#include "E_Configuration.h"
 #include "E_Hierarchy.h"
 #include "E_Inspector.h"
 #include "E_Console.h"
@@ -36,7 +36,7 @@ imgui_demo		(nullptr),
 about			(nullptr)
 {
 	toolbar			= new E_Toolbar();
-	configuration	= new E_EngineConfiguration();
+	configuration	= new E_Configuration();
 	hierarchy		= new E_Hierarchy();
 	inspector		= new E_Inspector();
 	console			= new E_Console();

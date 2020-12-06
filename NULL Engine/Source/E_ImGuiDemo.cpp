@@ -86,6 +86,14 @@ bool E_ImGuiDemo::Draw(ImGuiIO& io)
 		ImGui::Text("counter = %d", counter);
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+		ImGui::Separator();
+
+		if (ImGui::CollapsingHeader("User Guide"))
+		{
+			ImGui::ShowUserGuide();
+		}
+
 		ImGui::End();
 	}
 
@@ -98,6 +106,7 @@ bool E_ImGuiDemo::Draw(ImGuiIO& io)
 		{
 			show_another_window = false;
 		}
+
 
 		ImGui::End();
 	}

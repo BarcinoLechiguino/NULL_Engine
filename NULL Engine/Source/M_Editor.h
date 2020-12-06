@@ -10,7 +10,7 @@ class GameObject;
 
 class E_Panel;
 class E_Toolbar;
-class E_EngineConfiguration;
+class E_Configuration;
 class E_Hierarchy;
 class E_Inspector;
 class E_Console;
@@ -82,7 +82,7 @@ public:
 	std::vector<E_Panel*>	gui_panels;															// Will store all the editor modules. Will be iterated for drawing all the panels.
 
 	E_Toolbar*				toolbar; 
-	E_EngineConfiguration*	configuration;
+	E_Configuration*		configuration;
 	E_Hierarchy*			hierarchy;
 	E_Inspector*			inspector;
 	E_Console*				console;

@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="E_LoadFile.cpp" />
+    <ClCompile Include="E_Project.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Component.cpp" />
@@ -73,7 +75,7 @@
     <ClCompile Include="Source\Dependencies\parson\include\parson.c" />
     <ClCompile Include="Source\Dependencies\PCG\include\pcg_basic.c" />
     <ClCompile Include="Source\E_About.cpp" />
-    <ClCompile Include="Source\E_EngineConfiguration.cpp" />
+    <ClCompile Include="Source\E_Configuration.cpp" />
     <ClCompile Include="Source\E_Console.cpp" />
     <ClCompile Include="Source\E_Hierarchy.cpp" />
     <ClCompile Include="Source\E_Inspector.cpp" />
@@ -119,6 +121,8 @@
     <ClCompile Include="Source\T_Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="E_LoadFile.h" />
+    <ClInclude Include="E_Project.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
     <ClInclude Include="Source\Color.h" />
@@ -239,7 +243,7 @@
     <ClInclude Include="Source\DevIL.h" />
     <ClInclude Include="Source\FileSystemDefinitions.h" />
     <ClInclude Include="Source\E_About.h" />
-    <ClInclude Include="Source\E_EngineConfiguration.h" />
+    <ClInclude Include="Source\E_Configuration.h" />
     <ClInclude Include="Source\E_Console.h" />
     <ClInclude Include="Source\E_Hierarchy.h" />
     <ClInclude Include="Source\E_Inspector.h" />
