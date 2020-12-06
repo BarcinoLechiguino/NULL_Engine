@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "M_Renderer3D.h"
+#include "M_ResourceManager.h"
 
 #include "R_Mesh.h"
 
@@ -41,12 +42,7 @@ bool C_Mesh::CleanUp()
 {
 	bool ret = true;
 
-	if (r_mesh != nullptr)
-	{
-		r_mesh->CleanUp();
-
-		RELEASE(r_mesh);
-	}
+	r_mesh = nullptr;												// Resources are now taken care by M_ResourceManager;
 
 	return ret;
 }

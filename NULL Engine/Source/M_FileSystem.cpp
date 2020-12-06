@@ -510,12 +510,12 @@ uint M_FileSystem::Save(const char* file, const void* buffer, uint size, bool ap
 		PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_close(fs_file);						// Method that closes a PhysFS file handle. Returns 1 on success.
 		if (result == PHYSFS_RESULT::FAILURE)
 		{
-			LOG("[error] File System error while closing file %s: %s", file, PHYSFS_getLastError());
+			LOG("[ERROR] File System error while closing file %s: %s", file, PHYSFS_getLastError());
 		}
 	}
 	else
 	{
-		LOG("[error] File System error while opening file %s: %s", file, PHYSFS_getLastError());
+		LOG("[ERROR] File System error while opening file %s: %s", file, PHYSFS_getLastError());
 	}
 
 	return ret;
@@ -558,7 +558,7 @@ bool M_FileSystem::DuplicateFile(const char* source_file, const char* destinatio
 	}
 	else
 	{
-		LOG("[error] File could not be duplicated");
+		LOG("[ERROR] File could not be duplicated");
 		return false;
 	}
 }
@@ -590,7 +590,7 @@ bool M_FileSystem::Remove(const char* file)
 		}
 		else
 		{
-			LOG("[error] File System error while trying to delete [%s]: %s", file, PHYSFS_getLastError());
+			LOG("[ERROR] File System error while trying to delete [%s]: %s", file, PHYSFS_getLastError());
 		}
 	}
 	
@@ -603,7 +603,7 @@ uint64 M_FileSystem::GetLastModTime(const char* file_name) const
 
 	if (last_mod_time == -1)
 	{
-		LOG("[error] File System error while trying to determine last modified time of file [%s]", file_name);
+		LOG("[ERROR] File System error while trying to determine last modified time of file [%s]", file_name);
 	}
 	
 	return (uint)last_mod_time;

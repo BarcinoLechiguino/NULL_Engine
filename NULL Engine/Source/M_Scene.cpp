@@ -167,7 +167,7 @@ bool M_Scene::SaveScene() const
 
 	char* buffer		= nullptr;
 	uint size			= root_node.SerializeToBuffer(&buffer);
-	std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(scene_root->GetName()) + std::string(".json");
+	std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(scene_root->GetName()) + std::string(JSON_EXTENSION);
 
 	uint written = App->file_system->Save(path.c_str(), buffer, size);
 	if (written > 0)

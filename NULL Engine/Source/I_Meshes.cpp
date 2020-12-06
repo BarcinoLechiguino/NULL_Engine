@@ -173,7 +173,7 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 
 	if (size == 0)
 	{
-		LOG("[WARNING] Mesh %u had no data to Save!", r_mesh->GetID());
+		LOG("[WARNING] Mesh %u had no data to Save!", r_mesh->GetUID());
 		return 0;
 	}
 
@@ -214,7 +214,7 @@ uint64 Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 	delete[] aabb_corners;
 
 	// --- SAVING THE BUFFER ---
-	std::string path = std::string(MESHES_PATH) + std::to_string(r_mesh->GetID()) + std::string(MESH_EXTENSION);
+	std::string path = std::string(MESHES_PATH) + std::to_string(r_mesh->GetUID()) + std::string(MESHES_EXTENSION);
 
 	written = App->file_system->Save(path.c_str(), *buffer, size);
 	

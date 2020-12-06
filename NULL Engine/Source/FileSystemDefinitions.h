@@ -20,9 +20,11 @@
 #define TEXTURES_PATH			"Library/Textures/"
 
 // File Extensions ----------------------------------
-#define MESH_EXTENSION			".nemesh"
-#define MATERIAL_EXTENSION		".nemat"
-#define SCENE_EXTENSION			".nescene"
-#define TEXTURE_EXTENSION		".netex"
+#define MESHES_EXTENSION		".nemesh"
+#define MATERIALS_EXTENSION		".nemat"
+#define SCENES_EXTENSION		".nescene"
+#define TEXTURES_EXTENSION		".netex"
+
+#define JSON_EXTENSION			".json"
 
 #endif // !__FILE_SYSTEM_DEFINITIONS_H__

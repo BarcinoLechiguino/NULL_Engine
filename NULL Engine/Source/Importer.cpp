@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "M_FileSystem.h"
 #include "M_Scene.h"
+#include "M_ResourceManager.h"
 
 #include "R_Texture.h"
 
@@ -71,7 +72,12 @@ bool Importer::Utilities::ImportTexture(const char* path)
 
 	if (r_texture != nullptr && r_texture->GetTextureID() != 0)
 	{
-		ret = App->scene->ApplyNewTextureToSelectedGameObject(r_texture);
+		r_texture = (R_Texture*)App->resource_manager->AddResource(r_texture);
+		
+		if (r_texture != nullptr)
+		{
+			ret = App->scene->ApplyNewTextureToSelectedGameObject(r_texture);
+		}
 	}
 	else
 	{

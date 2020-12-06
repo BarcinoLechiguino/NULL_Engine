@@ -39,29 +39,8 @@ bool C_Material::CleanUp()
 {
 	bool ret = true;
 
-	if (r_material != nullptr)
-	{
-		r_material->CleanUp();
-
-		RELEASE(r_material);
-	}
-
-	if (r_texture != nullptr)
-	{
-		r_texture->CleanUp();
-
-		RELEASE(r_texture);
-	}
-
-	/*for (uint i = 0; i < textures.size(); ++i)
-	{
-		textures[i]->CleanUp();											// FIX: nullptr R_Textures* can be found inside.
-
-		delete textures[i];
-		textures[i] = nullptr;
-	}
-
-	textures.clear();*/
+	r_material	= nullptr;									// Resources are now taken care by M_ResourceManager.
+	r_texture	= nullptr;									// --------------------------------------------------
 
 	return ret;
 }
@@ -92,7 +71,7 @@ bool C_Material::SaveState(ParsonNode& root) const
 	{
 		ParsonNode texture = root.SetNode("Texture");
 
-		texture.SetNumber("TextureID", r_texture->GetID());
+		texture.SetNumber("TextureID", r_texture->GetUID());
 		texture.SetString("Path", r_texture->GetLibraryPath());
 	}
 

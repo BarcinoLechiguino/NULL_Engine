@@ -441,6 +441,9 @@
     <ClCompile Include="Source\SoftwareInfo.cpp">
       <Filter>Source\6_Containers\SystemInfo</Filter>
     </ClCompile>
+    <ClCompile Include="Source\M_ResourceManager.cpp">
+      <Filter>Source\1_Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -964,6 +967,9 @@
     </ClInclude>
     <ClInclude Include="Source\SoftwareInfo.h">
       <Filter>Source\6_Containers\SystemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\M_ResourceManager.h">
+      <Filter>Source\1_Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

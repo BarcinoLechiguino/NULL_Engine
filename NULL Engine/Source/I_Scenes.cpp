@@ -13,6 +13,7 @@
 #include "Application.h"
 #include "M_FileSystem.h"
 #include "M_Scene.h"															// TMP
+#include "M_ResourceManager.h"
 
 #include "Resource.h"															// See if they can be delegated to the other importers.
 #include "R_Mesh.h"																// 
@@ -162,36 +163,41 @@ const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node
 
 void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const char* path, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object)
 {
+	const char* node_name = ai_node->mName.C_Str();
+	
 	for (uint i = 0; i < ai_node->mNumMeshes; ++i)
 	{
 		aiMesh* ai_mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];
 
 		if (ai_mesh != nullptr && ai_mesh->HasFaces())
 		{
-			Importer::Scenes::Utilities::ImportMesh(path, ai_mesh, game_object);
+			Importer::Scenes::Utilities::ImportMesh(path, node_name, ai_mesh, game_object);
 
 			if (ai_mesh->mMaterialIndex >= 0)
 			{
 				aiMaterial* ai_material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
 				
-				Importer::Scenes::Utilities::ImportMaterial(path, ai_material, game_object);
+				Importer::Scenes::Utilities::ImportMaterial(path, node_name, ai_material, game_object);
 			}
 		}
 	}   
 }
 
-void Importer::Scenes::Utilities::ImportMesh(const char* path, const aiMesh* ai_mesh, GameObject* game_object)
+void Importer::Scenes::Utilities::ImportMesh(const char* path, const char* name, const aiMesh* ai_mesh, GameObject* game_object)
 {
 	R_Mesh* r_mesh = new R_Mesh();
 
+	std::string assets_file = std::string(name) + std::string(MESHES_EXTENSION);									// The name of the mesh will be stored in ai_node->mName.C_Str();
 	r_mesh->SetAssetsPath(path);
-	r_mesh->SetAssetsFile(App->file_system->GetFileAndExtension(path).c_str());
+	r_mesh->SetAssetsFile(assets_file.c_str());
+	assets_file.clear();
 
 	Importer::Meshes::Import(ai_mesh, r_mesh);
 
 	if (r_mesh != nullptr)
 	{
 		r_mesh->SetLibraryPathAndFile();
+		App->resource_manager->AddResource(r_mesh);
 
 		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
 
@@ -204,45 +210,62 @@ void Importer::Scenes::Utilities::ImportMesh(const char* path, const aiMesh* ai_
 	}
 }
 
-void Importer::Scenes::Utilities::ImportMaterial(const char* path, const aiMaterial* ai_material, GameObject* game_object)
+void Importer::Scenes::Utilities::ImportMaterial(const char* path, const char* name, const aiMaterial* ai_material, GameObject* game_object)
 {
-	R_Material* r_material	= new R_Material();														// Only considering one texture per mesh.
+	R_Material* r_material	= new R_Material();																	// Only considering one texture per mesh.
 	R_Texture* r_texture	= new R_Texture();
 
+	std::string assets_file = std::string(name) + std::string(MATERIALS_EXTENSION);
 	r_material->SetAssetsPath(path);
-	r_material->SetAssetsFile(App->file_system->GetFileAndExtension(path).c_str());
+	r_material->SetAssetsFile(assets_file.c_str());
+	assets_file.clear();
 
 	Importer::Materials::Import(path, ai_material, r_material, r_texture);
 
-	if (r_material != nullptr)
-	{
-		r_material->SetLibraryPathAndFile();
+	if (r_material == nullptr)																					// Checking that the resources are valid.
+	{																											// 
+		LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());			// 
+																												// 
+		r_material->CleanUp();																					// 
+		r_texture->CleanUp();																					// 
+																												// 
+		RELEASE(r_material);																					// 
+		RELEASE(r_texture);																						// 
+																												// 
+		return;																									// 
+	}																											// 
+																												// 
+	if (r_texture->GetTextureID() == 0)																			// 
+	{																											// 
+		r_texture->CleanUp();																					// 
+		RELEASE(r_texture);																						// 
+		LOG("[IMPORTER] Imported aiMaterial had no texture!");													// 
+	}																											// --------------------------------------
+	
+	r_material->SetLibraryPathAndFile();																		// Adding the resources to the resource manager's maps
+	App->resource_manager->AddResource(r_material);																// 
+	//(r_texture != nullptr) ? App->resource_manager->AddResource(r_texture) : nullptr;							// 
+	if (r_texture != nullptr)																					// 
+	{																											// 
+		App->resource_manager->AddResource(r_texture);															// 
+	}																											// ----------------------------------------------------
 
-		C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
 
-		if (c_material != nullptr)
-		{
-			c_material->SetMaterial(r_material);														// C_Material will always have a R_Material*.
-
-			if (r_texture->GetTextureID() != 0)
-			{
-				c_material->SetTexture(r_texture);
-			}
-			else
-			{
-				RELEASE(r_texture);
-
-				LOG("[IMPORTER] Imported aiMaterial had no texture!");
-			}
-		}
-		else
-		{
-			RELEASE(r_material);
-			RELEASE(r_texture);
-
-			LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());
-		}
-	}
+	C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);				// Creating a C_Material* and assigning the generated resources to it.
+																												//																	 |
+	if (c_material != nullptr)																					//																	 |
+	{																											//																	 |
+		c_material->SetMaterial(r_material);																	// C_Material will always have a R_Material*.						 |
+																												// 																	 |
+		if (r_texture != nullptr)																				// 																	 |
+		{																										// 																	 |
+			c_material->SetTexture(r_texture);																	// 																	 |
+		}																										// 																	 |
+	}																											// 																	 |
+	else																										// 																	 |
+	{																											// 																	 |
+		LOG("[ERROR] Importer: Could not create a Material Component for %s!", game_object->GetName());			// 																	 |
+	}																											// -------------------------------------------------------------------
 }
 
 bool Importer::Scenes::Utilities::NodeIsDummyNode(const aiNode& ai_node)

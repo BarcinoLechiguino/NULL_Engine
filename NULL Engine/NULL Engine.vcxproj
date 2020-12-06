@@ -100,6 +100,7 @@
     <ClCompile Include="Source\M_Camera3D.cpp" />
     <ClCompile Include="Source\M_Input.cpp" />
     <ClCompile Include="Source\M_Renderer3D.cpp" />
+    <ClCompile Include="Source\M_ResourceManager.cpp" />
     <ClCompile Include="Source\M_Scene.cpp" />
     <ClCompile Include="Source\M_Window.cpp" />
     <ClCompile Include="Source\M_FileSystem.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Source\M_Camera3D.h" />
     <ClInclude Include="Source\M_Input.h" />
     <ClInclude Include="Source\M_Renderer3D.h" />
+    <ClInclude Include="Source\M_ResourceManager.h" />
     <ClInclude Include="Source\M_Scene.h" />
     <ClInclude Include="Source\M_Window.h" />
     <ClInclude Include="Source\M_FileSystem.h" />

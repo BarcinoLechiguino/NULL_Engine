@@ -100,7 +100,7 @@ uint64 Importer::Materials::Save(const R_Material* r_material, char** buffer)
 	cursor += bytes;
 
 	// --- SAVING THE BUFFER ---
-	std::string path = std::string(MATERIALS_PATH) + std::to_string(r_material->GetID()) + std::string(MATERIAL_EXTENSION);
+	std::string path = std::string(MATERIALS_PATH) + std::to_string(r_material->GetUID()) + std::string(MATERIALS_EXTENSION);
 
 	written = App->file_system->Save(path.c_str(), *buffer, size);
 	if (written > 0)

@@ -29,8 +29,8 @@ public:
 	RESOURCE_TYPE		GetType					() const;
 	const char*			GetTypeAsString			() const;
 	
-	uint32				GetID					() const;
-	void				ResetID					();
+	uint32				GetUID					() const;
+	void				ResetUID				();
 
 	const char*			GetAssetsPath			() const;								// 
 	const char*			GetAssetsFile			() const;								// 
@@ -50,14 +50,14 @@ public:
 private:
 	RESOURCE_TYPE		type;
 
-	uint32				id;															// UID for this Resource.
+	uint32				uid;															// UID for this Resource.
 	const char*			name;
 
-	std::string			assets_path;												// Path of the file in the Assets directory. Will be used to avoid making duplicates.
-	std::string			assets_file;												// File and extension string of the texture in the Assets directory.
+	std::string			assets_path;													// Path of the file in the Assets directory. Will be used to avoid making duplicates.
+	std::string			assets_file;													// File and extension string of the texture in the Assets directory.
 
-	std::string			library_path;												// Path of the file in the Library directory. Will be used to avoid making duplicates.
-	std::string			library_file;												// File and extension string of the texture in the Library directory.
+	std::string			library_path;													// Path of the file in the Library directory. Will be used to avoid making duplicates.
+	std::string			library_file;													// File and extension string of the texture in the Library directory.
 
 	ImportSettings		import_settings;
 };

@@ -31,8 +31,8 @@ namespace Importer
 			
 			const aiNode*	ImportTransform				(const aiNode* ai_node, GameObject* game_object);
 			void			ImportMeshesAndMaterials	(const char* path, const aiScene* ai_scene, const aiNode* ai_node, GameObject* game_object);
-			void			ImportMesh					(const char* path, const aiMesh* ai_mesh, GameObject* game_object);
-			void			ImportMaterial				(const char* path, const aiMaterial* ai_material, GameObject* game_object);
+			void			ImportMesh					(const char* path, const char* name, const aiMesh* ai_mesh, GameObject* game_object);
+			void			ImportMaterial				(const char* path, const char* name, const aiMaterial* ai_material, GameObject* game_object);
 
 			bool			NodeIsDummyNode				(const aiNode& ai_node);
 		}

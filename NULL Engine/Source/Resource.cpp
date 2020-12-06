@@ -7,7 +7,7 @@
 
 Resource::Resource(RESOURCE_TYPE type) : 
 type			(type),
-id				(Random::LCG::GetRandomUint()),
+uid				(Random::LCG::GetRandomUint()),
 name			("[NONE]"),
 assets_path		("[NONE]"), 
 assets_file		("[NONE]"), 
@@ -52,14 +52,14 @@ const char* Resource::GetTypeAsString() const
 	return "NONE";
 }
 
-uint32 Resource::GetID() const
+uint32 Resource::GetUID() const
 {
-	return id;
+	return uid;
 }
 
-void Resource::ResetID()
+void Resource::ResetUID()
 {
-	id = Random::LCG::GetRandomUint();
+	uid = Random::LCG::GetRandomUint();
 }
 
 const char* Resource::GetAssetsPath() const
@@ -102,24 +102,24 @@ void Resource::SetLibraryFile(const char* library_file)
 void Resource::SetLibraryPathAndFile()
 {
 	std::string directory	= "";
-	std::string file		= std::to_string(id);
+	std::string file		= std::to_string(uid);
 	std::string extension	= "";
 	
 	switch (type)
 	{
 	case RESOURCE_TYPE::MESH:
 		directory = MESHES_PATH;
-		extension = MESH_EXTENSION;
+		extension = MESHES_EXTENSION;
 		break;
 
 	case RESOURCE_TYPE::MATERIAL:
 		directory = MATERIALS_PATH;
-		extension = MATERIAL_EXTENSION;
+		extension = MATERIALS_EXTENSION;
 		break;
 
 	case RESOURCE_TYPE::TEXTURE:
 		directory = TEXTURES_PATH;
-		extension = TEXTURE_EXTENSION;
+		extension = TEXTURES_EXTENSION;
 		break;
 	}
 	
