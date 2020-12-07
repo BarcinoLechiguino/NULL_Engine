@@ -55,7 +55,11 @@ bool E_Toolbar::FileMainMenuItem()
 	if (ImGui::BeginMenu("File"))
 	{
 		ImGui::MenuItem("New Scene", "Ctrl+N", nullptr, false);
-		ImGui::MenuItem("Open Scene", "Ctrl+O", nullptr, false);
+		
+		if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
+		{
+			App->editor->show_load_file_popup = true;
+		}
 
 		ImGui::Separator();
 

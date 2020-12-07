@@ -13,7 +13,14 @@ public:
 	bool CleanUp	();
 
 private:
+	void DrawFileBrowser		();
+	void DrawFileSelector		();
+	
+	void DrawDirectoriesTree	(const char* root_directory);
 
+private:
+	char*	selected_file;
+	bool	ready_to_load;
 
 };
 

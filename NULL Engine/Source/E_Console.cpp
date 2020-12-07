@@ -132,7 +132,7 @@ void E_Console::ConsoleScrollToBottom()
 {
 	if (scroll_to_bottom)
 	{
-		ImGui::SetScrollHere(1.0f);												// Sets the scroll position to the given one. From 0.0f to 1.0f (From above first item to below last item).
+		ImGui::SetScrollHereY(1.0f);											// Sets the scroll position to the given one. From 0.0f to 1.0f (From above first item to below last item).
 
 		scroll_to_bottom = false;
 	}

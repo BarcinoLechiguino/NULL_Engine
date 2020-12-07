@@ -1,5 +1,5 @@
-#ifndef __E_ENGINE_CONFIGURATION_H__
-#define __E_ENGINE_CONFIGURATION_H__
+#ifndef __E_CONFIGURATION_H__
+#define __E_CONFIGURATION_H__
 
 #include "EditorPanel.h"
 
@@ -74,4 +74,4 @@ private:
 	bool input_log_scroll_to_bottom;
 };
 
-#endif // !_E_ENGINE_CONFIGURATION_H__
+#endif // !_E_CONFIGURATION_H__

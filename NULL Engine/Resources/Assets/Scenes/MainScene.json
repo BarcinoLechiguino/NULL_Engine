@@ -1,0 +1,1668 @@
+{
+    "Game Objects": [
+        {
+            "UID": 842215877,
+            "ParentUID": 1235304388,
+            "Name": "MainScene",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 1696862674,
+            "ParentUID": 842215877,
+            "Name": "Street Environment_V01.FBX",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 600351881,
+            "ParentUID": 1696862674,
+            "Name": "Sky001",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        18.153732299804688,
+                        0,
+                        58.960910797119141
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 1570234236,
+            "ParentUID": 1696862674,
+            "Name": "Dummy001",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "LocalRotation": [
+                        -0.70710676908493042,
+                        0,
+                        0,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        0.99999994039535522
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 68546832,
+            "ParentUID": 1570234236,
+            "Name": "City_building_004",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -41.47589111328125,
+                        21.01409912109375,
+                        -1.1368683772161603e-13
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/616676312.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/61832440.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1279076652,
+                        "Path": "Library\/Textures\/1279076652.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1050157279,
+            "ParentUID": 1570234236,
+            "Name": "City_building_001",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        17.707164764404297,
+                        20.053276062011719,
+                        2.1210712475294713e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1641215378.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1062060941.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1735323504,
+                        "Path": "Library\/Textures\/1735323504.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 537575788,
+            "ParentUID": 1570234236,
+            "Name": "City_building_007",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        16.010492324829102,
+                        37.4932861328125,
+                        -1.5106878663573298e-06
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1881889513.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/497352676.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 164331568,
+                        "Path": "Library\/Textures\/164331568.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 317277244,
+            "ParentUID": 1570234236,
+            "Name": "City_building_008",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        40.979995727539063,
+                        18.270824432373047,
+                        -2.0522466002148576e-06
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1005975652.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/880234276.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 49694957,
+                        "Path": "Library\/Textures\/49694957.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 292822581,
+            "ParentUID": 1570234236,
+            "Name": "Line002",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -2.1597719192504883,
+                        1.853838324546814,
+                        -7.1054273576010019e-15
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/2049991516.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/505636593.nemat",
+                        "Color": [
+                            0.27058824896812439,
+                            0.27058824896812439,
+                            0.27058824896812439,
+                            1
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 743112807,
+            "ParentUID": 1570234236,
+            "Name": "Plane001",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -0.02860260009765625,
+                        0.026032092049717903,
+                        0
+                    ],
+                    "LocalRotation": [
+                        -1.7823538326668109e-15,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        0.99663525819778442,
+                        0.97061651945114136,
+                        0.9966353178024292
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1896141071.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1117809894.nemat",
+                        "Color": [
+                            0.30980393290519714,
+                            0.45490199327468872,
+                            0.058823533356189728,
+                            1
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 2021670423,
+            "ParentUID": 1570234236,
+            "Name": "City_building_010",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        25.154010772705078,
+                        -39.153720855712891,
+                        8.5538636085402686e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1346323479.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1114488666.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1083765829,
+                        "Path": "Library\/Textures\/1083765829.netex"
+                    }
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/827072624.nemesh"
+                }
+            ]
+        },
+        {
+            "UID": 534258897,
+            "ParentUID": 1570234236,
+            "Name": "City_building_011",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        30.134540557861328,
+                        37.4932861328125,
+                        -1.5106878663573298e-06
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1769224526.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/410320300.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1082133906,
+                        "Path": "Library\/Textures\/1082133906.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 585564545,
+            "ParentUID": 1570234236,
+            "Name": "City_building_013",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -42.288055419921875,
+                        33.201576232910156,
+                        5.0146059038524982e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/735021008.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1633403383.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1327884605,
+                        "Path": "Library\/Textures\/1327884605.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1285456528,
+            "ParentUID": 1570234236,
+            "Name": "City_building_014",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -19.439706802368164,
+                        32.061729431152344,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -1,
+                        7.5497901264043321e-08
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1207278384.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1241497149.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 203702426,
+                        "Path": "Library\/Textures\/203702426.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1283091218,
+            "ParentUID": 1570234236,
+            "Name": "City_building_016",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        34.270423889160156,
+                        -41.972747802734375,
+                        8.553865882277023e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -1,
+                        7.5497901264043321e-08
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/498485807.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1462671047.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1093906094,
+                        "Path": "Library\/Textures\/1093906094.netex"
+                    }
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1064638641.nemesh"
+                }
+            ]
+        },
+        {
+            "UID": 991111370,
+            "ParentUID": 1570234236,
+            "Name": "City_building_017",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        44.260082244873047,
+                        -39.153720855712891,
+                        8.5538636085402686e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/569573387.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/578443340.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 42941949,
+                        "Path": "Library\/Textures\/42941949.netex"
+                    }
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/260136676.nemesh"
+                }
+            ]
+        },
+        {
+            "UID": 2120089181,
+            "ParentUID": 1570234236,
+            "Name": "City_building_022",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -20.831323623657227,
+                        -27.426490783691406,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        1,
+                        1.9470718370939721e-07
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/988315410.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/345341100.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1913294935,
+                        "Path": "Library\/Textures\/1913294935.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 829661187,
+            "ParentUID": 1570234236,
+            "Name": "City_building_023",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        42.130641937255859,
+                        37.4932861328125,
+                        -1.5106878663573298e-06
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1979615491.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1878771705.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 883418682,
+                        "Path": "Library\/Textures\/883418682.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 782862786,
+            "ParentUID": 1570234236,
+            "Name": "City_building_024",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -20.572771072387695,
+                        43.060829162597656,
+                        -0.069194458425045013
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        1,
+                        7.5497901264043321e-08
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/90022001.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/537648852.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1010757882,
+                        "Path": "Library\/Textures\/1010757882.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 2061976057,
+            "ParentUID": 1570234236,
+            "Name": "City_building_026",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        31.51188850402832,
+                        -16.446016311645508,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        1,
+                        7.5497901264043321e-08
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/530153568.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/2115795982.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1486264151,
+                        "Path": "Library\/Textures\/1486264151.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1284488358,
+            "ParentUID": 1570234236,
+            "Name": "City_building_028",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        13.38798999786377,
+                        -33.755039215087891,
+                        -9.3834523795521818e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1763080046.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/522501167.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 828251174,
+                        "Path": "Library\/Textures\/828251174.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1492157891,
+            "ParentUID": 1570234236,
+            "Name": "Object010",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -2.5033531188964844,
+                        15.800847053527832,
+                        -5.6843418860808015e-14
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1052764566.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/407175163.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1968256802,
+            "ParentUID": 1570234236,
+            "Name": "City_building_030",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -42.807239532470703,
+                        -41.835563659667969,
+                        -9.3834523795521818e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1970553192.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/2083451722.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 209400747,
+                        "Path": "Library\/Textures\/209400747.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 900345607,
+            "ParentUID": 1570234236,
+            "Name": "City_building_031",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -34.679481506347656,
+                        -41.835563659667969,
+                        -9.3834523795521818e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/843910108.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/515694689.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1548332323,
+                        "Path": "Library\/Textures\/1548332323.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1125004376,
+            "ParentUID": 1570234236,
+            "Name": "City_building_032",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -29.478403091430664,
+                        21.01409912109375,
+                        -1.1368683772161603e-13
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/428314927.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/2013817753.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1240919924,
+                        "Path": "Library\/Textures\/1240919924.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1936831718,
+            "ParentUID": 1570234236,
+            "Name": "City_building_033",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -32.361495971679688,
+                        42.37042236328125,
+                        5.0146059038524982e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1456465552.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/785352317.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 2080009237,
+                        "Path": "Library\/Textures\/2080009237.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1204222576,
+            "ParentUID": 1570234236,
+            "Name": "City_building_034",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        16.049516677856445,
+                        -16.696884155273438,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.7071068286895752,
+                        0.70710670948028564
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1628734735.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/110288481.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1140297676,
+                        "Path": "Library\/Textures\/1140297676.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1143668962,
+            "ParentUID": 1570234236,
+            "Name": "City_building_035",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        13.38798999786377,
+                        -40.802516937255859,
+                        -9.3834501058154274e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1066225719.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/2100739657.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1221881062,
+                        "Path": "Library\/Textures\/1221881062.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1162447376,
+            "ParentUID": 1570234236,
+            "Name": "City_building_036",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -31.216331481933594,
+                        33.201576232910156,
+                        5.0146059038524982e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/1894753372.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/440836413.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1783110196,
+                        "Path": "Library\/Textures\/1783110196.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 2071479672,
+            "ParentUID": 1570234236,
+            "Name": "City_building_037",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -20.317693710327148,
+                        -16.163608551025391,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        1,
+                        1.9470718370939721e-07
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/313710289.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/342263734.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 264877702,
+                        "Path": "Library\/Textures\/264877702.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 1434292585,
+            "ParentUID": 1570234236,
+            "Name": "City_building_038",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -41.649002075195313,
+                        -16.495393753051758,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.7071068286895752,
+                        0.70710670948028564
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/190398612.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1162442560.nemat",
+                        "Color": [
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            0.58823531866073608,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 344748918,
+                        "Path": "Library\/Textures\/344748918.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 266186468,
+            "ParentUID": 1570234236,
+            "Name": "City_building_039",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -42.807239532470703,
+                        -30.643890380859375,
+                        -9.3834501058154274e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/797296886.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1577655936.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 637827147,
+                        "Path": "Library\/Textures\/637827147.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 2098389471,
+            "ParentUID": 1570234236,
+            "Name": "City_building_040",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -34.679481506347656,
+                        -30.643890380859375,
+                        -9.3834501058154274e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        -0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/394128806.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/579017694.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1375336137,
+                        "Path": "Library\/Textures\/1375336137.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 2022878235,
+            "ParentUID": 1570234236,
+            "Name": "City_building_041",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        30.695278167724609,
+                        21.612646102905273,
+                        2.1210723843978485e-07
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0.70710676908493042,
+                        0.7071068286895752
+                    ],
+                    "LocalScale": [
+                        1,
+                        0.99999994039535522,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Path": "Library\/Meshes\/293690627.nemesh"
+                },
+                {
+                    "Type": 3,
+                    "Material": {
+                        "Path": "Library\/Materials\/1921103900.nemat",
+                        "Color": [
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            0.58799999952316284,
+                            1
+                        ]
+                    },
+                    "Texture": {
+                        "TextureID": 1745603093,
+                        "Path": "Library\/Textures\/1745603093.netex"
+                    }
+                }
+            ]
+        },
+        {
+            "UID": 968835693,
+            "ParentUID": 1696862674,
+            "Name": "Camera001",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -78.312431335449219,
+                        45.251216888427734,
+                        -97.031112670898438
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 705285641,
+            "ParentUID": 1696862674,
+            "Name": "Camera001.Target",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -28.132621765136719,
+                        20.873329162597656,
+                        -35.064212799072266
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 913471567,
+            "ParentUID": 1696862674,
+            "Name": "Spot001",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        -66.721267700195313,
+                        141.93412780761719,
+                        6.2041376622801181e-06
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 701022150,
+            "ParentUID": 1696862674,
+            "Name": "Spot001.Target",
+            "IsActive": true,
+            "IsStatic": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        28.890945434570313,
+                        -60.963882446289063,
+                        -2.6648158382158726e-06
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        }
+    ]
+} 

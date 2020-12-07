@@ -19,6 +19,8 @@
 #define SHADERS_PATH			"Library/Shaders/"
 #define TEXTURES_PATH			"Library/Textures/"
 
+#define CONFIGURATION_PATH		"Configuration/"
+
 // File Extensions ----------------------------------
 #define MESHES_EXTENSION		".nemesh"
 #define MATERIALS_EXTENSION		".nemat"

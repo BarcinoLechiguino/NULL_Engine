@@ -8,6 +8,10 @@
 #include "M_Renderer3D.h"
 #include "M_Input.h"
 #include "M_Scene.h"
+#include "M_FileSystem.h"
+
+#include "Importer.h"
+
 #include "GameObject.h"
 
 #include "EditorPanel.h"
@@ -66,6 +70,7 @@ load_file		(nullptr)
 	show_imgui_demo			= false;
 	show_about_popup		= false;
 	show_close_app_popup	= false;
+	show_load_file_popup	= false;
 }
 
 M_Editor::~M_Editor()
@@ -220,7 +225,15 @@ void M_Editor::EditorShortcuts()
 
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_STATE::KEY_DOWN)
 	{
-		show_close_app_popup = !show_close_app_popup;
+		if (show_about_popup || show_load_file_popup)
+		{
+			show_about_popup		= false;
+			show_load_file_popup	= false;
+		}
+		else
+		{
+			show_close_app_popup = !show_close_app_popup;
+		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_STATE::KEY_REPEAT)
@@ -229,17 +242,24 @@ void M_Editor::EditorShortcuts()
 		{
 			App->scene->SaveScene();
 		}
+
+		if (App->input->GetKey(SDL_SCANCODE_O) == KEY_STATE::KEY_DOWN)
+		{
+			show_load_file_popup = true;
+		}
 	}
 }
 
 void M_Editor::CheckShowHideFlags()
 {	
-	show_configuration	?	configuration->Enable()	: configuration->Disable();					// Engine Configuration
-	show_hierarchy		?	hierarchy->Enable()		: hierarchy->Disable();						// Hierarchy
-	show_inspector		?	inspector->Enable()		: inspector->Disable();						// Inspector
-	show_console		?	console->Enable()		: console->Disable();						// Console
-	show_imgui_demo		?	imgui_demo->Enable()	: imgui_demo->Disable();					// ImGui Demo
-	show_about_popup	?	about->Enable()			: about->Disable();							// About Popup
+	show_configuration		?	configuration->Enable()	: configuration->Disable();					// Engine Configuration
+	show_hierarchy			?	hierarchy->Enable()		: hierarchy->Disable();						// Hierarchy
+	show_inspector			?	inspector->Enable()		: inspector->Disable();						// Inspector
+	show_console			?	console->Enable()		: console->Disable();						// Console
+	show_project			?	project->Enable()		: project->Disable();						// Project
+	show_imgui_demo			?	imgui_demo->Enable()	: imgui_demo->Disable();					// ImGui Demo
+	show_about_popup		?	about->Enable()			: about->Disable();							// About Popup
+	show_load_file_popup	?	load_file->Enable()		: load_file->Disable();						// Load File
 }
 
 bool M_Editor::EditorIsBeingHovered() const
@@ -291,6 +311,8 @@ bool M_Editor::InitializeImGui() const
 
 	ImGuiIO& io = ImGui::GetIO();																// Needs to be called multiple times during a frame to update IO correctly.
 	(void)io;
+
+	io.IniFilename = CONFIGURATION_PATH "imgui.ini";
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;										// Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;											// Enable Docking
@@ -414,6 +436,20 @@ void M_Editor::CreateGameObject(const char* name, GameObject* parent)
 bool M_Editor::SelectedIsSceneRoot() const
 {
 	return (App->scene->GetSelectedGameObject() == App->scene->GetSceneRoot());
+}
+
+void M_Editor::LoadFileThroughEditor(const char* path)
+{
+	std::string extension = App->file_system->GetFileExtension(path);
+
+	if (extension == "json" || extension == "JSON")
+	{
+		App->scene->LoadScene(path);
+	}
+	else
+	{
+		Importer::ImportFile(path);
+	}
 }
 
 bool M_Editor::BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags)

@@ -121,7 +121,7 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 bool M_Scene::CleanUp()
 {
 	LOG("Unloading Intro scene");
-
+	
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
 		game_objects[i]->CleanUp();
@@ -129,6 +129,11 @@ bool M_Scene::CleanUp()
 	}
 
 	game_objects.clear();
+
+	scene_root = nullptr;
+	selected_game_object = nullptr;
+
+	primitives.clear();
 
 	return true;
 }
@@ -182,16 +187,28 @@ bool M_Scene::SaveScene() const
 	return ret;
 }
 
-bool M_Scene::LoadScene(ParsonNode& root)
+bool M_Scene::LoadScene(const char* path)
 {
 	bool ret = true;
 
-	// DISCARD CURRENT HERE?
-
-	for (uint i = 0; game_objects.size(); ++i)
+	char* buffer = nullptr;
+	uint read = App->file_system->Load(path, &buffer);
+	if (read == 0)
 	{
-		game_objects[i]->LoadState(root);
+		LOG("[ERROR] Scene Loading: Could not load %s from Assets! Error: File system could not read the file!", path);
+		return false;
 	}
+
+	if (buffer != nullptr)
+	{
+		CleanUp();
+
+		ParsonNode new_root = ParsonNode(buffer);
+	}
+
+
+
+	// DISCARD CURRENT HERE?
 
 	return ret;
 }

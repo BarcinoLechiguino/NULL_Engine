@@ -27,7 +27,7 @@ public:
 
 public:																														// --- GAME OBJECTS METHODS ---
 	bool			SaveScene								() const;														// 
-	bool			LoadScene								(ParsonNode& configuration);									// 
+	bool			LoadScene								(const char* path);												// 
 
 	std::vector<GameObject*>* GetGameObjects				();
 	

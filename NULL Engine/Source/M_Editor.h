@@ -74,7 +74,9 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	void			SetSelectedGameObjectThroughEditor	(GameObject* game_object);				// Hierarchy & Inspector: Will set the scene's selected GameObject with the passed one.
 	void			DeleteSelectedGameObject			();										// Hierarchy & Inspector: Will call the Module Scene's delete selected GameObject method.
 	void			CreateGameObject					(const char* name, GameObject* parent);	// Hierarchy & Inspector: Will call the Module Scene's create GameObject method.
-	bool			SelectedIsSceneRoot					() const;
+	bool			SelectedIsSceneRoot					() const;								// Hierarchy & Inspector: Will check whether or not the selected GameObject is the scene root.
+
+	void			LoadFileThroughEditor				(const char* path);						// Load File: Will send the given path to the Importer.
 
 private:
 	bool BeginRootWindow(ImGuiIO& io, const char* window_id, bool docking, ImGuiWindowFlags window_flags = ImGuiWindowFlags_None);							// Generates a root window for docking.
@@ -95,13 +97,15 @@ public:
 
 	ImVec4						clear_color;													// Will be used to set the clear color of the rendering environment.
 
-	bool						show_configuration;												// Will keep track of whether or not to show the Configuration window.
-	bool						show_hierarchy;													// Will keep track of whether or not to show the Hierarchy window.
-	bool						show_inspector;													// Will keep track of whether or not to show the Inspector window.
-	bool						show_console;													// Will keep track of whether or not to show the Console window.
-	bool						show_imgui_demo;												// Will keep track of whether or not to show the ImGui Demo window.
-	bool						show_about_popup;												// Will keep track of whether or not to show the About window popup.
-	bool						show_close_app_popup;											// Will keep track of whether or not to show the Close App windowwindow.
+	bool						show_configuration;												// Enable/Disable the Configuration window.
+	bool						show_hierarchy;													// Enable/Disable the Hierarchy window.
+	bool						show_inspector;													// Enable/Disable the Inspector window.
+	bool						show_console;													// Enable/Disable the Console window.
+	bool						show_project;													// Enable/Disable the Project window.
+	bool						show_imgui_demo;												// Enable/Disable the ImGui Demo window.
+	bool						show_about_popup;												// Enable/Disable the About window popup.
+	bool						show_load_file_popup;											// Enable/Disable the Load File popup.
+	bool						show_close_app_popup;											// Enable/Disable the Close App popup.
 };
 
 #endif // !__M_EDITOR_H__
