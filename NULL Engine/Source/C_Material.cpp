@@ -2,8 +2,10 @@
 #include "Macros.h"
 
 #include "JSONParser.h"
-
 #include "Color.h"
+
+#include "Application.h"
+#include "M_ResourceManager.h"
 
 #include "R_Material.h"
 #include "R_Texture.h"
@@ -56,14 +58,9 @@ bool C_Material::SaveState(ParsonNode& root) const
 	{
 		ParsonNode material = root.SetNode("Material");
 
+		material.SetNumber("UID", r_material->GetUID());
 		material.SetString("Path", r_material->GetLibraryPath());
-
-		ParsonArray color = material.SetArray("Color");
-
-		color.SetNumber(r_material->diffuse_color.r);
-		color.SetNumber(r_material->diffuse_color.g);
-		color.SetNumber(r_material->diffuse_color.b);
-		color.SetNumber(r_material->diffuse_color.a);
+		material.SetString("File", r_material->GetLibraryFile());
 	}
 
 	// --- R_TEXTURE ---
@@ -71,11 +68,12 @@ bool C_Material::SaveState(ParsonNode& root) const
 	{
 		ParsonNode texture = root.SetNode("Texture");
 
-		texture.SetNumber("TextureID", r_texture->GetUID());
+		texture.SetNumber("UID", r_texture->GetUID());
 		texture.SetString("Path", r_texture->GetLibraryPath());
+		texture.SetString("File", r_texture->GetLibraryFile());
 	}
 
-	//root.
+
 
 	return ret;
 }
@@ -84,7 +82,45 @@ bool C_Material::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 
+	r_material	= nullptr;
+	r_texture	= nullptr;
 
+	ParsonNode material_node	= root.GetNode("Material");
+	ParsonNode texture_node		= root.GetNode("Texture");
+	
+	if (material_node.NodeIsValid())
+	{
+		r_material = (R_Material*)App->resource_manager->GetResource(material_node.GetNumber("UID"));
+
+		if (r_material == nullptr)
+		{
+			r_material = (R_Material*)App->resource_manager->GetResourceFromFile(material_node.GetString("File"));
+
+			if (r_material == nullptr)
+			{
+				LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), material_node.GetNumber("UID"));
+			}
+		}
+	}
+
+	if (texture_node.NodeIsValid())
+	{
+		r_texture = (R_Texture*)App->resource_manager->GetResource(texture_node.GetNumber("UID"));
+
+		if (r_texture == nullptr)
+		{
+			r_texture = (R_Texture*)App->resource_manager->GetResourceFromFile(texture_node.GetString("File"));
+
+			if (r_texture == nullptr)
+			{
+				LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), texture_node.GetNumber("UID"));
+			}
+		}
+	}
+	else
+	{
+		LOG("[WARNING] Loading Scene: Could not find any Texture for %s! Check whether or not this is intended.", owner->GetName());
+	}
 
 	return ret;
 }

@@ -110,8 +110,9 @@ void E_Hierarchy::ProcessGameObject(GameObject* game_object)
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAGGED_NODE"))	// First, the payload that is being dropped needs to be checked to make sure its the correct one.
 				{
-					game_object->AddChild(dragged_game_object);								// (GameObject*)payload->Data would also work. However, it easily breaks, at least in my case.
+					//game_object->AddChild(dragged_game_object);								// (GameObject*)payload->Data would also work. However, it easily breaks, at least in my case.
 
+					dragged_game_object->SetParent(game_object);
 					dragged_game_object = nullptr;
 				}
 

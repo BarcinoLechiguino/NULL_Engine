@@ -16,6 +16,7 @@
 
 GameObject::GameObject() :
 uid				(Random::LCG::GetRandomUint()),
+parent_uid		(0),
 name			("GameObject"),
 is_active		(true),
 is_static		(false),
@@ -24,7 +25,6 @@ is_master_root	(false),
 is_scene_root	(false),
 to_delete		(false)
 {
-	//id			= Random::LCG::GetRandomUint();
 	transform	= (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
 
 	obb.SetNegativeInfinity();
@@ -33,6 +33,7 @@ to_delete		(false)
 
 GameObject::GameObject(std::string name, bool is_active, bool is_static) :
 uid				(Random::LCG::GetRandomUint()),
+parent_uid		(0),
 name			(name),
 is_active		(is_active),
 is_static		(is_static),
@@ -90,15 +91,14 @@ bool GameObject::SaveState(ParsonNode& root) const
 
 	root.SetNumber("UID", uid);
 
-	if (parent != nullptr)
-	{
-		root.SetNumber("ParentUID", parent->uid);
-	}
+	uint parent_UID = (parent != nullptr) ? parent->uid : 0;
+	root.SetNumber("ParentUID", parent_UID);
 
 	root.SetString("Name", name.c_str());
 	root.SetBool("IsActive", is_active);
 	root.SetBool("IsStatic", is_static);
-	
+	root.SetBool("IsSceneRoot", is_scene_root);
+
 	// --- OBB ---
 	/*ParsonArray obb_array = root.SetArray("OBB");
 
@@ -143,16 +143,54 @@ bool GameObject::SaveState(ParsonNode& root) const
 bool GameObject::LoadState(ParsonNode& root)
 {
 	bool ret = true;
+	
+	ForceUID(root.GetNumber("UID"));
+	parent_uid = root.GetNumber("ParentUID");
 
-	// --- NAME
-	// --- IS_ACTIVE
-	// --- IS_STATIC
-	// --- AABB
-	// --- UUID
+	name			= root.GetString("Name");
+	is_active		= root.GetBool("IsActive");
+	is_static		= root.GetBool("IsStatic");
+	is_scene_root	= root.GetBool("IsSceneRoot");
 
-	for (uint i = 0; i < components.size(); ++i)
+	// Recalculate AABB and OBB
+
+	ParsonArray components_array = root.GetArray("Components");
+
+	for (uint i = 0; i < components_array.size; ++i)
 	{
-		components[i]->LoadState(root);
+		ParsonNode component_node	= components_array.GetNode(i);
+		
+		if (!component_node.NodeIsValid())
+		{
+			continue;
+		}
+		
+		COMPONENT_TYPE type			= (COMPONENT_TYPE)component_node.GetNumber("Type");
+
+		if (type == COMPONENT_TYPE::TRANSFORM)
+		{
+			GetTransformComponent()->LoadState(component_node);
+			continue;
+		}
+		else
+		{
+			Component* component = nullptr;
+
+			switch (type)
+			{
+			//case COMPONENT_TYPE::TRANSFORM: { component = new C_Transform(this); }	break;
+			case COMPONENT_TYPE::MESH:		{ component = new C_Mesh(this); }		break;
+			case COMPONENT_TYPE::MATERIAL:	{ component = new C_Material(this); }	break;
+			case COMPONENT_TYPE::LIGHT:		{ component = new C_Light(this); }		break;
+			case COMPONENT_TYPE::CAMERA:	{ component = new C_Camera(this); }		break;
+			}
+
+			if (component != nullptr)
+			{
+				component->LoadState(component_node);
+				components.push_back(component);
+			}
+		}
 	}
 
 	return ret;
@@ -192,19 +230,67 @@ void GameObject::FreeChilds()
 	childs.clear();
 }
 
+bool GameObject::SetParent(GameObject* new_parent)
+{
+	bool success = true;
+	
+	if (new_parent == nullptr)
+	{
+		LOG("[ERROR] Game Objects: SetParent() operation failed! Error: New parent was nullptr.");
+		return false;
+	}
+
+	if (new_parent->NewChildIsOwnParent(this))
+	{
+		LOG("[ERROR] Game Objects: Cannot re-parent parents into their own children!");
+		return false;
+	}
+	
+	if (parent != nullptr)
+	{
+		success = parent->DeleteChild(this);
+		if (success)
+		{
+			GetTransformComponent()->sync_local_to_global = true;
+		}
+		else
+		{
+			LOG("[ERROR] Game Objects: DeleteChild() operation failed! Error: Child could not be found in Parent.");
+			return false;
+		}
+	}
+
+	success = new_parent->AddChild(this);
+	if (success)
+	{
+		parent = new_parent;
+	}
+	else
+	{
+		LOG("[ERROR] GameObjects: AddChild() operation failed! Error: Check for AddChild() errors in the Console Log");
+		
+		if (parent != nullptr)
+		{
+			parent->AddChild(this);																						// Safety check to not lose the game object to the void.
+		}																												// The GameObject will be reassigned as a child of the prev parent.
+	}
+
+	return success;
+}
+
 bool GameObject::AddChild(GameObject* child)
 {
 	bool ret = true;
 	
 	if (child->is_master_root)
 	{
-		LOG("[ERROR] Could not add child %s to %s! Error: %s is the master root object!", child->name.c_str(), name.c_str(), child->name.c_str());
+		LOG("[ERROR] Game Objects: AddChild() operation failed! Error: %s is the master root object!", child->name.c_str());
 		return false;
 	}
 	
 	if (!is_master_root && child->is_scene_root)
 	{
-		LOG("[ERROR] Could not add child %s to %s: %s is current scene root object!", child->name.c_str(), name.c_str(), child->name.c_str());
+		LOG("[ERROR] Game Objects: AddChild() operation failed! Error: %s is current scene root object!", child->name.c_str());
 		return false;
 	}
 	
@@ -212,18 +298,19 @@ bool GameObject::AddChild(GameObject* child)
 	{
 		if (NewChildIsOwnParent(child))
 		{
-			LOG("[ERROR] Cannot re-parent parents into their own children!");
+			LOG("[ERROR] GameObjects: AddChild() operation failed! Error: Cannot re-parent parents into their own children!");
 			return false;
 		}
 	}
 
-	if (child->parent != nullptr)
+	/*if (child->parent != nullptr)
 	{	
 		child->parent->DeleteChild(child);
-		child->GetTransformComponent()->update_local_transform = true;
+		child->GetTransformComponent()->sync_local_to_global = true;
 	}
 
-	child->parent = this;
+	child->parent = this;*/
+
 	childs.push_back(child);
 
 	return ret;
@@ -232,12 +319,12 @@ bool GameObject::AddChild(GameObject* child)
 bool GameObject::NewChildIsOwnParent(GameObject* child)
 {
 	bool ret = false;
-
+	
 	GameObject* parent_item = this->parent;									// Will set the parent of this object as the starting point of the search.
 	
 	if (parent_item != nullptr)												// Will check if the child is the parent or parent of the parents of the one who called AddChild()
 	{
-		while (!parent_item->is_scene_root)									// Iterate back up to the root object, as it is the parent of everything in the scene.
+		while (parent_item != nullptr && !parent_item->is_scene_root)		// Iterate back up to the root object, as it is the parent of everything in the scene. (First check is TMP)
 		{
 			if (parent_item == child)										// Child is the parent of one of the parent objects of this object (the one which called AddChild())
 			{
@@ -466,9 +553,9 @@ bool GameObject::IsStatic() const
 	return is_static;
 }
 
-void GameObject::ResetUID()
+void GameObject::ForceUID(const uint32& UID)
 {
-	uid = Random::LCG::GetRandomUint();
+	uid = UID;
 }
 
 void GameObject::SetName(const char* new_name)
@@ -514,4 +601,9 @@ void GameObject::SetChildsIsStatic(const bool& set_to, GameObject* parent)
 			SetChildsIsStatic(set_to, parent->childs[i]);
 		}
 	}
+}
+
+uint32 GameObject::GetParentUID() const
+{
+	return parent_uid;
 }

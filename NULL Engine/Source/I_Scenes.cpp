@@ -110,8 +110,10 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 
 	if (parent != nullptr)
 	{
-		game_object->parent = parent;
-		parent->AddChild(game_object);
+		game_object->SetParent(parent);
+	
+		//game_object->parent = parent;
+		//parent->AddChild(game_object);
 	}
 	
 	game_objects.push_back(game_object);

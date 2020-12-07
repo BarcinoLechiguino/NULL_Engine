@@ -54,7 +54,9 @@ bool C_Mesh::SaveState(ParsonNode& root) const
 	if (r_mesh != nullptr)
 	{
 		root.SetNumber("Type", (uint)type);
+		root.SetNumber("UID", r_mesh->GetUID());
 		root.SetString("Path", r_mesh->GetLibraryPath());
+		root.SetString("File", r_mesh->GetLibraryFile());
 	}
 
 	return ret;
@@ -64,7 +66,19 @@ bool C_Mesh::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 
+	r_mesh = nullptr;
 
+	r_mesh = (R_Mesh*)App->resource_manager->GetResource(root.GetNumber("UID"));
+
+	if (r_mesh == nullptr)
+	{
+		r_mesh = (R_Mesh*)App->resource_manager->GetResourceFromFile(root.GetString("File"));
+
+		if (r_mesh == nullptr)
+		{
+			LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), root.GetNumber("UID"));
+		}
+	}
 
 	return ret;
 }

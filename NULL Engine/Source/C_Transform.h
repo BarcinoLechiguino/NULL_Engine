@@ -63,7 +63,7 @@ private:
 	void		SyncLocalToWorld		();											// Recalcuates the local transform to sync it to world_transform.	Ex: new world --> SyncLocalToWorld();
 
 public:
-	bool		update_local_transform;												// Will be set to true if a parameter of the local_transform has been modified and it has not been applied.
+	bool		sync_local_to_global;												// Will be set to true if a parameter of the local_transform has been modified and it has not been applied.
 	bool		update_world_transform;												// Will be set to true if local_transform has been modified and world_transform has been not synced to it.
 
 	bool		local_is_dirty;														// Using Dirty flags + local_transform: Would be used to prevent the local_trfm from being used while dirty.

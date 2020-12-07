@@ -35,6 +35,8 @@ public:
 	void			FreeComponents						();
 	void			FreeChilds							();
 
+	bool			SetParent							(GameObject* new_parent);
+
 	bool			AddChild							(GameObject* child);					// Adds the given child to the GO's childs vector. Also deletes it from prev. parent's childs.
 	bool			NewChildIsOwnParent					(GameObject* child);					// Rets. true if passed child is being added as a child of one of it's children or ch of chs.
 	bool			DeleteChild							(GameObject* child);					// Deletes the given child from the childs vector. Returns false upon not finding the child.
@@ -61,12 +63,14 @@ public:																								// --- GAME OBJECT GETTERS AND SETTERS
 	bool			IsActive							() const;									// 
 	bool			IsStatic							() const;									// 
 
-	void			ResetUID							();											// 
+	void			ForceUID							(const uint32& UID);						// 
 	void			SetName								(const char* new_name);						// 
 	void			SetIsActive							(const bool& set_to);						// 
 	void			SetIsStatic							(const bool& set_to);						// 
 	void			SetChildsIsActive					(const bool& set_to, GameObject* parent);	// 
 	void			SetChildsIsStatic					(const bool& set_to, GameObject* parent);	// 
+
+	uint32			GetParentUID						() const;
 
 public:
 	std::vector<Component*>		components;
@@ -87,6 +91,8 @@ private:
 	std::string					name;
 	bool						is_active;
 	bool						is_static;
+
+	uint32						parent_uid;													// Only for Serialization purposes. Maybe will be repurposed later.
 };
 
 #endif // !__GAME_OBJECT_H__

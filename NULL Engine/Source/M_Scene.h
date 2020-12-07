@@ -56,7 +56,7 @@ private:
 
 private:
 	std::vector<GameObject*>		game_objects;																			// 
-	//std::map<uint32, GameObject*>	game_objects;																			//
+	//std::map<uint32, GameObject*>	game_objects; 																			//
 
 	GameObject*					master_root;																				// Root of everything. Parent of all scenes.
 	GameObject*					scene_root;																					// Root of the current scene.

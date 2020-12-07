@@ -204,11 +204,50 @@ bool M_Scene::LoadScene(const char* path)
 		CleanUp();
 
 		ParsonNode new_root = ParsonNode(buffer);
+
+		ParsonArray objects_array = new_root.GetArray("Game Objects");
+
+		std::map<uint32, GameObject*> tmp;
+
+		// Getting all the GameObjects in the ParsonArray
+		for (uint i = 0; i < objects_array.size; ++i)
+		{
+			ParsonNode object_node = objects_array.GetNode(i);
+
+			GameObject* game_object = new GameObject();
+
+			game_object->LoadState(object_node);
+
+			if (game_object->is_scene_root)
+			{
+				scene_root = game_object;
+				scene_root->SetParent(master_root);
+			}
+
+			tmp.emplace(game_object->GetUID(), game_object);
+		}
+
+		// Re-Parenting
+		std::map<uint32, GameObject*>::iterator item;
+		for (item = tmp.begin(); item != tmp.end(); ++item)
+		{
+			uint parent_uid = item->second->GetParentUID();
+			if (parent_uid == 0)
+			{
+				continue;
+			}
+
+			std::map<uint32, GameObject*>::iterator parent = tmp.find(parent_uid);
+			if (parent != tmp.end())
+			{
+				item->second->SetParent(parent->second);
+			}
+
+			game_objects.push_back(item->second);
+		}
+
+		tmp.clear();
 	}
-
-
-
-	// DISCARD CURRENT HERE?
 
 	return ret;
 }
@@ -227,7 +266,9 @@ GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 	{
 		if (parent != nullptr)
 		{
-			parent->AddChild(game_object);
+			game_object->SetParent(parent);
+			
+			// parent->AddChild(game_object);
 		}
 
 		game_objects.push_back(game_object);
@@ -336,8 +377,10 @@ void M_Scene::CreateSceneRoot(const char* scene_name)
 
 	scene_root->is_scene_root = true;
 
-	scene_root->parent = master_root;
-	master_root->AddChild(scene_root);
+	scene_root->SetParent(master_root);
+	
+	//scene_root->parent = master_root;
+	//master_root->AddChild(scene_root);
 
 	game_objects.push_back(scene_root);
 }

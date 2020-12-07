@@ -141,7 +141,7 @@ ParsonNode ParsonNode::GetNode(const char* name) const
 {
 	if (!NodeHasValueOfType(name, JSONObject))
 	{
-		LOG("[ERROR] JSON Parser: %s did not have a JSON_Object variable!", name);			// Just for display purposes.
+		LOG("[ERROR] JSON Parser: %s did not have a JSON_Object variable!", name);				// Just for display purposes.
 	}
 	
 	return ParsonNode(json_object_get_object(root_node, name));									// json_object_get_object() returns NULL if no JSON_Object can be found. Remember to check!
@@ -199,6 +199,11 @@ ParsonNode ParsonNode::SetNode(const char* name)
 bool ParsonNode::NodeHasValueOfType(const char* name, JSON_Value_Type value_type) const
 {
 	return json_object_has_value_of_type(root_node, name, value_type);
+}
+
+bool ParsonNode::NodeIsValid()
+{
+	return (root_node != NULL);
 }
 
 JSON_Value* ParsonNode::FindValue(const char* name, int index)

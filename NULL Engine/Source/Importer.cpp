@@ -126,6 +126,16 @@ bool Importer::Utilities::FileHasTextureExtension(const char* path)
 			|| extension == "dds" || extension == "DDS");
 }
 
+void Importer::Utilities::GenerateMetaFile()
+{
+
+}
+
+void Importer::Utilities::ReadMetaFile()
+{
+
+}
+
 /*ImportSettings Importer::Settings::GetImporterSettings()
 {
 	return Importer::Settings::import_settings;

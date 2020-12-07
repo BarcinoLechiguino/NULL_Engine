@@ -16,6 +16,9 @@ namespace Importer
 		const char* GetValidPath		(const char* path);
 		bool FileHasModelExtension		(const char* path);
 		bool FileHasTextureExtension	(const char* path);
+
+		void GenerateMetaFile			();
+		void ReadMetaFile				();
 	}
 
 	/*namespace Settings

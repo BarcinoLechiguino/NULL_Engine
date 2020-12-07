@@ -10,7 +10,7 @@
 C_Transform::C_Transform(GameObject* owner) : Component(owner, COMPONENT_TYPE::TRANSFORM),
 local_transform			(float4x4::identity),
 world_transform			(float4x4::identity),
-update_local_transform	(false),
+sync_local_to_global	(false),
 update_world_transform	(false)
 {	
 	local_transform.Decompose(local_position, local_rotation, local_scale);
@@ -32,7 +32,7 @@ bool C_Transform::Update()
 		UpdateWorldTransform();
 	}
 
-	if (update_local_transform)
+	if (sync_local_to_global)
 	{
 		SyncLocalToWorld();
 	}
@@ -81,7 +81,26 @@ bool C_Transform::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 
+	ParsonArray position = root.GetArray("LocalPosition");
 
+	local_position.x = position.GetNumber(0);
+	local_position.y = position.GetNumber(1);
+	local_position.z = position.GetNumber(2);
+
+	ParsonArray rotation = root.GetArray("LocalRotation");
+
+	local_rotation.x = rotation.GetNumber(0);
+	local_rotation.y = rotation.GetNumber(1);
+	local_rotation.z = rotation.GetNumber(2);
+	local_rotation.w = rotation.GetNumber(3);
+
+	ParsonArray scale = root.GetArray("LocalScale");
+
+	local_scale.x = scale.GetNumber(0);
+	local_scale.y = scale.GetNumber(1);
+	local_scale.z = scale.GetNumber(2);
+
+	UpdateLocalTransform();
 
 	return ret;
 }
@@ -92,7 +111,7 @@ void C_Transform::UpdateLocalTransform()
 {
 	local_transform = float4x4::FromTRS(local_position, local_rotation, local_scale);
 
-	update_local_transform = false;
+	sync_local_to_global = false;
 	update_world_transform = true;
 
 	//UpdateWorldTransform();
@@ -157,7 +176,7 @@ void C_Transform::SyncLocalToWorld()
 		owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
 
-	update_local_transform = false;
+	sync_local_to_global = false;
 }
 
 float4x4 C_Transform::GetLocalTransform() const

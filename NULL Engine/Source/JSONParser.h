@@ -41,6 +41,7 @@ public:																									// --- GETTERS, SETTERS & UTILITIES
 
 public:
 	bool					NodeHasValueOfType	(const char* name, JSON_Value_Type value_type) const;	//
+	bool					NodeIsValid			();														//
 	JSON_Value*				FindValue			(const char* name, int index);							//
 
 private:
