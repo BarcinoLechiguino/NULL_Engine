@@ -66,7 +66,11 @@ void E_LoadFile::DrawFileBrowser()
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 	ImGui::BeginChild("Asset Files", ImVec2(0, 300), true);
 
-	DrawDirectoriesTree(ASSETS_PATH);
+	if (ImGui::TreeNodeEx(ASSETS_PATH, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		DrawDirectoriesTree(ASSETS_PATH, META_EXTENSION);
+		ImGui::TreePop();
+	}
 
 	ImGui::EndChild();
 	ImGui::PopStyleVar();
@@ -99,7 +103,7 @@ void E_LoadFile::DrawFileSelector()
 	}
 }
 
-void E_LoadFile::DrawDirectoriesTree(const char* root_directory)
+void E_LoadFile::DrawDirectoriesTree(const char* root_directory, const char* extension_to_filter)
 {
 	std::vector<std::string> directories;
 	std::vector<std::string> files;
@@ -114,7 +118,7 @@ void E_LoadFile::DrawDirectoriesTree(const char* root_directory)
 		
 		if (ImGui::TreeNodeEx(path.c_str(), 0, "%s/", directories[i].c_str()))
 		{
-			DrawDirectoriesTree(path.c_str());
+			DrawDirectoriesTree(path.c_str(), extension_to_filter);
 			path.clear();
 			ImGui::TreePop();
 		}
@@ -141,4 +145,8 @@ void E_LoadFile::DrawDirectoriesTree(const char* root_directory)
 			ImGui::TreePop();
 		}
 	}
+
+	directories.clear();
+	files.clear();
+	root_dir.clear();
 }

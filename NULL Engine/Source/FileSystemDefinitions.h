@@ -7,6 +7,8 @@
 #define ASSETS_SCENES_PATH		"Assets/Scenes/"
 #define ASSETS_TEXTURES_PATH	"Assets/Textures/"
 
+#define CONFIGURATION_PATH		"Configuration/"
+
 #define LIBRARY_PATH			"Library/"
 #define ANIMATIONS_PATH			"Library/Animations/"
 #define BONES_PATH				"Library/Bones/"
@@ -19,13 +21,13 @@
 #define SHADERS_PATH			"Library/Shaders/"
 #define TEXTURES_PATH			"Library/Textures/"
 
-#define CONFIGURATION_PATH		"Configuration/"
-
 // File Extensions ----------------------------------
 #define MESHES_EXTENSION		".nemesh"
 #define MATERIALS_EXTENSION		".nemat"
 #define SCENES_EXTENSION		".nescene"
 #define TEXTURES_EXTENSION		".netex"
+
+#define META_EXTENSION			".meta"
 
 #define JSON_EXTENSION			".json"
 
