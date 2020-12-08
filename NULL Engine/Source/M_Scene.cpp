@@ -40,7 +40,8 @@ selected_game_object	(nullptr)
 
 M_Scene::~M_Scene()
 {
-
+	master_root->CleanUp();
+	RELEASE(master_root);
 }
 
 bool M_Scene::Init(ParsonNode& config)
@@ -279,19 +280,24 @@ GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 
 void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 {
+	if (game_object == nullptr)
+	{
+		LOG("[ERROR] Scene: Object to delete was nullptr!");
+		return;
+	}
+	
 	if (selected_game_object == game_object)
 	{
 		selected_game_object = nullptr;
 	}
 	
-	if (!game_objects.empty() && game_object != nullptr)
+	if (!game_objects.empty())
 	{
 		game_object->CleanUp();													// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
 		
 		if (index != -1)														// If an index was given.
 		{
 			game_objects.erase(game_objects.begin() + index);					// Delete game object at index.
-			return;
 		}
 		else
 		{
@@ -300,13 +306,16 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 				if (game_objects[i] == game_object)								// Iterate game_objects until a match is found.
 				{
 					game_objects.erase(game_objects.begin() + i);				// Delete the game_object at the current loop index.
-					return;
+					break;
 				}
 			}
 		}
 
-		LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
+		RELEASE(game_object);
+		return;
 	}
+
+	LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
 }
 
 std::vector<GameObject*>* M_Scene::GetGameObjects()

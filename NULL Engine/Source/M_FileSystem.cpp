@@ -115,8 +115,11 @@ bool M_FileSystem::Exists(const char* file) const
 
 void M_FileSystem::CreateLibraryDirectories()
 {
-	//CreateDir(ASSET_MODELS_PATH);
-	
+	CreateDir(ASSETS_PATH);
+	CreateDir(ASSETS_MODELS_PATH);
+	CreateDir(ASSETS_SCENES_PATH);
+	CreateDir(ASSETS_TEXTURES_PATH);
+
 	CreateDir(LIBRARY_PATH);
 	CreateDir(ANIMATIONS_PATH);
 	CreateDir(BONES_PATH);
