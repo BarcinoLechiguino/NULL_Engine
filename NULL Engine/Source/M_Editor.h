@@ -9,12 +9,15 @@ class ParsonNode;
 class GameObject;
 
 class EditorPanel;
+class E_MainMenuBar;
 class E_Toolbar;
 class E_Configuration;
 class E_Hierarchy;
 class E_Inspector;
 class E_Console;
 class E_Project;
+class E_Scene;
+class E_Game;
 class E_ImGuiDemo;
 class E_About;
 class E_LoadFile;
@@ -25,6 +28,14 @@ enum class IMGUI_STYLE
 	LIGHT,
 	DARK,
 	OTHER
+};
+
+enum class EDITOR_EVENT
+{
+	CREATE_GAMEOBJECT,
+	SELECT_GAMEOBJECT,
+	DELETE_GAME_OBJECT,
+	LOAD_FILE
 };
 
 class M_Editor : public Module
@@ -85,12 +96,15 @@ private:
 public:
 	std::vector<EditorPanel*>	editor_panels;													// Will store all the editor modules. Will be iterated for drawing all the panels.
 
-	E_Toolbar*					toolbar; 
+	E_MainMenuBar*				main_menu_bar;
+	E_Toolbar*					toolbar;
 	E_Configuration*			configuration;
 	E_Hierarchy*				hierarchy;
 	E_Inspector*				inspector;
 	E_Console*					console;
 	E_Project*					project;
+	E_Scene*					scene;
+	E_Game*						game;
 	E_ImGuiDemo*				imgui_demo;
 	E_About*					about;
 	E_LoadFile*					load_file;

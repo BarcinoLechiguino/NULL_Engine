@@ -90,7 +90,7 @@ void E_Project::DrawFolderExplorer() const
 {
 	ImGui::Begin("FolderExplorer", false);
 
-
+	ImGui::Text("WORK IN PROGRESS");
 
 	ImGui::End();
 }

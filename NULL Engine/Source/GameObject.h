@@ -40,6 +40,7 @@ public:
 	bool			AddChild							(GameObject* child);					// Adds the given child to the GO's childs vector. Also deletes it from prev. parent's childs.
 	bool			NewChildIsOwnParent					(GameObject* child);					// Rets. true if passed child is being added as a child of one of it's children or ch of chs.
 	bool			DeleteChild							(GameObject* child);					// Deletes the given child from the childs vector. Returns false upon not finding the child.
+	bool			HasChilds							() const;
 	
 	Component*		CreateComponent						(COMPONENT_TYPE type);					// Creates a component of the given type and adds it to the components vector.
 	bool			DeleteComponent						(Component* component_to_delete);		// Deletes the given component from the Components vector. Returs False on ERROR.

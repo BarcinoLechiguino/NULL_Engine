@@ -320,22 +320,25 @@ bool GameObject::NewChildIsOwnParent(GameObject* child)
 {
 	bool ret = false;
 	
-	GameObject* parent_item = this->parent;									// Will set the parent of this object as the starting point of the search.
-	
-	if (parent_item != nullptr)												// Will check if the child is the parent or parent of the parents of the one who called AddChild()
+	if (!child->HasChilds())												// If the child does not have any children, then it cannot be the parent of this object.
 	{
-		while (parent_item != nullptr && !parent_item->is_scene_root)		// Iterate back up to the root object, as it is the parent of everything in the scene. (First check is TMP)
-		{
-			if (parent_item == child)										// Child is the parent of one of the parent objects of this object (the one which called AddChild())
-			{
-				ret = true;													// A parent of this object that had the passed child as the parent has been found.
-				break;
-			}
-
-			parent_item = parent_item->parent;								// Setting the next parent GameObject to iterate.
-		}
+		return false;
 	}
 
+	GameObject* parent_item = this->parent;									// Will set the parent of this object as the starting point of the search.
+	
+	while (parent_item != nullptr && !parent_item->is_scene_root)			// Iterate back up to the root object, as it is the parent of everything in the scene. (First check is TMP)
+	{
+		if (parent_item == child)											// Child is the parent of one of the parent objects of this object (the one which called AddChild())
+		{
+			ret = true;														// A parent of this object that had the passed child as the parent has been found.
+			break;
+		}
+
+		parent_item = parent_item->parent;									// Setting the next parent GameObject to iterate.
+	}
+
+	// --- Adding a parent into a child
 	/*for (uint i = 0; i < child->childs.size(); ++i)						// Iterating all the childs of the child.
 	{
 		child->parent->AddChild(child->childs[i]);							// Re-setting the parent of the childs to the parent of the passed child (root->GO->childs => root->childs->GO)
@@ -361,6 +364,11 @@ bool GameObject::DeleteChild(GameObject* child)
 	}
 	
 	return ret;
+}
+
+bool GameObject::HasChilds() const
+{
+	return !childs.empty();
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)

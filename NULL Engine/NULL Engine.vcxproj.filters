@@ -124,6 +124,9 @@
     <Filter Include="Source\7_Tools\Parsers">
       <UniqueIdentifier>{3aaf0e0f-c001-4818-9168-7d1beb976c6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\2_Editor\Panels\Popups">
+      <UniqueIdentifier>{5f0f2c8f-4430-4e5f-ac54-7c0436d600b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -165,16 +168,10 @@
     <ClCompile Include="Source\Resource.cpp">
       <Filter>Source\3_Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\E_About.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
     <ClCompile Include="Source\E_Console.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Inspector.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\E_Toolbar.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Hierarchy.cpp">
@@ -202,9 +199,6 @@
       <Filter>Source\5_GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Scene.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\E_Viewport.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\R_Model.cpp">
@@ -441,14 +435,26 @@
     <ClCompile Include="Source\E_Configuration.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
-    <ClCompile Include="Source\E_LoadFile.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
     <ClCompile Include="Source\E_Project.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
     <ClCompile Include="Source\EditorPanel.cpp">
       <Filter>Source\2_Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Game.cpp">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_MainMenuBar.cpp">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_About.cpp">
+      <Filter>Source\2_Editor\Panels\Popups</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_LoadFile.cpp">
+      <Filter>Source\2_Editor\Panels\Popups</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Toolbar.cpp">
+      <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -530,16 +536,10 @@
     <ClInclude Include="Source\Dependencies\DevIL\include\ilut_config.h">
       <Filter>Dependencies\DevIL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\E_About.h">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClInclude>
     <ClInclude Include="Source\E_Console.h">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Inspector.h">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_Toolbar.h">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Hierarchy.h">
@@ -579,9 +579,6 @@
       <Filter>Dependencies\Brofiler</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Scene.h">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_Viewport.h">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\R_Material.h">
@@ -974,14 +971,26 @@
     <ClInclude Include="Source\E_Configuration.h">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="Source\E_LoadFile.h">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClInclude>
     <ClInclude Include="Source\E_Project.h">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\EditorPanel.h">
       <Filter>Source\2_Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Game.h">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_MainMenuBar.h">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_About.h">
+      <Filter>Source\2_Editor\Panels\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_LoadFile.h">
+      <Filter>Source\2_Editor\Panels\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Toolbar.h">
+      <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

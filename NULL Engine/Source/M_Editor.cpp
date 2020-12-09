@@ -15,12 +15,15 @@
 #include "GameObject.h"
 
 #include "EditorPanel.h"
+#include "E_MainMenuBar.h"
 #include "E_Toolbar.h"
 #include "E_Configuration.h"
 #include "E_Hierarchy.h"
 #include "E_Inspector.h"
 #include "E_Console.h"
 #include "E_Project.h"
+#include "E_Scene.h"
+#include "E_Game.h"
 #include "E_ImGuiDemo.h"
 #include "E_About.h"
 #include "E_LoadFile.h"
@@ -33,32 +36,41 @@
 
 M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),
 clear_color		(0.0f, 0.0f, 0.0f, 1.0f),
+main_menu_bar	(nullptr),
 toolbar			(nullptr),
 configuration	(nullptr),
 hierarchy		(nullptr),
 inspector		(nullptr),
 console			(nullptr),
 project			(nullptr),
+scene			(nullptr),
+game			(nullptr),
 imgui_demo		(nullptr),
 about			(nullptr),
 load_file		(nullptr)
 {
+	main_menu_bar	= new E_MainMenuBar();
 	toolbar			= new E_Toolbar();
 	configuration	= new E_Configuration();
 	hierarchy		= new E_Hierarchy();
 	inspector		= new E_Inspector();
 	console			= new E_Console();
 	project			= new E_Project();
+	scene			= new E_Scene();
+	game			= new E_Game();
 	imgui_demo		= new E_ImGuiDemo();
 	about			= new E_About();
 	load_file		= new E_LoadFile();
 
+	AddEditorPanel(main_menu_bar);
 	AddEditorPanel(toolbar);
 	AddEditorPanel(configuration);
 	AddEditorPanel(hierarchy);
 	AddEditorPanel(inspector);
 	AddEditorPanel(console);
 	AddEditorPanel(project);
+	AddEditorPanel(scene);
+	AddEditorPanel(game);
 	AddEditorPanel(imgui_demo);
 	AddEditorPanel(about);
 	AddEditorPanel(load_file);
