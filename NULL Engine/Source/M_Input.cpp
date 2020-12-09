@@ -156,9 +156,9 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_WINDOWEVENT:
-				if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+				if (event.window.event == SDL_WINDOWEVENT_RESIZED && event.window.windowID == SDL_GetWindowID(App->window->GetWindow()))
 				{
-					App->renderer->OnResize(event.window.data1, event.window.data2);
+					App->renderer->OnResize();
 				}
 
 				if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->GetWindow()))

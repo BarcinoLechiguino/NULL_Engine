@@ -80,6 +80,7 @@ bool M_Window::Init(ParsonNode& config)
 		{
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
+			SDL_GetWindowSize(window, (int*)&screen_width, (int*)&screen_height);												// Dirty fix to generate the framebuffer correctly.
 		}
 	}
 
@@ -261,15 +262,15 @@ void M_Window::SetMaximized(bool set_to)
 
 			SDL_GetWindowSize(window, (int*)&screen_width, (int*)&screen_height);
 
+			LOG("[STATUS] MAXIMIZED SCREEN SIZE: %u x %u", screen_width, screen_height);
 			LOG("[STATUS] Window has been Maximized!");
 		}
 		else
 		{	
 			SDL_RestoreWindow(window);
 			
-			SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_HEIGHT);
 			SDL_GetWindowSize(window, (int*)&screen_width, (int*)&screen_height);
-
+			
 			LOG("[STATUS] Window has been resized to { %u, %u }", SCREEN_WIDTH, SCREEN_HEIGHT);
 		}
 	}
@@ -279,42 +280,44 @@ void M_Window::SetFullscreen(bool set_to)
 {
 	if (set_to != is_fullscreen)
 	{
-		if (set_to)
-		{
-			int result = SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);									// SDL_SetWindowFullscreen() returns 0 on success and -1 on failure.
+		LOG("[STATUS] Window: Fullscreen mode is currently disabled!");
+		
+		//if (set_to)
+		//{
+		//	int result = SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);									// SDL_SetWindowFullscreen() returns 0 on success and -1 on failure.
 
-			if (result != 0)
-			{
-				LOG("[ERROR] SDL_SetWindowFullscreen() failed! SDL_Error: %s", SDL_GetError());
-			}
-			else
-			{
-				is_fullscreen = set_to;
-				is_maximized = !set_to;
+		//	if (result != 0)
+		//	{
+		//		LOG("[ERROR] SDL_SetWindowFullscreen() failed! SDL_Error: %s", SDL_GetError());
+		//	}
+		//	else
+		//	{
+		//		is_fullscreen = set_to;
+		//		is_maximized = !set_to;
 
-				SDL_GetWindowSize(window, (int*)&screen_width, (int*)&screen_height);
+		//		SDL_GetWindowSize(window, (int*)&screen_width, (int*)&screen_height);
 
-				LOG("[STATUS] Window has been set to Fullscreen mode!");
-			}
-		}
-		else
-		{
-			int result = SDL_SetWindowFullscreen(window, 0);														// The 0 "flag" sets the window to windowed mode.
+		//		LOG("[STATUS] Window has been set to Fullscreen mode!");
+		//	}
+		//}
+		//else
+		//{
+		//	int result = SDL_SetWindowFullscreen(window, 0);														// The 0 "flag" sets the window to windowed mode.
 
-			if (result != 0)
-			{
-				LOG("[ERROR] SDL_SetWindowFullscreen() failed! SDL_Error: %s", SDL_GetError());
-			}
-			else
-			{
-				is_fullscreen = set_to;
-				is_fullscreen_desktop = set_to;
+		//	if (result != 0)
+		//	{
+		//		LOG("[ERROR] SDL_SetWindowFullscreen() failed! SDL_Error: %s", SDL_GetError());
+		//	}
+		//	else
+		//	{
+		//		is_fullscreen = set_to;
+		//		is_fullscreen_desktop = set_to;
 
-				SDL_GetWindowSize(window, (int*)&screen_width, (int*)&screen_height);
+		//		SDL_GetWindowSize(window, (int*)&screen_width, (int*)&screen_height);
 
-				LOG("[STATUS] Window has been resized to { %u, %u }", SCREEN_WIDTH, SCREEN_HEIGHT);
-			}
-		}
+		//		LOG("[STATUS] Window has been resized to { %u, %u }", SCREEN_WIDTH, SCREEN_HEIGHT);
+		//	}
+		//}
 	}
 }
 

@@ -13,7 +13,9 @@
 #include "C_Mesh.h"
 
 C_Mesh::C_Mesh(GameObject* owner) : Component(owner, COMPONENT_TYPE::MESH),
-r_mesh	(nullptr)
+r_mesh				(nullptr),
+show_wireframe		(false),
+show_bounding_box	(false)
 {
 
 }
@@ -31,7 +33,7 @@ bool C_Mesh::Update()
 	{
 		if (r_mesh != nullptr)
 		{
-			Render();
+			//Render();
 		}
 	}
 
@@ -57,6 +59,8 @@ bool C_Mesh::SaveState(ParsonNode& root) const
 		root.SetNumber("UID", r_mesh->GetUID());
 		root.SetString("Path", r_mesh->GetLibraryPath());
 		root.SetString("File", r_mesh->GetLibraryFile());
+		root.SetBool("ShowWireframe", show_wireframe);
+		root.SetBool("ShowBoundingBox", show_bounding_box);
 	}
 
 	return ret;
@@ -69,6 +73,8 @@ bool C_Mesh::LoadState(ParsonNode& root)
 	r_mesh = nullptr;
 
 	r_mesh = (R_Mesh*)App->resource_manager->GetResource(root.GetNumber("UID"));
+	show_wireframe		= root.GetBool("ShowWireframe");
+	show_bounding_box	= root.GetBool("ShowBoundingBox");
 
 	if (r_mesh == nullptr)
 	{
@@ -88,8 +94,8 @@ bool C_Mesh::Render()
 {
 	bool ret = true;
 
-	C_Transform* c_transform = owner->GetTransformComponent();
-	C_Material* c_material = owner->GetMaterialComponent();
+	C_Transform* c_transform	= owner->GetTransformComponent();
+	C_Material* c_material		= owner->GetMaterialComponent();
 
 	App->renderer->RenderMesh(c_transform->GetWorldTransform(), this, c_material);
 
@@ -169,4 +175,32 @@ void C_Mesh::SetDrawFaceNormals(const bool& set_to)
 	{
 		r_mesh->draw_face_normals = set_to;
 	}
+}
+
+void C_Mesh::GetBoundingBoxVertices(math::float3* bb_vertices) const
+{
+	if (r_mesh != nullptr)
+	{
+		r_mesh->aabb.GetCornerPoints(bb_vertices);
+	}
+}
+
+bool C_Mesh::GetShowWireframe() const
+{
+	return show_wireframe;
+}
+
+void C_Mesh::SetShowWireframe(const bool& set_to)
+{
+	show_wireframe = set_to;
+}
+
+bool C_Mesh::GetShowBoundingBox() const
+{
+	return show_bounding_box;
+}
+
+void C_Mesh::SetShowBoundingBox(const bool& set_to)
+{
+	show_bounding_box = set_to;
 }

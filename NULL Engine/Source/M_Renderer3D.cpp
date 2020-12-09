@@ -37,8 +37,12 @@ context					(),
 vsync					(VSYNC),
 draw_world_grid			(true),
 draw_world_axis			(true),
-show_wireframe			(false),
+in_wireframe_mode		(false),
 draw_primitive_examples	(false),
+scene_framebuffer		(0),
+rbo_depth_stencil		(0),
+scene_render_texture	(0),
+game_framebuffer		(0),
 debug_texture_id		(0)
 {
 
@@ -51,21 +55,20 @@ M_Renderer3D::~M_Renderer3D()
 }
 
 // Called before render is available
-bool M_Renderer3D::Init(ParsonNode& config)
+bool M_Renderer3D::Init(ParsonNode& configuration)
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
 
 	ret = InitOpenGL();																			// Initializing OpenGL. (Context and initial configuration)
 
-	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);														// Projection matrix recalculation to keep up with the resizing of the window.
-
-	InitGlew();																					// Initializing Glew.
-
-	Importer::Textures::Init();																	// Initializing DevIL.
+	OnResize();																					// Projection matrix recalculation to keep up with the resizing of the window.
 	
+	Importer::Textures::Init();																	// Initializing DevIL.
+
 	CreatePrimitiveExamples();																	// Adding one of each available primitice to the primitives vector for later display.
 
+	InitFramebuffers();
 	LoadDebugTexture();
 
 	return ret;
@@ -100,25 +103,7 @@ UPDATE_STATUS M_Renderer3D::PostUpdate(float dt)
 {	
 	BROFILER_CATEGORY("M_Renderer3D PostUpdate", Profiler::Color::Chartreuse);
 	
-	if (draw_world_grid)
-	{
-		DrawWorldGrid(WORLD_GRID_SIZE);
-	}
-
-	if (draw_world_axis)
-	{
-		DrawWorldAxis();
-	}
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	if (draw_primitive_examples)
-	{
-		for (uint i = 0; i < primitives.size(); ++i)
-		{
-			primitives[i]->RenderByIndices();
-		}
-	}
+	RenderScene();
 
 	App->editor->RenderEditorPanels();
 
@@ -140,6 +125,8 @@ bool M_Renderer3D::CleanUp()
 	primitives.clear();
 
 	Importer::Textures::CleanUp();																// Shutting down DevIL. 
+
+	FreeBuffers();
 
 	SDL_GL_DeleteContext(context);
 
@@ -172,6 +159,8 @@ bool M_Renderer3D::InitOpenGL()
 		LOG("[ERROR] OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
+
+	ret = InitGlew();																					// Initializing Glew.
 
 	if (ret == true)
 	{
@@ -287,18 +276,107 @@ bool M_Renderer3D::InitGlew()
 	return ret;
 }
 
-void M_Renderer3D::OnResize(int width, int height)
+void M_Renderer3D::OnResize()
 {
-	glViewport(0, 0, width, height);
+	uint win_width	= App->window->GetWidth();
+	uint win_height = App->window->GetHeight();
+	
+	glViewport(0, 0, win_width, win_width);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	projection_matrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
+	projection_matrix = perspective(60.0f, (float)win_width / (float)win_height, 0.125f, 512.0f);
 	//projection_matrix = float4x4::OpenGLPerspProjRH(60.0f, (float)width / (float)height, 0.125f, 512.0f); /*perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);*/
 	glLoadMatrixf((GLfloat*)&projection_matrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	InitFramebuffers();
+}
+
+void M_Renderer3D::InitFramebuffers()
+{
+	glGenFramebuffers(1, (GLuint*)&scene_framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, scene_framebuffer);
+
+	// --- SCENE RENDER TEXTURE ---
+	glGenTextures(1, (GLuint*)&scene_render_texture);
+	glBindTexture(GL_TEXTURE_2D, scene_render_texture);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->GetWidth(), App->window->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// --- DEPTH STENCIL BUFFER ---
+	glGenRenderbuffers(1, (GLuint*)&rbo_depth_stencil);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth_stencil);
+	
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, App->window->GetWidth(), App->window->GetHeight());
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_depth_stencil);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->GetWidth(), App->window->GetHeight());
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth_stencil);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	LOG("FRAMEBUFFER: WINDOW SIZE { %u x %u }", App->window->GetWidth(), App->window->GetHeight());
+
+	// --- Generating the SCENE RENDER TEXTURE ---
+	glFramebufferTexture2D(GL_TEXTURE_2D, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene_render_texture, 0);
+	
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		LOG("[ERROR] Renderer 3D: Could not generate the scene's frame buffer! Error: %s", gluErrorString(glGetError()));
+	}
+
+	// --- UNBINDING THE FRAMEBUFFER ---
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void M_Renderer3D::LoadDebugTexture()
+{
+	GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];							// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
+
+	for (int i = 0; i < CHECKERS_HEIGHT; ++i)											// There will be CHECKERS_WIDTH rows per column.
+	{
+		for (int j = 0; j < CHECKERS_WIDTH; ++j)										// There will be an RGBA value per checker.
+		{
+			int color = ((((i & 0x8) == 0) ^ ((j & 0x8) == 0))) * 255;					// Getting the checker's color (white or black) according to the iteration indices and bitwise ops.
+
+			checker_image[i][j][0] = (GLubyte)color;									// R
+			checker_image[i][j][1] = (GLubyte)color;									// G
+			checker_image[i][j][2] = (GLubyte)color;									// B
+			checker_image[i][j][3] = (GLubyte)255;										// A
+		}
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);												// Sets the pixel storage modes. GL_UNPACK_ALIGNMENT specifies the alignment requirements for the
+	// --->																				// start of each pixel row in memory. 1 means that the alignment requirements will be byte-alignment.
+	glGenTextures(1, &debug_texture_id);												// Generate texture names. Returns n names in the given buffer. GL_INVALID_VALUE if n is negative.
+	glBindTexture(GL_TEXTURE_2D, debug_texture_id);										// Bind a named texture to a texturing target. Binds the buffer with the given target (GL_TEXTURE_2D).
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);						// Set texture parameters. WRAP_S: Set the wrap parameters for tex. coord. S.. GL_REPEAT is the default.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);						// WRAP_T: Set the wrap parameters for the texture coordinate r
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);					// MAG_FILTER: Sets the tex. magnification process param.. GL_NEAREST rets the val. of nearest tex elem.
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					// MIN_FILTER: Sets the texture minimization process parameters. " ".
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
+	// --->																				// handle the process of resizing a tex. Takes the mipmap that most closely matches the size of the px.
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, checker_image);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void M_Renderer3D::FreeBuffers()
+{
+	glDeleteRenderbuffers(1, (GLuint*)&rbo_depth_stencil);
+	glDeleteTextures(1, (GLuint*)&scene_render_texture);
+	glDeleteFramebuffers(1, (GLuint*)&scene_framebuffer);
+
+	glDeleteTextures(1, (GLuint*)&debug_texture_id);
 }
 
 void M_Renderer3D::RendererShortcuts()
@@ -315,7 +393,7 @@ void M_Renderer3D::RendererShortcuts()
 	
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_STATE::KEY_DOWN)
 	{
-		SetShowWireframe(!show_wireframe);
+		SetInWireframeMode(!in_wireframe_mode);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_STATE::KEY_DOWN)
@@ -326,6 +404,37 @@ void M_Renderer3D::RendererShortcuts()
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_STATE::KEY_DOWN)
 	{
 		SetGLFlag(GL_COLOR_MATERIAL, !GetGLFlag(GL_COLOR_MATERIAL));
+	}
+}
+
+void M_Renderer3D::RenderScene()
+{
+	//glBindFramebuffer(GL_FRAMEBUFFER, scene_framebuffer);
+	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	
+	if (draw_world_grid)
+	{
+		DrawWorldGrid(WORLD_GRID_SIZE);
+	}
+
+	if (draw_world_axis)
+	{
+		DrawWorldAxis();
+	}
+
+	RenderMeshes();
+	RenderCuboids();
+	
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	if (draw_primitive_examples)
+	{
+		for (uint i = 0; i < primitives.size(); ++i)
+		{
+			primitives[i]->RenderByIndices();
+		}
 	}
 }
 
@@ -371,7 +480,50 @@ void M_Renderer3D::DrawWorldAxis()
 
 	glEnd();
 
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glLineWidth(1.0f);
+}
+
+void M_Renderer3D::AddRenderersBatch(const std::vector<MeshRenderer>& mesh_renderers, const std::vector<CuboidRenderer>& cuboid_renderers)
+{	
+	for (uint i = 0; i < mesh_renderers.size(); ++i)
+	{
+		this->mesh_renderers.push_back(mesh_renderers[i]);
+	}
+
+	for (uint i = 0; i < cuboid_renderers.size(); ++i)
+	{
+		this->cuboid_renderers.push_back(cuboid_renderers[i]);
+	}
+
+	//this->mesh_renderers.resize(mesh_renderers.size());
+	//this->cuboid_renderers.resize(cuboid_renderers.size());
+	//memcpy(&this->mesh_renderers[0], &mesh_renderers[0], mesh_renderers.size());
+	//memcpy(&this->cuboid_renderers[0], &cuboid_renderers[0], cuboid_renderers.size());
+
+	
+
+	LOG("STOP RIGHT THERE YOU CRIMINAL SCUM!");
+}
+
+void M_Renderer3D::RenderMeshes()
+{
+	for (uint i = 0; i < mesh_renderers.size(); ++i)
+	{
+		mesh_renderers[i].Render();
+	}
+
+	mesh_renderers.clear();
+}
+
+void M_Renderer3D::RenderCuboids()
+{
+	for (uint i = 0; i < cuboid_renderers.size(); ++i)
+	{
+		cuboid_renderers[i].Render();
+	}
+
+	cuboid_renderers.clear();
 }
 
 void M_Renderer3D::AddPrimitive(Primitive* primitive)
@@ -429,9 +581,15 @@ void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 
 void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material)
 {	
+	//glBindFramebuffer(GL_FRAMEBUFFER, scene_framebuffer);
+	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+
+
 	R_Mesh* r_mesh = c_mesh->GetMesh();
 	
-	if (show_wireframe)
+	if (in_wireframe_mode)
 	{
 		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 	}
@@ -508,42 +666,9 @@ void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_
 	glPopMatrix();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-}
 
-void M_Renderer3D::LoadDebugTexture()
-{	
-	GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];							// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
-
-	for (int i = 0; i < CHECKERS_HEIGHT; ++i)											// There will be CHECKERS_WIDTH rows per column.
-	{
-		for (int j = 0; j < CHECKERS_WIDTH; ++j)										// There will be an RGBA value per checker.
-		{
-			int color = ((((i & 0x8) == 0) ^ ((j & 0x8) == 0))) * 255;					// Getting the checker's color (white or black) according to the iteration indices and bitwise ops.
-
-			checker_image[i][j][0] = (GLubyte)color;									// R
-			checker_image[i][j][1] = (GLubyte)color;									// G
-			checker_image[i][j][2] = (GLubyte)color;									// B
-			checker_image[i][j][3] = (GLubyte)255;										// A
-		}
-	}
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);												// Sets the pixel storage modes. GL_UNPACK_ALIGNMENT specifies the alignment requirements for the
-	// --->																				// start of each pixel row in memory. 1 means that the alignment requirements will be byte-alignment.
-	glGenTextures(1, &debug_texture_id);												// Generate texture names. Returns n names in the given buffer. GL_INVALID_VALUE if n is negative.
-	glBindTexture(GL_TEXTURE_2D, debug_texture_id);										// Bind a named texture to a texturing target. Binds the buffer with the given target (GL_TEXTURE_2D).
-	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);						// Set texture parameters. WRAP_S: Set the wrap parameters for tex. coord. S.. GL_REPEAT is the default.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);						// WRAP_T: Set the wrap parameters for the texture coordinate r
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);					// MAG_FILTER: Sets the tex. magnification process param.. GL_NEAREST rets the val. of nearest tex elem.
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);					// MIN_FILTER: Sets the texture minimization process parameters. " ".
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);	// MIPMAP_NEAREST: Same as GL_NEAREST but works with the mipmaps generated by glGenerateMipmap() to
-	// --->																				// handle the process of resizing a tex. Takes the mipmap that most closely matches the size of the px.
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, checker_image);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
 }
 
 //float4x4 M_Renderer3D::GetProjectionMatrix() const
@@ -564,6 +689,26 @@ mat4x4 M_Renderer3D::GetProjectionMatrix() const
 mat3x3 M_Renderer3D::GetNormalMatrix() const
 {
 	return normal_matrix;
+}
+
+uint M_Renderer3D::GetDebugTextureID() const
+{
+	return debug_texture_id;
+}
+
+uint M_Renderer3D::GetSceneFramebuffer() const
+{
+	return scene_framebuffer;
+}
+
+uint M_Renderer3D::GetSceneRenderTexture() const
+{
+	return scene_render_texture;
+}
+
+uint M_Renderer3D::GetGameFramebuffer() const
+{
+	return game_framebuffer;
 }
 
 const char* M_Renderer3D::GetDrivers() const
@@ -633,9 +778,9 @@ bool M_Renderer3D::GetDrawWorldAxis() const
 	return draw_world_axis;
 }
 
-bool M_Renderer3D::GetShowWireframe() const
+bool M_Renderer3D::GetInWireframeMode() const
 {
-	return show_wireframe;
+	return in_wireframe_mode;
 }
 
 bool M_Renderer3D::GetDrawPrimitiveExamples() const
@@ -659,13 +804,13 @@ void M_Renderer3D::SetDrawWorldAxis(bool set_to)
 	}
 }
 
-void M_Renderer3D::SetShowWireframe(bool set_to)
+void M_Renderer3D::SetInWireframeMode(bool set_to)
 {
-	if (set_to != show_wireframe)
+	if (set_to != in_wireframe_mode)
 	{
-		show_wireframe = set_to;
+		in_wireframe_mode = set_to;
 
-		if (show_wireframe)
+		if (in_wireframe_mode)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			SetGLFlag(GL_TEXTURE_2D, false);
@@ -684,4 +829,153 @@ void M_Renderer3D::SetDrawPrimtiveExamples(bool set_to)
 	{
 		draw_primitive_examples = set_to;
 	}
+}
+
+// --- RENDERER STRUCTURES METHODS ---
+MeshRenderer::MeshRenderer(const float4x4& transform, C_Mesh* c_mesh, C_Material* c_material) :
+transform	(transform),
+c_mesh		(c_mesh),
+c_material	(c_material)
+{
+
+}
+
+void MeshRenderer::Render()
+{
+	R_Mesh* r_mesh = c_mesh->GetMesh();
+
+	if (r_mesh == nullptr)
+	{
+		LOG("[ERROR] Renderer 3D: Could not render mesh! Error: R_Mesh* was nullptr.");
+		return;
+	}
+
+	//glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)&transform.Transposed());												// OpenGL requires that the 4x4 matrices are column-major instead of row-major.
+
+	ApplyDebugParameters();																			// Enable Wireframe Mode for this specific mesh, etc.
+	ApplyTextureAndMaterial();																		// Apply resource texture or default texture, mesh color...
+
+	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and to be used during rendering.
+	glEnableClientState(GL_NORMAL_ARRAY);															// Enables the normal array for writing and to be used during rendering.
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and to be used during rendering.
+
+	glBindBuffer(GL_ARRAY_BUFFER, r_mesh->TBO);														// Will bind the buffer object with the mesh->TBO identifyer for rendering.
+	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of tex coords to use when rendering.
+
+	glBindBuffer(GL_ARRAY_BUFFER, r_mesh->NBO);														// The normal buffer is bound so the normal positions can be interpreted correctly.
+	glNormalPointer(GL_FLOAT, 0, nullptr);															// 
+
+	glBindBuffer(GL_ARRAY_BUFFER, r_mesh->VBO);														// The vertex buffer is bound so the vertex positions can be interpreted correctly.
+	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of vert coords to use when rendering.
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r_mesh->IBO);												// Will bind the buffer object with the mesh->IBO identifyer for rendering.
+	glDrawElements(GL_TRIANGLES, r_mesh->indices.size(), GL_UNSIGNED_INT, nullptr);					// 
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);														// Clearing the buffers.
+	glBindBuffer(GL_ARRAY_BUFFER, 0);																// 												
+	glBindTexture(GL_TEXTURE_2D, 0);																// ---------------------
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);													// Disabling the client-side capabilities enabled at the beginning.
+	glDisableClientState(GL_NORMAL_ARRAY);															// 
+	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY, GL_NORMAL_ARRAY and GL_VERTEX_ARRAY.
+
+	ClearTextureAndMaterial();																		// Clear the specifications applied in ApplyTextureAndMaterial().
+	ClearDebugParameters();																			// Clear the specifications applied in ApplyDebugParameters().
+
+	// --- DEBUG DRAW ---
+	if (r_mesh->draw_vertex_normals)
+	{
+		r_mesh->DrawVertexNormals();
+	}
+
+	if (r_mesh->draw_face_normals)
+	{
+		r_mesh->DrawFaceNormals();
+	}
+
+	glPopMatrix();
+}
+
+void MeshRenderer::ApplyDebugParameters()
+{
+	if (App->renderer->GetInWireframeMode() || c_mesh->GetShowWireframe())
+	{
+		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+	}
+
+	if (c_mesh->GetShowWireframe() && !App->renderer->GetInWireframeMode())
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDisable(GL_TEXTURE_2D);
+	}
+}
+
+void MeshRenderer::ClearDebugParameters()
+{
+	if (c_mesh->GetShowWireframe() && !App->renderer->GetInWireframeMode())
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_TEXTURE_2D);
+	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void MeshRenderer::ApplyTextureAndMaterial()
+{
+	if (c_material != nullptr)
+	{
+		if (!c_material->IsActive())
+		{
+			glDisable(GL_TEXTURE_2D);
+		}
+
+		if (c_material->GetTexture() == nullptr)														// If the Material Component does not have a Texture Resource.
+		{
+			Color color = c_material->GetMaterialColour();
+			glColor4f(color.r, color.g, color.b, color.a);												// Apply the diffuse color to the mesh.
+		}
+		else if (c_material->UseDefaultTexture())														// If the default texture is set to be used (bool use_default_texture)
+		{
+			glBindTexture(GL_TEXTURE_2D, App->renderer->GetDebugTextureID());							// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, c_material->GetTextureID());									// Binding the texture_id in the Texture Resource of the Material Component.
+		}
+	}
+}
+
+void MeshRenderer::ClearTextureAndMaterial()
+{
+	if (c_material != nullptr)
+	{
+		if (!c_material->IsActive())
+		{
+			glEnable(GL_TEXTURE_2D);
+		}
+	}
+}
+
+
+CuboidRenderer::CuboidRenderer(const float3* vertices, Color color) :
+vertices(vertices),
+color(color)
+{
+
+}
+
+void CuboidRenderer::Render()
+{
+	glColor4f(color.r, color.g, color.b, color.a);
+
+	glBegin(GL_LINE);
+
+
+
+	glEnd();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }

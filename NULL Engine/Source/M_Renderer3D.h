@@ -8,6 +8,7 @@
 #include "Light.h"
 
 class ParsonNode;
+class Color;
 
 class R_Mesh;
 class R_Material;
@@ -34,13 +35,41 @@ enum class RENDERER_FLAGS																						// Employed to avoid having OpenG
 
 #define MAX_LIGHTS 8
 
+struct MeshRenderer
+{
+	MeshRenderer(const float4x4& transform, C_Mesh* c_mesh, C_Material* c_material);							// Will render the given mesh at the given position with the given mat & tex.
+
+	void Render();
+
+	void ApplyDebugParameters();
+	void ClearDebugParameters();
+	
+	void ApplyTextureAndMaterial();
+	void ClearTextureAndMaterial();
+
+
+	float4x4	transform;
+	C_Mesh*		c_mesh;
+	C_Material*	c_material;
+};
+
+struct CuboidRenderer																							// Will render the wireframe of any given geometric form with 8 vertices.
+{	
+	CuboidRenderer(const float3* vertices, const Color color);
+
+	void Render();
+
+	const float3* vertices;
+	const Color	color;
+};
+
 class M_Renderer3D : public Module
 {
 public:
 	M_Renderer3D(bool is_active = true);
 	~M_Renderer3D();
 
-	bool			Init				(ParsonNode& config) override;
+	bool			Init				(ParsonNode& configuration) override;
 	UPDATE_STATUS	PreUpdate			(float dt) override;
 	UPDATE_STATUS	PostUpdate			(float dt) override;
 	bool			CleanUp				() override;
@@ -51,18 +80,27 @@ public:
 public:
 	bool			InitOpenGL					();
 	bool			InitGlew					();
-	void			OnResize					(int width, int height);
+	void			OnResize					();
+
+	void			InitFramebuffers			();
+	void			LoadDebugTexture			();
+	void			FreeBuffers					();
 
 	void			RendererShortcuts			();
 
-	void			DrawWorldGrid				(int size);
-	void			DrawWorldAxis				();
+	void			RenderScene					();
 
 public:																											// --- RENDER GEOMETRY
 	void			GenerateBuffers				(R_Mesh* mesh);
-	void			RenderMesh					(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material);
+		
+	void			DrawWorldGrid				(int size);
+	void			DrawWorldAxis				();
 
-	void			LoadDebugTexture			();
+	void			AddRenderersBatch			(const std::vector<MeshRenderer>& mesh_renderers, const std::vector<CuboidRenderer>& cuboid_renderers);
+	void			RenderMeshes				();
+	void			RenderCuboids				();
+
+	void			RenderMesh					(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material);
 
 	void			AddPrimitive				(Primitive* primitive);
 	void			CreatePrimitiveExamples		();
@@ -74,6 +112,11 @@ public:																											// --- GET/SET METHODS
 	mat4x4			GetProjectionMatrix			() const;
 	mat3x3			GetNormalMatrix				() const;
 	
+	uint			GetDebugTextureID			() const;
+	uint			GetSceneFramebuffer			() const;
+	uint			GetSceneRenderTexture		() const;
+	uint			GetGameFramebuffer			() const;
+
 	const char*		GetDrivers					() const;														// 
 	bool			GetVsync					() const;														// 
 	void			SetVsync					(bool set_to);													// 
@@ -85,19 +128,17 @@ public:																											// --- GET/SET METHODS
 
 	bool			GetDrawWorldGrid			() const;														// 
 	bool			GetDrawWorldAxis			() const;														//
-	bool			GetShowWireframe			() const;														//
+	bool			GetInWireframeMode			() const;														//
 	bool			GetDrawPrimitiveExamples	() const;														// 
 	
 	void			SetDrawWorldGrid			(bool set_to);													// 
 	void			SetDrawWorldAxis			(bool set_to);													// 
-	void			SetShowWireframe			(bool set_to);													//
+	void			SetInWireframeMode			(bool set_to);													//
 	void			SetDrawPrimtiveExamples		(bool set_to);													//
 
 public:
 	Light					lights[MAX_LIGHTS];																	// 
 	SDL_GLContext			context;																			// 
-
-	uint					debug_texture_id;
 
 	std::vector<Primitive*>	primitives;
 
@@ -105,14 +146,23 @@ private:
 	//float4x4				projection_matrix;																	//  
 	//float3x3				normal_matrix;																		// 
 
+	std::vector<MeshRenderer>	mesh_renderers;
+	std::vector<CuboidRenderer> cuboid_renderers;
+	
 	mat4x4					projection_matrix;																	// 
 	mat3x3					normal_matrix;																		// 
+
+	uint					scene_framebuffer;
+	uint					rbo_depth_stencil;
+	uint					scene_render_texture;
+	uint					game_framebuffer;
+	uint					debug_texture_id;
 
 	bool					vsync;																				// Will keep track of whether or not the vsync is currently active.
 
 	bool					draw_world_grid;																	//
 	bool					draw_world_axis;																	//
-	bool					show_wireframe;																		//
+	bool					in_wireframe_mode;																	//
 
 	bool					draw_primitive_examples;															//
 };

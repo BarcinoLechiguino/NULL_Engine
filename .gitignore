@@ -18,3 +18,4 @@ NULL Engine/Build/NULL Engine.exe
 *.ipdb
 NULL Engine/Intermediate/r_mesh.new.obj.enc
 NULL Engine/Intermediate/NULL Engine.vcxproj.FileListAbsolute.txt
+*.enc

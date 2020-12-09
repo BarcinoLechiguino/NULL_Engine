@@ -209,21 +209,21 @@ bool E_MainMenuBar::GameObjectsMainMenuItem()
 
 		if (ImGui::BeginMenu("Draw Mode"))
 		{
-			bool mesh = !App->renderer->GetShowWireframe();
-			bool wire = App->renderer->GetShowWireframe();
+			bool mesh = !App->renderer->GetInWireframeMode();
+			bool wire = App->renderer->GetInWireframeMode();
 			bool vert = false;
 
 			if (ImGui::MenuItem("Mesh", "TBD", &mesh))
 			{
 				if (wire)
 				{
-					App->renderer->SetShowWireframe(false);
+					App->renderer->SetInWireframeMode(false);
 				}
 			}
 			
 			if (ImGui::MenuItem("Wireframe", "F3", &wire))
 			{
-				App->renderer->SetShowWireframe(wire);
+				App->renderer->SetInWireframeMode(wire);
 			}
 			
 			ImGui::MenuItem("Vertices", "TBD", &vert, false);

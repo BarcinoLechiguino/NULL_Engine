@@ -3,6 +3,11 @@
 
 #include "Component.h"
 
+namespace math
+{
+	class float3;
+}
+
 class ParsonNode;
 class GameObject;
 class R_Mesh;
@@ -35,8 +40,18 @@ public:
 	void			SetDrawVertexNormals	(const bool& set_to);
 	void			SetDrawFaceNormals		(const bool& set_to);
 
+	bool			GetShowWireframe		() const;
+	void			SetShowWireframe		(const bool& set_to);
+
+	void			GetBoundingBoxVertices	(math::float3* bb_vertices) const;		// TODO: Kinda dirty, should be done elsewhere (?).
+	bool			GetShowBoundingBox		() const;
+	void			SetShowBoundingBox		(const bool& set_to);
+
 private:
 	R_Mesh* r_mesh;
+
+	bool show_wireframe;
+	bool show_bounding_box;
 };
 
 #endif // !__C_MESH_H__

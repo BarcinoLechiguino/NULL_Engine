@@ -95,6 +95,11 @@ UPDATE_STATUS M_Scene::Update(float dt)
 UPDATE_STATUS M_Scene::PostUpdate(float dt)
 {
 	BROFILER_CATEGORY("M_Scene PostUpdate", Profiler::Color::Yellow)
+
+	std::vector<MeshRenderer>	mesh_renderers;
+	std::vector<CuboidRenderer> cuboid_renderers;
+
+	// --- Sort GameObjects by Z-Buffer value
 	
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
@@ -107,8 +112,15 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 		if (game_objects[i]->IsActive())
 		{
 			game_objects[i]->Update();
+			game_objects[i]->GetRenderers(mesh_renderers, cuboid_renderers);
 		}
 	}
+
+	// --- Send Batches to Renderer
+	App->renderer->AddRenderersBatch(mesh_renderers, cuboid_renderers);
+
+	mesh_renderers.clear();
+	cuboid_renderers.clear();
 	
 	for (uint n = 0; n < primitives.size(); n++)
 	{

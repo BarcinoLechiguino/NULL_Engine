@@ -257,6 +257,18 @@ void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 			// --- DRAW MODE ---
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Draw Mode:");
 
+			bool show_wireframe = c_mesh->GetShowWireframe();
+			if (ImGui::Checkbox("Show Wireframe", &show_wireframe))
+			{
+				c_mesh->SetShowWireframe(show_wireframe);
+			}
+
+			bool show_bounding_box = c_mesh->GetShowBoundingBox();
+			if (ImGui::Checkbox("Show Bounding Box", &show_bounding_box))
+			{
+				c_mesh->SetShowBoundingBox(show_bounding_box);
+			}
+
 			bool draw_vert_normals = c_mesh->GetDrawVertexNormals();
 			if (ImGui::Checkbox("Draw Vertex Normals", &draw_vert_normals))
 			{
@@ -510,7 +522,8 @@ void E_Inspector::TextureDisplay(C_Material* c_material)
 
 	if (c_material->UseDefaultTexture())
 	{
-		tex_id = (ImTextureID)App->renderer->debug_texture_id;
+		//tex_id = (ImTextureID)App->renderer->GetDebugTextureID();
+		tex_id = (ImTextureID)App->renderer->GetSceneRenderTexture();
 	}
 	else
 	{

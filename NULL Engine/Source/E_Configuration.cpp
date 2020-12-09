@@ -458,7 +458,7 @@ void E_Configuration::RendererFlags()
 	bool blend				= App->renderer->GetGLFlag(RENDERER_FLAGS::BLEND);
 
 	// --- SHOW FLAGS
-	bool show_wireframe		= App->renderer->GetShowWireframe();
+	bool in_wireframe_mode		= App->renderer->GetInWireframeMode();
 
 	// --- DRAW FLAGS
 	bool draw_grid			= App->renderer->GetDrawWorldGrid();
@@ -510,9 +510,9 @@ void E_Configuration::RendererFlags()
 	ImGui::SameLine(175.0f);
 
 	// --- SHOW FLAGS
-	if (ImGui::Checkbox("Show Wireframes", &show_wireframe))
+	if (ImGui::Checkbox("Show Wireframes", &in_wireframe_mode))
 	{
-		App->renderer->SetShowWireframe(show_wireframe);
+		App->renderer->SetInWireframeMode(in_wireframe_mode);
 	}
 
 	// --- DRAW FLAGS

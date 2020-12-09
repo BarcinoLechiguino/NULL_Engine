@@ -5,6 +5,8 @@
 #include "JSONParser.h"
 #include "Random.h"
 
+#include "M_Renderer3D.h"																				// TMP. Move the Renderers generation elsewhere.
+
 #include "Component.h"
 #include "C_Transform.h"
 #include "C_Mesh.h"
@@ -29,6 +31,9 @@ to_delete		(false)
 
 	obb.SetNegativeInfinity();
 	aabb.SetNegativeInfinity();
+
+	obb_vertices	= new float3[8];																	// Bounding boxes will always have 8 vertices as they are Cuboids.
+	aabb_vertices	= new float3[8];																	// Bounding boxes will always have 8 vertices as they are Cuboids.
 }
 
 GameObject::GameObject(std::string name, bool is_active, bool is_static) :
@@ -52,11 +57,15 @@ to_delete		(false)
 
 	obb.SetNegativeInfinity();
 	aabb.SetNegativeInfinity();
+
+	obb_vertices = new float3[8];																	// Bounding boxes will always have 8 vertices as they are Cuboids.
+	aabb_vertices = new float3[8];																	// Bounding boxes will always have 8 vertices as they are Cuboids.
 }
 
 GameObject::~GameObject()
 {
-
+	RELEASE_ARRAY(obb_vertices);
+	RELEASE_ARRAY(aabb_vertices);
 }
 
 bool GameObject::Update()
@@ -98,6 +107,7 @@ bool GameObject::SaveState(ParsonNode& root) const
 	root.SetBool("IsActive", is_active);
 	root.SetBool("IsStatic", is_static);
 	root.SetBool("IsSceneRoot", is_scene_root);
+	root.SetBool("ShowBoundingBoxes", show_bounding_boxes);
 
 	// --- OBB ---
 	/*ParsonArray obb_array = root.SetArray("OBB");
@@ -147,10 +157,11 @@ bool GameObject::LoadState(ParsonNode& root)
 	ForceUID(root.GetNumber("UID"));
 	parent_uid = root.GetNumber("ParentUID");
 
-	name			= root.GetString("Name");
-	is_active		= root.GetBool("IsActive");
-	is_static		= root.GetBool("IsStatic");
-	is_scene_root	= root.GetBool("IsSceneRoot");
+	name					= root.GetString("Name");
+	is_active				= root.GetBool("IsActive");
+	is_static				= root.GetBool("IsStatic");
+	is_scene_root			= root.GetBool("IsSceneRoot");
+	show_bounding_boxes		= root.GetBool("ShowBoundingBoxes");
 
 	// Recalculate AABB and OBB
 
@@ -228,6 +239,38 @@ void GameObject::FreeChilds()
 	}
 
 	childs.clear();
+}
+
+void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers)
+{
+	//C_Mesh* c_mesh				= GetMeshComponent();
+	std::vector<C_Mesh*> c_meshes	= GetAllMeshComponents();
+	C_Material* c_material			= GetMaterialComponent();
+
+	for (uint i = 0; i < c_meshes.size(); ++i)
+	{
+		if (c_meshes[i] != nullptr)
+		{
+			if (c_meshes[i]->IsActive() && c_meshes[i]->GetMesh() != nullptr)
+			{
+				mesh_renderers.push_back(MeshRenderer(GetTransformComponent()->GetWorldTransform(), c_meshes[i], c_material));
+			}
+		}
+	}
+
+	c_meshes.clear();
+
+	if (show_bounding_boxes)
+	{
+		obb.GetCornerPoints(obb_vertices);
+		aabb.GetCornerPoints(aabb_vertices);
+
+		Color obb_color		= Color(1.0f, 1.0f, 0.0f, 1.0f);
+		Color aabb_color	= Color(0.0f, 1.0f, 0.0f, 1.0f);
+
+		cuboid_renderers.push_back(CuboidRenderer(obb_vertices, obb_color));
+		cuboid_renderers.push_back(CuboidRenderer(aabb_vertices, aabb_color));
+	}
 }
 
 bool GameObject::SetParent(GameObject* new_parent)
