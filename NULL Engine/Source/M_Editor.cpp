@@ -69,8 +69,8 @@ load_file		(nullptr)
 	AddEditorPanel(inspector);
 	AddEditorPanel(console);
 	AddEditorPanel(project);
-	AddEditorPanel(scene);
 	AddEditorPanel(game);
+	AddEditorPanel(scene);
 	AddEditorPanel(imgui_demo);
 	AddEditorPanel(about);
 	AddEditorPanel(load_file);

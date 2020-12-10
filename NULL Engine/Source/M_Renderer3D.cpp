@@ -28,7 +28,7 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */							// 
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")							// -------------------------
 
-#define WORLD_GRID_SIZE 200
+#define WORLD_GRID_SIZE 100
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
 
@@ -40,7 +40,7 @@ draw_world_axis			(true),
 in_wireframe_mode		(false),
 draw_primitive_examples	(false),
 scene_framebuffer		(0),
-rbo_depth_stencil		(0),
+depth_buffer			(0),
 scene_render_texture	(0),
 game_framebuffer		(0),
 debug_texture_id		(0)
@@ -68,7 +68,7 @@ bool M_Renderer3D::Init(ParsonNode& configuration)
 
 	CreatePrimitiveExamples();																	// Adding one of each available primitice to the primitives vector for later display.
 
-	InitFramebuffers();
+	//InitFramebuffers();
 	LoadDebugTexture();
 
 	return ret;
@@ -217,6 +217,7 @@ bool M_Renderer3D::InitOpenGL()
 
 		//Initialize clear color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		//Check for error
 		error = glGetError();
@@ -252,7 +253,8 @@ bool M_Renderer3D::InitOpenGL()
 		SetGLFlag(GL_ALPHA_TEST, true);
 		glAlphaFunc(GL_GREATER, 0.20f);													// Have alpha test in c_material (color alpha)?
 
-		//SetGLFlag(GL_BLEND, true);
+		SetGLFlag(GL_BLEND, true);
+		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
@@ -277,7 +279,7 @@ bool M_Renderer3D::InitGlew()
 }
 
 void M_Renderer3D::OnResize()
-{
+{	
 	uint win_width	= App->window->GetWidth();
 	uint win_height = App->window->GetHeight();
 	
@@ -299,32 +301,28 @@ void M_Renderer3D::InitFramebuffers()
 {
 	glGenFramebuffers(1, (GLuint*)&scene_framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, scene_framebuffer);
-
+	
 	// --- SCENE RENDER TEXTURE ---
 	glGenTextures(1, (GLuint*)&scene_render_texture);
 	glBindTexture(GL_TEXTURE_2D, scene_render_texture);
-	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->GetWidth(), App->window->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->GetWidth(), App->window->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene_render_texture, 0);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	// --- DEPTH STENCIL BUFFER ---
-	glGenRenderbuffers(1, (GLuint*)&rbo_depth_stencil);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth_stencil);
+	// --- DEPTH & STENCIL BUFFERS ---
+	glGenRenderbuffers(1, (GLuint*)&depth_buffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer);
 	
-	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, App->window->GetWidth(), App->window->GetHeight());
-	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo_depth_stencil);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->GetWidth(), App->window->GetHeight());
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth_stencil);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-	LOG("FRAMEBUFFER: WINDOW SIZE { %u x %u }", App->window->GetWidth(), App->window->GetHeight());
-
-	// --- Generating the SCENE RENDER TEXTURE ---
-	glFramebufferTexture2D(GL_TEXTURE_2D, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene_render_texture, 0);
-	
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
 		LOG("[ERROR] Renderer 3D: Could not generate the scene's frame buffer! Error: %s", gluErrorString(glGetError()));
@@ -372,7 +370,7 @@ void M_Renderer3D::LoadDebugTexture()
 
 void M_Renderer3D::FreeBuffers()
 {
-	glDeleteRenderbuffers(1, (GLuint*)&rbo_depth_stencil);
+	glDeleteRenderbuffers(1, (GLuint*)&depth_buffer);
 	glDeleteTextures(1, (GLuint*)&scene_render_texture);
 	glDeleteFramebuffers(1, (GLuint*)&scene_framebuffer);
 
@@ -408,12 +406,11 @@ void M_Renderer3D::RendererShortcuts()
 }
 
 void M_Renderer3D::RenderScene()
-{
-	//glBindFramebuffer(GL_FRAMEBUFFER, scene_framebuffer);
-	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
-	//glClear(GL_COLOR_BUFFER_BIT);
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	
+{	
+	glBindFramebuffer(GL_FRAMEBUFFER, scene_framebuffer);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	if (draw_world_grid)
 	{
 		DrawWorldGrid(WORLD_GRID_SIZE);
@@ -436,6 +433,8 @@ void M_Renderer3D::RenderScene()
 			primitives[i]->RenderByIndices();
 		}
 	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void M_Renderer3D::DrawWorldGrid(int size)
@@ -500,10 +499,6 @@ void M_Renderer3D::AddRenderersBatch(const std::vector<MeshRenderer>& mesh_rende
 	//this->cuboid_renderers.resize(cuboid_renderers.size());
 	//memcpy(&this->mesh_renderers[0], &mesh_renderers[0], mesh_renderers.size());
 	//memcpy(&this->cuboid_renderers[0], &cuboid_renderers[0], cuboid_renderers.size());
-
-	
-
-	LOG("STOP RIGHT THERE YOU CRIMINAL SCUM!");
 }
 
 void M_Renderer3D::RenderMeshes()

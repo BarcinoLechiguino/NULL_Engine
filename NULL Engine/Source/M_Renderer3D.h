@@ -153,7 +153,7 @@ private:
 	mat3x3					normal_matrix;																		// 
 
 	uint					scene_framebuffer;
-	uint					rbo_depth_stencil;
+	uint					depth_buffer;
 	uint					scene_render_texture;
 	uint					game_framebuffer;
 	uint					debug_texture_id;
