@@ -2,9 +2,17 @@
 #define __R_MESH_H__
 
 #include "MathGeoBoundingBox.h"
+#include "MathGeoLib/include/Math/float2.h"
 #include "Resource.h"
 
 typedef unsigned __int32 uint;
+
+struct Vertex
+{
+	float3 position;
+	float3 normals;
+	float2 tex_coords;
+};
 
 class R_Mesh : public Resource
 {
@@ -20,9 +28,11 @@ public:
 
 	void LoadBuffers();
 
-	void SetMeshAABB();
+	AABB GetAABB();
+	void SetAABB();
 
 public:
+	//std::vector<Vertex>			vertices;
 	std::vector<float>			vertices;
 	std::vector<float>			normals;
 	std::vector<float>			tex_coords;

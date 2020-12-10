@@ -287,6 +287,11 @@ bool M_Editor::EditorIsBeingHovered() const
 	return false;
 }
 
+bool M_Editor::EditorSceneIsBeingClicked() const
+{
+	return App->editor->scene->IsClicked();
+}
+
 bool M_Editor::RenderEditorPanels() const
 {
 	// Rendering all ImGui elements

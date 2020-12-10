@@ -122,8 +122,13 @@ void R_Mesh::LoadBuffers()
 	}
 }
 
-void R_Mesh::SetMeshAABB()
+AABB R_Mesh::GetAABB()
 {
-	//aabb.SetNegativeInfinity();
-	//aabb.Enclose((float3*)&vertices[0], vertices.size());
+	return aabb;
+}
+
+void R_Mesh::SetAABB()
+{
+	aabb.SetNegativeInfinity();
+	aabb.Enclose((float3*)&vertices[0], vertices.size() / 3);
 }

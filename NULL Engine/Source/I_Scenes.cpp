@@ -204,7 +204,7 @@ void Importer::Scenes::Utilities::ImportMesh(const char* path, const char* name,
 		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
 
 		c_mesh->SetMesh(r_mesh);
-		c_mesh->SetMeshPath(path);
+		c_mesh->SetMeshPath(assets_file.c_str());
 	}
 	else
 	{

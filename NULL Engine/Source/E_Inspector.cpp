@@ -267,6 +267,7 @@ void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 			if (ImGui::Checkbox("Show Bounding Box", &show_bounding_box))
 			{
 				c_mesh->SetShowBoundingBox(show_bounding_box);
+				c_mesh->owner->show_bounding_boxes = show_bounding_box;
 			}
 
 			bool draw_vert_normals = c_mesh->GetDrawVertexNormals();

@@ -35,6 +35,9 @@ selected_game_object	(nullptr)
 {
 	CreateMasterRoot();
 	CreateSceneRoot("MainScene");
+	GameObject* game_camera = CreateGameObject("GameCamera", scene_root);
+	game_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+	//game_objects.push_back(game_camera);
 	selected_game_object = scene_root;
 }
 
@@ -260,6 +263,8 @@ bool M_Scene::LoadScene(const char* path)
 		}
 
 		tmp.clear();
+
+		App->renderer->ClearRenderers();
 	}
 
 	return ret;

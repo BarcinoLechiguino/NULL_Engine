@@ -72,7 +72,7 @@ bool C_Mesh::LoadState(ParsonNode& root)
 
 	r_mesh = nullptr;
 
-	r_mesh = (R_Mesh*)App->resource_manager->GetResource(root.GetNumber("UID"));
+	r_mesh				= (R_Mesh*)App->resource_manager->GetResource(root.GetNumber("UID"));
 	show_wireframe		= root.GetBool("ShowWireframe");
 	show_bounding_box	= root.GetBool("ShowBoundingBox");
 

@@ -39,6 +39,7 @@ public:
 	void			FreeComponents						();
 	void			FreeChilds							();
 	
+	void			UpdateBoundingBoxes					();
 	void			GetRenderers						(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers); // TODO: Get them elsewhere. Scene maybe?
 
 	bool			SetParent							(GameObject* new_parent);
@@ -61,8 +62,8 @@ public:																							// --- COMPONENT GETTERS AND SETTERS
 	C_Light*		GetLightComponent					();										// Returns the GameObject's Light Component.		Returns nullptr on ERROR.
 	C_Camera*		GetCameraComponent					();										// Returns the GameObject's Camera Component.		Returns nullptr on ERROR.
 
-	std::vector<Component*> GetAllComponentsWithType	(COMPONENT_TYPE type);					// Returns a vector with all the comps. of the given type that the GameObject currently has.
-	std::vector<C_Mesh*>	GetAllMeshComponents		();
+	void			GetAllComponentsWithType			(std::vector<Component*>& components_with_type, COMPONENT_TYPE type);	 // Returns a vector with all the comps. of the given type that the GameObject currently has.
+	void			GetAllMeshComponents				(std::vector<C_Mesh*>& c_meshes);
 
 public:																								// --- GAME OBJECT GETTERS AND SETTERS
 	uint32			GetUID								() const;

@@ -23,7 +23,10 @@ public:
 	const char*		GetName			() const;
 	bool			IsActive		() const;
 	bool			IsHovered		() const;
+	bool			IsClicked		() const;
+
 	void			SetIsHovered	();													// Trying out having a Set() function without any parameters. Kinda dirty.
+	void			SetIsClicked	(const bool& set_to);
 
 	void			HelpMarker		(const char* description);
 
@@ -31,6 +34,7 @@ private:
 	const char*		name;
 	bool			is_active;
 	bool			is_hovered;
+	bool			is_clicked;
 };
 
 #endif // !__E_PANEL_H__

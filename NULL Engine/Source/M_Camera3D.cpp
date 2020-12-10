@@ -87,7 +87,7 @@ bool M_Camera3D::SaveConfiguration(ParsonNode& root) const
 // -----------------------------------------------------------------
 UPDATE_STATUS M_Camera3D::Update(float dt)
 {
-	if (!App->editor->EditorIsBeingHovered())
+	if (App->editor->EditorSceneIsBeingClicked())
 	{
 		if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_STATE::KEY_REPEAT)
 		{

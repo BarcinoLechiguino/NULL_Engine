@@ -424,6 +424,9 @@ void M_Renderer3D::RenderScene()
 	RenderMeshes();
 	RenderCuboids();
 	
+	//PrimitiveDrawExamples p_ex = PrimitiveDrawExamples();
+	//p_ex.DrawAllExamples();
+
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	if (draw_primitive_examples)
@@ -513,11 +516,28 @@ void M_Renderer3D::RenderMeshes()
 
 void M_Renderer3D::RenderCuboids()
 {
+	glLineWidth(3.0f);
+	
+	glDisable(GL_LIGHTING);
+	glBegin(GL_LINES);
+	//glBegin(GL_LINE_STRIP);
+
 	for (uint i = 0; i < cuboid_renderers.size(); ++i)
-	{
+	{	
 		cuboid_renderers[i].Render();
 	}
 
+	cuboid_renderers.clear();
+
+	glEnd();
+	glEnable(GL_LIGHTING);
+
+	glLineWidth(1.0f);
+}
+
+void M_Renderer3D::ClearRenderers()
+{
+	mesh_renderers.clear();
 	cuboid_renderers.clear();
 }
 
@@ -809,11 +829,13 @@ void M_Renderer3D::SetInWireframeMode(bool set_to)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			SetGLFlag(GL_TEXTURE_2D, false);
+			SetGLFlag(GL_LIGHTING, false);
 		}
 		else
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			SetGLFlag(GL_TEXTURE_2D, true);
+			SetGLFlag(GL_LIGHTING, true);
 		}
 	}
 }
@@ -904,6 +926,7 @@ void MeshRenderer::ApplyDebugParameters()
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_LIGHTING);
 	}
 }
 
@@ -913,6 +936,7 @@ void MeshRenderer::ClearDebugParameters()
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_LIGHTING);
 	}
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -966,11 +990,53 @@ void CuboidRenderer::Render()
 {
 	glColor4f(color.r, color.g, color.b, color.a);
 
-	glBegin(GL_LINE);
+	// For a Cuboid with vertices ABCDEFGH
+	GLfloat* A = (GLfloat*)&vertices[0];
+	GLfloat* B = (GLfloat*)&vertices[1];
+	GLfloat* C = (GLfloat*)&vertices[2];
+	GLfloat* D = (GLfloat*)&vertices[3];
+	GLfloat* E = (GLfloat*)&vertices[4];
+	GLfloat* F = (GLfloat*)&vertices[5];
+	GLfloat* G = (GLfloat*)&vertices[6];
+	GLfloat* H = (GLfloat*)&vertices[7];
 
+	//glBegin(GL_LINES);
 
+	// --- FRONT
+	glVertex3fv(A);											// BOTTOM HORIZONTAL										// Firstly the Near Plane is constructed.
+	glVertex3fv(B);											// -----------------
+	glVertex3fv(D);											// TOP HORIZONTAL
+	glVertex3fv(C);											// -------------
 
-	glEnd();
+	glVertex3fv(B);											// LEFT VERTICAL
+	glVertex3fv(D);											// -------------
+	glVertex3fv(C);											// RIGHT VERTICAL
+	glVertex3fv(A);											// --------------
+
+	// --- BACK
+	glVertex3fv(F);											// BOTTOM HORIZONTAL										// Secondly the Far Plane is constructed.
+	glVertex3fv(E);											// -----------------
+	glVertex3fv(G);											// TOP HORIZONTAL
+	glVertex3fv(H);											// -------------- 
+
+	glVertex3fv(E);											// LEFT VERTICAL 
+	glVertex3fv(G);											// ------------- 
+	glVertex3fv(H);											// RIGHT VERTICAL 
+	glVertex3fv(F);											// -------------- 
+
+	// --- RIGHT
+	glVertex3fv(F);											// BOTTOM HORIZONTAL										// Lastly, the Near and Far Planes' corners are connected.
+	glVertex3fv(B); 										// -----------------
+	glVertex3fv(H); 										// TOP HORIZONTAL 
+	glVertex3fv(D); 										// -------------- 
+	
+	// --- LEFT
+	glVertex3fv(E);											// BOTTOM HORIZONTAL										// ---
+	glVertex3fv(A);											// -----------------
+	glVertex3fv(C);											// TOP HORIZONTAL 
+	glVertex3fv(G);											// -------------- 
+
+	//glEnd();
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }

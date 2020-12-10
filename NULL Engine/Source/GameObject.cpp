@@ -7,6 +7,8 @@
 
 #include "M_Renderer3D.h"																				// TMP. Move the Renderers generation elsewhere.
 
+#include "R_Mesh.h"
+
 #include "Component.h"
 #include "C_Transform.h"
 #include "C_Mesh.h"
@@ -17,15 +19,16 @@
 #include "GameObject.h"
 
 GameObject::GameObject() :
-uid				(Random::LCG::GetRandomUint()),
-parent_uid		(0),
-name			("GameObject"),
-is_active		(true),
-is_static		(false),
-parent			(nullptr),
-is_master_root	(false),
-is_scene_root	(false),
-to_delete		(false)
+uid					(Random::LCG::GetRandomUint()),
+parent_uid			(0),
+name				("GameObject"),
+is_active			(true),
+is_static			(false),
+parent				(nullptr),
+is_master_root		(false),
+is_scene_root		(false),
+to_delete			(false),
+show_bounding_boxes	(false)
 {
 	transform	= (C_Transform*)CreateComponent(COMPONENT_TYPE::TRANSFORM);
 
@@ -37,14 +40,16 @@ to_delete		(false)
 }
 
 GameObject::GameObject(std::string name, bool is_active, bool is_static) :
-uid				(Random::LCG::GetRandomUint()),
-parent_uid		(0),
-name			(name),
-is_active		(is_active),
-is_static		(is_static),
-parent			(nullptr),
-is_scene_root	(false),
-to_delete		(false)
+uid					(Random::LCG::GetRandomUint()),
+parent_uid			(0),
+name				(name),
+is_active			(is_active),
+is_static			(is_static),
+parent				(nullptr),
+is_master_root		(false),
+is_scene_root		(false),
+to_delete			(false),
+show_bounding_boxes	(false)
 {
 	uid = Random::LCG::GetRandomUint();
 
@@ -79,6 +84,8 @@ bool GameObject::Update()
 			components[i]->Update();
 		}
 	}
+
+	UpdateBoundingBoxes();																					// Make the call in C_Transform after receiving a dirty flag?
 
 	return ret;
 }
@@ -241,11 +248,34 @@ void GameObject::FreeChilds()
 	childs.clear();
 }
 
+void GameObject::UpdateBoundingBoxes()
+{
+	std::vector<C_Mesh*> c_meshes;
+	GetAllMeshComponents(c_meshes);
+
+	for (uint i = 0; i < c_meshes.size(); ++i)
+	{
+		if (c_meshes[i] == nullptr || c_meshes[i]->GetMesh() == nullptr)
+		{
+			continue;
+		}
+		
+		obb = c_meshes[i]->GetMesh()->GetAABB();
+		obb.Transform(GetTransformComponent()->GetWorldTransform());
+
+		aabb.SetNegativeInfinity();
+		aabb.Enclose(obb);
+	}
+
+	c_meshes.clear();
+}
+
 void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers)
 {
-	//C_Mesh* c_mesh				= GetMeshComponent();
-	std::vector<C_Mesh*> c_meshes	= GetAllMeshComponents();
-	C_Material* c_material			= GetMaterialComponent();
+	std::vector<C_Mesh*> c_meshes;
+	GetAllMeshComponents(c_meshes);
+
+	C_Material* c_material = GetMaterialComponent();
 
 	for (uint i = 0; i < c_meshes.size(); ++i)
 	{
@@ -528,19 +558,15 @@ const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
 	return "Invalid Component Type";
 }
 
-std::vector<Component*> GameObject::GetAllComponentsWithType(COMPONENT_TYPE type)
+void GameObject::GetAllComponentsWithType(std::vector<Component*>& components_with_type, COMPONENT_TYPE type)
 {
-	std::vector<Component*> type_components;
-	
 	for (uint i = 0; i < components.size(); ++i)
 	{
 		if (components[i]->type == type)
 		{
-			type_components.push_back(components[i]);
+			components_with_type.push_back(components[i]);
 		}
 	}
-
-	return type_components;
 }
 
 C_Transform* GameObject::GetTransformComponent()
@@ -568,19 +594,15 @@ C_Camera* GameObject::GetCameraComponent()
 	return (C_Camera*)GetComponent(COMPONENT_TYPE::CAMERA);
 }
 
-std::vector<C_Mesh*> GameObject::GetAllMeshComponents()
+void GameObject::GetAllMeshComponents(std::vector<C_Mesh*>& c_meshes)
 {
-	std::vector<C_Mesh*> mesh_components;
-	
 	for (uint i = 0; i < components.size(); ++i)
 	{
 		if (components[i]->type == COMPONENT_TYPE::MESH)
 		{
-			mesh_components.push_back((C_Mesh*)components[i]);
+			c_meshes.push_back((C_Mesh*)components[i]);
 		}
 	}
-
-	return mesh_components;
 }
 
 uint32 GameObject::GetUID() const

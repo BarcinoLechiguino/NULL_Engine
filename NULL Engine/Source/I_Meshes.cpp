@@ -73,7 +73,7 @@ void Importer::Meshes::Utilities::ImportMeshData(const aiMesh* ai_mesh, R_Mesh* 
 	Utilities::GetIndices(ai_mesh, r_mesh, indices_size);									// Gets the indices data stored in the given ai_mesh.
 
 	r_mesh->LoadBuffers();
-	r_mesh->SetMeshAABB();
+	r_mesh->SetAABB();
 }
 
 void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size)

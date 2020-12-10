@@ -156,15 +156,19 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_WINDOWEVENT:
-				if (event.window.event == SDL_WINDOWEVENT_RESIZED && event.window.windowID == SDL_GetWindowID(App->window->GetWindow()))
+				if (event.window.windowID == SDL_GetWindowID(App->window->GetWindow()))
 				{
-					App->renderer->OnResize();
+					if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+					{
+						App->renderer->OnResize();
+					}
+
+					if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+					{
+						return UPDATE_STATUS::STOP;
+					}
 				}
 
-				if (event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->GetWindow()))
-				{
-					return UPDATE_STATUS::STOP;
-				}
 			break;
 
 			case SDL_DROPFILE:

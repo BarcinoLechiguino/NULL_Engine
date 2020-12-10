@@ -3,7 +3,8 @@
 EditorPanel::EditorPanel(const char* name, bool is_active) : 
 name		(name), 
 is_active	(is_active), 
-is_hovered	(false)
+is_hovered	(false),
+is_clicked	(false)
 {
 
 }
@@ -54,6 +55,11 @@ bool EditorPanel::IsHovered() const
 	return is_hovered;
 }
 
+bool EditorPanel::IsClicked() const
+{
+	return is_clicked;
+}
+
 void EditorPanel::SetIsHovered()
 {	
 	if (ImGui::IsWindowHovered())												// Checks if the last generated ImGui window is being hovered.
@@ -64,6 +70,11 @@ void EditorPanel::SetIsHovered()
 	{
 		is_hovered = false;
 	}
+}
+
+void EditorPanel::SetIsClicked(const bool& set_to)
+{
+	is_clicked = set_to;
 }
 
 const char* EditorPanel::GetName() const

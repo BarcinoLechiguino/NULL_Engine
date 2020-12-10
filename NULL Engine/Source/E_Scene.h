@@ -14,7 +14,7 @@ public:
 	bool CleanUp() override;
 
 private:
-
+	void CheckSceneIsClicked();
 };
 
 #endif // !__E_SCENE_H__

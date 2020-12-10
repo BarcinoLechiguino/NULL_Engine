@@ -19,12 +19,12 @@ bool E_Scene::Draw(ImGuiIO& io)
 
 	ImGui::Begin("Scene");
 
-	ImVec2 win_size = ImGui::GetWindowSize();
+	CheckSceneIsClicked();
 
-	win_size.x = win_size.x * 0.95f;
-	win_size.y = win_size.y * 0.95f;
+	ImVec2 tex_size = ImGui::GetWindowSize() * 0.925f;
 
-	ImGui::Image((ImTextureID)App->renderer->GetSceneRenderTexture(), win_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+	ImGui::SetCursorPos((ImGui::GetWindowSize() - tex_size) * 0.5f);
+	ImGui::Image((ImTextureID)App->renderer->GetSceneRenderTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 
 	ImGui::End();
 
@@ -38,4 +38,32 @@ bool E_Scene::CleanUp()
 
 
 	return ret;
+}
+
+// --- E_SCENE METHODS ---
+void E_Scene::CheckSceneIsClicked()
+{
+	if (ImGui::IsWindowHovered())
+	{
+		ImGui::FocusWindow(ImGui::GetCurrentWindow());
+	}
+	else
+	{
+		if (ImGui::IsWindowFocused())
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+			{
+				ImGui::FocusWindow(nullptr);
+			}
+		}
+	}
+
+	if (ImGui::IsWindowFocused())
+	{
+		SetIsClicked(true);
+	}
+	else
+	{
+		SetIsClicked(false);
+	}
 }

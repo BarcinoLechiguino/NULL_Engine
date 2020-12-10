@@ -59,8 +59,8 @@ struct CuboidRenderer																							// Will render the wireframe of any 
 
 	void Render();
 
-	const float3* vertices;
-	const Color	color;
+	const float3*	vertices;
+	const Color		color;
 };
 
 class M_Renderer3D : public Module
@@ -99,6 +99,7 @@ public:																											// --- RENDER GEOMETRY
 	void			AddRenderersBatch			(const std::vector<MeshRenderer>& mesh_renderers, const std::vector<CuboidRenderer>& cuboid_renderers);
 	void			RenderMeshes				();
 	void			RenderCuboids				();
+	void			ClearRenderers				();																// Loading scene measure.
 
 	void			RenderMesh					(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material);
 
