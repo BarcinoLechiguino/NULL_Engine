@@ -28,10 +28,10 @@ bool R_Mesh::CleanUp()
 	bool ret = true;
 
 	// --- Delete Buffers
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &NBO);
-	glDeleteBuffers(1, &TBO);
-	glDeleteBuffers(1, &IBO);
+	glDeleteBuffers(1, (GLuint*)&VBO);
+	glDeleteBuffers(1, (GLuint*)&NBO);
+	glDeleteBuffers(1, (GLuint*)&TBO);
+	glDeleteBuffers(1, (GLuint*)&IBO);
 
 	// --- Clear vectors
 	vertices.clear();

@@ -219,8 +219,6 @@ bool M_ResourceManager::IsResourceAlready(std::string assets_file)
 
 Resource* M_ResourceManager::GetResourceFromFile(std::string assets_file)
 {
-	
-	
 	if (IsResourceAlready(assets_file))
 	{
 		FILE_ITEM f_item		= loaded_files.find(assets_file);		

@@ -14,7 +14,6 @@ enum class COMPONENT_TYPE
 	MATERIAL,
 	LIGHT,
 	CAMERA,
-	UNKNOWN = -1
 };
 
 class Component
@@ -38,13 +37,15 @@ public:
 	bool			IsActive			() const;										// 
 	void			SetIsActive			(const bool& set_to);							// 
 
-public:
-	COMPONENT_TYPE	type;																// 
-	GameObject*		owner;																// 
+	COMPONENT_TYPE	GetType				() const;										//
+	GameObject*		GetOwner			() const;										//
 
 private:
 	uint32			id;																	// 
-	bool			is_active;															// 
+	bool			is_active;															//
+
+	COMPONENT_TYPE	type;																//
+	GameObject*		owner;																// 
 };
 
 #endif // !__COMPONENT_H__

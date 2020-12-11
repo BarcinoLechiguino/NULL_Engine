@@ -44,6 +44,9 @@ public:																														// --- MASTER ROOT & SCENE ROOT METHODS ---
 	void			SetSceneRoot							(GameObject* game_object);										//
 	void			ChangeSceneName							(const char* new_name);											//
 
+	void			CreateSceneCamera						(const char* camera_name);
+	bool			GameObjectIsInsideSceneCamera			(GameObject* game_object);
+
 public:																														// --- SELECTED GAME OBJECT METHODS ---
 	void			DeleteSelectedGameObject				();																// 
 	GameObject*		GetSelectedGameObject					() const;														// 
@@ -59,6 +62,7 @@ private:
 
 	GameObject*					master_root;																				// Root of everything. Parent of all scenes.
 	GameObject*					scene_root;																					// Root of the current scene.
+	GameObject*					scene_camera;
 	GameObject*					selected_game_object;																		// Represents the game object that's currently being selected.
 
 	std::vector<Primitive*>		primitives;

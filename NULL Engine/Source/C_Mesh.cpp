@@ -55,7 +55,7 @@ bool C_Mesh::SaveState(ParsonNode& root) const
 
 	if (r_mesh != nullptr)
 	{
-		root.SetNumber("Type", (uint)type);
+		root.SetNumber("Type", (uint)GetType());
 		root.SetNumber("UID", r_mesh->GetUID());
 		root.SetString("Path", r_mesh->GetLibraryPath());
 		root.SetString("File", r_mesh->GetLibraryFile());
@@ -72,7 +72,7 @@ bool C_Mesh::LoadState(ParsonNode& root)
 
 	r_mesh = nullptr;
 
-	r_mesh				= (R_Mesh*)App->resource_manager->GetResource(root.GetNumber("UID"));
+	r_mesh				= (R_Mesh*)App->resource_manager->GetResource((uint)root.GetNumber("UID"));
 	show_wireframe		= root.GetBool("ShowWireframe");
 	show_bounding_box	= root.GetBool("ShowBoundingBox");
 
@@ -82,7 +82,7 @@ bool C_Mesh::LoadState(ParsonNode& root)
 
 		if (r_mesh == nullptr)
 		{
-			LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), root.GetNumber("UID"));
+			LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), (uint)root.GetNumber("UID"));
 		}
 	}
 
@@ -94,10 +94,10 @@ bool C_Mesh::Render()
 {
 	bool ret = true;
 
-	C_Transform* c_transform	= owner->GetTransformComponent();
+	/*C_Transform* c_transform	= owner->GetTransformComponent();
 	C_Material* c_material		= owner->GetMaterialComponent();
 
-	App->renderer->RenderMesh(c_transform->GetWorldTransform(), this, c_material);
+	App->renderer->RenderMesh(c_transform->GetWorldTransform(), this, c_material);*/
 
 	return ret;
 }

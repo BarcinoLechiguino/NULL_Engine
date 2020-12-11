@@ -67,13 +67,11 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			if (keyboard[i] == KEY_STATE::KEY_IDLE)
 			{
 				keyboard[i] = KEY_STATE::KEY_DOWN;
-
 				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_DOWN);
 			}
-			else
+			else if (keyboard[i] == KEY_STATE::KEY_REPEAT)
 			{
 				keyboard[i] = KEY_STATE::KEY_REPEAT;
-
 				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_REPEAT);
 			}
 		}
@@ -82,7 +80,6 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			if (keyboard[i] == KEY_STATE::KEY_REPEAT || keyboard[i] == KEY_STATE::KEY_DOWN)
 			{
 				keyboard[i] = KEY_STATE::KEY_UP;
-
 				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_UP);
 			}
 			else

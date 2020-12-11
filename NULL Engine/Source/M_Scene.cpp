@@ -23,6 +23,7 @@
 #include "C_Transform.h"
 #include "C_Mesh.h"
 #include "C_Material.h"
+#include "C_Camera.h"
 
 #include "M_Scene.h"
 
@@ -35,9 +36,8 @@ selected_game_object	(nullptr)
 {
 	CreateMasterRoot();
 	CreateSceneRoot("MainScene");
-	GameObject* game_camera = CreateGameObject("GameCamera", scene_root);
-	game_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
-	//game_objects.push_back(game_camera);
+	CreateSceneCamera("SceneCamera");
+
 	selected_game_object = scene_root;
 }
 
@@ -115,7 +115,11 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 		if (game_objects[i]->IsActive())
 		{
 			game_objects[i]->Update();
-			game_objects[i]->GetRenderers(mesh_renderers, cuboid_renderers);
+			
+			if (GameObjectIsInsideSceneCamera(game_objects[i]) || game_objects[i] == scene_camera)
+			{
+				game_objects[i]->GetRenderers(mesh_renderers, cuboid_renderers);
+			}
 		}
 	}
 
@@ -146,8 +150,9 @@ bool M_Scene::CleanUp()
 
 	game_objects.clear();
 
-	scene_root = nullptr;
-	selected_game_object = nullptr;
+	scene_root				= nullptr;
+	scene_camera			= nullptr;
+	selected_game_object	= nullptr;
 
 	primitives.clear();
 
@@ -219,16 +224,18 @@ bool M_Scene::LoadScene(const char* path)
 	{
 		CleanUp();
 
-		ParsonNode new_root = ParsonNode(buffer);
-
-		ParsonArray objects_array = new_root.GetArray("Game Objects");
+		ParsonNode new_root			= ParsonNode(buffer);
+		ParsonArray objects_array	= new_root.GetArray("Game Objects");
 
 		std::map<uint32, GameObject*> tmp;
 
-		// Getting all the GameObjects in the ParsonArray
-		for (uint i = 0; i < objects_array.size; ++i)
+		for (uint i = 0; i < objects_array.size; ++i)																			// Getting all the GameObjects in the ParsonArray
 		{
 			ParsonNode object_node = objects_array.GetNode(i);
+			//if (!object_node.NodeIsValid())
+			//{
+			//	continue;
+			//}
 
 			GameObject* game_object = new GameObject();
 
@@ -238,6 +245,14 @@ bool M_Scene::LoadScene(const char* path)
 			{
 				scene_root = game_object;
 				scene_root->SetParent(master_root);
+			}
+
+			if (game_object->GetCameraComponent() != nullptr)
+			{
+				if (game_object->GetCameraComponent()->IsSceneCamera())
+				{
+					scene_camera = game_object;
+				}
 			}
 
 			tmp.emplace(game_object->GetUID(), game_object);
@@ -303,6 +318,11 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 		return;
 	}
 	
+	if (scene_camera == game_object)
+	{
+		scene_camera = nullptr;
+	}
+
 	if (selected_game_object == game_object)
 	{
 		selected_game_object = nullptr;
@@ -427,6 +447,43 @@ void M_Scene::SetSceneRoot(GameObject* game_object)
 void M_Scene::ChangeSceneName(const char* name)
 {
 	scene_root->SetName(name);
+}
+
+void M_Scene::CreateSceneCamera(const char* camera_name)
+{
+	scene_camera = CreateGameObject(camera_name, scene_root);
+	scene_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+	scene_camera->GetCameraComponent()->SetIsSceneCamera(true);
+	scene_camera->GetTransformComponent()->SetLocalPosition(float3(0.0f, 5.0f, 25.0f));
+}
+
+bool M_Scene::GameObjectIsInsideSceneCamera(GameObject* game_object)
+{
+	if (scene_camera == nullptr)
+	{
+		LOG("[ERROR] Scene: Scene Camera Game Object is nullptr!");
+		return true;
+	}
+	
+	C_Camera* c_camera = scene_camera->GetCameraComponent();
+
+	if (c_camera == nullptr)
+	{
+		LOG("[ERROR] Scene: Scene Camera does not have a Camera Component!");
+		return true;
+	}
+
+	bool ret = true;
+	if (c_camera->IsCulling())
+	{
+		ret = c_camera->FrustumIntersectsAABB(game_object->GetAABB());
+	}
+	else
+	{
+		ret = true;
+	}
+
+	return ret;
 }
 
 GameObject* M_Scene::GetSelectedGameObject() const

@@ -25,6 +25,7 @@ bool E_Scene::Draw(ImGuiIO& io)
 
 	ImGui::SetCursorPos((ImGui::GetWindowSize() - tex_size) * 0.5f);
 	ImGui::Image((ImTextureID)App->renderer->GetSceneRenderTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+	//ImGui::Image((ImTextureID)App->renderer->GetDepthBufferTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 
 	ImGui::End();
 

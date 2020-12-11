@@ -53,7 +53,7 @@ bool C_Transform::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
-	root.SetNumber("Type", (uint)type);
+	root.SetNumber("Type", (uint)GetType());
 
 	ParsonArray position = root.SetArray("LocalPosition");
 
@@ -83,22 +83,22 @@ bool C_Transform::LoadState(ParsonNode& root)
 
 	ParsonArray position = root.GetArray("LocalPosition");
 
-	local_position.x = position.GetNumber(0);
-	local_position.y = position.GetNumber(1);
-	local_position.z = position.GetNumber(2);
+	local_position.x = (float)position.GetNumber(0);
+	local_position.y = (float)position.GetNumber(1);
+	local_position.z = (float)position.GetNumber(2);
 
 	ParsonArray rotation = root.GetArray("LocalRotation");
 
-	local_rotation.x = rotation.GetNumber(0);
-	local_rotation.y = rotation.GetNumber(1);
-	local_rotation.z = rotation.GetNumber(2);
-	local_rotation.w = rotation.GetNumber(3);
+	local_rotation.x = (float)rotation.GetNumber(0);
+	local_rotation.y = (float)rotation.GetNumber(1);
+	local_rotation.z = (float)rotation.GetNumber(2);
+	local_rotation.w = (float)rotation.GetNumber(3);
 
 	ParsonArray scale = root.GetArray("LocalScale");
 
-	local_scale.x = scale.GetNumber(0);
-	local_scale.y = scale.GetNumber(1);
-	local_scale.z = scale.GetNumber(2);
+	local_scale.x = (float)scale.GetNumber(0);
+	local_scale.y = (float)scale.GetNumber(1);
+	local_scale.z = (float)scale.GetNumber(2);
 
 	UpdateLocalTransform();
 
@@ -119,6 +119,8 @@ void C_Transform::UpdateLocalTransform()
 
 void C_Transform::UpdateWorldTransform()
 {
+	const GameObject* owner = GetOwner();
+
 	if (owner->parent != nullptr)
 	{
 		world_transform = owner->parent->GetTransformComponent()->world_transform * local_transform;
@@ -138,6 +140,8 @@ void C_Transform::UpdateWorldTransform()
 
 void C_Transform::SyncWorldToLocal()
 {
+	const GameObject* owner = GetOwner();
+
 	if (owner->parent != nullptr)
 	{
 		world_transform = owner->parent->GetTransformComponent()->world_transform * local_transform;
@@ -155,6 +159,8 @@ void C_Transform::SyncWorldToLocal()
 
 void C_Transform::SyncLocalToWorld()
 {
+	const GameObject* owner = GetOwner();
+	
 	if (owner->parent != nullptr)
 	{
 		local_transform = owner->parent->GetTransformComponent()->world_transform.Inverted() * world_transform;

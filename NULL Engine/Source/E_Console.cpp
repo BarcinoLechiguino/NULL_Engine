@@ -1,8 +1,12 @@
+#include "Macros.h"
+
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Editor.h"
 
 #include "E_Console.h"
+
+#define MAX_CONSOLE_LOG_SIZE 1000
 
 E_Console::E_Console() : EditorPanel("Console")
 {
@@ -43,6 +47,12 @@ bool E_Console::CleanUp()
 
 void E_Console::AddLog(const char* log)
 {	
+	if (logs.size() + 1 > MAX_CONSOLE_LOG_SIZE)
+	{
+		ClearLog();
+		//LOG("[WARNING] Console: Cleared Input Log: Exceeded maximum input log size!");
+	}
+	
 	char* tmp = _strdup(log);											// strdup() duplicates the log string. This is necessary so when log is modified the console strings remain the same.
 
 	logs.push_back(tmp);

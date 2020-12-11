@@ -7,8 +7,8 @@
 #include "Module.h"
 #include "Light.h"
 
+struct Color;
 class ParsonNode;
-class Color;
 
 class R_Mesh;
 class R_Material;
@@ -32,8 +32,6 @@ enum class RENDERER_FLAGS																						// Employed to avoid having OpenG
 	ALPHA_TEST		= 0x0BC0,																					// 0x0BC0 = GL_ALPHA_TEST
 	BLEND			= 0x0BE2																					// 0x0BE2 = GL_BLEND
 };
-
-#define MAX_LIGHTS 8
 
 struct MeshRenderer
 {
@@ -62,6 +60,8 @@ struct CuboidRenderer																							// Will render the wireframe of any 
 	const float3*	vertices;
 	const Color		color;
 };
+
+#define MAX_LIGHTS 8
 
 class M_Renderer3D : public Module
 {
@@ -118,6 +118,9 @@ public:																											// --- GET/SET METHODS
 	uint			GetSceneRenderTexture		() const;
 	uint			GetGameFramebuffer			() const;
 
+	uint			GetDepthBuffer				() const;
+	uint			GetDepthBufferTexture		() const;
+
 	const char*		GetDrivers					() const;														// 
 	bool			GetVsync					() const;														// 
 	void			SetVsync					(bool set_to);													// 
@@ -156,6 +159,7 @@ private:
 	uint					scene_framebuffer;
 	uint					depth_buffer;
 	uint					scene_render_texture;
+	uint					depth_buffer_texture;
 	uint					game_framebuffer;
 	uint					debug_texture_id;
 

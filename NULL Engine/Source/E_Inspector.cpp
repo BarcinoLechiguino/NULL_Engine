@@ -127,25 +127,34 @@ void E_Inspector::DrawGameObjectInfo(GameObject* selected_game_object)
 
 void E_Inspector::DrawComponents(GameObject* selected_game_object)
 {
+	if (selected_game_object == nullptr)
+	{
+		LOG("[ERROR] Editor Inspector: Could not draw the selected GameObject's components! Error: Selected GameObject was nullptr.");
+		return;
+	}
+	
 	for (uint i = 0; i < selected_game_object->components.size(); ++i)
 	{
 		Component* component = selected_game_object->components[i];
 		
-		if (component != nullptr)
-		{	
-			switch (component->type)
-			{
-			case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent((C_Transform*)component); }	break;
-			case COMPONENT_TYPE::MESH:		{ DrawMeshComponent((C_Mesh*)component); }				break;
-			case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent((C_Material*)component); }		break;
-			case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent((C_Light*)component); }			break;
-			case COMPONENT_TYPE::CAMERA:	{ DrawCameraComponent((C_Camera*)component); }			break;
-			}
+		if (component == nullptr)
+		{
+			continue;
+		}
+		
+		COMPONENT_TYPE type = component->GetType();	
+		switch (type)
+		{
+		case COMPONENT_TYPE::TRANSFORM:	{ DrawTransformComponent((C_Transform*)component); }	break;
+		case COMPONENT_TYPE::MESH:		{ DrawMeshComponent((C_Mesh*)component); }				break;
+		case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent((C_Material*)component); }		break;
+		case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent((C_Light*)component); }			break;
+		case COMPONENT_TYPE::CAMERA:	{ DrawCameraComponent((C_Camera*)component); }			break;
+		}
 
-			if (component->type == COMPONENT_TYPE::NONE || component->type == COMPONENT_TYPE::UNKNOWN)
-			{
-				LOG("[WARNING] Selected Object %s has invalid component: %s", selected_game_object->GetName(), component->GetNameFromType());
-			}
+		if (type == COMPONENT_TYPE::NONE)
+		{
+			LOG("[WARNING] Selected GameObject %s has a non-valid component!", selected_game_object->GetName());
 		}
 	}
 }
@@ -267,7 +276,7 @@ void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 			if (ImGui::Checkbox("Show Bounding Box", &show_bounding_box))
 			{
 				c_mesh->SetShowBoundingBox(show_bounding_box);
-				c_mesh->owner->show_bounding_boxes = show_bounding_box;
+				c_mesh->GetOwner()->show_bounding_boxes = show_bounding_box;
 			}
 
 			bool draw_vert_normals = c_mesh->GetDrawVertexNormals();
@@ -284,7 +293,7 @@ void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 		}
 		else
 		{
-			LOG("[ERROR] Could not get the Mesh Component from %s Game Object!", c_mesh->owner->GetName());
+			LOG("[ERROR] Could not get the Mesh Component from %s Game Object!", c_mesh->GetOwner()->GetName());
 		}
 
 		if (!show)
@@ -358,7 +367,7 @@ void E_Inspector::DrawMaterialComponent(C_Material* c_material)
 		}
 		else
 		{
-			LOG("[ERROR] Could not get the Material Component from %s Game Object!", c_material->owner->GetName());
+			LOG("[ERROR] Could not get the Material Component from %s Game Object!", c_material->GetOwner()->GetName());
 		}
 
 		if (!show)
@@ -414,7 +423,23 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 
 			ImGui::Separator();
 
-			ImGui::Text("WORK IN PROGRESS");
+			bool camera_is_culling = c_camera->IsCulling();
+			if (ImGui::Checkbox("Culling", &camera_is_culling))
+			{
+				c_camera->SetIsCulling(camera_is_culling);
+			}
+
+			bool camera_is_orthogonal = c_camera->OrthogonalView();
+			if (ImGui::Checkbox("Orthogonal", &camera_is_orthogonal))
+			{
+				c_camera->SetOrthogonalView(camera_is_orthogonal);
+			}
+
+			bool frustum_is_hidden = c_camera->FrustumIsHidden();
+			if (ImGui::Checkbox("Hide Frustum", &frustum_is_hidden))
+			{
+				c_camera->SetFrustumIsHidden(frustum_is_hidden);
+			}
 		}
 
 		if (!show)

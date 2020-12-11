@@ -405,7 +405,7 @@ void M_Editor::AddInputLog(uint key, uint state)
 	{
 		if (key < App->input->GetMaxNumScancodes())
 		{
-			const char* key_name = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)key));			// Through the scancode it is possible to get a string with the name of the key.
+			const char* key_name = SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)key));		// Through the scancode it is possible to get a string with the name of the key.
 
 			sprintf_s(input, 128, "[KEY] %02u %s - %s\n", key, key_name, states[state]);
 		}

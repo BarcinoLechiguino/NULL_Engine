@@ -113,7 +113,7 @@ bool ParsonNode::GetBool(const char* name) const
 {
 	if (NodeHasValueOfType(name, JSONBoolean))
 	{
-		return json_object_get_boolean(root_node, name);
+		return (bool)json_object_get_boolean(root_node, name);
 	}
 	else
 	{
@@ -300,10 +300,10 @@ void ParsonArray::GetColor(const uint& index, Color& color) const
 
 	if (valid_red && valid_green && valid_blue && valid_alpha)
 	{
-		color.r = json_array_get_number(json_array, index);																	// Getting r from the array.
-		color.g = json_array_get_number(json_array, index + 1);																// Getting g from the array.
-		color.b = json_array_get_number(json_array, index + 2);																// Getting b from the array.
-		color.a = json_array_get_number(json_array, index + 3);																// Getting a from the array.
+		color.r = (float)json_array_get_number(json_array, index);															// Getting r from the array.
+		color.g = (float)json_array_get_number(json_array, index + 1);														// Getting g from the array.
+		color.b = (float)json_array_get_number(json_array, index + 2);														// Getting b from the array.
+		color.a = (float)json_array_get_number(json_array, index + 3);														// Getting a from the array.
 	}
 }
 
@@ -315,9 +315,9 @@ void ParsonArray::GetFloat3(const uint& index, float3& vec3) const
 
 	if (valid_x && valid_y && valid_z)
 	{
-		vec3.x = json_array_get_number(json_array, index);																	// Getting x from the array.
-		vec3.y = json_array_get_number(json_array, index + 1);																// Getting y from the array.
-		vec3.z = json_array_get_number(json_array, index + 2);																// Getting z from the array.
+		vec3.x = (float)json_array_get_number(json_array, index);															// Getting x from the array.
+		vec3.y = (float)json_array_get_number(json_array, index + 1);														// Getting y from the array.
+		vec3.z = (float)json_array_get_number(json_array, index + 2);														// Getting z from the array.
 	}
 }
 
@@ -330,10 +330,10 @@ void ParsonArray::GetFloat4(const uint& index, float4& vec4) const
 
 	if (valid_x && valid_y && valid_z && valid_w)
 	{
-		vec4.x = json_array_get_number(json_array, index);																	// Getting x from the array.
-		vec4.y = json_array_get_number(json_array, index + 1);																// Getting y from the array.
-		vec4.z = json_array_get_number(json_array, index + 2);																// Getting z from the array.
-		vec4.w = json_array_get_number(json_array, index + 3);																// Getting w from the array.
+		vec4.x = (float)json_array_get_number(json_array, index);															// Getting x from the array.
+		vec4.y = (float)json_array_get_number(json_array, index + 1);														// Getting y from the array.
+		vec4.z = (float)json_array_get_number(json_array, index + 2);														// Getting z from the array.
+		vec4.w = (float)json_array_get_number(json_array, index + 3);														// Getting w from the array.
 	}
 }
 

@@ -32,7 +32,7 @@ bool C_Light::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
-	root.SetNumber("Type", (uint)type);
+	root.SetNumber("Type", (uint)GetType());
 
 	return ret;
 }

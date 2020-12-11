@@ -10,8 +10,8 @@ typedef unsigned __int32 uint32;
 
 class ParsonNode;
 
-class MeshRenderer;
-class CuboidRenderer;
+struct MeshRenderer;
+struct CuboidRenderer;
 
 class Component;
 class C_Transform;
@@ -40,6 +40,8 @@ public:
 	void			FreeChilds							();
 	
 	void			UpdateBoundingBoxes					();
+	AABB			GetAABB								() const;
+	float3*			GetAABBVertices						() const;
 	void			GetRenderers						(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers); // TODO: Get them elsewhere. Scene maybe?
 
 	bool			SetParent							(GameObject* new_parent);

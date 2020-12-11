@@ -42,6 +42,7 @@ draw_primitive_examples	(false),
 scene_framebuffer		(0),
 depth_buffer			(0),
 scene_render_texture	(0),
+depth_buffer_texture	(0),
 game_framebuffer		(0),
 debug_texture_id		(0)
 {
@@ -310,10 +311,21 @@ void M_Renderer3D::InitFramebuffers()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->GetWidth(), App->window->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-	
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene_render_texture, 0);
-
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// --- DEPTH BUFFER TEXTURE ---
+	glGenTextures(1, (GLuint*)&depth_buffer_texture);
+	glBindTexture(GL_TEXTURE_2D, depth_buffer_texture);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	
+	//glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT, App->window->GetWidth(), App->window->GetHeight());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, App->window->GetWidth(), App->window->GetHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scene_render_texture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_buffer_texture, 0);
 
 	// --- DEPTH & STENCIL BUFFERS ---
 	glGenRenderbuffers(1, (GLuint*)&depth_buffer);
@@ -423,7 +435,7 @@ void M_Renderer3D::RenderScene()
 
 	RenderMeshes();
 	RenderCuboids();
-	
+
 	//PrimitiveDrawExamples p_ex = PrimitiveDrawExamples();
 	//p_ex.DrawAllExamples();
 
@@ -724,6 +736,16 @@ uint M_Renderer3D::GetSceneRenderTexture() const
 uint M_Renderer3D::GetGameFramebuffer() const
 {
 	return game_framebuffer;
+}
+
+uint M_Renderer3D::GetDepthBuffer() const
+{
+	return depth_buffer;
+}
+
+uint M_Renderer3D::GetDepthBufferTexture() const
+{
+	return depth_buffer_texture;
 }
 
 const char* M_Renderer3D::GetDrivers() const

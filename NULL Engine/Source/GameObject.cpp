@@ -161,8 +161,8 @@ bool GameObject::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 	
-	ForceUID(root.GetNumber("UID"));
-	parent_uid = root.GetNumber("ParentUID");
+	ForceUID((uint)root.GetNumber("UID"));
+	parent_uid = (uint)root.GetNumber("ParentUID");
 
 	name					= root.GetString("Name");
 	is_active				= root.GetBool("IsActive");
@@ -270,12 +270,23 @@ void GameObject::UpdateBoundingBoxes()
 	c_meshes.clear();
 }
 
+AABB GameObject::GetAABB() const
+{
+	return aabb;
+}
+
+float3* GameObject::GetAABBVertices() const
+{
+	return aabb_vertices;
+}
+
 void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers)
 {
 	std::vector<C_Mesh*> c_meshes;
 	GetAllMeshComponents(c_meshes);
 
-	C_Material* c_material = GetMaterialComponent();
+	C_Material* c_material	= GetMaterialComponent();
+	C_Camera* c_camera		= GetCameraComponent();
 
 	for (uint i = 0; i < c_meshes.size(); ++i)
 	{
@@ -289,6 +300,15 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 	}
 
 	c_meshes.clear();
+
+	if (c_camera != nullptr)
+	{
+		if (!c_camera->FrustumIsHidden())
+		{
+			Color frustum_color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+			cuboid_renderers.push_back(CuboidRenderer(c_camera->GetFrustumVertices(), frustum_color));
+		}
+	}
 
 	if (show_bounding_boxes)
 	{
@@ -481,7 +501,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		{
 			for (uint i = 0; i < components.size(); ++i)
 			{
-				if (type == components[i]->type)
+				if (type == components[i]->GetType())
 				{
 					LOG("[ERROR] %s Component could not be added to %s: No duplicates allowed!", component->GetNameFromType(), name.c_str());
 					
@@ -530,7 +550,7 @@ Component* GameObject::GetComponent(COMPONENT_TYPE type)
 {
 	for (uint i = 0; i < components.size(); ++i)
 	{
-		if (components[i]->type == type)
+		if (components[i]->GetType() == type)
 		{
 			return components[i];
 		}
@@ -550,7 +570,6 @@ const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::MESH:		{ return "Mesh"; }		break;
 	case COMPONENT_TYPE::MATERIAL:	{ return "Material"; }	break;
 	case COMPONENT_TYPE::LIGHT:		{ return "Light"; }		break;
-	case COMPONENT_TYPE::UNKNOWN:	{ return "Unknown"; }	break;
 	}
 
 	LOG("[ERROR] Could Not Get Component Name From Type");
@@ -559,10 +578,10 @@ const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
 }
 
 void GameObject::GetAllComponentsWithType(std::vector<Component*>& components_with_type, COMPONENT_TYPE type)
-{
+{	
 	for (uint i = 0; i < components.size(); ++i)
 	{
-		if (components[i]->type == type)
+		if (components[i]->GetType() == type)
 		{
 			components_with_type.push_back(components[i]);
 		}
@@ -598,7 +617,7 @@ void GameObject::GetAllMeshComponents(std::vector<C_Mesh*>& c_meshes)
 {
 	for (uint i = 0; i < components.size(); ++i)
 	{
-		if (components[i]->type == COMPONENT_TYPE::MESH)
+		if (components[i]->GetType() == COMPONENT_TYPE::MESH)
 		{
 			c_meshes.push_back((C_Mesh*)components[i]);
 		}
@@ -651,7 +670,7 @@ void GameObject::SetIsStatic(const bool& set_to)
 }
 
 void GameObject::SetChildsIsActive(const bool& set_to, GameObject* parent)
-{
+{	
 	if (parent != nullptr)
 	{
 		for (uint i = 0; i < parent->childs.size(); ++i)

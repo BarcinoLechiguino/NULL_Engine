@@ -51,7 +51,7 @@ bool C_Material::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 
-	root.SetNumber("Type", (uint)type);
+	root.SetNumber("Type", (uint)GetType());
 	
 	// --- R_MATERIAL ---
 	if (r_material != nullptr)
@@ -90,7 +90,7 @@ bool C_Material::LoadState(ParsonNode& root)
 	
 	if (material_node.NodeIsValid())
 	{
-		r_material = (R_Material*)App->resource_manager->GetResource(material_node.GetNumber("UID"));
+		r_material = (R_Material*)App->resource_manager->GetResource((uint)material_node.GetNumber("UID"));
 
 		if (r_material == nullptr)
 		{
@@ -98,14 +98,14 @@ bool C_Material::LoadState(ParsonNode& root)
 
 			if (r_material == nullptr)
 			{
-				LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), material_node.GetNumber("UID"));
+				LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), (uint)material_node.GetNumber("UID"));
 			}
 		}
 	}
 
 	if (texture_node.NodeIsValid())
 	{
-		r_texture = (R_Texture*)App->resource_manager->GetResource(texture_node.GetNumber("UID"));
+		r_texture = (R_Texture*)App->resource_manager->GetResource((uint)texture_node.GetNumber("UID"));
 
 		if (r_texture == nullptr)
 		{
@@ -113,13 +113,13 @@ bool C_Material::LoadState(ParsonNode& root)
 
 			if (r_texture == nullptr)
 			{
-				LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), texture_node.GetNumber("UID"));
+				LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), (uint)texture_node.GetNumber("UID"));
 			}
 		}
 	}
 	else
 	{
-		LOG("[WARNING] Loading Scene: Could not find any Texture for %s! Check whether or not this is intended.", owner->GetName());
+		LOG("[WARNING] Loading Scene: Could not find any Texture for %s! Check whether or not this is intended.", this->GetOwner()->GetName());
 	}
 
 	return ret;
@@ -177,7 +177,7 @@ void C_Material::SetMaterialColour(float r, float g, float b, float a)
 	}
 	else
 	{
-		LOG("[ERROR] Material Component of %s has no Material Resource!", owner->GetName());
+		LOG("[ERROR] Material Component of %s has no Material Resource!", this->GetOwner()->GetName());
 	}
 }
 
@@ -226,7 +226,7 @@ void C_Material::GetTextureSize(uint& width, uint& height)
 	}
 	else
 	{
-		LOG("[ERROR] Material Component of %s has no Texture Resource!", owner->GetName());
+		LOG("[ERROR] Material Component of %s has no Texture Resource!", this->GetOwner()->GetName());
 	}
 }
 
