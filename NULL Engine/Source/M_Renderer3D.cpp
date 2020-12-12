@@ -80,26 +80,23 @@ bool M_Renderer3D::Init(ParsonNode& configuration)
 // PreUpdate: clear buffer
 UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 {	
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
 
 	C_Camera* current_camera = App->camera->GetCurrentCamera();
-
 	if (current_camera != nullptr)
 	{
 		if (current_camera->GetUpdateProjectionMatrix())
 		{
 			RecalculateProjectionMatrix();
 			current_camera->SetUpdateProjectionMatrix(false);
-			glLoadMatrixf((GLfloat*)current_camera->GetOGLViewMatrix());
 		}
 	}
-	else
-	{
-		glLoadMatrixf(App->camera->GetRawViewMatrix());
-	}
+
+	glLoadMatrixf((GLfloat*)current_camera->GetOGLViewMatrix());
 
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);

@@ -448,13 +448,13 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Frustum Settings:");
 
 			float near_plane_distance = c_camera->GetNearPlaneDistance();
-			if (ImGui::SliderFloat("Near Plane", &near_plane_distance, 0.1f, 300.0f, "%.3f", 0))
+			if (ImGui::SliderFloat("Near Plane", &near_plane_distance, 0.1f, 1000.0f, "%.3f", 0))
 			{
 				c_camera->SetNearPlaneDistance(near_plane_distance);
 			}
 
 			float far_plane_distance = c_camera->GetFarPlaneDistance();
-			if (ImGui::SliderFloat("Far Plane", &far_plane_distance, 0.1f, 300.0f, "%.3f", 0))
+			if (ImGui::SliderFloat("Far Plane", &far_plane_distance, 0.1f, 1000.0f, "%.3f", 0))
 			{
 				c_camera->SetFarPlaneDistance(far_plane_distance);
 			}

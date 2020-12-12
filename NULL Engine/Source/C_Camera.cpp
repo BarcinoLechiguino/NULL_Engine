@@ -100,11 +100,11 @@ void C_Camera::InitFrustum()
 	frustum.SetFront(float3::unitZ);
 	frustum.SetUp(float3::unitY);
 
-	frustum.SetViewPlaneDistances(1.0f, 30.0f);
+	frustum.SetViewPlaneDistances(1.0f, 300.0f);
 	frustum.SetPerspective(1.0f, 1.0f);
 
 	//frustum.SetOrthographic(10.0f, 10.0f);
-	//frustum.SetHorizontalFovAndAspectRatio(90.0f, frustum.AspectRatio());
+	SetVerticalFOV(90);
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
@@ -124,11 +124,13 @@ void C_Camera::UpdateFrustumTransform()
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
 
-	//frustum.ComputeViewMatrix();
-	//frustum.ComputeProjectionMatrix();
-
 	update_frustum_transform = false;
 	update_projection_matrix = true;
+}
+
+Frustum C_Camera::GetFrustum() const
+{
+	return frustum;
 }
 
 void C_Camera::SetUpdateFrustumTransform(const bool& set_to)
@@ -165,10 +167,20 @@ float* C_Camera::GetOGLProjectionMatrix()
 {
 	static float4x4 projection_matrix;
 
-	projection_matrix = frustum.ProjectionMatrix()/*.Transposed()*/;
-	projection_matrix.Transpose();
+	projection_matrix = frustum.ProjectionMatrix().Transposed();
+	//projection_matrix.Transpose();
 	
 	return (float*)projection_matrix.v;
+}
+
+void C_Camera::PointAt()
+{
+
+}
+
+void C_Camera::Move(const float3& movement)
+{
+	GetOwner()->GetTransformComponent()->Translate(movement);
 }
 
 void C_Camera::UpdateFrustumPlanes()
@@ -268,6 +280,8 @@ void C_Camera::SetAspectRatio(const float& aspect_ratio)
 	
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
+
+	update_projection_matrix = true;
 }
 
 float C_Camera::GetNearPlaneDistance() const
@@ -308,6 +322,8 @@ void C_Camera::SetNearPlaneDistance(const float& near_distance)
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
+
+	update_projection_matrix = true;
 }
 
 void C_Camera::SetFarPlaneDistance(const float& far_distance)
@@ -328,6 +344,8 @@ void C_Camera::SetFarPlaneDistance(const float& far_distance)
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
+
+	update_projection_matrix = true;
 }
 
 void C_Camera::SetHorizontalFOV(const float& horizontal_fov)
@@ -348,6 +366,8 @@ void C_Camera::SetHorizontalFOV(const float& horizontal_fov)
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
+
+	update_projection_matrix = true;
 }
 
 void C_Camera::SetVerticalFOV(const float& vertical_fov)

@@ -10,9 +10,9 @@
 
 C_Transform::C_Transform(GameObject* owner) : Component(owner, COMPONENT_TYPE::TRANSFORM),
 local_transform			(float4x4::identity),
-world_transform			(float4x4::identity),
-sync_local_to_global	(false),
-update_world_transform	(false)
+world_transform			(float4x4::identity)
+//sync_local_to_global	(false),
+//update_world_transform	(false)
 {	
 	local_transform.Decompose(local_position, local_rotation, local_scale);
 
@@ -28,15 +28,15 @@ bool C_Transform::Update()
 {
 	bool ret = true;
 
-	if (update_world_transform)
+	/*if (update_world_transform)
 	{
 		UpdateWorldTransform();
-	}
+	}*/
 
-	if (sync_local_to_global)
+	/*if (sync_local_to_global)
 	{
 		SyncLocalToWorld();
-	}
+	}*/
 
 	return ret;
 }
@@ -112,9 +112,10 @@ void C_Transform::UpdateLocalTransform()
 {
 	local_transform = float4x4::FromTRS(local_position, local_rotation, local_scale);
 
-	sync_local_to_global = false;
-	update_world_transform = true;
+	UpdateWorldTransform();
 
+	//sync_local_to_global = false;
+	//update_world_transform = true;
 	//UpdateWorldTransform();
 }
 
@@ -133,15 +134,17 @@ void C_Transform::UpdateWorldTransform()
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
-		owner->childs[i]->GetTransformComponent()->update_world_transform = true;
+		owner->childs[i]->GetTransformComponent()->UpdateWorldTransform();
+		//owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
 
 	if (owner->GetCameraComponent() != nullptr)
 	{
-		owner->GetCameraComponent()->SetUpdateFrustumTransform(true);
+		//owner->GetCameraComponent()->SetUpdateFrustumTransform(true);
+		owner->GetCameraComponent()->UpdateFrustumTransform();
 	}
 
-	update_world_transform = false;
+	//update_world_transform = false;
 }
 
 void C_Transform::SyncWorldToLocal()
@@ -159,13 +162,14 @@ void C_Transform::SyncWorldToLocal()
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
-		owner->childs[i]->GetTransformComponent()->update_world_transform = true;
+		owner->childs[i]->GetTransformComponent()->UpdateWorldTransform();
+		//owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
 }
 
 void C_Transform::SyncLocalToWorld()
 {
-	const GameObject* owner = GetOwner();
+	GameObject* owner = GetOwner();
 	
 	if (owner->parent != nullptr)
 	{
@@ -185,10 +189,17 @@ void C_Transform::SyncLocalToWorld()
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
-		owner->childs[i]->GetTransformComponent()->update_world_transform = true;
+		owner->childs[i]->GetTransformComponent()->UpdateWorldTransform();
+		//owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
 
-	sync_local_to_global = false;
+	if (owner->GetCameraComponent() != nullptr)
+	{
+		owner->GetCameraComponent()->UpdateFrustumTransform();
+		//owner->GetCameraComponent()->SetUpdateFrustumTransform(true);
+	}
+
+	//sync_local_to_global = false;
 }
 
 float4x4 C_Transform::GetLocalTransform() const
@@ -212,7 +223,9 @@ void C_Transform::SetLocalTransform(const float4x4& local_transform)
 
 	local_euler_rotation = euler;
 
-	update_world_transform = true;
+	UpdateWorldTransform();
+
+	//update_world_transform = true;
 }
 
 void C_Transform::SetWorldTransform(const float4x4& world_transform)

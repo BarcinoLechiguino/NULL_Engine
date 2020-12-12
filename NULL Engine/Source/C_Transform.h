@@ -20,6 +20,8 @@ public:
 	bool LoadState	(ParsonNode& root) override;
 
 public:																				// --- C_TRANSFORM METHODS ---
+	void		SyncLocalToWorld();													// Recalcuates the local transform to sync it to world_transform.	Ex: new world --> SyncLocalToWorld();
+	
 	float4x4	GetLocalTransform		() const;									// Returns the local transform's 4x4 matrix. 
 	float4x4	GetWorldTransform		() const;									// Returns the world transform's 4x4 matrix.
 
@@ -60,13 +62,12 @@ private:
 	void		UpdateLocalTransform	();											// Recalculates local_transform with the values of local_position, local_rotation and local_scale.
 	void		UpdateWorldTransform	();											// Recalculates world_transform. world_transform: parent->world_transform * local_transform.
 	void		SyncWorldToLocal		();											// Recalculates world_transform to sync it to local_transform.		Ex: new local --> SyncWorldToLocal();
-	void		SyncLocalToWorld		();											// Recalcuates the local transform to sync it to world_transform.	Ex: new world --> SyncLocalToWorld();
+	//void		SyncLocalToWorld		();											// Recalcuates the local transform to sync it to world_transform.	Ex: new world --> SyncLocalToWorld();
 
 public:
-	bool		sync_local_to_global;												// Will be set to true if a parameter of the local_transform has been modified and it has not been applied.
-	bool		update_world_transform;												// Will be set to true if local_transform has been modified and world_transform has been not synced to it.
-
-	bool		local_is_dirty;														// Using Dirty flags + local_transform: Would be used to prevent the local_trfm from being used while dirty.
+	//bool		sync_local_to_global;												// Will be set to true if a parameter of the local_transform has been modified and it has not been applied.
+	//bool		update_world_transform;												// Will be set to true if local_transform has been modified and world_transform has been not synced to it.
+	//bool		local_is_dirty;														// Using Dirty flags + local_transform: Would be used to prevent the local_trfm from being used while dirty.
 
 private:
 	float4x4	local_transform;													// Will represent the position, rotation and scale of the transform in Local Space.

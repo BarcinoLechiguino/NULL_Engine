@@ -18,8 +18,6 @@ master_camera(nullptr),
 current_camera(nullptr)
 {
 	CreateMasterCamera();
-
-	master_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
 	
 	CalculateViewMatrix();
 
@@ -54,6 +52,9 @@ bool M_Camera3D::Init(ParsonNode& root)
 	//Position.y = root.GetNumber("Y");
 	//Position.z = root.GetNumber("Z");
 	
+	master_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
+	//current_camera->UpdateFrustumTransform();
+
 	return true;
 }
 
@@ -136,7 +137,7 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 
 		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_STATE::KEY_DOWN)
 		{
-
+			Focus(reference);
 		}
 	}
 
@@ -148,7 +149,8 @@ void M_Camera3D::CreateMasterCamera()
 {
 	master_camera = new GameObject();
 	master_camera->SetName("MasterCamera");
-	current_camera = (C_Camera*)master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+	master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+	SetCurrentCamera(master_camera->GetCameraComponent());
 	
 	if (App != nullptr)
 	{
@@ -175,6 +177,12 @@ void M_Camera3D::SetCurrentCamera(C_Camera* c_camera)
 		return;
 	}
 
+	if (current_camera != nullptr)
+	{
+		current_camera->SetFrustumIsHidden(false);
+	}
+	
+	c_camera->SetFrustumIsHidden(true);
 	current_camera = c_camera;
 }
 
@@ -248,43 +256,46 @@ void M_Camera3D::ReturnToWorldOrigin()
 // -----------------------------------------------------------------
 void M_Camera3D::WASDMovement()
 {
-	vec3 new_position(0, 0, 0);
-	float mov_speed = movement_speed * App->GetUnpausableDt();
+	float3 new_position		= float3::zero;
+	Frustum frustum			= current_camera->GetFrustum();
+	float mov_speed			= movement_speed * App->GetUnpausableDt();
 	
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_STATE::KEY_REPEAT)
-	{
-		mov_speed = movement_speed * 2 * App->GetUnpausableDt();
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)
-	{	
-		new_position -= Z * mov_speed;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position += Z * mov_speed;
-	}
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_STATE::KEY_REPEAT)								// --- CAMERA MOVEMEMENT BOOST
+	{																									// 
+		mov_speed = movement_speed * 2 * App->GetUnpausableDt();										// 
+	}																									// ---------------------------
 
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position -= X * mov_speed;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position += X * mov_speed;
-	}
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT)									// --- FORWARD/BACKARD MOVEMENT (+Z/-Z)
+	{																									// 
+		new_position += frustum.Front() * mov_speed;													// 
+	}																									// 
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT)									// 
+	{																									// 
+		new_position -= frustum.Front() * mov_speed;													// 
+	}																									// ----------------------------------------
 
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position += Y * mov_speed;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_STATE::KEY_REPEAT)
-	{
-		new_position -= Y * mov_speed;
-	}
 
-	Move(new_position);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT)									// --- LEFT/RIGHT MOVEMENT (STRAFE -X/+X)
+	{																									// 										
+		new_position -= frustum.WorldRight() * mov_speed;												// 										
+	}																									// 										
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT)									// 										
+	{																									// 										
+		new_position += frustum.WorldRight() * mov_speed;												// 										
+	}																									// ----------------------------------------
+
+
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_STATE::KEY_REPEAT)									// --- UPWARD/DOWNWARD MOVEMENT (+Y/-Y)
+	{																									// 
+		new_position += frustum.Up() * mov_speed;														// 
+	}																									// 
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_STATE::KEY_REPEAT)									// 
+	{																									// 
+		new_position -= frustum.Up() * mov_speed;														// 
+	}																									// ------------------------------------
+
+	current_camera->Move(new_position);
 }
 
 void M_Camera3D::FreeLookAround()
@@ -299,6 +310,8 @@ void M_Camera3D::FreeLookAround()
 	{
 		float delta_X = (float)dx * sensitivity;						// The value of the angle that we will rotate the camera by is very, very small, as it will be applied each frame.
 
+		
+		
 		X = rotate(X, delta_X, vec3(0.0f, 1.0f, 0.0f));					// All vectors of the camera (X = Right, Y = Up, Z = Forward), will be rotated by the value of the angle (delta_X)
 		Y = rotate(Y, delta_X, vec3(0.0f, 1.0f, 0.0f));					// The axis of rotation will be Y (yaw), not to confuse with the Y vector, which belongs to the camera.
 		Z = rotate(Z, delta_X, vec3(0.0f, 1.0f, 0.0f));					// Keep in mind that X(Right) will always remain axis aligned.
@@ -356,30 +369,35 @@ void M_Camera3D::RotateAroundReference()								// Almost identical to FreeLookA
 
 void M_Camera3D::PanCamera()
 {
-	vec3 new_X(0, 0, 0);
-	vec3 new_Y(0, 0, 0);
+	float3 new_X		= float3::zero;
+	float3 new_Y		= float3::zero;
+	float3 new_position = float3::zero;
+	Frustum frustum		= current_camera->GetFrustum();
 
-	float dx = (float)App->input->GetMouseXMotion();
-	float dy = (float)App->input->GetMouseYMotion();
+	float dx			= (float)App->input->GetMouseXMotion();
+	float dy			= (float)App->input->GetMouseYMotion();
 
 	if (dx != 0)
 	{
-		new_X = -dx * X * App->GetDt();
+		new_X = -dx * frustum.WorldRight() * App->GetDt();
 	}
 
 	if (dy != 0)
 	{
-		new_Y = dy * Y * App->GetDt();
+		new_Y = dy * frustum.Up() * App->GetDt();
 	}
 
-	vec3 new_position = new_X + new_Y;
-
-	Move(new_position);
+	new_position = new_X + new_Y;
+	
+	current_camera->Move(new_position);
 }
 
 void M_Camera3D::Zoom()
 {	
-	position -= Z * (float)App->input->GetMouseZ() * zoom_speed * App->GetDt();				// The value is negated to make the zoom behave as it should (wheel bck = bck / wheel fwrd = fwrd).
+	Frustum frustum		= current_camera->GetFrustum();
+	float3 new_Z		= frustum.Front() * (float)App->input->GetMouseZ() * zoom_speed * App->GetDt();
+
+	current_camera->Move(new_Z);
 }
 
 // -----------------------------------------------------------------

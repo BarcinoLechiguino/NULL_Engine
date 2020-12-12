@@ -25,6 +25,7 @@ public:
 public:																										// --- FRUSTUM METHODS
 	void		InitFrustum					();
 	void		UpdateFrustumTransform		();
+	Frustum		GetFrustum					() const;
 
 	void		SetUpdateFrustumTransform	(const bool& set_to);
 	void		SetUpdateProjectionMatrix	(const bool& set_to);
@@ -33,6 +34,13 @@ public:																										// --- FRUSTUM METHODS
 
 	float*		GetOGLViewMatrix			();
 	float*		GetOGLProjectionMatrix		();
+
+public:																										// --- CAMERA TRANSFORM
+	void PointAt();
+	void LookAt();
+	void Move(const float3& movement);
+
+	void SetPosition();
 
 public:																										// --- FRUSTUM CULLING
 	void		UpdateFrustumPlanes			();
@@ -73,10 +81,11 @@ public:																										// --- CAMERA FLAGS
 	void		SetIsSceneCamera			(const bool& set_to);
 
 private:
-	Frustum frustum;																						// --- FRUSTUM CULLING
-	Plane*	frustum_planes;																					//
-	float3* frustum_vertices;																				// -------------------
+	Frustum frustum;																						//
 
+	Plane*	frustum_planes;																					// --- FRUSTUM CULLING
+	float3* frustum_vertices;																				// -------------------
+	
 	uint	min_fov;																						// --- FRUSTUM SETTINGS 
 	uint	max_fov;																						// --------------------
 

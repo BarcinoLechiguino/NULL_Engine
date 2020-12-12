@@ -344,7 +344,8 @@ bool GameObject::SetParent(GameObject* new_parent)
 		success = parent->DeleteChild(this);
 		if (success)
 		{
-			GetTransformComponent()->sync_local_to_global = true;
+			GetTransformComponent()->SyncLocalToWorld();
+			//GetTransformComponent()->sync_local_to_global = true;
 		}
 		else
 		{
