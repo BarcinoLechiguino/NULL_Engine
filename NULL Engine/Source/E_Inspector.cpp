@@ -474,7 +474,7 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 
 			if (ImGui::Button("Set as Current Camera"))
 			{
-				App->editor->SetCurrentCameraThroughEditor(c_camera->GetOwner());
+				App->editor->SetCurrentCameraThroughEditor(c_camera);
 			}
 
 			if (ImGui::Button("Return to Master Camera"))

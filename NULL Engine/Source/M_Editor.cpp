@@ -451,14 +451,14 @@ void M_Editor::CreateGameObject(const char* name, GameObject* parent)
 	App->scene->CreateGameObject(name, parent);
 }
 
-void M_Editor::SetCurrentCameraThroughEditor(GameObject* game_object)
+void M_Editor::SetCurrentCameraThroughEditor(C_Camera* game_object)
 {
 	App->camera->SetCurrentCamera(game_object);
 }
 
 void M_Editor::SetMasterCameraThroughEditor()
 {
-	App->camera->SetCurrentCamera(App->scene->GetMasterCamera());
+	App->camera->SetMasterCameraAsCurrentCamera();
 }
 
 bool M_Editor::SelectedIsSceneRoot() const

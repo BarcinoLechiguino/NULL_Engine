@@ -124,7 +124,11 @@ void C_Camera::UpdateFrustumTransform()
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
 
+	//frustum.ComputeViewMatrix();
+	//frustum.ComputeProjectionMatrix();
+
 	update_frustum_transform = false;
+	update_projection_matrix = true;
 }
 
 void C_Camera::SetUpdateFrustumTransform(const bool& set_to)

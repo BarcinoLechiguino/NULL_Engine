@@ -13,8 +13,14 @@
 #define ROTATION_SPEED 12.0f
 #define ZOOM_SPEED 24.0f
 
-M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active), current_camera(nullptr)
+M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active),
+master_camera(nullptr),
+current_camera(nullptr)
 {
+	CreateMasterCamera();
+
+	master_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
+	
 	CalculateViewMatrix();
 
 	X					= vec3(1.0f, 0.0f, 0.0f);									//
@@ -34,7 +40,12 @@ M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active), current_
 }
 
 M_Camera3D::~M_Camera3D()
-{}
+{
+	current_camera = nullptr;
+	
+	master_camera->CleanUp();
+	RELEASE(master_camera);
+}
 
 // -----------------------------------------------------------------
 bool M_Camera3D::Init(ParsonNode& root)
@@ -133,36 +144,21 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 }
 
 // -----------------------------------------------------------------
-GameObject* M_Camera3D::GetCurrentCamera() const
-{	
-	return current_camera;
-}
-
-C_Camera* M_Camera3D::GetCurrentCameraAsComponent() const
-{	
-	if (current_camera != nullptr)
-	{
-		return current_camera->GetCameraComponent();
-	}
-
-	return nullptr;
-}
-
-void M_Camera3D::SetCurrentCamera(GameObject* camera)
+void M_Camera3D::CreateMasterCamera()
 {
-	if (camera == nullptr)
-	{
-		LOG("[ERROR] Camera: Could not set a new current camera! Error: Given Camera GameObject was nullptr.");
-		return;
-	}
-
-	if (camera->GetCameraComponent() == nullptr)
-	{
-		LOG("[ERROR] Camera: Could not set a new current camera! Error: Given Camera GameObject did not have a Camera Component.");
-		return;
-	}
+	master_camera = new GameObject();
+	master_camera->SetName("MasterCamera");
+	current_camera = (C_Camera*)master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
 	
-	current_camera = camera;
+	if (App != nullptr)
+	{
+		master_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
+	}
+}
+
+C_Camera* M_Camera3D::GetCurrentCamera() const
+{
+	return current_camera;
 }
 
 void M_Camera3D::SetCurrentCamera(C_Camera* c_camera)
@@ -179,9 +175,31 @@ void M_Camera3D::SetCurrentCamera(C_Camera* c_camera)
 		return;
 	}
 
-	current_camera = c_camera->GetOwner();
+	current_camera = c_camera;
 }
 
+void M_Camera3D::SetMasterCameraAsCurrentCamera()
+{
+	if (master_camera != nullptr)
+	{
+		LOG("[ERROR] Camera: Could not set the master camera as the current camera! Error: Master Camera was nullptr.");
+		LOG("[WARNING] Camera: Created a new Master Camera. Reason: Master Camera was nullptr!");
+		
+		CreateMasterCamera();
+	}
+
+	if (master_camera->GetCameraComponent() == nullptr)
+	{
+		LOG("[ERROR] Camera: Could not set the master camera as the current camera! Error: Master Camera did not have a Camera Component.");
+		LOG("[WARNING] Camera: Created a new Camera Component for the Master Camera. Reason: Master Camera did not have a Camera Component!");
+
+		master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+	}
+
+	current_camera = master_camera->GetCameraComponent();
+}
+
+// -----------------------------------------------------------------
 void M_Camera3D::PointAt(const vec3 &position, const vec3 &reference, bool RotateAroundReference)
 {
 	this->position = position;												// Updates the position to the given one.

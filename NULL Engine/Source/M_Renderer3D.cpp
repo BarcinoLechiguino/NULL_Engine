@@ -85,17 +85,21 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 
 	glMatrixMode(GL_MODELVIEW);
 
-	/*C_Camera* current_camera = App->camera->GetCurrentCamera();
+	C_Camera* current_camera = App->camera->GetCurrentCamera();
 
-	if (current_camera->GetUpdateProjectionMatrix())
+	if (current_camera != nullptr)
 	{
-		RecalculateProjectionMatrix();
-		current_camera->SetUpdateProjectionMatrix(false);
+		if (current_camera->GetUpdateProjectionMatrix())
+		{
+			RecalculateProjectionMatrix();
+			current_camera->SetUpdateProjectionMatrix(false);
+			glLoadMatrixf((GLfloat*)current_camera->GetOGLViewMatrix());
+		}
 	}
-
-	glLoadMatrixf((GLfloat*)current_camera->GetViewMatrix().Transposed());*/
-
-	glLoadMatrixf(App->camera->GetRawViewMatrix());
+	else
+	{
+		glLoadMatrixf(App->camera->GetRawViewMatrix());
+	}
 
 	// light 0 on cam pos
 	lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
@@ -298,9 +302,9 @@ void M_Renderer3D::OnResize()
 
 	glViewport(0, 0, win_width, win_width);
 
-	if (App->camera->GetCurrentCameraAsComponent() != nullptr)
+	if (App->camera->GetCurrentCamera() != nullptr)
 	{
-		App->camera->GetCurrentCameraAsComponent()->SetAspectRatio(win_width / win_height);
+		App->camera->GetCurrentCamera()->SetAspectRatio(win_width / win_height);
 	}
 
 	RecalculateProjectionMatrix();
@@ -316,10 +320,15 @@ void M_Renderer3D::RecalculateProjectionMatrix()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	//glLoadMatrixf((GLfloat*)App->camera->GetCurrentCameraAsComponent()->GetOGLProjectionMatrix());
-
-	projection_matrix = perspective(60.0f, (float)win_width / (float)win_height, 0.125f, 512.0f);
-	glLoadMatrixf((GLfloat*)&projection_matrix);
+	if (App->camera->GetCurrentCamera() != nullptr)
+	{
+		glLoadMatrixf((GLfloat*)App->camera->GetCurrentCamera()->GetOGLProjectionMatrix());
+	}
+	else
+	{
+		projection_matrix = perspective(60.0f, (float)win_width / (float)win_height, 0.125f, 512.0f);
+		glLoadMatrixf((GLfloat*)&projection_matrix);
+	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

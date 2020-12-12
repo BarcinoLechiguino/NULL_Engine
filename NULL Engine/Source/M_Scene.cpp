@@ -35,9 +35,7 @@ scene_root				(nullptr),
 selected_game_object	(nullptr)
 {
 	CreateMasterRoot();
-	CreateMasterCamera();
 	CreateSceneRoot("MainScene");
-	CreateSceneCamera("SceneCamera");
 
 	selected_game_object = scene_root;
 }
@@ -68,9 +66,9 @@ bool M_Scene::Start()
 		selected_game_object = scene_root;
 	}
 
-	App->camera->SetCurrentCamera(master_camera);
-	master_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
-	scene_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
+	//App->camera->SetCurrentCamera(master_camera);
+	
+	CreateSceneCamera("SceneCamera");
 
 	Importer::ImportFile("Assets/Models/street/Street Environment_V01.FBX");
 
@@ -421,28 +419,6 @@ GameObject* M_Scene::GetMasterRoot() const
 	return master_root;
 }
 
-void M_Scene::CreateMasterCamera()
-{
-	master_camera = new GameObject("MasterCamera");
-	master_camera->SetParent(master_root);
-	master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
-	//master_camera->is_master_root->camera = true;
-}
-
-void M_Scene::DeleteMasterCamera()
-{
-	if (master_camera != nullptr)
-	{
-		master_camera->CleanUp();
-		RELEASE(master_camera);
-	}
-}
-
-GameObject* M_Scene::GetMasterCamera() const
-{
-	return master_camera;
-}
-
 void M_Scene::CreateSceneRoot(const char* scene_name)
 {
 	if (master_root == nullptr)
@@ -485,6 +461,7 @@ void M_Scene::CreateSceneCamera(const char* camera_name)
 	scene_camera = CreateGameObject(camera_name, scene_root);
 	scene_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
 	scene_camera->GetCameraComponent()->SetIsSceneCamera(true);
+	scene_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
 	scene_camera->GetTransformComponent()->SetLocalPosition(float3(0.0f, 5.0f, 25.0f));
 }
 
