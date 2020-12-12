@@ -8,6 +8,10 @@
 #include "M_FileSystem.h"
 #include "HardwareInfo.h"
 
+#include "GameObject.h"
+#include "C_Transform.h"
+#include "C_Camera.h"
+
 #include "E_Configuration.h"
 
 #define MAX_INPUT_LOG_SIZE 1000
@@ -183,11 +187,19 @@ bool E_Configuration::CameraMenu()
 			App->camera->ReturnToWorldOrigin();
 		}
 
-		// --- POSITION
+		ImGui::Separator();
+
+		// --- TRANSFORM
 		GenerateCameraPositionSlider();
+		GenerateCameraRotationSlider();
+		GenerateCameraScaleSlider();
+
+		ImGui::Separator();
 
 		// --- REFERENCE
 		GenerateCameraReferenceSlider();
+
+		ImGui::Separator();
 
 		// --- MOVEMENT, ROTATION & ZOOM SPEED
 		GenerateCameraSpeedSliders();
@@ -531,21 +543,33 @@ void E_Configuration::RendererFlags()
 
 void E_Configuration::GenerateCameraPositionSlider()
 {
-	/*float3 camera_position = App->camera->GetPosition();
-	ImGui::DragFloat3("Position", (float*)&camera_position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-	App->camera->SetPosition(camera_position);*/
+	float3 master_camera_position = App->camera->GetMasterCameraPosition();
+	if (ImGui::DragFloat3("Position", (float*)&master_camera_position, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+	{
+		App->camera->SetMasterCameraPosition(master_camera_position);
+	}
+}
 
-	vec3 camera_position = App->camera->GetPosition();
-	ImGui::DragFloat3("Position", (float*)&camera_position, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-	App->camera->SetPosition(camera_position);
+void E_Configuration::GenerateCameraRotationSlider()
+{
+	float3 master_camera_rotation = App->camera->GetMasterCameraRotation() * RADTODEG;
+	if (ImGui::DragFloat3("Rotation", (float*)&master_camera_rotation, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+	{
+		App->camera->SetMasterCameraRotation(master_camera_rotation * DEGTORAD);
+	}
+}
+
+void E_Configuration::GenerateCameraScaleSlider()
+{
+	float3 master_camera_scale = App->camera->GetMasterCameraScale();
+	if (ImGui::DragFloat3("Scale", (float*)&master_camera_scale, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+	{
+		App->camera->SetMasterCameraScale(master_camera_scale);
+	}
 }
 
 void E_Configuration::GenerateCameraReferenceSlider()
 {
-	/*float3 camera_reference = App->camera->GetReference();
-	ImGui::DragFloat3("Reference", (float*)&camera_reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-	App->camera->SetReference(camera_reference);*/
-
 	vec3 camera_reference = App->camera->GetReference();
 	ImGui::DragFloat3("Reference", (float*)&camera_reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
 	App->camera->SetReference(camera_reference);

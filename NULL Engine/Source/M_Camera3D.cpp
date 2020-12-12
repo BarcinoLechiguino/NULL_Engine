@@ -30,7 +30,7 @@ current_camera(nullptr)
 	position			= position_origin;											// 
 	reference			= reference_origin;											// 
 
-	LookAt(reference);
+	ref = float3::zero;
 
 	movement_speed		= MOVEMENT_SPEED;
 	rotation_speed		= ROTATION_SPEED;
@@ -53,6 +53,7 @@ bool M_Camera3D::Init(ParsonNode& root)
 	//Position.z = root.GetNumber("Z");
 	
 	master_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
+	LookAt(ref);
 	//current_camera->UpdateFrustumTransform();
 
 	return true;
@@ -130,9 +131,12 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 			Zoom();
 		}
 
-		if (App->input->GetKey(SDL_SCANCODE_O) == KEY_STATE::KEY_DOWN)
+		if (App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_STATE::KEY_IDLE)
 		{
-			ReturnToWorldOrigin();
+			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_STATE::KEY_DOWN)
+			{
+				ReturnToWorldOrigin();
+			}
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_STATE::KEY_DOWN)
@@ -225,17 +229,15 @@ void M_Camera3D::PointAt(const vec3 &position, const vec3 &reference, bool Rotat
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::LookAt(const vec3 &spot)									// Almost identical to PointAt except only the reference and XYZ are updated. DOES NOT TRANSLATE.
+void M_Camera3D::LookAt(const float3& spot)									// Almost identical to PointAt except only the reference and XYZ are updated. DOES NOT TRANSLATE.
 {
-	reference = spot;
+	ref = spot;
 
-	Z = normalize(position - reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
+	current_camera->LookAt(spot);
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::Focus(const vec3& target_position)
+void M_Camera3D::Focus(const vec3& target_position, const float& distance_from_target)
 {
 
 }
@@ -426,9 +428,9 @@ void M_Camera3D::CalculateViewMatrix()
 	ViewMatrixInverse = inverse(ViewMatrix);
 }
 
-vec3 M_Camera3D::GetPosition() const
+float3 M_Camera3D::GetPosition() const
 {
-	return position;
+	return current_camera->GetFrustum().Pos();
 }
 
 vec3 M_Camera3D::GetReference() const
@@ -484,4 +486,36 @@ void M_Camera3D::SetRotationSpeed(const float& rotation_speed)
 void M_Camera3D::SetZoomSpeed(const float& zoom_speed)
 {
 	this->zoom_speed = zoom_speed;
+}
+
+float3 M_Camera3D::GetMasterCameraPosition() const
+{
+	return master_camera->GetTransformComponent()->GetWorldPosition();
+}
+
+float3 M_Camera3D::GetMasterCameraRotation() const
+{
+	//return master_camera->GetTransformComponent()->GetWorldEulerRotation();
+	return master_camera->GetTransformComponent()->GetLocalEulerRotation();
+}
+
+float3 M_Camera3D::GetMasterCameraScale() const
+{
+	return master_camera->GetTransformComponent()->GetWorldScale();
+}
+
+void M_Camera3D::SetMasterCameraPosition(const float3& position)
+{
+	master_camera->GetTransformComponent()->SetWorldPosition(position);
+}
+
+void M_Camera3D::SetMasterCameraRotation(const float3& rotation)
+{
+	//master_camera->GetTransformComponent()->SetWorldRotation(rotation);
+	master_camera->GetTransformComponent()->SetLocalRotation(rotation);
+}
+
+void M_Camera3D::SetMasterCameraScale(const float3& scale)
+{
+	master_camera->GetTransformComponent()->SetWorldScale(scale);
 }

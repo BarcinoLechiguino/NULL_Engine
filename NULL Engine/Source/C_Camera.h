@@ -37,8 +37,8 @@ public:																										// --- FRUSTUM METHODS
 
 public:																										// --- CAMERA TRANSFORM
 	void PointAt();
-	void LookAt();
-	void Move(const float3& movement);
+	void LookAt(const float3& location);
+	void Move(const float3& velocity);
 
 	void SetPosition();
 

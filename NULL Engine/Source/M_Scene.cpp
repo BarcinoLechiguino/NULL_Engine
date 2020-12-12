@@ -57,7 +57,7 @@ bool M_Scene::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	App->camera->LookAt(vec3(0.0f, 0.0f, 0.0f) /*float3::zero*/);
+	App->camera->LookAt(float3::zero);
 
 	if (scene_root == nullptr)
 	{
@@ -463,6 +463,8 @@ void M_Scene::CreateSceneCamera(const char* camera_name)
 	scene_camera->GetCameraComponent()->SetIsSceneCamera(true);
 	scene_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
 	scene_camera->GetTransformComponent()->SetLocalPosition(float3(0.0f, 5.0f, 25.0f));
+	//scene_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
+	scene_camera->GetCameraComponent()->LookAt(float3::zero);
 }
 
 bool M_Scene::GameObjectIsInsideSceneCamera(GameObject* game_object)

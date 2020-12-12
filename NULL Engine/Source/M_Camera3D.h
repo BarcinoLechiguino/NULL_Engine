@@ -32,8 +32,8 @@ public:
 
 public:
 	void			PointAt					(const vec3& position, const vec3& reference, bool RotateAroundReference = false);
-	void			LookAt					(const vec3& Spot);
-	void			Focus					(const vec3& target_position);
+	void			LookAt					(const float3& Spot);
+	void			Focus					(const vec3& target_position, const float& distance_from_target = 10.0f);
 	void			Move					(const vec3& Movement);
 
 	void			ReturnToWorldOrigin		();
@@ -42,7 +42,8 @@ public:																		// Camera3D Getters and Setters.
 	float*			GetRawViewMatrix		();
 	mat4x4			GetViewMatrix			();
 
-	vec3			GetPosition				() const;
+	//vec3			GetPosition				() const;
+	float3			GetPosition				() const;
 	vec3			GetReference			() const;
 	vec3			GetSpot					() const;
 	void			SetPosition				(const vec3& position);
@@ -56,6 +57,12 @@ public:																		// Camera3D Getters and Setters.
 	void			SetRotationSpeed		(const float& rotation_speed);
 	void			SetZoomSpeed			(const float& zoom_speed);
 
+	float3			GetMasterCameraPosition	() const;
+	float3			GetMasterCameraRotation	() const;
+	float3			GetMasterCameraScale	() const;
+	void			SetMasterCameraPosition	(const float3& position);
+	void			SetMasterCameraRotation	(const float3& rotation);
+	void			SetMasterCameraScale	(const float3& scale);
 
 private:
 	void			CalculateViewMatrix		();								// Calculates both the worldspace matrix and the viewspace matrix.
@@ -74,6 +81,8 @@ public:
 	vec3 X;																	// Right vector of the Camera. Will always remain axis aligned in this implementation.
 	vec3 Y;																	// Up vector of the Camera.
 	vec3 Z;																	// Forward Vector of the Camera. Represents where the camera is pointing to.
+
+	float3 ref;
 
 	vec3 position_origin;													// 
 	vec3 reference_origin;													//

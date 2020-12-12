@@ -47,6 +47,8 @@ private:
 	void RendererFlags					();								// Renderer menu: Will generate the checkboxes that will modify the renderer flags.
 
 	void GenerateCameraPositionSlider	();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's position (XYZ).
+	void GenerateCameraRotationSlider	();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's rotation (XYZ).
+	void GenerateCameraScaleSlider		();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's scale (XYZ).
 	void GenerateCameraReferenceSlider	();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's reference (XYZ).
 	void GenerateCameraSpeedSliders		();								// Camera menu: Will generate 3 sliders that will modify the camera's movement, rotation and zoom speed.
 

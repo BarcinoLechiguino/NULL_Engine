@@ -92,7 +92,14 @@ void Importer::Scenes::Utilities::ImportFromAssets(const char* path, std::vector
 			return;
 		}
 
+		uint size = game_objects.size();
+
 		Utilities::ProcessNode(path, ai_scene, ai_scene->mRootNode, game_objects, App->scene->GetSceneRoot());
+
+		if (game_objects.size() > size)
+		{
+			game_objects[size]->GetTransformComponent()->Translate(float3::zero);	// Dirty way to refresh the transforms after the import is done. TMP.
+		}
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "M_Renderer3D.h"
+#include "M_Window.h"
 
 #include "E_Scene.h"
 
@@ -21,7 +22,9 @@ bool E_Scene::Draw(ImGuiIO& io)
 
 	CheckSceneIsClicked();
 
-	ImVec2 tex_size = ImGui::GetWindowSize() * 0.925f;
+	float aspect_ratio = App->window->GetWidth() / App->window->GetHeight();
+
+	ImVec2 tex_size = (ImGui::GetWindowSize() * aspect_ratio) * 0.925f;
 
 	ImGui::SetCursorPos((ImGui::GetWindowSize() - tex_size) * 0.5f);
 	ImGui::Image((ImTextureID)App->renderer->GetSceneRenderTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));

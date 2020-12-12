@@ -294,8 +294,8 @@ bool M_Renderer3D::InitGlew()
 
 void M_Renderer3D::OnResize()
 {	
-	uint win_width				= App->window->GetWidth();
-	uint win_height				= App->window->GetHeight();
+	float win_width		= (float)App->window->GetWidth();
+	float win_height	= (float)App->window->GetHeight();
 
 	glViewport(0, 0, win_width, win_width);
 

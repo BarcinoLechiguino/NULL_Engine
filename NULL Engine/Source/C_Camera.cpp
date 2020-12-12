@@ -104,7 +104,7 @@ void C_Camera::InitFrustum()
 	frustum.SetPerspective(1.0f, 1.0f);
 
 	//frustum.SetOrthographic(10.0f, 10.0f);
-	SetVerticalFOV(90);
+	//SetVerticalFOV(90);
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
@@ -168,7 +168,6 @@ float* C_Camera::GetOGLProjectionMatrix()
 	static float4x4 projection_matrix;
 
 	projection_matrix = frustum.ProjectionMatrix().Transposed();
-	//projection_matrix.Transpose();
 	
 	return (float*)projection_matrix.v;
 }
@@ -178,9 +177,26 @@ void C_Camera::PointAt()
 
 }
 
-void C_Camera::Move(const float3& movement)
+void C_Camera::LookAt(const float3& location)
+{	
+	//float3 Z = float3(location - frustum.Pos()).Normalized();															// Could construct the rotation matrix and multiply it by
+	//float3 X = float3(float3::unitY.Cross(Z)).Normalized();															// the world transform. It does not quite work however.
+	//float3 Y = Z.Cross(X);																							// 
+	//float3x3 look_at_matrix = float3x3(X, Y, Z);																		// ------------------------------------------------------
+
+	float3 new_Z				= float3(location - frustum.Pos()).Normalized();										// Constructing the new forward vector of the camera.
+	float3x3 look_at_matrix		= float3x3::LookAt(frustum.Front(), new_Z, frustum.Up(), float3::unitY);				// Using the LookAt() method built in MathGeoLib to generate the mat.
+
+	float4x4 world	= GetOwner()->GetTransformComponent()->GetWorldTransform();											// Calculating the new world matrix of the camera.
+	float4x4 look	= look_at_matrix;																					//
+	world			= world * look;																						// -----------------------------------------------
+
+	this->GetOwner()->GetTransformComponent()->SetWorldTransform(world);												// Setting the updated world transform.
+}
+
+void C_Camera::Move(const float3& velocity)
 {
-	GetOwner()->GetTransformComponent()->Translate(movement);
+	GetOwner()->GetTransformComponent()->Translate(velocity);
 }
 
 void C_Camera::UpdateFrustumPlanes()
