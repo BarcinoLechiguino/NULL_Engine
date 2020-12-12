@@ -67,6 +67,8 @@ bool M_Scene::Start()
 		selected_game_object = scene_root;
 	}
 
+	scene_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
+
 	Importer::ImportFile("Assets/Models/street/Street Environment_V01.FBX");
 
 	return ret;

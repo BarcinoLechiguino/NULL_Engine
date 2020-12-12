@@ -423,6 +423,8 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 
 			ImGui::Separator();
 
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Camera Flags:");
+			
 			bool camera_is_culling = c_camera->IsCulling();
 			if (ImGui::Checkbox("Culling", &camera_is_culling))
 			{
@@ -439,6 +441,34 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 			if (ImGui::Checkbox("Hide Frustum", &frustum_is_hidden))
 			{
 				c_camera->SetFrustumIsHidden(frustum_is_hidden);
+			}
+
+			ImGui::Separator();
+
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Frustum Settings:");
+
+			float near_plane_distance = c_camera->GetNearPlaneDistance();
+			if (ImGui::SliderFloat("Near Plane", &near_plane_distance, 0.1f, 1000.0f, "%.3f", 0))
+			{
+				c_camera->SetNearPlaneDistance(near_plane_distance);
+			}
+
+			float far_plane_distance = c_camera->GetFarPlaneDistance();
+			if (ImGui::SliderFloat("Far Plane", &far_plane_distance, 0.1f, 1000.0f, "%.3f", 0))
+			{
+				c_camera->SetFarPlaneDistance(far_plane_distance);
+			}
+			
+			int horizontal_fov = (int)c_camera->GetHorizontalFOV();
+			if (ImGui::SliderInt("Horizontal FOV", &horizontal_fov, 1, 200, "%d"))
+			{
+				c_camera->SetHorizontalFOV((float)horizontal_fov);
+			}
+
+			int vertical_fov = (int)c_camera->GetVerticalFOV();
+			if (ImGui::SliderInt("Vertical FOV", &vertical_fov, 1, 200, "%d"))
+			{
+				c_camera->SetVerticalFOV((float)vertical_fov);
 			}
 		}
 

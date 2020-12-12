@@ -69,7 +69,7 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 				keyboard[i] = KEY_STATE::KEY_DOWN;
 				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_DOWN);
 			}
-			else if (keyboard[i] == KEY_STATE::KEY_REPEAT)
+			else
 			{
 				keyboard[i] = KEY_STATE::KEY_REPEAT;
 				App->editor->AddInputLog(i, (uint)KEY_STATE::KEY_REPEAT);

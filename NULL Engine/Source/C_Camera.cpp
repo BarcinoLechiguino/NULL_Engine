@@ -11,17 +11,16 @@
 #define NUM_FRUSTUM_PLANES		6																			// A Frustum will ALWAYS be composed by 6 Planes.
 #define NUM_FRUSTUM_VERTICES	8																			// As frustums are CUBOIDS, they will ALWAYS be composed by 8 Vertices.
 
+#define MIN_FOV 60
+#define MAX_FOV 120
+
 C_Camera::C_Camera(GameObject* owner) : Component(owner, COMPONENT_TYPE::CAMERA),
 frustum_planes		(nullptr),
 frustum_vertices	(nullptr),
-horizontal_fov		(90),
-vertical_fov		(60),
-min_fov				(60),
-max_fov				(120),
-near_plane_size		(float2::one),
-far_plane_size		(float2::one),
-culling				(false),
-orthogonal_view		(false),
+min_fov				(MIN_FOV),
+max_fov				(MAX_FOV),
+is_culling				(false),
+in_orthogonal_view		(false),
 hide_frustum		(false),
 is_scene_camera		(false)
 {
@@ -41,16 +40,15 @@ bool C_Camera::Update()
 {
 	bool ret = true;
 
-	//frustum.AspectRatio();
-	//frustum.SetHorizontalFovAndAspectRatio(60, frustum.AspectRatio());
-	//frustum.ComputeProjectionMatrix();
-	//frustum.ComputeViewMatrix();
+	if (update_frustum_transform)
+	{
+		UpdateFrustumTransform();
+	}
 
-	//frustum.SetHorizontalFovAndAspectRatio(90, (App->window->GetWidth() / App->window->GetHeight()));
-
-	UpdateFrustum();
-
-	GetViewMatrix();
+	if (update_projection_matrix)
+	{
+		GetViewMatrix();
+	}
 
 	return ret;
 }
@@ -73,8 +71,8 @@ bool C_Camera::SaveState(ParsonNode& root) const
 	root.SetNumber("MinFOV", min_fov);
 	root.SetNumber("MaxFOV", max_fov);
 
-	root.SetBool("Culling", culling);
-	root.SetBool("OrthogonalView", orthogonal_view);
+	root.SetBool("Culling", is_culling);
+	root.SetBool("OrthogonalView", in_orthogonal_view);
 	root.SetBool("HideFrustum", hide_frustum);
 
 	root.SetBool("IsSceneCamera", is_scene_camera);
@@ -89,8 +87,8 @@ bool C_Camera::LoadState(ParsonNode& root)
 	min_fov				= root.GetNumber("MinFOV");
 	max_fov				= root.GetNumber("MaxFOV");
 
-	culling				= root.GetBool("Culling");
-	orthogonal_view		= root.GetBool("OrthogonalView");
+	is_culling				= root.GetBool("Culling");
+	in_orthogonal_view		= root.GetBool("OrthogonalView");
 	hide_frustum		= root.GetBool("HideFrustum");
 
 	is_scene_camera		= root.GetBool("IsSceneCamera");
@@ -110,13 +108,14 @@ void C_Camera::InitFrustum()
 	frustum.SetViewPlaneDistances(1.0f, 30.0f);
 	frustum.SetPerspective(1.0f, 1.0f);
 
+	//frustum.SetOrthographic(10.0f, 10.0f);
 	//frustum.SetHorizontalFovAndAspectRatio(90.0f, frustum.AspectRatio());
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
 }
 
-void C_Camera::UpdateFrustum()
+void C_Camera::UpdateFrustumTransform()
 {
 	float4x4 world_transform	= this->GetOwner()->GetTransformComponent()->GetWorldTransform();
 	float3x4 world_matrix		= float3x4::identity;
@@ -129,6 +128,16 @@ void C_Camera::UpdateFrustum()
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
+}
+
+float3x4 C_Camera::GetViewMatrix()
+{
+	return frustum.ComputeViewMatrix();
+}
+
+float4x4 C_Camera::GetProjectionMatrix()
+{
+	return frustum.ComputeProjectionMatrix();
 }
 
 void C_Camera::UpdateFrustumPlanes()
@@ -149,24 +158,6 @@ Plane* C_Camera::GetFrustumPlanes() const
 float3* C_Camera::GetFrustumVertices() const
 {
 	return frustum_vertices;
-}
-
-float C_Camera::ComputeAspectRatio(const uint& horizontal_fov, const uint& vertical_fov)
-{
-	float width		= Tan((float)horizontal_fov / 2);
-	float height	= Tan((float)vertical_fov / 2);
-	
-	return (width / height);
-}
-
-float3x4 C_Camera::GetViewMatrix()
-{
-	return frustum.ComputeViewMatrix();
-}
-
-float4x4 C_Camera::GetProjectionMatrix()
-{
-	return frustum.ComputeProjectionMatrix();
 }
 
 bool C_Camera::FrustumCointainsAABB(const AABB& aabb) const
@@ -235,51 +226,139 @@ bool C_Camera::FrustumIntersectsAABB(const AABB& aabb) const
 	return true;
 }
 
-/*bool C_Camera::FrustumIntersectsAABB(const AABB& aabb) const
+float C_Camera::GetAspectRatio() const
 {
-	float3 aabb_vertices[8];
-	aabb.GetCornerPoints(aabb_vertices);
+	return frustum.AspectRatio();
+}
+
+void C_Camera::SetAspectRatio(const float& aspect_ratio)
+{
+	frustum.SetHorizontalFovAndAspectRatio(frustum.HorizontalFov(), aspect_ratio);
 	
-	uint total_in = 0;
+	UpdateFrustumPlanes();
+	UpdateFrustumVertices();
+}
 
-	for (uint p = 0; p < 6; ++p)
+float C_Camera::GetNearPlaneDistance() const
+{
+	return frustum.NearPlaneDistance();
+}
+
+float C_Camera::GetFarPlaneDistance() const
+{
+	return frustum.FarPlaneDistance();
+}
+
+float C_Camera::GetHorizontalFOV() const
+{
+	return (frustum.HorizontalFov() * RADTODEG);
+}
+
+float C_Camera::GetVerticalFOV() const
+{
+	return (frustum.VerticalFov() * RADTODEG);
+}
+
+void C_Camera::SetNearPlaneDistance(const float& near_distance)
+{
+	if (near_distance < 0)
 	{
-		uint verts_in_plane		= 8;
-		bool all_verts_are_in	= true;
-
-		for (uint v = 0; v < 8; ++v)
-		{
-			if (frustum_planes[p].IsOnPositiveSide(aabb_vertices[v]))
-			{
-				all_verts_are_in = false;
-				--verts_in_plane;
-			}
-		}
-
-		if (verts_in_plane == 0)																			// If no verts are inside a plane, then the aabb is completely out of the frustum.
-		{
-			return CULLING_STATE::OUT;																		// RETURN OUT;
-		}
-
-		total_in += (all_verts_are_in) ? 1 : 0;																// If all verts are inside the plane, then the plane will be validated.
+		LOG("[ERROR] Component Camera: Cannot set the new distance of the near plane! Error: New near distance < 0.");
+		return;
 	}
 
-	if (total_in == NUM_FRUSTUM_PLANES)
+	if (near_distance > frustum.FarPlaneDistance())
 	{
-		return CULLING_STATE::IN;																			// RETURN IN;
+		LOG("[ERROR] Component Camera: Cannot set the new distance of the near plane! Error: New near distance > far distance.");
+		return;
 	}
 
-	return CULLING_STATE::INTERSECTED;																		// RETURN INTERSECT;
-}*/
+	frustum.SetViewPlaneDistances(near_distance, frustum.FarPlaneDistance());
+
+	UpdateFrustumPlanes();
+	UpdateFrustumVertices();
+}
+
+void C_Camera::SetFarPlaneDistance(const float& far_distance)
+{
+	if (far_distance < 0)
+	{
+		LOG("[ERROR] Component Camera: Cannot set the new distance of the far plane! Error: New far distance < 0.");
+		return;
+	}
+
+	if (far_distance < frustum.NearPlaneDistance())
+	{
+		LOG("[ERROR] Component Camera: Cannot set the new distance of the far plane! Error: New far distance < near distance");
+		return;
+	}
+
+	frustum.SetViewPlaneDistances(frustum.NearPlaneDistance(), far_distance);
+
+	UpdateFrustumPlanes();
+	UpdateFrustumVertices();
+}
+
+void C_Camera::SetHorizontalFOV(const float& horizontal_fov)
+{
+	/*if (horizontal_fov < min_fov)
+	{
+		LOG("[ERROR] Camera Component: Could not set the Horizontal FOV! Error: New Horizontal FOV < min_fov");
+		return;
+	}
+
+	if (horizontal_fov > max_fov)
+	{
+		LOG("[ERROR] Camera Component: Could not set the Horizontal FOV! Error: New Horizontal FOV > max_fov");
+		return;
+	}*/
+	
+	frustum.SetHorizontalFovAndAspectRatio((horizontal_fov * DEGTORAD), frustum.AspectRatio());
+
+	UpdateFrustumPlanes();
+	UpdateFrustumVertices();
+}
+
+void C_Camera::SetVerticalFOV(const float& vertical_fov)
+{
+	/*if (vertical_fov < min_fov)
+	{
+		LOG("[ERROR] Camera Component: Could not set the Vertical FOV! Error: New Vertical FOV < min_fov");
+		return;
+	}
+
+	if (vertical_fov > max_fov)
+	{
+		LOG("[ERROR] Camera Component: Could not set the Vertical FOV! Error: New Vertical FOV > max_fov");
+		return;
+	}*/
+
+	frustum.SetVerticalFovAndAspectRatio((vertical_fov * DEGTORAD), frustum.AspectRatio());
+
+	UpdateFrustumPlanes();
+	UpdateFrustumVertices();
+}
+
+void C_Camera::GetMinMaxFOV(uint& min_fov, uint& max_fov) const
+{
+	min_fov = this->min_fov;
+	max_fov = this->max_fov;
+}
+
+void C_Camera::SetMinMaxFOV(const uint& min_fov, const uint& max_fov)
+{
+	this->min_fov = min_fov;
+	this->max_fov = max_fov;
+}
 
 bool C_Camera::IsCulling() const
 {
-	return culling;
+	return is_culling;
 }
 
 bool C_Camera::OrthogonalView() const
 {
-	return orthogonal_view;
+	return in_orthogonal_view;
 }
 
 bool C_Camera::FrustumIsHidden() const
@@ -289,14 +368,14 @@ bool C_Camera::FrustumIsHidden() const
 
 void C_Camera::SetIsCulling(const bool& set_to)
 {
-	culling = set_to;
+	is_culling = set_to;
 }
 
 void C_Camera::SetOrthogonalView(const bool& set_to)
 {
-	orthogonal_view = set_to;
+	in_orthogonal_view = set_to;
 
-	if (orthogonal_view)
+	if (in_orthogonal_view)
 	{
 		// SET TO ORTHOGONAL
 		// --- Near plane size = Far plane size

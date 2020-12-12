@@ -30,10 +30,10 @@ private:
 	void DrawLightComponent			(C_Light* c_light);
 	void DrawCameraComponent		(C_Camera* c_camera);
 
-	// ------- DRAW COMPONENT METHODS -------
 	void AddComponentCombo			(GameObject* selected_game_object);					// 
 	void DeleteComponentPopup		(GameObject* selected_game_object);					// 
 
+	// ------- DRAW COMPONENT METHODS -------
 	void DisplayTextureData			(C_Material* c_material);							// Will display the texture's width, height, depth...
 	void TextureDisplay				(C_Material* c_material);							// Will display the texture as an image through Dear ImGui.
 
