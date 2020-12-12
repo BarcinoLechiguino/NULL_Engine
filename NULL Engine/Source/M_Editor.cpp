@@ -6,6 +6,7 @@
 #include "Application.h"															// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
 #include "M_Renderer3D.h"
+#include "M_Camera3D.h"
 #include "M_Input.h"
 #include "M_Scene.h"
 #include "M_FileSystem.h"
@@ -448,6 +449,16 @@ void M_Editor::DeleteSelectedGameObject()
 void M_Editor::CreateGameObject(const char* name, GameObject* parent)
 {
 	App->scene->CreateGameObject(name, parent);
+}
+
+void M_Editor::SetCurrentCameraThroughEditor(GameObject* game_object)
+{
+	App->camera->SetCurrentCamera(game_object);
+}
+
+void M_Editor::SetMasterCameraThroughEditor()
+{
+	App->camera->SetCurrentCamera(App->scene->GetMasterCamera());
 }
 
 bool M_Editor::SelectedIsSceneRoot() const

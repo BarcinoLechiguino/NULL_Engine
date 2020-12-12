@@ -448,27 +448,38 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Frustum Settings:");
 
 			float near_plane_distance = c_camera->GetNearPlaneDistance();
-			if (ImGui::SliderFloat("Near Plane", &near_plane_distance, 0.1f, 1000.0f, "%.3f", 0))
+			if (ImGui::SliderFloat("Near Plane", &near_plane_distance, 0.1f, 300.0f, "%.3f", 0))
 			{
 				c_camera->SetNearPlaneDistance(near_plane_distance);
 			}
 
 			float far_plane_distance = c_camera->GetFarPlaneDistance();
-			if (ImGui::SliderFloat("Far Plane", &far_plane_distance, 0.1f, 1000.0f, "%.3f", 0))
+			if (ImGui::SliderFloat("Far Plane", &far_plane_distance, 0.1f, 300.0f, "%.3f", 0))
 			{
 				c_camera->SetFarPlaneDistance(far_plane_distance);
 			}
 			
-			int horizontal_fov = (int)c_camera->GetHorizontalFOV();
-			if (ImGui::SliderInt("Horizontal FOV", &horizontal_fov, 1, 200, "%d"))
+			int fov			= (int)c_camera->GetVerticalFOV();
+			uint min_fov	= 0;
+			uint max_fov	= 0;
+			c_camera->GetMinMaxFOV(min_fov, max_fov);
+			if (ImGui::SliderInt("FOV", &fov, min_fov, max_fov, "%d"))
 			{
-				c_camera->SetHorizontalFOV((float)horizontal_fov);
+				c_camera->SetVerticalFOV((float)fov);
+			}
+			
+			ImGui::Separator();
+
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Camera Selection:");
+
+			if (ImGui::Button("Set as Current Camera"))
+			{
+				App->editor->SetCurrentCameraThroughEditor(c_camera->GetOwner());
 			}
 
-			int vertical_fov = (int)c_camera->GetVerticalFOV();
-			if (ImGui::SliderInt("Vertical FOV", &vertical_fov, 1, 200, "%d"))
+			if (ImGui::Button("Return to Master Camera"))
 			{
-				c_camera->SetVerticalFOV((float)vertical_fov);
+				App->editor->SetMasterCameraThroughEditor();
 			}
 		}
 

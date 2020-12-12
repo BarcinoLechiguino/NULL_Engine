@@ -81,6 +81,7 @@ public:
 	bool			InitOpenGL					();
 	bool			InitGlew					();
 	void			OnResize					();
+	void			RecalculateProjectionMatrix	();
 
 	void			InitFramebuffers			();
 	void			LoadDebugTexture			();
@@ -107,9 +108,6 @@ public:																											// --- RENDER GEOMETRY
 	void			CreatePrimitiveExamples		();
 
 public:																											// --- GET/SET METHODS
-	//float4x4		GetProjectionMatrix() const;
-	//float3x3		GetNormalMatrix() const;
-
 	mat4x4			GetProjectionMatrix			() const;
 	mat3x3			GetNormalMatrix				() const;
 	

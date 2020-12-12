@@ -4,6 +4,7 @@
 #include "E_Scene.h"
 
 #include "GameObject.h"
+#include "C_Camera.h"
 
 #include "C_Transform.h"
 
@@ -119,7 +120,7 @@ void C_Transform::UpdateLocalTransform()
 
 void C_Transform::UpdateWorldTransform()
 {
-	const GameObject* owner = GetOwner();
+	GameObject* owner = GetOwner();
 
 	if (owner->parent != nullptr)
 	{
@@ -133,6 +134,11 @@ void C_Transform::UpdateWorldTransform()
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
 		owner->childs[i]->GetTransformComponent()->update_world_transform = true;
+	}
+
+	if (owner->GetCameraComponent() != nullptr)
+	{
+		owner->GetCameraComponent()->SetUpdateFrustumTransform(true);
 	}
 
 	update_world_transform = false;

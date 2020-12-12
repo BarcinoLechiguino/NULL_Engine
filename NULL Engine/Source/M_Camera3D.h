@@ -1,10 +1,14 @@
 #ifndef __CAMERA_3D_H__
 #define __CAMERA_3D_H__
 
+#include "MathGeoLib/include/Geometry/LineSegment.h";
 #include "Module.h"
+
 #include "glmath.h"
 
 class ParsonNode;
+class GameObject;
+class C_Camera;
 
 class M_Camera3D : public Module
 {
@@ -21,6 +25,11 @@ public:
 	bool			SaveConfiguration	(ParsonNode& root) const override;
 
 public:
+	GameObject*		GetCurrentCamera			() const;
+	C_Camera*		GetCurrentCameraAsComponent	() const;
+	void			SetCurrentCamera			(GameObject* camera);
+	void			SetCurrentCamera			(C_Camera* c_camera);
+	
 	void			PointAt					(const vec3 &position, const vec3 &reference, bool RotateAroundReference = false);
 	void			LookAt					(const vec3 &Spot);
 	void			Focus					(const vec3& target_position);
@@ -57,6 +66,10 @@ private:
 	void			Zoom					();								// Will translate the camera along the Z (Forward) axis. The camera will move forwards and backwards. 
 
 public:
+	GameObject*		current_camera;
+	//C_Camera*		current_camera;
+	LineSegment		ray;
+
 	vec3 X;																	// Right vector of the Camera. Will always remain axis aligned in this implementation.
 	vec3 Y;																	// Up vector of the Camera.
 	vec3 Z;																	// Forward Vector of the Camera. Represents where the camera is pointing to.

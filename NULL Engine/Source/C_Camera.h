@@ -26,8 +26,13 @@ public:																										// --- FRUSTUM METHODS
 	void		InitFrustum					();
 	void		UpdateFrustumTransform		();
 
-	float3x4	GetViewMatrix				();
-	float4x4	GetProjectionMatrix			();
+	void		SetUpdateFrustumTransform	(const bool& set_to);
+	void		SetUpdateProjectionMatrix	(const bool& set_to);
+	bool		GetUpdateFrustumTransform	() const;
+	bool		GetUpdateProjectionMatrix	() const;
+
+	float*		GetOGLViewMatrix			();
+	float*		GetOGLProjectionMatrix		();
 
 public:																										// --- FRUSTUM CULLING
 	void		UpdateFrustumPlanes			();
@@ -39,33 +44,33 @@ public:																										// --- FRUSTUM CULLING
 	bool		FrustumIntersectsAABB		(const AABB& aabb) const;										// Returns true if the Frustum contains at least one vertex of the AABB.
 
 public:																										// --- GET/SET FRUSTUM SETTINGS
-	float		GetAspectRatio			() const;
-	void		SetAspectRatio			(const float& aspect_ratio);
+	float		GetAspectRatio				() const;
+	void		SetAspectRatio				(const float& aspect_ratio);
 
-	float		GetNearPlaneDistance	() const;
-	float		GetFarPlaneDistance		() const;
-	float		GetHorizontalFOV		() const;
-	float		GetVerticalFOV			() const;
+	float		GetNearPlaneDistance		() const;
+	float		GetFarPlaneDistance			() const;
+	float		GetHorizontalFOV			() const;
+	float		GetVerticalFOV				() const;
 
-	void		SetNearPlaneDistance	(const float& near_distance);
-	void		SetFarPlaneDistance		(const float& far_distance);
-	void		SetHorizontalFOV		(const float& horizontal_fov);										// Chosen FOV adaptation: VFOV locked , HFOV adapted to aspect_ratio.
-	void		SetVerticalFOV			(const float& vertical_fov);
+	void		SetNearPlaneDistance		(const float& near_distance);
+	void		SetFarPlaneDistance			(const float& far_distance);
+	void		SetHorizontalFOV			(const float& horizontal_fov);									// Chosen FOV adaptation: VFOV locked , HFOV adapted to aspect_ratio.
+	void		SetVerticalFOV				(const float& vertical_fov);
 
-	void		GetMinMaxFOV			(uint& min_fov, uint& max_fov) const;
-	void		SetMinMaxFOV			(const uint& min_fov, const uint& max_fov);
+	void		GetMinMaxFOV				(uint& min_fov, uint& max_fov) const;
+	void		SetMinMaxFOV				(const uint& min_fov, const uint& max_fov);
 
 public:																										// --- CAMERA FLAGS	
-	bool		IsCulling				() const;
-	bool		OrthogonalView			() const;
-	bool		FrustumIsHidden			() const;
+	bool		IsCulling					() const;
+	bool		OrthogonalView				() const;
+	bool		FrustumIsHidden				() const;
 
-	void		SetIsCulling			(const bool& set_to);
-	void		SetOrthogonalView		(const bool& set_to);
-	void		SetFrustumIsHidden		(const bool& set_to);
+	void		SetIsCulling				(const bool& set_to);
+	void		SetOrthogonalView			(const bool& set_to);
+	void		SetFrustumIsHidden			(const bool& set_to);
 
-	bool		IsSceneCamera			() const;
-	void		SetIsSceneCamera		(const bool& set_to);
+	bool		IsSceneCamera				() const;
+	void		SetIsSceneCamera			(const bool& set_to);
 
 private:
 	Frustum frustum;																						// --- FRUSTUM CULLING

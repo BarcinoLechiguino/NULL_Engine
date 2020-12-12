@@ -17,8 +17,10 @@
 
 #include "I_Textures.h"																			// Importers
 
-#include "C_Mesh.h"																				// GameObject and Components Trading these two deps. for a much cleaner RenderMesh() method.
-#include "C_Material.h"																			// -------------------------
+#include "GameObject.h"																			// GameObject and Components Trading these two deps. for a much cleaner RenderMesh() method.
+#include "C_Mesh.h"																				// 
+#include "C_Material.h"																			// 
+#include "C_Camera.h"																			// -------------------------
 
 #include "M_Renderer3D.h"																		// Header of this .cpp file.
 
@@ -82,6 +84,16 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
+
+	/*C_Camera* current_camera = App->camera->GetCurrentCamera();
+
+	if (current_camera->GetUpdateProjectionMatrix())
+	{
+		RecalculateProjectionMatrix();
+		current_camera->SetUpdateProjectionMatrix(false);
+	}
+
+	glLoadMatrixf((GLfloat*)current_camera->GetViewMatrix().Transposed());*/
 
 	glLoadMatrixf(App->camera->GetRawViewMatrix());
 
@@ -281,21 +293,36 @@ bool M_Renderer3D::InitGlew()
 
 void M_Renderer3D::OnResize()
 {	
-	uint win_width	= App->window->GetWidth();
-	uint win_height = App->window->GetHeight();
-	
+	uint win_width				= App->window->GetWidth();
+	uint win_height				= App->window->GetHeight();
+
 	glViewport(0, 0, win_width, win_width);
 
+	if (App->camera->GetCurrentCameraAsComponent() != nullptr)
+	{
+		App->camera->GetCurrentCameraAsComponent()->SetAspectRatio(win_width / win_height);
+	}
+
+	RecalculateProjectionMatrix();
+
+	InitFramebuffers();
+}
+
+void M_Renderer3D::RecalculateProjectionMatrix()
+{
+	uint win_width = App->window->GetWidth();
+	uint win_height = App->window->GetHeight();
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+
+	//glLoadMatrixf((GLfloat*)App->camera->GetCurrentCameraAsComponent()->GetOGLProjectionMatrix());
+
 	projection_matrix = perspective(60.0f, (float)win_width / (float)win_height, 0.125f, 512.0f);
-	//projection_matrix = float4x4::OpenGLPerspProjRH(60.0f, (float)width / (float)height, 0.125f, 512.0f); /*perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);*/
 	glLoadMatrixf((GLfloat*)&projection_matrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	InitFramebuffers();
 }
 
 void M_Renderer3D::InitFramebuffers()
@@ -697,16 +724,6 @@ void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
 }
-
-//float4x4 M_Renderer3D::GetProjectionMatrix() const
-//{
-//	return projection_matrix;
-//}
-//
-//float3x3 M_Renderer3D::GetNormalMatrix() const
-//{
-//	return normal_matrix;
-//}
 
 mat4x4 M_Renderer3D::GetProjectionMatrix() const
 {

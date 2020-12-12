@@ -11,7 +11,7 @@
 #define NUM_FRUSTUM_PLANES		6																			// A Frustum will ALWAYS be composed by 6 Planes.
 #define NUM_FRUSTUM_VERTICES	8																			// As frustums are CUBOIDS, they will ALWAYS be composed by 8 Vertices.
 
-#define MIN_FOV 60
+#define MIN_FOV 1
 #define MAX_FOV 120
 
 C_Camera::C_Camera(GameObject* owner) : Component(owner, COMPONENT_TYPE::CAMERA),
@@ -19,8 +19,8 @@ frustum_planes		(nullptr),
 frustum_vertices	(nullptr),
 min_fov				(MIN_FOV),
 max_fov				(MAX_FOV),
-is_culling				(false),
-in_orthogonal_view		(false),
+is_culling			(false),
+in_orthogonal_view	(false),
 hide_frustum		(false),
 is_scene_camera		(false)
 {
@@ -43,11 +43,6 @@ bool C_Camera::Update()
 	if (update_frustum_transform)
 	{
 		UpdateFrustumTransform();
-	}
-
-	if (update_projection_matrix)
-	{
-		GetViewMatrix();
 	}
 
 	return ret;
@@ -87,8 +82,8 @@ bool C_Camera::LoadState(ParsonNode& root)
 	min_fov				= root.GetNumber("MinFOV");
 	max_fov				= root.GetNumber("MaxFOV");
 
-	is_culling				= root.GetBool("Culling");
-	in_orthogonal_view		= root.GetBool("OrthogonalView");
+	is_culling			= root.GetBool("Culling");
+	in_orthogonal_view	= root.GetBool("OrthogonalView");
 	hide_frustum		= root.GetBool("HideFrustum");
 
 	is_scene_camera		= root.GetBool("IsSceneCamera");
@@ -128,16 +123,48 @@ void C_Camera::UpdateFrustumTransform()
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
+
+	update_frustum_transform = false;
 }
 
-float3x4 C_Camera::GetViewMatrix()
+void C_Camera::SetUpdateFrustumTransform(const bool& set_to)
 {
-	return frustum.ComputeViewMatrix();
+	update_frustum_transform = set_to;
 }
 
-float4x4 C_Camera::GetProjectionMatrix()
+void C_Camera::SetUpdateProjectionMatrix(const bool& set_to)
 {
-	return frustum.ComputeProjectionMatrix();
+	update_projection_matrix = set_to;
+}
+
+bool C_Camera::GetUpdateFrustumTransform() const
+{
+	return update_frustum_transform;
+}
+
+bool C_Camera::GetUpdateProjectionMatrix() const
+{
+	return update_projection_matrix;
+}
+
+float* C_Camera::GetOGLViewMatrix()
+{
+	static float4x4 view_matrix;
+
+	view_matrix = frustum.ViewMatrix();
+	view_matrix.Transpose();
+
+	return (float*)view_matrix.v;
+}
+
+float* C_Camera::GetOGLProjectionMatrix()
+{
+	static float4x4 projection_matrix;
+
+	projection_matrix = frustum.ProjectionMatrix()/*.Transposed()*/;
+	projection_matrix.Transpose();
+	
+	return (float*)projection_matrix.v;
 }
 
 void C_Camera::UpdateFrustumPlanes()
@@ -337,6 +364,8 @@ void C_Camera::SetVerticalFOV(const float& vertical_fov)
 
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
+
+	update_projection_matrix = true;
 }
 
 void C_Camera::GetMinMaxFOV(uint& min_fov, uint& max_fov) const

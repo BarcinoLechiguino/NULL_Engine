@@ -3,13 +3,17 @@
 #include "M_Input.h"
 #include "M_Editor.h"
 
+#include "GameObject.h"
+#include "C_Transform.h"
+#include "C_Camera.h"
+
 #include "M_Camera3D.h"
 
 #define MOVEMENT_SPEED 12.0f
 #define ROTATION_SPEED 12.0f
 #define ZOOM_SPEED 24.0f
 
-M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active)
+M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active), current_camera(nullptr)
 {
 	CalculateViewMatrix();
 
@@ -129,6 +133,55 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 }
 
 // -----------------------------------------------------------------
+GameObject* M_Camera3D::GetCurrentCamera() const
+{	
+	return current_camera;
+}
+
+C_Camera* M_Camera3D::GetCurrentCameraAsComponent() const
+{	
+	if (current_camera != nullptr)
+	{
+		return current_camera->GetCameraComponent();
+	}
+
+	return nullptr;
+}
+
+void M_Camera3D::SetCurrentCamera(GameObject* camera)
+{
+	if (camera == nullptr)
+	{
+		LOG("[ERROR] Camera: Could not set a new current camera! Error: Given Camera GameObject was nullptr.");
+		return;
+	}
+
+	if (camera->GetCameraComponent() == nullptr)
+	{
+		LOG("[ERROR] Camera: Could not set a new current camera! Error: Given Camera GameObject did not have a Camera Component.");
+		return;
+	}
+	
+	current_camera = camera;
+}
+
+void M_Camera3D::SetCurrentCamera(C_Camera* c_camera)
+{
+	if (c_camera == nullptr)
+	{
+		LOG("[ERROR] Camera: Could not set a new current camera! Error: Given Camera Component was nullptr.");
+		return;
+	}
+
+	if (c_camera->GetOwner() == nullptr)																						// Highly unlikely case. Gets checked just to make sure.
+	{
+		LOG("[ERROR] Camera: Could not set a new current camera! Error: Given Camera Component's owner was nullptr.");
+		return;
+	}
+
+	current_camera = c_camera->GetOwner();
+}
+
 void M_Camera3D::PointAt(const vec3 &position, const vec3 &reference, bool RotateAroundReference)
 {
 	this->position = position;												// Updates the position to the given one.

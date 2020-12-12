@@ -39,6 +39,10 @@ public:																														// --- MASTER ROOT & SCENE ROOT METHODS ---
 	void			DeleteMasterRoot						();																// 
 	GameObject*		GetMasterRoot							() const;														// 
 
+	void			CreateMasterCamera						();
+	void			DeleteMasterCamera						();
+	GameObject*		GetMasterCamera							() const;
+
 	void			CreateSceneRoot							(const char* scene_name);										//
 	GameObject*		GetSceneRoot							() const;														//
 	void			SetSceneRoot							(GameObject* game_object);										//
@@ -61,8 +65,9 @@ private:
 	std::vector<GameObject*>	game_objects;																				// 
 
 	GameObject*					master_root;																				// Root of everything. Parent of all scenes.
+	GameObject*					master_camera;																				// Main camera of the engine.
 	GameObject*					scene_root;																					// Root of the current scene.
-	GameObject*					scene_camera;
+	GameObject*					scene_camera;																				// Camera that is currently used in the scene. (Game Camera)
 	GameObject*					selected_game_object;																		// Represents the game object that's currently being selected.
 
 	std::vector<Primitive*>		primitives;
