@@ -2,6 +2,7 @@
 #define __M_EDITOR_H__
 
 #include "ImGui/include/imgui.h"
+#include "MathGeoLib/include/Math/float2.h"
 #include "Module.h"
 
 class ParsonNode;
@@ -89,8 +90,11 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	void			DeleteSelectedGameObject			();										// Hierarchy & Inspector: Will call the Module Scene's delete selected GameObject method.
 	bool			SelectedIsSceneRoot					() const;								// Hierarchy & Inspector: Will check whether or not the selected GameObject is the scene root.
 	void			CreateGameObject					(const char* name, GameObject* parent);	// Hierarchy & Inspector: Will call the Module Scene's create GameObject method.
-	void			SetCurrentCameraThroughEditor		(C_Camera* game_object);
-	void			SetMasterCameraThroughEditor		();
+	void			SetCurrentCameraThroughEditor		(C_Camera* game_object);				// Hierarchy & Inspector: 
+	void			SetMasterCameraThroughEditor		();										// Hierarchy & Inspector: 
+
+	float2			GetSceneTextureSizeThroughEditor	() const;
+	float2			GetScreenMouseMotionThroughEditor	() const;
 
 	void			LoadFileThroughEditor				(const char* path);						// Load File: Will send the given path to the Importer.
 

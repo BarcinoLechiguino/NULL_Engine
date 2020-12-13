@@ -108,9 +108,6 @@ public:																											// --- RENDER GEOMETRY
 	void			CreatePrimitiveExamples		();
 
 public:																											// --- GET/SET METHODS
-	mat4x4			GetProjectionMatrix			() const;
-	mat3x3			GetNormalMatrix				() const;
-	
 	uint			GetDebugTextureID			() const;
 	uint			GetSceneFramebuffer			() const;
 	uint			GetSceneRenderTexture		() const;
@@ -145,14 +142,8 @@ public:
 	std::vector<Primitive*>	primitives;
 
 private:
-	//float4x4				projection_matrix;																	//  
-	//float3x3				normal_matrix;																		// 
-
 	std::vector<MeshRenderer>	mesh_renderers;
 	std::vector<CuboidRenderer> cuboid_renderers;
-	
-	mat4x4					projection_matrix;																	// 
-	mat3x3					normal_matrix;																		// 
 
 	uint					scene_framebuffer;
 	uint					depth_buffer;

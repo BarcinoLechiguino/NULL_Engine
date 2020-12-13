@@ -2,6 +2,7 @@
 #include "M_Window.h"
 #include "M_Input.h"
 #include "M_Editor.h"
+#include "M_Scene.h"
 
 #include "GameObject.h"
 #include "C_Transform.h"
@@ -10,7 +11,7 @@
 #include "M_Camera3D.h"
 
 #define MOVEMENT_SPEED 12.0f
-#define ROTATION_SPEED 12.0f
+#define ROTATION_SPEED 0.05f
 #define ZOOM_SPEED 24.0f
 
 M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active),
@@ -18,19 +19,10 @@ master_camera(nullptr),
 current_camera(nullptr)
 {
 	CreateMasterCamera();
-	
-	CalculateViewMatrix();
 
-	X					= vec3(1.0f, 0.0f, 0.0f);									//
-	Y					= vec3(0.0f, 1.0f, 0.0f);									//
-	Z					= vec3(0.0f, 0.0f, 1.0f);									//
-
-	position_origin		= vec3(60.0f, 40.0f, 60.0f);								//
-	reference_origin	= vec3(0.0f, 0.0f, 0.0f);									//
-	position			= position_origin;											// 
+	position_origin		= float3(60.0f, 40.0f, 60.0f);								//
+	reference_origin	= float3(0.0f, 0.0f, 0.0f);									//
 	reference			= reference_origin;											// 
-
-	ref = float3::zero;
 
 	movement_speed		= MOVEMENT_SPEED;
 	rotation_speed		= ROTATION_SPEED;
@@ -53,7 +45,7 @@ bool M_Camera3D::Init(ParsonNode& root)
 	//Position.z = root.GetNumber("Z");
 	
 	master_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
-	LookAt(ref);
+	LookAt(reference);
 	//current_camera->UpdateFrustumTransform();
 
 	return true;
@@ -117,6 +109,18 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 		{
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_REPEAT)
 			{
+				if (App->scene->GetSelectedGameObject() != nullptr)
+				{
+					if (App->scene->GetSelectedGameObject()->GetCameraComponent() != current_camera)
+					{
+						reference = App->scene->GetSelectedGameObject()->GetTransformComponent()->GetWorldPosition();
+					}
+				}
+				else
+				{
+					reference = float3::zero;
+				}
+				
 				RotateAroundReference();
 			}
 		}
@@ -141,7 +145,8 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 
 		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_STATE::KEY_DOWN)
 		{
-			Focus(reference);
+			float3 target = App->scene->GetSelectedGameObject()->GetTransformComponent()->GetWorldPosition();
+			Focus(target);
 		}
 	}
 
@@ -154,11 +159,15 @@ void M_Camera3D::CreateMasterCamera()
 	master_camera = new GameObject();
 	master_camera->SetName("MasterCamera");
 	master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+	master_camera->GetCameraComponent()->SetFarPlaneDistance(1000.0f);
 	SetCurrentCamera(master_camera->GetCameraComponent());
 	
 	if (App != nullptr)
 	{
-		master_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
+		float win_width		= (float)App->window->GetWidth();
+		float win_height	= (float)App->window->GetHeight();
+		
+		master_camera->GetCameraComponent()->SetAspectRatio(win_width/ win_height);
 	}
 }
 
@@ -188,11 +197,19 @@ void M_Camera3D::SetCurrentCamera(C_Camera* c_camera)
 	
 	c_camera->SetFrustumIsHidden(true);
 	current_camera = c_camera;
+	current_camera->SetUpdateProjectionMatrix(true);
+	
+	if (App != nullptr)																										// TMP (?)
+	{
+		current_camera->SetAspectRatio(((float)App->window->GetWidth()) / ((float)App->window->GetHeight()));
+	}
 }
 
 void M_Camera3D::SetMasterCameraAsCurrentCamera()
 {
-	if (master_camera != nullptr)
+	current_camera->SetFrustumIsHidden(false);
+	
+	if (master_camera == nullptr)
 	{
 		LOG("[ERROR] Camera: Could not set the master camera as the current camera! Error: Master Camera was nullptr.");
 		LOG("[WARNING] Camera: Created a new Master Camera. Reason: Master Camera was nullptr!");
@@ -209,44 +226,43 @@ void M_Camera3D::SetMasterCameraAsCurrentCamera()
 	}
 
 	current_camera = master_camera->GetCameraComponent();
+	current_camera->SetUpdateProjectionMatrix(true);
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::PointAt(const vec3 &position, const vec3 &reference, bool RotateAroundReference)
+void M_Camera3D::PointAt(const float3& position, const float3& target, bool RotateAroundReference)
 {
-	this->position = position;												// Updates the position to the given one.
-	this->reference = reference;											// Updates the reference to the given one.
-
-	Z = normalize(position - reference);									// Forward vector. Where the camera is looking.
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));						// The Right vector is reconstructed as Normal/Orthographic to Z. Cross product returns a vector perp to two others.
-	Y = cross(Z, X);														// The Up vector is reconstructed as the cross product of Z and X. This means that Y is perpendicular to both.
+	current_camera->PointAt(position, target);										
+	reference = target;
 
 	if(!RotateAroundReference)
 	{
-		this->reference = this->position;
-		this->position += Z * 0.05f;
+		reference = position;
+
+		Frustum frustum = current_camera->GetFrustum();
+		current_camera->SetPosition(frustum.Pos() + frustum.Front() * 0.05f);
 	}
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::LookAt(const float3& spot)									// Almost identical to PointAt except only the reference and XYZ are updated. DOES NOT TRANSLATE.
+void M_Camera3D::LookAt(const float3& spot)											// Almost identical to PointAt except only the reference and XYZ are updated. DOES NOT TRANSLATE.
 {
-	ref = spot;
-
 	current_camera->LookAt(spot);
+	reference = spot;
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::Focus(const vec3& target_position, const float& distance_from_target)
+void M_Camera3D::Focus(const float3& target, const float& distance_from_target)
 {
-
+	current_camera->Focus(target, distance_from_target);
+	reference = target;
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::Move(const vec3 &Movement)
+void M_Camera3D::Move(const float3& velocity)
 {
-	position += Movement;
-	reference += Movement;
+	current_camera->Move(velocity);
+	reference += velocity;
 }
 
 // -----------------------------------------------------------------
@@ -297,13 +313,39 @@ void M_Camera3D::WASDMovement()
 		new_position -= frustum.Up() * mov_speed;														// 
 	}																									// ------------------------------------
 
-	current_camera->Move(new_position);
+	Move(new_position);
 }
 
 void M_Camera3D::FreeLookAround()
 {
+	/*Frustum frustum = current_camera->GetFrustum();
+	float2 mouse_motion = App->editor->GetScreenMouseMotionThroughEditor();
+	float sensitivity = rotation_speed * App->GetDt();
+
+	float3 X = float3::zero;
+	float3 Y = float3::zero;
+	float3 Z = float3::zero;
+	
+	float3 new_Z = frustum.Pos() - reference;
+
+	if (mouse_motion.x != 0.0f)
+	{
+		X = Quat(frustum.Up(), -mouse_motion.x * sensitivity).ToEulerXYZ();
+	}
+
+	if (mouse_motion.y != 0.0f)
+	{
+		Y = Quat(frustum.WorldRight(), -mouse_motion.y * sensitivity).ToEulerXYZ();
+	}
+
+	Z = X.Cross(Y);
+
+	float3x3 rotation_matrix = float3x3(X, Y, Z);
+
+	current_camera->Rotate(rotation_matrix);*/
+	
 	// Free Look
-	int dx = -App->input->GetMouseXMotion();							// Motion value registered by the mouse in the X axis. Negated so the camera behaves like it should.
+	/*int dx = -App->input->GetMouseXMotion();							// Motion value registered by the mouse in the X axis. Negated so the camera behaves like it should.
 	int dy = -App->input->GetMouseYMotion();							// Motion value registered by the mouse in the Y axis. Negated so the camera behaves like it should.
 
 	float sensitivity = rotation_speed * App->GetDt();					// Factor that will be applied to dx before constructing the angle with which to rotate the vectors.
@@ -312,8 +354,6 @@ void M_Camera3D::FreeLookAround()
 	{
 		float delta_X = (float)dx * sensitivity;						// The value of the angle that we will rotate the camera by is very, very small, as it will be applied each frame.
 
-		
-		
 		X = rotate(X, delta_X, vec3(0.0f, 1.0f, 0.0f));					// All vectors of the camera (X = Right, Y = Up, Z = Forward), will be rotated by the value of the angle (delta_X)
 		Y = rotate(Y, delta_X, vec3(0.0f, 1.0f, 0.0f));					// The axis of rotation will be Y (yaw), not to confuse with the Y vector, which belongs to the camera.
 		Z = rotate(Z, delta_X, vec3(0.0f, 1.0f, 0.0f));					// Keep in mind that X(Right) will always remain axis aligned.
@@ -331,67 +371,56 @@ void M_Camera3D::FreeLookAround()
 			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);			// The y component of Z(Forward) will be recalculated.
 			Y = cross(Z, X);											// A new Y(Up) vector orthogonal to both Z(Forward) and X(Right) (cross product) will be calculated.
 		}
-	}
+	}*/
 }
 
 void M_Camera3D::RotateAroundReference()								// Almost identical to FreeLookAround(), but instead of only modifying XYZ, the position of the camera is also modified.
-{
-	int dx = -App->input->GetMouseXMotion();
-	int dy = -App->input->GetMouseYMotion();
+{	
+	Frustum frustum			= current_camera->GetFrustum();
+	float2 mouse_motion		= App->editor->GetScreenMouseMotionThroughEditor();
+	float sensitivity		= rotation_speed * App->GetDt();
 
-	float sensitivity = rotation_speed * App->GetDt();
+	float3 new_Z = frustum.Pos() - reference;
 
-	position -= reference;												// One of the two differences with FreeLookAround().
-
-	if (dx != 0)
+	if (mouse_motion.x != 0.0f)
 	{
-		float delta_X = (float)dx * sensitivity;
-
-		X = rotate(X, delta_X, vec3(0.0f, 1.0f, 0.0f));
-		Y = rotate(Y, delta_X, vec3(0.0f, 1.0f, 0.0f));
-		Z = rotate(Z, delta_X, vec3(0.0f, 1.0f, 0.0f));
+		Quat new_X = Quat(frustum.Up(), -mouse_motion.x * sensitivity);
+		new_Z = new_X.Transform(new_Z);
 	}
-
-	if (dy != 0)
+	
+	if (mouse_motion.y != 0.0f)
 	{
-		float delta_Y = (float)dy * sensitivity;
-
-		Y = rotate(Y, delta_Y, X);
-		Z = rotate(Z, delta_Y, X);
-
-		if (Y.y < 0.0f)
-		{
-			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-			Y = cross(Z, X);
-		}
+		Quat new_Y = Quat(frustum.WorldRight(), -mouse_motion.y * sensitivity);
+		new_Z = new_Y.Transform(new_Z);
 	}
+	
+	float3 new_position = new_Z + reference;
 
-	position = reference + Z * length(position);						// While FreeLookAround() rotates the camera on its axis, this method also translates the camera.
-}																		// This makes the camera rotate around the reference as the distance will be maintained but pos will be affected by Z.
+	PointAt(new_position, reference, true);
+}
 
 void M_Camera3D::PanCamera()
 {
 	float3 new_X		= float3::zero;
 	float3 new_Y		= float3::zero;
 	float3 new_position = float3::zero;
+
 	Frustum frustum		= current_camera->GetFrustum();
+	float2 mouse_motion = App->editor->GetScreenMouseMotionThroughEditor();
 
-	float dx			= (float)App->input->GetMouseXMotion();
-	float dy			= (float)App->input->GetMouseYMotion();
-
-	if (dx != 0)
+	if (mouse_motion.x != 0)
 	{
-		new_X = -dx * frustum.WorldRight() * App->GetDt();
+		new_X = -mouse_motion.x * frustum.WorldRight() * App->GetDt();
 	}
 
-	if (dy != 0)
+	if (mouse_motion.y != 0)
 	{
-		new_Y = dy * frustum.Up() * App->GetDt();
+		new_Y = mouse_motion.y * frustum.Up() * App->GetDt();
 	}
 
 	new_position = new_X + new_Y;
 	
-	current_camera->Move(new_position);
+	Move(new_position);
 }
 
 void M_Camera3D::Zoom()
@@ -399,33 +428,7 @@ void M_Camera3D::Zoom()
 	Frustum frustum		= current_camera->GetFrustum();
 	float3 new_Z		= frustum.Front() * (float)App->input->GetMouseZ() * zoom_speed * App->GetDt();
 
-	current_camera->Move(new_Z);
-}
-
-// -----------------------------------------------------------------
-float* M_Camera3D::GetRawViewMatrix()
-{
-	CalculateViewMatrix();
-	return &ViewMatrix;
-}
-
-mat4x4 M_Camera3D::GetViewMatrix()
-{
-	CalculateViewMatrix();
-	return ViewMatrix;
-}
-
-// -----------------------------------------------------------------
-void M_Camera3D::CalculateViewMatrix()
-{
-	vec3 T = { -dot(X, position), -dot(Y, position), -dot(Z, position) };			// The camera's current transform is calculated.
-	
-	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, 
-						X.y, Y.y, Z.y, 0.0f, 
-						X.z, Y.z, Z.z, 0.0f, 
-						T.x, T.y, T.z, 1.0f);
-
-	ViewMatrixInverse = inverse(ViewMatrix);
+	Move(new_Z);
 }
 
 float3 M_Camera3D::GetPosition() const
@@ -433,29 +436,19 @@ float3 M_Camera3D::GetPosition() const
 	return current_camera->GetFrustum().Pos();
 }
 
-vec3 M_Camera3D::GetReference() const
+float3 M_Camera3D::GetReference() const
 {
 	return reference;
 }
 
-vec3 M_Camera3D::GetSpot() const
+void M_Camera3D::SetPosition(const float3& position)
 {
-	return vec3(0.0f, 0.0f, 0.0f);
+	current_camera->SetPosition(position);
 }
 
-void M_Camera3D::SetPosition(const vec3& position)
-{
-	this->position = position;
-}
-
-void M_Camera3D::SetReference(const vec3& reference)
+void M_Camera3D::SetReference(const float3& reference)
 {
 	this->reference = reference;
-}
-
-void M_Camera3D::SetSpot(const vec3& spot)
-{
-
 }
 
 float M_Camera3D::GetMovementSpeed() const

@@ -99,7 +99,17 @@ UPDATE_STATUS M_Renderer3D::PreUpdate(float dt)
 	glLoadMatrixf((GLfloat*)current_camera->GetOGLViewMatrix());
 
 	// light 0 on cam pos
-	lights[0].SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
+	float3 camera_pos = float3::zero;
+	if (App->camera->GetCurrentCamera() != nullptr)
+	{
+		camera_pos = App->camera->GetPosition();
+	}
+	else
+	{
+		camera_pos = float3(0.0f, 20.0f, 0.0f);
+	}
+
+	lights[0].SetPos(camera_pos.x, camera_pos.y, camera_pos.z);
 
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 	{
@@ -303,6 +313,10 @@ void M_Renderer3D::OnResize()
 	{
 		App->camera->GetCurrentCamera()->SetAspectRatio(win_width / win_height);
 	}
+	else
+	{
+		LOG("[ERROR] Renderer 3D: Could not recalculate the aspect ratio! Error: Current Camera was nullptr.");
+	}
 
 	RecalculateProjectionMatrix();
 
@@ -311,9 +325,6 @@ void M_Renderer3D::OnResize()
 
 void M_Renderer3D::RecalculateProjectionMatrix()
 {
-	uint win_width = App->window->GetWidth();
-	uint win_height = App->window->GetHeight();
-	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
@@ -323,8 +334,7 @@ void M_Renderer3D::RecalculateProjectionMatrix()
 	}
 	else
 	{
-		projection_matrix = perspective(60.0f, (float)win_width / (float)win_height, 0.125f, 512.0f);
-		glLoadMatrixf((GLfloat*)&projection_matrix);
+		LOG("[ERROR] Renderer 3D: Could not recalculate the projection matrix! Error: Current Camera was nullptr.");
 	}
 
 	glMatrixMode(GL_MODELVIEW);
@@ -447,6 +457,23 @@ void M_Renderer3D::RendererShortcuts()
 	if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_STATE::KEY_DOWN)
 	{
 		SetGLFlag(GL_COLOR_MATERIAL, !GetGLFlag(GL_COLOR_MATERIAL));
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_STATE::KEY_DOWN)
+	{
+		if (App->camera->GetCurrentCamera() != nullptr)
+		{
+			float current_fov = App->camera->GetCurrentCamera()->GetVerticalFOV();
+			App->camera->GetCurrentCamera()->SetVerticalFOV(current_fov + 5.0f);
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_KP_MINUS) == KEY_STATE::KEY_DOWN)
+	{
+		if (App->camera->GetCurrentCamera() != nullptr)
+		{
+			float current_fov = App->camera->GetCurrentCamera()->GetVerticalFOV();
+			App->camera->GetCurrentCamera()->SetVerticalFOV(current_fov - 5.0f);
+		}
 	}
 }
 

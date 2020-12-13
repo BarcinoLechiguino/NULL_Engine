@@ -461,6 +461,16 @@ void M_Editor::SetMasterCameraThroughEditor()
 	App->camera->SetMasterCameraAsCurrentCamera();
 }
 
+float2 M_Editor::GetSceneTextureSizeThroughEditor() const
+{
+	return this->scene->GetSceneTextureSize();
+}
+
+float2 M_Editor::GetScreenMouseMotionThroughEditor() const
+{
+	return this->scene->GetScreenMouseMotion();
+}
+
 bool M_Editor::SelectedIsSceneRoot() const
 {
 	return (App->scene->GetSelectedGameObject() == App->scene->GetSceneRoot());

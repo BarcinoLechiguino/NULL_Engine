@@ -36,11 +36,15 @@ public:																										// --- FRUSTUM METHODS
 	float*		GetOGLProjectionMatrix		();
 
 public:																										// --- CAMERA TRANSFORM
-	void PointAt();
-	void LookAt(const float3& location);
-	void Move(const float3& velocity);
+	void PointAt							(const float3& position, const float3& target);
+	void LookAt								(const float3& target);
+	void Move								(const float3& velocity);
 
-	void SetPosition();
+	void Rotate								(const float3x3& rotation_matrix);
+
+	void Focus								(const float3& target, const float& distance_to_target = 10.0f);
+
+	void SetPosition						(const float3& position);
 
 public:																										// --- FRUSTUM CULLING
 	void		UpdateFrustumPlanes			();
@@ -77,9 +81,6 @@ public:																										// --- CAMERA FLAGS
 	void		SetOrthogonalView			(const bool& set_to);
 	void		SetFrustumIsHidden			(const bool& set_to);
 
-	bool		IsSceneCamera				() const;
-	void		SetIsSceneCamera			(const bool& set_to);
-
 private:
 	Frustum frustum;																						//
 
@@ -95,8 +96,6 @@ private:
 	bool	is_culling;																						// --- CAMERA FLAGS
 	bool	in_orthogonal_view;																				//
 	bool	hide_frustum;																					// ----------------
-
-	bool	is_scene_camera;
 };
 
 #endif // !__CAMERA_H__

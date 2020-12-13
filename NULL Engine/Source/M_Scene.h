@@ -7,8 +7,9 @@
 
 class ParsonNode;
 class Primitive;
-class GameObject;
 class R_Texture;
+class GameObject;
+class C_Camera;
 
 class M_Scene : public Module
 {
@@ -45,7 +46,9 @@ public:																														// --- MASTER ROOT & SCENE ROOT METHODS ---
 	void			ChangeSceneName							(const char* new_name);											//
 
 	void			CreateSceneCamera						(const char* camera_name);
-	bool			GameObjectIsInsideSceneCamera			(GameObject* game_object);
+	C_Camera*		GetCullingCamera						() const;
+	void			SetCullingCamera						(C_Camera* culling_camera);
+	bool			GameObjectIsInsideCullingCamera			(GameObject* game_object);
 
 public:																														// --- SELECTED GAME OBJECT METHODS ---
 	void			DeleteSelectedGameObject				();																// 
@@ -64,8 +67,7 @@ private:
 	GameObject*					scene_root;																					// Root of the current scene.
 	GameObject*					selected_game_object;																		// Represents the game object that's currently being selected.
 
-	GameObject*					scene_camera;																				// Culling Camera
-	//C_Camera*					culling_camera;																				// Culling Camera
+	C_Camera*					culling_camera;																				// Culling Camera
 
 	std::vector<Primitive*>		primitives;
 };

@@ -32,7 +32,8 @@
 M_Scene::M_Scene(bool is_active) : Module("SceneManager", is_active),
 master_root				(nullptr),
 scene_root				(nullptr),
-selected_game_object	(nullptr)
+selected_game_object	(nullptr),
+culling_camera			(nullptr)
 {
 	CreateMasterRoot();
 	CreateSceneRoot("MainScene");
@@ -119,7 +120,7 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 		{
 			game_objects[i]->Update();
 			
-			if (GameObjectIsInsideSceneCamera(game_objects[i]) || game_objects[i] == scene_camera)
+			if (GameObjectIsInsideCullingCamera(game_objects[i]) || game_objects[i] == culling_camera->GetOwner())
 			{
 				game_objects[i]->GetRenderers(mesh_renderers, cuboid_renderers);
 			}
@@ -154,7 +155,7 @@ bool M_Scene::CleanUp()
 	game_objects.clear();
 
 	scene_root				= nullptr;
-	scene_camera			= nullptr;
+	culling_camera			= nullptr;
 	selected_game_object	= nullptr;
 
 	primitives.clear();
@@ -252,9 +253,10 @@ bool M_Scene::LoadScene(const char* path)
 
 			if (game_object->GetCameraComponent() != nullptr)
 			{
-				if (game_object->GetCameraComponent()->IsSceneCamera())
+				if (game_object->GetCameraComponent()->IsCulling())
 				{
-					scene_camera = game_object;
+					//scene_camera = game_object;
+					culling_camera = game_object->GetCameraComponent();
 				}
 			}
 
@@ -319,11 +321,6 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 	{
 		LOG("[ERROR] Scene: Object to delete was nullptr!");
 		return;
-	}
-	
-	if (scene_camera == game_object)
-	{
-		scene_camera = nullptr;
 	}
 
 	if (selected_game_object == game_object)
@@ -458,42 +455,51 @@ void M_Scene::ChangeSceneName(const char* name)
 
 void M_Scene::CreateSceneCamera(const char* camera_name)
 {
-	scene_camera = CreateGameObject(camera_name, scene_root);
+	GameObject* scene_camera = CreateGameObject(camera_name, scene_root);
 	scene_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
-	scene_camera->GetCameraComponent()->SetIsSceneCamera(true);
 	scene_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
 	scene_camera->GetTransformComponent()->SetLocalPosition(float3(0.0f, 5.0f, 25.0f));
-	//scene_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
-	scene_camera->GetCameraComponent()->LookAt(float3::zero);
 }
 
-bool M_Scene::GameObjectIsInsideSceneCamera(GameObject* game_object)
+C_Camera* M_Scene::GetCullingCamera() const
 {
-	if (scene_camera == nullptr)
+	return culling_camera;
+}
+
+void M_Scene::SetCullingCamera(C_Camera* culling_camera)
+{
+	//if (this->culling_camera != nullptr)
+	//{
+	//	if (this->culling_camera != culling_camera)
+	//	{
+	//		this->culling_camera->SetIsCulling(false);
+	//	}
+	//}
+
+	C_Camera* prev_cull_cam = this->culling_camera;
+
+	this->culling_camera = culling_camera;
+
+	if (prev_cull_cam != nullptr)
 	{
-		LOG("[ERROR] Scene: Scene Camera Game Object is nullptr!");
+		if (prev_cull_cam != culling_camera)
+		{
+			prev_cull_cam->SetIsCulling(false);
+		}
+	}
+}
+
+bool M_Scene::GameObjectIsInsideCullingCamera(GameObject* game_object)
+{
+	if (culling_camera == nullptr)
+	{
+		//LOG("[ERROR] Scene: There is currently no camera with culling activated!");
 		return true;
 	}
-	
-	C_Camera* c_camera = scene_camera->GetCameraComponent();
 
-	if (c_camera == nullptr)
-	{
-		LOG("[ERROR] Scene: Scene Camera does not have a Camera Component!");
-		return true;
-	}
+	bool intersects = culling_camera->FrustumIntersectsAABB(game_object->GetAABB());
 
-	bool ret = true;
-	if (c_camera->IsCulling())
-	{
-		ret = c_camera->FrustumIntersectsAABB(game_object->GetAABB());
-	}
-	else
-	{
-		ret = true;
-	}
-
-	return ret;
+	return intersects;
 }
 
 GameObject* M_Scene::GetSelectedGameObject() const
@@ -508,7 +514,7 @@ void M_Scene::SetSelectedGameObject(GameObject* game_object)
 		selected_game_object = game_object;
 
 		float3 go_ref = game_object->GetTransformComponent()->GetWorldPosition();
-		vec3 reference = { go_ref.x, go_ref.y, go_ref.z };
+		float3 reference = { go_ref.x, go_ref.y, go_ref.z };
 
 		App->camera->SetReference(reference);
 	}
@@ -547,28 +553,28 @@ void M_Scene::HandleDebugInput()
 		}
 	}
 
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_DOWN)
-	{
-		//Get a vector indicating the direction from the camera viewpoint to the "mouse"
-		float mouse_x_position = ((float)App->input->GetMouseX() / (float)App->window->GetWidth()) * 2.f - 1.f;
-		float mouse_y_position = -((float)App->input->GetMouseY() / (float)App->window->GetHeight()) * 2.f + 1.f;
-
-		/*const float2 mouse_pos(mouse_x_position, mouse_y_position);
-
-		const float4 ray_eye = App->renderer->GetProjectionMatrix().Inverted() * float4(mouse_pos.x, mouse_pos.y, -1.f, 1.f);
-		const float4 ray_world(App->camera->GetViewMatrix().Inverted() * float4(ray_eye.x, ray_eye.y, -1.f, 0.f));*/
-
-		const vec2 mouse_pos(mouse_x_position, mouse_y_position);
-
-		const vec4 ray_eye = inverse(App->renderer->GetProjectionMatrix()) * vec4(mouse_pos.x, mouse_pos.y, -1.f, 1.f);
-		const vec4 ray_world(inverse(App->camera->GetViewMatrix()) * vec4(ray_eye.x, ray_eye.y, -1.f, 0.f));
-
-		float3 dir(ray_world.x, ray_world.y, ray_world.z);
-	}
+	//if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_DOWN)
+	//{
+	//	//Get a vector indicating the direction from the camera viewpoint to the "mouse"
+	//	float mouse_x_position = ((float)App->input->GetMouseX() / (float)App->window->GetWidth()) * 2.f - 1.f;
+	//	float mouse_y_position = -((float)App->input->GetMouseY() / (float)App->window->GetHeight()) * 2.f + 1.f;
+	//
+	//	/*const float2 mouse_pos(mouse_x_position, mouse_y_position);
+	//
+	//	const float4 ray_eye = App->renderer->GetProjectionMatrix().Inverted() * float4(mouse_pos.x, mouse_pos.y, -1.f, 1.f);
+	//	const float4 ray_world(App->camera->GetViewMatrix().Inverted() * float4(ray_eye.x, ray_eye.y, -1.f, 0.f));*/
+	//
+	//	const vec2 mouse_pos(mouse_x_position, mouse_y_position);
+	//
+	//	const vec4 ray_eye = inverse(App->renderer->GetProjectionMatrix()) * vec4(mouse_pos.x, mouse_pos.y, -1.f, 1.f);
+	//	const vec4 ray_world(inverse(App->camera->GetViewMatrix()) * vec4(ray_eye.x, ray_eye.y, -1.f, 0.f));
+	//
+	//	float3 dir(ray_world.x, ray_world.y, ray_world.z);
+	//}
 }
 
 void M_Scene::DebugSpawnPrimitive(Primitive* p)
 {
-	primitives.push_back(p);
-	p->SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
+	//primitives.push_back(p);
+	//p->SetPos(App->camera->position.x, App->camera->position.y, App->camera->position.z);
 }

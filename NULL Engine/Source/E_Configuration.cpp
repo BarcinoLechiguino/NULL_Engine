@@ -570,9 +570,11 @@ void E_Configuration::GenerateCameraScaleSlider()
 
 void E_Configuration::GenerateCameraReferenceSlider()
 {
-	vec3 camera_reference = App->camera->GetReference();
-	ImGui::DragFloat3("Reference", (float*)&camera_reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL);
-	App->camera->SetReference(camera_reference);
+	float3 camera_reference = App->camera->GetReference();
+	if (ImGui::DragFloat3("Reference", (float*)&camera_reference, 1.0f, 0.0f, 0.0f, "%.3f", NULL))
+	{
+		App->camera->SetReference(camera_reference);
+	}
 }
 
 void E_Configuration::GenerateCameraSpeedSliders()

@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "M_Window.h"
+#include "M_Scene.h"
 
 #include "GameObject.h"
 #include "C_Transform.h"
@@ -21,8 +22,7 @@ min_fov				(MIN_FOV),
 max_fov				(MAX_FOV),
 is_culling			(false),
 in_orthogonal_view	(false),
-hide_frustum		(false),
-is_scene_camera		(false)
+hide_frustum		(false)
 {
 	frustum_planes		= new Plane[NUM_FRUSTUM_PLANES];
 	frustum_vertices	= new float3[NUM_FRUSTUM_VERTICES];
@@ -52,7 +52,10 @@ bool C_Camera::CleanUp()
 {
 	bool ret = true;
 
-
+	if (is_culling)
+	{
+		App->scene->SetCullingCamera(nullptr);
+	}
 
 	return ret;
 }
@@ -70,8 +73,6 @@ bool C_Camera::SaveState(ParsonNode& root) const
 	root.SetBool("OrthogonalView", in_orthogonal_view);
 	root.SetBool("HideFrustum", hide_frustum);
 
-	root.SetBool("IsSceneCamera", is_scene_camera);
-
 	return ret;
 }
 
@@ -85,8 +86,6 @@ bool C_Camera::LoadState(ParsonNode& root)
 	is_culling			= root.GetBool("Culling");
 	in_orthogonal_view	= root.GetBool("OrthogonalView");
 	hide_frustum		= root.GetBool("HideFrustum");
-
-	is_scene_camera		= root.GetBool("IsSceneCamera");
 
 	return ret;
 }
@@ -172,31 +171,59 @@ float* C_Camera::GetOGLProjectionMatrix()
 	return (float*)projection_matrix.v;
 }
 
-void C_Camera::PointAt()
+void C_Camera::PointAt(const float3& position, const float3& target)
 {
-
+	SetPosition(position);
+	LookAt(target);
 }
 
-void C_Camera::LookAt(const float3& location)
+void C_Camera::LookAt(const float3& target)
 {	
 	//float3 Z = float3(location - frustum.Pos()).Normalized();															// Could construct the rotation matrix and multiply it by
 	//float3 X = float3(float3::unitY.Cross(Z)).Normalized();															// the world transform. It does not quite work however.
 	//float3 Y = Z.Cross(X);																							// 
 	//float3x3 look_at_matrix = float3x3(X, Y, Z);																		// ------------------------------------------------------
 
-	float3 new_Z				= float3(location - frustum.Pos()).Normalized();										// Constructing the new forward vector of the camera.
+	float3 new_Z				= float3(target - frustum.Pos()).Normalized();											// Constructing the new forward vector of the camera.
 	float3x3 look_at_matrix		= float3x3::LookAt(frustum.Front(), new_Z, frustum.Up(), float3::unitY);				// Using the LookAt() method built in MathGeoLib to generate the mat.
 
-	float4x4 world	= GetOwner()->GetTransformComponent()->GetWorldTransform();											// Calculating the new world matrix of the camera.
-	float4x4 look	= look_at_matrix;																					//
-	world			= world * look;																						// -----------------------------------------------
+	frustum.SetFront(look_at_matrix.MulDir(frustum.Front()).Normalized());
+	frustum.SetUp(look_at_matrix.MulDir(frustum.Up()).Normalized());
 
-	this->GetOwner()->GetTransformComponent()->SetWorldTransform(world);												// Setting the updated world transform.
+	float4x4 world_matrix = frustum.WorldMatrix();
+	this->GetOwner()->GetTransformComponent()->SetWorldTransform(world_matrix);											// Setting the updated world transform.
 }
 
 void C_Camera::Move(const float3& velocity)
 {
-	GetOwner()->GetTransformComponent()->Translate(velocity);
+	this->GetOwner()->GetTransformComponent()->Translate(velocity);
+}
+
+void C_Camera::Rotate(const float3x3& rotation_matrix)
+{
+	float4x4 world_matrix = frustum.WorldMatrix();
+
+	world_matrix.SetRotatePart(rotation_matrix);
+
+	this->GetOwner()->GetTransformComponent()->SetWorldTransform(world_matrix);											// Setting the updated world transform.
+}
+
+void C_Camera::Focus(const float3& target, const float& distance_to_target)
+{
+	float abs_distance = (distance_to_target < 0) ? -distance_to_target : distance_to_target;
+
+	float3 distance = float3(target - frustum.Pos()).Normalized();
+
+	float3 position = frustum.Pos() - target;
+
+	position = target + distance * position.Length();						// While FreeLookAround() rotates the camera on its axis, this method also translates the camera.
+
+	PointAt(position, target);
+}
+
+void C_Camera::SetPosition(const float3& position)
+{
+	this->GetOwner()->GetTransformComponent()->SetWorldPosition(position);
 }
 
 void C_Camera::UpdateFrustumPlanes()
@@ -438,6 +465,18 @@ bool C_Camera::FrustumIsHidden() const
 void C_Camera::SetIsCulling(const bool& set_to)
 {
 	is_culling = set_to;
+	
+	if (set_to)
+	{
+		App->scene->SetCullingCamera(this);
+	}
+	else
+	{
+		if (App->scene->GetCullingCamera() == this)
+		{
+			App->scene->SetCullingCamera(nullptr);
+		}
+	}
 }
 
 void C_Camera::SetOrthogonalView(const bool& set_to)
@@ -455,14 +494,4 @@ void C_Camera::SetOrthogonalView(const bool& set_to)
 void C_Camera::SetFrustumIsHidden(const bool& set_to)
 {
 	hide_frustum = set_to;
-}
-
-bool C_Camera::IsSceneCamera() const
-{
-	return is_scene_camera;
-}
-
-void C_Camera::SetIsSceneCamera(const bool& set_to)
-{
-	is_scene_camera = set_to;
 }
