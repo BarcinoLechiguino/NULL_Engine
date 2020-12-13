@@ -451,6 +451,11 @@ void M_Editor::CreateGameObject(const char* name, GameObject* parent)
 	App->scene->CreateGameObject(name, parent);
 }
 
+C_Camera* M_Editor::GetCurrentCameraThroughEditor() const
+{
+	return App->camera->GetCurrentCamera();
+}
+
 void M_Editor::SetCurrentCameraThroughEditor(C_Camera* game_object)
 {
 	App->camera->SetCurrentCamera(game_object);
@@ -474,6 +479,11 @@ float2 M_Editor::GetWorldMouseMotionThroughEditor() const
 float2 M_Editor::GetSceneTextureSizeThroughEditor() const
 {
 	return this->scene->GetSceneTextureSize();
+}
+
+bool M_Editor::UsingGuizmoInScene() const
+{
+	return this->scene->UsingGuizmo();
 }
 
 bool M_Editor::SelectedIsSceneRoot() const

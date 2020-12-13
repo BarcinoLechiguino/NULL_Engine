@@ -243,9 +243,6 @@
     <ClCompile Include="Source\Dependencies\ImGui\include\imgui_widgets.cpp">
       <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Dependencies\ImGuizmo\include\ImGuizmo.cpp">
-      <Filter>Dependencies\ImGuizmo</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Dependencies\mmgr\include\mmgr.cpp">
       <Filter>Dependencies\mmgr</Filter>
     </ClCompile>
@@ -456,6 +453,9 @@
     <ClCompile Include="Source\E_Toolbar.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Dependencies\ImGuizmo\include\ImGuizmo.cpp">
+      <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -631,9 +631,6 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\ImGui\include\imstb_truetype.h">
       <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Dependencies\ImGuizmo\include\ImGuizmo.h">
-      <Filter>Dependencies\ImGuizmo</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\mmgr\include\mmgr.h">
       <Filter>Dependencies\mmgr</Filter>
@@ -991,6 +988,9 @@
     </ClInclude>
     <ClInclude Include="Source\E_Toolbar.h">
       <Filter>Source\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\ImGuizmo\include\ImGuizmo.h">
+      <Filter>Dependencies\ImGuizmo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

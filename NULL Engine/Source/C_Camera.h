@@ -27,9 +27,7 @@ public:																										// --- FRUSTUM METHODS
 	void		UpdateFrustumTransform		();
 	Frustum		GetFrustum					() const;
 
-	void		SetUpdateFrustumTransform	(const bool& set_to);
 	void		SetUpdateProjectionMatrix	(const bool& set_to);
-	bool		GetUpdateFrustumTransform	() const;
 	bool		GetUpdateProjectionMatrix	() const;
 
 	float*		GetOGLViewMatrix			();
@@ -90,12 +88,11 @@ private:
 	uint	min_fov;																						// --- FRUSTUM SETTINGS 
 	uint	max_fov;																						// --------------------
 
-	bool	update_frustum_transform;																		// --- FRUSTUM UPDATES
-	bool	update_projection_matrix;																		// -------------------
-
 	bool	is_culling;																						// --- CAMERA FLAGS
 	bool	in_orthogonal_view;																				//
 	bool	hide_frustum;																					// ----------------
+	
+	bool	update_projection_matrix;																		// --- FRUSTUM UPDATES
 };
 
 #endif // !__CAMERA_H__

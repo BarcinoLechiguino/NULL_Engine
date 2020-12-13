@@ -16,13 +16,14 @@
 #define MAX_FOV 120
 
 C_Camera::C_Camera(GameObject* owner) : Component(owner, COMPONENT_TYPE::CAMERA),
-frustum_planes		(nullptr),
-frustum_vertices	(nullptr),
-min_fov				(MIN_FOV),
-max_fov				(MAX_FOV),
-is_culling			(false),
-in_orthogonal_view	(false),
-hide_frustum		(false)
+frustum_planes				(nullptr),
+frustum_vertices			(nullptr),
+min_fov						(MIN_FOV),
+max_fov						(MAX_FOV),
+is_culling					(false),
+in_orthogonal_view			(false),
+hide_frustum				(false),
+update_projection_matrix	(true)
 {
 	frustum_planes		= new Plane[NUM_FRUSTUM_PLANES];
 	frustum_vertices	= new float3[NUM_FRUSTUM_VERTICES];
@@ -40,10 +41,7 @@ bool C_Camera::Update()
 {
 	bool ret = true;
 
-	if (update_frustum_transform)
-	{
-		UpdateFrustumTransform();
-	}
+
 
 	return ret;
 }
@@ -123,7 +121,6 @@ void C_Camera::UpdateFrustumTransform()
 	UpdateFrustumPlanes();
 	UpdateFrustumVertices();
 
-	update_frustum_transform = false;
 	update_projection_matrix = true;
 }
 
@@ -131,20 +128,9 @@ Frustum C_Camera::GetFrustum() const
 {
 	return frustum;
 }
-
-void C_Camera::SetUpdateFrustumTransform(const bool& set_to)
-{
-	update_frustum_transform = set_to;
-}
-
 void C_Camera::SetUpdateProjectionMatrix(const bool& set_to)
 {
 	update_projection_matrix = set_to;
-}
-
-bool C_Camera::GetUpdateFrustumTransform() const
-{
-	return update_frustum_transform;
 }
 
 bool C_Camera::GetUpdateProjectionMatrix() const

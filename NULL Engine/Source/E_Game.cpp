@@ -14,11 +14,11 @@ bool E_Game::Draw(ImGuiIO& io)
 {
 	bool ret = true;
 
-	ImGui::Begin("Game");
-
-
-
-	ImGui::End();
+	//ImGui::Begin("Game");
+	//
+	//
+	//
+	//ImGui::End();
 
 	return ret;
 }

@@ -279,6 +279,7 @@ bool M_Scene::LoadScene(const char* path)
 				item->second->SetParent(parent->second);
 			}
 
+			item->second->GetTransformComponent()->Translate(float3::zero);							// Dirty way to refresh the transforms after the import is done. TMP Un-hardcode later.
 			game_objects.push_back(item->second);
 		}
 
@@ -508,22 +509,41 @@ GameObject* M_Scene::GetSelectedGameObject() const
 }
 
 void M_Scene::SetSelectedGameObject(GameObject* game_object)
-{
-	if (game_object != selected_game_object)
+{	
+	if (game_object == nullptr)
 	{
-		selected_game_object = game_object;
+		if (selected_game_object != nullptr)
+		{
+			LOG("[STATUS] Scene: De-Selected %s!", selected_game_object->GetName());
+		}
 
-		float3 go_ref = game_object->GetTransformComponent()->GetWorldPosition();
-		float3 reference = { go_ref.x, go_ref.y, go_ref.z };
-
-		App->camera->SetReference(reference);
+		selected_game_object = nullptr;
 	}
+	else
+	{
+		if (game_object != selected_game_object)
+		{
+			selected_game_object = game_object;
+			
+			float3 go_ref = game_object->GetTransformComponent()->GetWorldPosition();
+			float3 reference = { go_ref.x, go_ref.y, go_ref.z };
+
+			App->camera->SetReference(reference);
+		}
+	}	
 }
 
 void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
 {	
 	std::map<float, GameObject*> hits;
 	GetRaycastHits(ray, hits);
+
+	if (hits.size() == 0)
+	{
+		SetSelectedGameObject(nullptr);
+		hits.clear();
+		return;
+	}
 
 	std::map<float, GameObject*>::iterator item;
 	std::vector<C_Mesh*> c_meshes;
@@ -564,6 +584,9 @@ void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
 
 		c_meshes.clear();
 	}
+
+	// If no GameObject was hit
+	SetSelectedGameObject(nullptr);
 
 	hits.clear();
 }
