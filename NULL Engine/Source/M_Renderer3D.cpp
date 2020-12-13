@@ -30,7 +30,7 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */							// 
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")							// -------------------------
 
-#define WORLD_GRID_SIZE 100
+#define WORLD_GRID_SIZE 64
 #define CHECKERS_WIDTH 64
 #define CHECKERS_HEIGHT 64
 
@@ -495,6 +495,13 @@ void M_Renderer3D::RenderScene()
 
 	RenderMeshes();
 	RenderCuboids();
+	//RenderRays();
+	
+	if (App->camera->DrawLastRaycast())
+	{
+		RayRenderer last_ray = RayRenderer(App->camera->last_raycast, Color(0.0f, 1.0f, 1.0f, 1.0f));
+		last_ray.Render();
+	}
 
 	//PrimitiveDrawExamples p_ex = PrimitiveDrawExamples();
 	//p_ex.DrawAllExamples();
@@ -592,7 +599,6 @@ void M_Renderer3D::RenderCuboids()
 	
 	glDisable(GL_LIGHTING);
 	glBegin(GL_LINES);
-	//glBegin(GL_LINE_STRIP);
 
 	for (uint i = 0; i < cuboid_renderers.size(); ++i)
 	{	
@@ -603,6 +609,19 @@ void M_Renderer3D::RenderCuboids()
 
 	glEnd();
 	glEnable(GL_LIGHTING);
+
+	glLineWidth(1.0f);
+}
+
+void M_Renderer3D::RenderRays()
+{
+	glLineWidth(3.0f);
+
+	glBegin(GL_LINES);
+
+
+
+	glEnd();
 
 	glLineWidth(1.0f);
 }
@@ -756,16 +775,6 @@ void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_
 
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
-}
-
-mat4x4 M_Renderer3D::GetProjectionMatrix() const
-{
-	return projection_matrix;
-}
-
-mat3x3 M_Renderer3D::GetNormalMatrix() const
-{
-	return normal_matrix;
 }
 
 uint M_Renderer3D::GetDebugTextureID() const
@@ -1051,7 +1060,7 @@ void MeshRenderer::ClearTextureAndMaterial()
 }
 
 
-CuboidRenderer::CuboidRenderer(const float3* vertices, Color color) :
+CuboidRenderer::CuboidRenderer(const float3* vertices, const Color& color) :
 vertices(vertices),
 color(color)
 {
@@ -1109,6 +1118,32 @@ void CuboidRenderer::Render()
 	glVertex3fv(G);											// -------------- 
 
 	//glEnd();
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+RayRenderer::RayRenderer(const LineSegment& ray, const Color& color) :
+ray(ray),
+color(color)
+{
+
+}
+
+void RayRenderer::Render()
+{
+	GLfloat A[3] = { ray.a.x, ray.a.y , ray.a.z };
+	GLfloat B[3] = { ray.b.x, ray.b.y , ray.b.z };
+
+	glColor4f(color.r, color.g, color.b, color.a);
+
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+
+	glVertex3fv(A);
+	glVertex3fv(B);
+
+	glEnd();
+	glLineWidth(1.0f);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }

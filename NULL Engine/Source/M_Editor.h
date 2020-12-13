@@ -93,8 +93,9 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	void			SetCurrentCameraThroughEditor		(C_Camera* game_object);				// Hierarchy & Inspector: 
 	void			SetMasterCameraThroughEditor		();										// Hierarchy & Inspector: 
 
+	float2			GetWorldMousePositionThroughEditor	() const;
+	float2			GetWorldMouseMotionThroughEditor	() const;
 	float2			GetSceneTextureSizeThroughEditor	() const;
-	float2			GetScreenMouseMotionThroughEditor	() const;
 
 	void			LoadFileThroughEditor				(const char* path);						// Load File: Will send the given path to the Importer.
 

@@ -15,8 +15,9 @@
 #define ZOOM_SPEED 24.0f
 
 M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active),
-master_camera(nullptr),
-current_camera(nullptr)
+master_camera		(nullptr),
+current_camera		(nullptr),
+draw_last_raycast	(false)
 {
 	CreateMasterCamera();
 
@@ -98,6 +99,11 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 {
 	if (App->editor->EditorSceneIsBeingClicked())
 	{
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_REPEAT)
+		{
+			CastRay();
+		}
+		
 		if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_STATE::KEY_REPEAT)
 		{
 			WASDMovement();
@@ -107,7 +113,7 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 
 		if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_STATE::KEY_REPEAT)
 		{
-			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_REPEAT)
+			if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_STATE::KEY_REPEAT)
 			{
 				if (App->scene->GetSelectedGameObject() != nullptr)
 				{
@@ -377,7 +383,7 @@ void M_Camera3D::FreeLookAround()
 void M_Camera3D::RotateAroundReference()								// Almost identical to FreeLookAround(), but instead of only modifying XYZ, the position of the camera is also modified.
 {	
 	Frustum frustum			= current_camera->GetFrustum();
-	float2 mouse_motion		= App->editor->GetScreenMouseMotionThroughEditor();
+	float2 mouse_motion		= App->editor->GetWorldMouseMotionThroughEditor();
 	float sensitivity		= rotation_speed * App->GetDt();
 
 	float3 new_Z = frustum.Pos() - reference;
@@ -406,7 +412,7 @@ void M_Camera3D::PanCamera()
 	float3 new_position = float3::zero;
 
 	Frustum frustum		= current_camera->GetFrustum();
-	float2 mouse_motion = App->editor->GetScreenMouseMotionThroughEditor();
+	float2 mouse_motion = App->editor->GetWorldMouseMotionThroughEditor();
 
 	if (mouse_motion.x != 0)
 	{
@@ -511,4 +517,29 @@ void M_Camera3D::SetMasterCameraRotation(const float3& rotation)
 void M_Camera3D::SetMasterCameraScale(const float3& scale)
 {
 	master_camera->GetTransformComponent()->SetWorldScale(scale);
+}
+
+void M_Camera3D::CastRay()
+{
+	float2 mouse_pos = App->editor->GetWorldMousePositionThroughEditor();
+	
+	float norm_mouse_X = mouse_pos.x / (float)App->window->GetWidth();
+	float norm_mouse_Y = mouse_pos.y / (float)App->window->GetHeight();
+
+	float ray_origin_X = (norm_mouse_X - 0.5f) * 2;
+	float ray_origin_Y = (norm_mouse_Y - 0.5f) * 2;
+	
+	last_raycast = current_camera->GetFrustum().UnProjectLineSegment(ray_origin_X, ray_origin_Y);
+
+	App->scene->SelectGameObjectThroughRaycast(last_raycast);
+}
+
+bool M_Camera3D::DrawLastRaycast() const
+{
+	return draw_last_raycast;
+}
+
+void M_Camera3D::SetDrawLastRaycast(const bool& set_to)
+{
+	draw_last_raycast = set_to;
 }

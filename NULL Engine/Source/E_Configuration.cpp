@@ -203,6 +203,10 @@ bool E_Configuration::CameraMenu()
 
 		// --- MOVEMENT, ROTATION & ZOOM SPEED
 		GenerateCameraSpeedSliders();
+
+		ImGui::Separator();
+
+		GenerateDrawLastRaycastCheckbox();
 	}
 
 	return ret;
@@ -590,6 +594,15 @@ void E_Configuration::GenerateCameraSpeedSliders()
 	App->camera->SetMovementSpeed(movement_speed);
 	App->camera->SetRotationSpeed(rotation_speed);
 	App->camera->SetZoomSpeed(zoom_speed);
+}
+
+void E_Configuration::GenerateDrawLastRaycastCheckbox()
+{
+	bool draw_last_raycast = App->camera->DrawLastRaycast();
+	if (ImGui::Checkbox("Draw Last Raycast", &draw_last_raycast))
+	{
+		App->camera->SetDrawLastRaycast(draw_last_raycast);
+	}
 }
 
 void E_Configuration::AddInputLog(const char* log)

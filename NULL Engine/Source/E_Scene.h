@@ -15,8 +15,9 @@ public:
 	bool CleanUp() override;
 
 public:
+	float2 GetWorldMousePosition();
+	float2 GetWorldMouseMotion();
 	float2 GetSceneTextureSize();
-	float2 GetScreenMouseMotion();
 
 private:
 	void CheckSceneIsClicked();

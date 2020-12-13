@@ -51,6 +51,7 @@ private:
 	void GenerateCameraScaleSlider		();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's scale (XYZ).
 	void GenerateCameraReferenceSlider	();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's reference (XYZ).
 	void GenerateCameraSpeedSliders		();								// Camera menu: Will generate 3 sliders that will modify the camera's movement, rotation and zoom speed.
+	void GenerateDrawLastRaycastCheckbox();
 
 	void MouseInputData					();								// Input menu: Will generate 3 pairs of two texts, one of the pair with the type of data and the second with its val.
 	void InputLogOutput					();								// Input menu: Will generate the text of the Log. The logs are stored in the input_logs std::vector.

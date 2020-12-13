@@ -3,6 +3,8 @@
 
 #include <map>
 
+#include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/include/Geometry/Triangle.h"
 #include "Module.h"
 
 class ParsonNode;
@@ -51,10 +53,16 @@ public:																														// --- MASTER ROOT & SCENE ROOT METHODS ---
 	bool			GameObjectIsInsideCullingCamera			(GameObject* game_object);
 
 public:																														// --- SELECTED GAME OBJECT METHODS ---
-	void			DeleteSelectedGameObject				();																// 
 	GameObject*		GetSelectedGameObject					() const;														// 
 	void			SetSelectedGameObject					(GameObject* game_object);										// 
+	void			DeleteSelectedGameObject				();																// 
+
 	bool			ApplyNewTextureToSelectedGameObject		(R_Texture* path);												//
+
+public:																														// --- SELECT THROUGH RAYCAST
+	void			SelectGameObjectThroughRaycast			(const LineSegment& ray);
+	void			GetRaycastHits							(const LineSegment& ray, std::map<float, GameObject*>& hits);
+	void			GetFaces								(const std::vector<float>& vertices, std::vector<Triangle>& faces);
 
 private:
 	void			HandleDebugInput();

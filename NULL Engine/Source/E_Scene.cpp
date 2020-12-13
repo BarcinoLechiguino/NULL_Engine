@@ -41,21 +41,41 @@ bool E_Scene::CleanUp()
 }
 
 // --- E_SCENE METHODS ---
-float2 E_Scene::GetSceneTextureSize()
+float2 E_Scene::GetWorldMousePosition()
 {
-	return float2(tex_size.x, tex_size.y);
+	float win_width		= (float)App->window->GetWidth();
+	float win_height	= (float)App->window->GetHeight();
+	
+	float tex_width		= tex_size.x;
+	float tex_height	= tex_size.y;
+
+	float mouse_X		= (float)App->input->GetMouseX();
+	float mouse_Y		= (float)App->input->GetMouseY();
+
+	float2 screen_mouse_pos = float2(mouse_X, win_height - mouse_Y);
+
+	float2 norm_screen_pos	= float2(screen_mouse_pos.x / tex_width, screen_mouse_pos.y / tex_height);
+
+	float2 world_mouse_pos	= float2(norm_screen_pos.x * win_width, norm_screen_pos.y * win_height);
+
+	return world_mouse_pos;
 }
 
-float2 E_Scene::GetScreenMouseMotion()
+float2 E_Scene::GetWorldMouseMotion()
 {
 	float2 win_mouse_motion	= float2((float)App->input->GetMouseXMotion(), (float)App->input->GetMouseYMotion());
 	float2 win_size			= float2((float)App->window->GetWidth(), (float)App->window->GetHeight());
 	float2 tex_size			= float2(this->tex_size.x, this->tex_size.y);
 
 	float2 local_motion			= float2(win_mouse_motion.x / tex_size.x, win_mouse_motion.y / tex_size.y);
-	float2 screen_mouse_motion	= float2(local_motion.x * win_size.x, local_motion.y * win_size.y);
+	float2 world_mouse_motion	= float2(local_motion.x * win_size.x, local_motion.y * win_size.y);
 
-	return screen_mouse_motion;
+	return world_mouse_motion;
+}
+
+float2 E_Scene::GetSceneTextureSize()
+{
+	return float2(tex_size.x, tex_size.y);
 }
 
 void E_Scene::CheckSceneIsClicked()

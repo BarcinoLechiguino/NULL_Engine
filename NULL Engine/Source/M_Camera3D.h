@@ -58,6 +58,12 @@ public:																				// Camera3D Getters and Setters.
 	void			SetMasterCameraRotation			(const float3& rotation);
 	void			SetMasterCameraScale			(const float3& scale);
 
+public:
+	void			CastRay							();
+
+	bool			DrawLastRaycast					() const;
+	void			SetDrawLastRaycast				(const bool& set_to);
+
 private:
 	void			WASDMovement					();								// Translates the camera along XYZ (Right, Up, Forward), which will act as the camera's axis.
 	void			FreeLookAround					();								// Receives information about the mouse's motion values and rotates the camera on it's axis.
@@ -68,7 +74,6 @@ private:
 public:
 	GameObject*		master_camera;
 	C_Camera*		current_camera;
-	LineSegment		ray;
 
 	float3			reference;														// Point where the camera will look at and rotate around.
 
@@ -78,6 +83,10 @@ public:
 	float			movement_speed;													// 
 	float			rotation_speed;													// 
 	float			zoom_speed;														// 
+
+public:
+	LineSegment		last_raycast;
+	bool			draw_last_raycast;
 };
 
 #endif // !__CAMERA_3D_H__

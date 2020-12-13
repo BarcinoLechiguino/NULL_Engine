@@ -2,7 +2,7 @@
 #define __M_RENDERER_3D_H__
 
 #include "MathGeoTransform.h"
-#include "glmath.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
 
 #include "Module.h"
 #include "Light.h"
@@ -53,12 +53,22 @@ struct MeshRenderer
 
 struct CuboidRenderer																							// Will render the wireframe of any given geometric form with 8 vertices.
 {	
-	CuboidRenderer(const float3* vertices, const Color color);
+	CuboidRenderer(const float3* vertices, const Color& color);
 
 	void Render();
 
 	const float3*	vertices;
 	const Color		color;
+};
+
+struct RayRenderer
+{
+	RayRenderer(const LineSegment& ray, const Color& color);
+
+	void Render();
+
+	const LineSegment	ray;
+	const Color			color;
 };
 
 #define MAX_LIGHTS 8
@@ -100,6 +110,7 @@ public:																											// --- RENDER GEOMETRY
 	void			AddRenderersBatch			(const std::vector<MeshRenderer>& mesh_renderers, const std::vector<CuboidRenderer>& cuboid_renderers);
 	void			RenderMeshes				();
 	void			RenderCuboids				();
+	void			RenderRays					();
 	void			ClearRenderers				();																// Loading scene measure.
 
 	void			RenderMesh					(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material);

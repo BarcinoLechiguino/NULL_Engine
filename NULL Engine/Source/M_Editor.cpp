@@ -461,14 +461,19 @@ void M_Editor::SetMasterCameraThroughEditor()
 	App->camera->SetMasterCameraAsCurrentCamera();
 }
 
+float2 M_Editor::GetWorldMousePositionThroughEditor() const
+{
+	return this->scene->GetWorldMousePosition();
+}
+
+float2 M_Editor::GetWorldMouseMotionThroughEditor() const
+{
+	return this->scene->GetWorldMouseMotion();
+}
+
 float2 M_Editor::GetSceneTextureSizeThroughEditor() const
 {
 	return this->scene->GetSceneTextureSize();
-}
-
-float2 M_Editor::GetScreenMouseMotionThroughEditor() const
-{
-	return this->scene->GetScreenMouseMotion();
 }
 
 bool M_Editor::SelectedIsSceneRoot() const

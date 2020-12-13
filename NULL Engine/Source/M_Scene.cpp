@@ -2,7 +2,6 @@
 #include "MathGeoTransform.h"
 
 #include "JSONParser.h"
-#include "glmath.h"																// WAITING UNTIL FRUSTUM TO DELETE IT
 
 #include "Application.h"														// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
@@ -14,6 +13,7 @@
 
 #include "Importer.h"
 #include "Resource.h"
+#include "R_Mesh.h"
 #include "R_Texture.h"
 
 #include "Primitive.h"
@@ -518,6 +518,87 @@ void M_Scene::SetSelectedGameObject(GameObject* game_object)
 
 		App->camera->SetReference(reference);
 	}
+}
+
+void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
+{	
+	std::map<float, GameObject*> hits;
+	GetRaycastHits(ray, hits);
+
+	std::map<float, GameObject*>::iterator item;
+	std::vector<C_Mesh*> c_meshes;
+	for (item = hits.begin(); item != hits.end(); ++item)
+	{
+		item->second->GetAllMeshComponents(c_meshes);
+		
+		std::vector<Triangle> faces;
+		for (uint m = 0; m < c_meshes.size(); ++m)
+		{	
+			R_Mesh* r_mesh = c_meshes[m]->GetMesh();
+
+			if (r_mesh == nullptr)
+			{
+				continue;
+			}
+			
+			LineSegment local_ray = ray;
+			local_ray.Transform(item->second->GetTransformComponent()->GetWorldTransform().Inverted());
+			
+			GetFaces(r_mesh->vertices, faces);
+			for (uint f = 0; f < faces.size(); ++f)
+			{	
+				if (local_ray.Intersects(faces[f], nullptr, nullptr))
+				{
+					SetSelectedGameObject(item->second);
+
+					faces.clear();
+					c_meshes.clear();
+					hits.clear();
+
+					return;
+				}
+			}
+
+			faces.clear();
+		}
+
+		c_meshes.clear();
+	}
+
+	hits.clear();
+}
+
+void M_Scene::GetRaycastHits(const LineSegment& ray, std::map<float, GameObject*>& hits)
+{
+	for (uint i = 0; i < game_objects.size(); ++i)
+	{
+		if (ray.Intersects(game_objects[i]->GetAABB()))
+		{
+			float3 position = game_objects[i]->GetTransformComponent()->GetWorldPosition();
+			hits.emplace(ray.Distance(position), game_objects[i]);
+		}
+	}
+}
+
+void M_Scene::GetFaces(const std::vector<float>& vertices, std::vector<Triangle>& faces)
+{
+	std::vector<float3> verts;
+	for (uint v = 0; v < vertices.size(); v += 3)
+	{
+		float v1 = vertices[v];
+		float v2 = vertices[v + 1];
+		float v3 = vertices[v + 2];
+
+		verts.push_back(float3(v1, v2, v3));
+
+		if (verts.size() == 3)
+		{
+			faces.push_back(Triangle(verts[0], verts[1], verts[2]));
+			verts.clear();
+		}
+	}
+
+	verts.clear();
 }
 
 void M_Scene::DeleteSelectedGameObject()
