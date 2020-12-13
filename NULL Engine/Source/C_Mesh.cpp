@@ -57,6 +57,7 @@ bool C_Mesh::SaveState(ParsonNode& root) const
 	{
 		root.SetNumber("Type", (uint)GetType());
 		root.SetNumber("UID", r_mesh->GetUID());
+		root.SetString("Name", r_mesh->GetAssetsFile());
 		root.SetString("Path", r_mesh->GetLibraryPath());
 		root.SetString("File", r_mesh->GetLibraryFile());
 		root.SetBool("ShowWireframe", show_wireframe);
@@ -117,6 +118,16 @@ const char* C_Mesh::GetMeshPath() const
 	if (r_mesh != nullptr)
 	{
 		return r_mesh->GetAssetsPath();
+	}
+
+	return "NONE";
+}
+
+const char* C_Mesh::GetMeshFile() const
+{
+	if (r_mesh != nullptr)
+	{
+		return r_mesh->GetAssetsFile();
 	}
 
 	return "NONE";

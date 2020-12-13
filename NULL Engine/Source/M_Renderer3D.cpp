@@ -626,6 +626,17 @@ void M_Renderer3D::RenderRays()
 	glLineWidth(1.0f);
 }
 
+void M_Renderer3D::DeleteFromMeshRenderers(C_Mesh* c_mesh_to_delete)
+{
+	for (uint i = 0; i < mesh_renderers.size(); ++i)
+	{
+		if (mesh_renderers[i].c_mesh == c_mesh_to_delete)
+		{
+			mesh_renderers.erase(mesh_renderers.begin() + i);
+		}
+	}
+}
+
 void M_Renderer3D::ClearRenderers()
 {
 	mesh_renderers.clear();

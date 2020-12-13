@@ -6,6 +6,7 @@
 #include <string>
 
 #include "Assimp.h"
+#include "JSONParser.h"
 
 #include "VariableTypedefs.h"
 #include "Log.h"
@@ -56,23 +57,140 @@ void Importer::Scenes::Load(const char* buffer, aiScene* ai_scene)
 
 void Importer::Scenes::Import(const char* path, std::vector<GameObject*>& game_objects)
 {	
-	bool ret = true;
+	std::string extension = App->file_system->GetFileExtension(path);
 	
 	// Load .meta and check whether or not the model/scene has not already been loaded.
 
-	if (ret)																									// If .meta does not exist or the file IDs are incorrect, import from Assets.
-	{
-		Utilities::ImportFromAssets(path, game_objects);
-	}
-	else
+	if (extension == "json" || extension == ".json")															// If .meta does not exist or the file IDs are incorrect, import from Assets.
 	{
 		Utilities::ImportFromLibrary(path, game_objects);														// If it has been already loaded, load the scene from the Library.
 	}
+	else
+	{
+		Utilities::ImportFromAssets(path, game_objects);
+	}
 }
 
-void Importer::Scenes::Utilities::ImportFromLibrary(const char* path, std::vector<GameObject*>& game_objects)
+void Importer::Scenes::Utilities::ImportFromLibrary(const char* path, std::vector<GameObject*>& game_objects)					// Im so sorry for this, but it is what it is. :(
 {
+	char* buffer = nullptr;
+	uint read = App->file_system->Load(path, &buffer);
+	if (read == 0)
+	{
+		LOG("[ERROR] Scene Loading: Could not load %s from Assets! Error: File system could not read the file!", path);
+		return;
+	}
 
+	if (buffer != nullptr)
+	{
+		ParsonNode root				= ParsonNode(buffer);
+		ParsonArray objects_array	= root.GetArray("Game Objects");
+
+		for (uint i = 0; i < objects_array.size; ++i)																			// Getting all the GameObjects in the ParsonArray
+		{
+			ParsonNode object_node			= objects_array.GetNode(i);
+			ParsonArray components_array	= object_node.GetArray("Components");
+
+			for (uint c = 0; c < components_array.size; ++c)
+			{
+				ParsonNode component_node = components_array.GetNode(c);
+
+				if (!component_node.NodeIsValid())
+				{
+					continue;
+				}
+
+				COMPONENT_TYPE type = (COMPONENT_TYPE)component_node.GetNumber("Type");
+
+				bool is_mesh		= false;
+				bool is_material	= false;
+
+				switch (type)
+				{
+				case COMPONENT_TYPE::MESH:		{is_mesh = true; }		break;
+				case COMPONENT_TYPE::MATERIAL:	{is_material = true; }	break;
+				}
+
+				if (is_mesh)
+				{
+					R_Mesh* r_mesh = new R_Mesh();
+
+					r_mesh->ForceUID(component_node.GetNumber("UID"));
+					r_mesh->SetAssetsFile(component_node.GetString("Name"));
+					r_mesh->SetLibraryPath(component_node.GetString("Path"));
+					r_mesh->SetLibraryFile(component_node.GetString("File"));
+
+					char* mesh_buffer = nullptr;
+					uint read = App->file_system->Load(r_mesh->GetLibraryPath(), &mesh_buffer);
+					if (read == 0)
+					{
+						LOG("[ERROR] Scene Loading: Could not load %s from Assets! Error: File system could not read the file!", path);
+						RELEASE(r_mesh);
+						continue;
+					}
+					
+					if (mesh_buffer != nullptr)
+					{
+						Importer::Meshes::Load(mesh_buffer, r_mesh);
+						r_mesh->LoadBuffers();
+						App->resource_manager->AddResource(r_mesh);
+					}
+				}
+
+				if (is_material)
+				{
+					ParsonNode material_node	= component_node.GetNode("Material");
+					ParsonNode texture_node		= component_node.GetNode("Texture");
+					
+					if (material_node.NodeIsValid())
+					{
+						R_Material* r_material = new R_Material();
+
+						r_material->ForceUID(material_node.GetNumber("UID"));
+						r_material->SetLibraryPath(material_node.GetString("Path"));
+						r_material->SetLibraryFile(material_node.GetString("File"));
+
+						char* material_buffer = nullptr;
+						uint read = App->file_system->Load(r_material->GetLibraryPath(), &material_buffer);
+						if (read == 0)
+						{
+							LOG("[ERROR] Scene Loading: Could not load %s from Assets! Error: File system could not read the file!", path);
+							RELEASE(r_material);
+							continue;
+						}
+
+						if (material_buffer != nullptr)
+						{
+							Importer::Materials::Load(material_buffer, r_material);
+							App->resource_manager->AddResource(r_material);
+						}
+					}
+
+					if (texture_node.NodeIsValid())
+					{
+						R_Texture* r_texture = new R_Texture();
+
+						r_texture->ForceUID(texture_node.GetNumber("UID"));
+						r_texture->SetAssetsFile(texture_node.GetString("Name"));
+						r_texture->SetLibraryPath(texture_node.GetString("Path"));
+						r_texture->SetLibraryFile(texture_node.GetString("File"));
+
+						bool success = Importer::Textures::Load(r_texture);
+						if (!success)
+						{
+							LOG("[ERROR] Scene Loading: Could not load %s from Assets! Error: File system could not read the file!", r_texture->GetLibraryPath());
+							RELEASE(r_texture);
+							continue;
+						}
+
+						App->resource_manager->AddResource(r_texture);
+					}
+				}
+			}
+		}
+
+		App->scene->LoadScene(path);
+	}
 }
 
 void Importer::Scenes::Utilities::ImportFromAssets(const char* path, std::vector<GameObject*>& game_objects)

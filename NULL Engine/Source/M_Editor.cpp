@@ -481,6 +481,11 @@ float2 M_Editor::GetSceneTextureSizeThroughEditor() const
 	return this->scene->GetSceneTextureSize();
 }
 
+bool M_Editor::SceneIsHovered() const
+{
+	return this->scene->IsHovered();
+}
+
 bool M_Editor::UsingGuizmoInScene() const
 {
 	return this->scene->UsingGuizmo();

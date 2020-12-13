@@ -28,7 +28,7 @@ bool E_About::Draw(ImGuiIO& io)
 	
 	if (ImGui::BeginPopupModal("About", &App->editor->show_about_popup))
 	{	
-		ImGui::Text("NULL Engine v0.3 - By Angel Gonzalez (CITM UPC)");
+		ImGui::Text("NULL Engine v0.5 - By Angel Gonzalez (CITM UPC)");
 		ImGui::Text("This engine has been coded from scratch in C++ with the help of the libraries shown below.");
 
 		ImGui::Text("");

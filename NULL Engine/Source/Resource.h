@@ -30,7 +30,7 @@ public:
 	const char*			GetTypeAsString			() const;
 	
 	uint32				GetUID					() const;
-	void				ResetUID				();
+	void				ForceUID				(uint32 UID);
 
 	const char*			GetAssetsPath			() const;								// 
 	const char*			GetAssetsFile			() const;								// 

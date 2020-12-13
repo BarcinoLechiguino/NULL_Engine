@@ -5,6 +5,7 @@
 #include "JSONParser.h"
 #include "Random.h"
 
+#include "Application.h"
 #include "M_Renderer3D.h"																				// TMP. Move the Renderers generation elsewhere.
 
 #include "R_Mesh.h"
@@ -183,7 +184,7 @@ bool GameObject::LoadState(ParsonNode& root)
 			continue;
 		}
 		
-		COMPONENT_TYPE type			= (COMPONENT_TYPE)component_node.GetNumber("Type");
+		COMPONENT_TYPE type	= (COMPONENT_TYPE)component_node.GetNumber("Type");
 
 		if (type == COMPONENT_TYPE::TRANSFORM)
 		{
@@ -521,6 +522,14 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 
 bool GameObject::DeleteComponent(Component* component_to_delete)
 {
+	switch (component_to_delete->GetType())
+	{
+	case COMPONENT_TYPE::MESH: 
+		App->renderer->DeleteFromMeshRenderers((C_Mesh*)component_to_delete); 
+		show_bounding_boxes = false;
+		break;
+	}
+
 	std::string component_name = component_to_delete->GetNameFromType();
 	
 	if (component_to_delete != nullptr)

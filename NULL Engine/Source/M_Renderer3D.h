@@ -111,6 +111,8 @@ public:																											// --- RENDER GEOMETRY
 	void			RenderMeshes				();
 	void			RenderCuboids				();
 	void			RenderRays					();
+	void			DeleteFromMeshRenderers		(C_Mesh* c_mesh_to_delete);
+	void			DeleteFromCuboids			(float3* cuboid_to_delete);
 	void			ClearRenderers				();																// Loading scene measure.
 
 	void			RenderMesh					(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material);

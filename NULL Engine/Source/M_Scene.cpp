@@ -72,6 +72,7 @@ bool M_Scene::Start()
 	CreateSceneCamera("SceneCamera");
 
 	Importer::ImportFile("Assets/Models/street/Street Environment_V01.FBX");
+	//Importer::ImportFile("Assets/Scenes/MainScene.json");											// TMP Just to show that custom file format and serialization works.
 
 	return ret;
 }
@@ -329,6 +330,17 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 		selected_game_object = nullptr;
 	}
 	
+	if (game_object->GetMeshComponent() != nullptr)
+	{
+		std::vector<C_Mesh*> c_meshes;
+		game_object->GetAllMeshComponents(c_meshes);
+
+		for (uint i = 0; i < c_meshes.size(); ++i)
+		{
+			App->renderer->DeleteFromMeshRenderers(c_meshes[i]);
+		}
+	}
+
 	if (!game_objects.empty())
 	{
 		game_object->CleanUp();													// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
@@ -515,6 +527,7 @@ void M_Scene::SetSelectedGameObject(GameObject* game_object)
 		if (selected_game_object != nullptr)
 		{
 			LOG("[STATUS] Scene: De-Selected %s!", selected_game_object->GetName());
+			selected_game_object->show_bounding_boxes = false;
 		}
 
 		selected_game_object = nullptr;
@@ -523,12 +536,19 @@ void M_Scene::SetSelectedGameObject(GameObject* game_object)
 	{
 		if (game_object != selected_game_object)
 		{
+			if (selected_game_object != nullptr)
+			{
+				selected_game_object->show_bounding_boxes = false;
+			}
+			
 			selected_game_object = game_object;
 			
 			float3 go_ref = game_object->GetTransformComponent()->GetWorldPosition();
 			float3 reference = { go_ref.x, go_ref.y, go_ref.z };
 
 			App->camera->SetReference(reference);
+
+			selected_game_object->show_bounding_boxes = true;
 		}
 	}	
 }

@@ -69,11 +69,10 @@ bool C_Material::SaveState(ParsonNode& root) const
 		ParsonNode texture = root.SetNode("Texture");
 
 		texture.SetNumber("UID", r_texture->GetUID());
+		texture.SetString("Name", r_texture->GetAssetsFile());
 		texture.SetString("Path", r_texture->GetLibraryPath());
 		texture.SetString("File", r_texture->GetLibraryFile());
 	}
-
-
 
 	return ret;
 }

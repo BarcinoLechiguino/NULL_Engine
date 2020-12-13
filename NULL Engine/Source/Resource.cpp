@@ -57,9 +57,11 @@ uint32 Resource::GetUID() const
 	return uid;
 }
 
-void Resource::ResetUID()
+void Resource::ForceUID(uint32 UID)
 {
-	uid = Random::LCG::GetRandomUint();
+	uid = UID;											// TMP just for the delivery.
+	
+	//uid = Random::LCG::GetRandomUint();
 }
 
 const char* Resource::GetAssetsPath() const

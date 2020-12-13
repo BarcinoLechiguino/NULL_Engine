@@ -43,6 +43,8 @@ bool E_Scene::Draw(ImGuiIO& io)
 
 	ImGui::Begin("Scene");
 
+	SetIsHovered();
+
 	CheckSceneIsClicked();
 
 	AdaptTextureToWindowSize();

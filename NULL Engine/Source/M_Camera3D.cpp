@@ -97,11 +97,14 @@ bool M_Camera3D::SaveConfiguration(ParsonNode& root) const
 // -----------------------------------------------------------------
 UPDATE_STATUS M_Camera3D::Update(float dt)
 {
-	if (App->editor->EditorSceneIsBeingClicked() && !App->editor->UsingGuizmoInScene())
+	if (App->editor->SceneIsHovered())
 	{
-		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_REPEAT)
+		if (App->editor->EditorSceneIsBeingClicked() && !App->editor->UsingGuizmoInScene())
 		{
-			CastRay();
+			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_STATE::KEY_DOWN)
+			{
+				CastRay();
+			}
 		}
 	}
 	

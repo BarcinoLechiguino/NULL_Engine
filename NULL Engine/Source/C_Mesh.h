@@ -31,6 +31,7 @@ public:
 	void			SetMesh					(R_Mesh* r_mesh);						// Sets the R_Mesh* variable of the component. Will be normally set when a model is imported.
 
 	const char*		GetMeshPath				() const;
+	const char*		GetMeshFile				() const;
 	void			SetMeshPath				(const char* path);
 
 	void			GetMeshData				(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices);

@@ -98,6 +98,7 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	float2			GetWorldMouseMotionThroughEditor	() const;
 	float2			GetSceneTextureSizeThroughEditor	() const;
 
+	bool			SceneIsHovered						() const;
 	bool			UsingGuizmoInScene					() const;
 
 	void			LoadFileThroughEditor				(const char* path);						// Load File: Will send the given path to the Importer.

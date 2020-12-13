@@ -114,7 +114,8 @@ bool Importer::Utilities::FileHasModelExtension(const char* path)
 	std::string extension = App->file_system->GetFileExtension(path);
 
 	return (extension == "fbx" || extension == "FBX" 
-			|| extension == "obj" || extension == "OBJ");
+			|| extension == "obj" || extension == "OBJ"
+			|| extension == "json" || extension == "JSON");								// TMP
 }
 
 bool Importer::Utilities::FileHasTextureExtension(const char* path)

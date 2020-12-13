@@ -24,7 +24,9 @@ It has been coded from scratch in C and C++ along with the following libraries:
 * Github: BarcinoLechiguino (https://github.com/BarcinoLechiguino)
 * Repository: https://github.com/BarcinoLechiguino/NULL_Engine 
 
-**Implemented features** (As of 01/11/2020)
+**Implemented features** 
+
+**As of 01/11/2020:**
 
 * Library Integration (All o the stated in the introduction).
 * ImGui UI Display & Structure
@@ -34,6 +36,22 @@ It has been coded from scratch in C and C++ along with the following libraries:
 * 3D Model Loading (W/ Support for .fbx files)
 * Image Loading (W/ Support for .png and .dds files)
 * Drag & Drop Models and textures from a directory.
+  
+
+**As of 13/12/2020:**
+
+* GameObject Transform
+* Mesh Material Color Import
+* Custom File Formats for Mesh, Material and Texture resources. (.nemesh,  .nemat, .netex)
+* Scene and GameObject Serialization.
+* Editor Support for Loading Files.
+* All scene rendering operations are now batched and processed together.
+* Scene Framebuffer and Editor Scene displaying the Scene framebuffer texture.
+* Camera Component (Refactored from Camera Module)
+* Camera Frustum (FOV, Aspect Ratio, Near and Far Plane distance...)
+* Frustum Culling
+* Mouse Picking through Raycasting.
+* Editor Gizmos that allow to manipulation of the selected GameObject.
 
 
 
@@ -41,11 +59,23 @@ It has been coded from scratch in C and C++ along with the following libraries:
 
 ### Engine Features
 
-* **Main Menu Toolbar:** Placed at the top of the window. It has various menu items that allow to exit the engine, open/close editor panels and show some primitive examples.
+* **Main Menu Bar:** Placed at the top of the window. It has various menu items that allow to exit the engine, open/close editor panels and show some primitive examples.
+
+  ---
+
+* **Toolbar:** Placed at the top of the window, just below the Main Menu Bar. It contains various items such as the Play&Stop buttons. This feature will be further developed when the Play&Stop feature is Implemented.
 
   ****
 
 * **Configuration Panel:** Placed at the right side of the window. It has multiple collapsing headers that display different values and parameters of each existing module.
+
+  ---
+
+* **Scene Panel:** Placed at the center of the window. It will display the current state of the Engine's 3D environment. In this Panel GameObjects can be selected with the mouse and manipulated through the use of Gizmos.
+
+  ---
+
+* **Game Panel:**  Placed at the center of the window (tab at the right of the Scene Panel).  Will display the Engine's 3D environment while in "Game State". This feature will be further developed when the Play&Stop feature is implemented.
 
   ****
 
@@ -60,6 +90,14 @@ It has been coded from scratch in C and C++ along with the following libraries:
   ****
 
 * **Console Panel: ** Placed at the bottom of the window. It outputs information about the state of the engine: Loading&Saving, Importing models and textures...
+
+  ---
+
+* **Project Panel:** Placed at the bottom of the window. It shows all the assets inside the "Assets/" folder. This feature will be developed further when the Resource Manager is implemented.
+
+* ---
+
+  **Load File Panel:** Placed at the center of the window. It is hidden by default, and can be opened with *Ctrl + O*. It will display all the Assets that are inside the "Assets/" folder and allows to select a file and Importing it into the Engine.
 
   ****
 
@@ -89,9 +127,10 @@ No previous installation is required to use the engine, just download the latest
 
 #### **MOUSE**
 
-* **Right Click + Drag:** Rotates the camera on it's axis (Look Around).
-* **Wheel Click + Drag:** Moves the camera in the plane of the camera frame.
-* **Mouse Wheel:** Moves the camera forwards or backwards in its X axis.
+* **Right Click:** Selects the Game Object under the mouse.
+* **Left Alt + Right Click + Drag:** Rotates the camera around a target.
+* **Wheel Click + Drag:** Pans the camera in the plane of the camera frame.
+* **Mouse Wheel:** Zooms the camera in its Z axis.
 * **Left Alt + Left Click**: Rotate around a reference point.
 
 **KEYBOARD**
@@ -104,6 +143,8 @@ No previous installation is required to use the engine, just download the latest
 * **E Key:** Moves the camera vertically down on its Y axis.
 * **SHIFT Key:** Duplicates the camera's movement speed.
 * **O Key: ** Moves the camera back to the world origin.
+* **KP PLUS:** Increses the FOV of the current camera by 5 degrees.
+* **KP MINUS:** Decreases the FOV of the current camera by 5 degrees.
 
 
 
@@ -123,6 +164,8 @@ No previous installation is required to use the engine, just download the latest
 
 #### **Save&Load** 
 
+* **Ctrl + S:** Serializes the current scene.
+* **Ctrl + O:** Opens the "Load File" window, from which any file in "Assets/" can be loaded.
 * **F5 Key:** Save current editor state. (WIP, Not Working Yet)
 * **F6 Key:** Enable/Disable the show normals mode. (WIP, Not Working Yet)
 

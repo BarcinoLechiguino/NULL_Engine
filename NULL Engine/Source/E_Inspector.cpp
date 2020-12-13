@@ -242,7 +242,7 @@ void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 			ImGui::Separator();
 
 			// --- FILE PATH ---
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_mesh->GetMeshPath());
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_mesh->GetMeshFile());
 
 			ImGui::Separator();
 
@@ -322,7 +322,7 @@ void E_Inspector::DrawMaterialComponent(C_Material* c_material)
 			ImGui::Separator();
 
 			// --- MATERIAL PATH ---
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_material->GetTexturePath());
+			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_material->GetTextureFile());
 
 			ImGui::Separator();
 
