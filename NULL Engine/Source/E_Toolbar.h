@@ -13,8 +13,8 @@ public:
 	bool CleanUp() override;
 
 private:
-
-
+	void PlayAndStopButtons();
+	void TimeDisplays();
 };
 
 #endif // !__E_TOOLBAR_H__

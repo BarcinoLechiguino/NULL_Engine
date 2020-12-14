@@ -35,8 +35,8 @@ bool E_Scene::Draw(ImGuiIO& io)
 
 	ImGui::Begin("Game");
 	
-	CheckSceneIsClicked();
-	
+	SetIsHovered();
+
 	AdaptTextureToWindowSize();
 	DrawSceneTexture();
 	
@@ -45,8 +45,6 @@ bool E_Scene::Draw(ImGuiIO& io)
 	ImGui::Begin("Scene");
 
 	SetIsHovered();
-
-	CheckSceneIsClicked();
 
 	AdaptTextureToWindowSize();
 	DrawSceneTexture();
@@ -134,39 +132,6 @@ bool E_Scene::HoveringGuizmo()
 	return /*ImGuizmo::IsUsing ||*/ ImGuizmo::IsOver();
 }
 
-void E_Scene::CheckSceneIsClicked()
-{
-	SetIsHovered();
-	
-	//if (ImGui::IsWindowHovered())
-	//{
-	//	ImGui::FocusWindow(ImGui::GetCurrentWindow());
-	//}
-	//else
-	//{
-	//	//ImGui::FocusWindow();
-	//	
-	//	/*if (ImGui::IsWindowFocused())
-	//	{
-	//		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
-	//			|| ImGui::IsMouseClicked(ImGuiMouseButton_Right) 
-	//			|| ImGui::IsMouseClicked(ImGuiMouseButton_Middle))
-	//		{
-	//			ImGui::FocusWindow(nullptr);
-	//		}
-	//	}*/
-	//}
-	//
-	//if (ImGui::IsWindowFocused())
-	//{
-	//	SetIsClicked(true);
-	//}
-	//else
-	//{
-	//	SetIsClicked(false);
-	//}
-}
-
 void E_Scene::AdaptTextureToWindowSize()
 {	
 	tex_size			= ImVec2((float)App->window->GetWidth(), (float)App->window->GetHeight());
@@ -202,7 +167,6 @@ void E_Scene::DrawSceneTexture()
 	tex_origin.y	= (float)App->window->GetHeight() - tex_origin.y;										// Converting from top-left Y origin to bottom-left Y origin.
 
 	ImGui::Image((ImTextureID)App->renderer->GetSceneRenderTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
-
 	//ImGui::Image((ImTextureID)App->renderer->GetDepthBufferTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 }
 

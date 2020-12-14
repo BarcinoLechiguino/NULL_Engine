@@ -183,7 +183,7 @@ bool M_Scene::LoadConfiguration(ParsonNode& root)
 }
 
 // -------------- SCENE METHODS --------------
-bool M_Scene::SaveScene() const
+bool M_Scene::SaveScene(const char* scene_name) const
 {
 	bool ret = true;
 
@@ -198,7 +198,9 @@ bool M_Scene::SaveScene() const
 
 	char* buffer		= nullptr;
 	uint size			= root_node.SerializeToBuffer(&buffer);
-	std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(scene_root->GetName()) + std::string(JSON_EXTENSION);
+	std::string name	= (scene_name != nullptr) ? scene_name : scene_root->GetName();
+	std::string path	= ASSETS_SCENES_PATH + name + JSON_EXTENSION;
+	//std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(scene_root->GetName()) + std::string(JSON_EXTENSION);
 
 	uint written = App->file_system->Save(path.c_str(), buffer, size);
 	if (written > 0)
@@ -209,6 +211,9 @@ bool M_Scene::SaveScene() const
 	{
 		LOG("[ERROR] Could not save the current scene! Error: FileSystem could not write any data!");
 	}
+
+	name.clear();
+	path.clear();
 
 	return ret;
 }

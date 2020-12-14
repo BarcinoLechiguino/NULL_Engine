@@ -288,11 +288,6 @@ bool M_Editor::EditorIsBeingHovered() const
 	return false;
 }
 
-bool M_Editor::EditorSceneIsBeingClicked() const
-{
-	return App->editor->scene->IsClicked();
-}
-
 bool M_Editor::RenderEditorPanels() const
 {
 	// Rendering all ImGui elements
@@ -307,8 +302,8 @@ bool M_Editor::RenderEditorPanels() const
 	// Updating and rendering additional platform windows
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+		SDL_Window* backup_current_window		= SDL_GL_GetCurrentWindow();
+		SDL_GLContext backup_current_context	= SDL_GL_GetCurrentContext();
 
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
@@ -499,6 +494,11 @@ bool M_Editor::HoveringGuizmo() const
 bool M_Editor::SelectedIsSceneRoot() const
 {
 	return (App->scene->GetSelectedGameObject() == App->scene->GetSceneRoot());
+}
+
+void M_Editor::SaveSceneThroughEditor(const char* scene_name)
+{
+	App->scene->SaveScene(scene_name);
 }
 
 void M_Editor::LoadFileThroughEditor(const char* path)

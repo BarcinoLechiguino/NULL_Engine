@@ -29,7 +29,7 @@ public:
 	bool			LoadConfiguration	(ParsonNode& root) override;
 
 public:																														// --- GAME OBJECTS METHODS ---
-	bool			SaveScene								() const;														// 
+	bool			SaveScene								(const char* scene_name = nullptr) const;						// If no name is given the scene_root node's name will be used.
 	bool			LoadScene								(const char* path);												// 
 
 	std::vector<GameObject*>* GetGameObjects				();

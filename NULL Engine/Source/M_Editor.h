@@ -65,10 +65,8 @@ public:
 	void			CheckShowHideFlags					();										// Will check whether or not each of the panels must be enabled or disabled.
 
 	bool			EditorIsBeingHovered				() const;								// Will check whether or not any of the editor panels is being hovered.
-	bool			EditorSceneIsBeingClicked			() const;
 	bool			RenderEditorPanels					() const;								// Will call ImGui::Render() to render all the panels on the screen.
 	bool			InitializeImGui						() const;								// Creates an ImGui Context and sets an initial configuration for it.
-
 
 public:																							// --- Panel/Window Methods. Acts as an interface between other modules and the panels.
 	bool			GetShowWorldGrid					() const;								// Will return true if the World Grid is being currently shown.
@@ -102,6 +100,7 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	bool			UsingGuizmoInScene					() const;
 	bool			HoveringGuizmo						() const;
 
+	void			SaveSceneThroughEditor				(const char* scene_name);
 	void			LoadFileThroughEditor				(const char* path);						// Load File: Will send the given path to the Importer.
 
 private:

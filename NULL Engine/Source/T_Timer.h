@@ -1,6 +1,7 @@
 #ifndef __T_TIMER_H__
 #define __T_TIMER_H__
 
+typedef unsigned char		uchar;
 typedef unsigned int		uint;
 typedef unsigned __int32	uint32;
 
