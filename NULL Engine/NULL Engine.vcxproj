@@ -75,14 +75,13 @@
     <ClCompile Include="Source\E_About.cpp" />
     <ClCompile Include="Source\E_Configuration.cpp" />
     <ClCompile Include="Source\E_Console.cpp" />
-    <ClCompile Include="Source\E_Game.cpp" />
     <ClCompile Include="Source\E_Hierarchy.cpp" />
     <ClCompile Include="Source\E_Inspector.cpp" />
     <ClCompile Include="Source\E_LoadFile.cpp" />
     <ClCompile Include="Source\EditorPanel.cpp" />
     <ClCompile Include="Source\E_ImGuiDemo.cpp" />
     <ClCompile Include="Source\E_Project.cpp" />
-    <ClCompile Include="Source\E_Scene.cpp" />
+    <ClCompile Include="Source\E_Viewport.cpp" />
     <ClCompile Include="Source\E_MainMenuBar.cpp" />
     <ClCompile Include="Source\E_Toolbar.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
@@ -240,7 +239,6 @@
     <ClInclude Include="Source\Dependencies\PCG\include\pcg_basic.h" />
     <ClInclude Include="Source\Dependencies\PhysFS\include\physfs.h" />
     <ClInclude Include="Source\DevIL.h" />
-    <ClInclude Include="Source\E_Game.h" />
     <ClInclude Include="Source\E_LoadFile.h" />
     <ClInclude Include="Source\E_Project.h" />
     <ClInclude Include="Source\E_Toolbar.h" />
@@ -252,7 +250,7 @@
     <ClInclude Include="Source\E_Inspector.h" />
     <ClInclude Include="Source\EditorPanel.h" />
     <ClInclude Include="Source\E_ImGuiDemo.h" />
-    <ClInclude Include="Source\E_Scene.h" />
+    <ClInclude Include="Source\E_Viewport.h" />
     <ClInclude Include="Source\E_MainMenuBar.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\HardwareInfo.h" />

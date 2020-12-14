@@ -43,6 +43,7 @@ void E_Toolbar::PlayAndStopButtons()
 	{
 		App->editor->SaveSceneThroughEditor("PlayAutosave");
 		//App->in_game_mode = true;
+		App->play = true;
 	}
 
 	ImGui::SameLine();
@@ -51,6 +52,7 @@ void E_Toolbar::PlayAndStopButtons()
 	{
 		App->editor->LoadFileThroughEditor("Assets/Scenes/PlayAutosave.json");
 		//App->in_game_mode = false;
+		App->play = false;
 	}
 }
 

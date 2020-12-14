@@ -198,9 +198,6 @@
     <ClCompile Include="Source\GameObject.cpp">
       <Filter>Source\5_GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="Source\E_Scene.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
     <ClCompile Include="Source\R_Model.cpp">
       <Filter>Source\3_Resources</Filter>
     </ClCompile>
@@ -438,9 +435,6 @@
     <ClCompile Include="Source\EditorPanel.cpp">
       <Filter>Source\2_Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Source\E_Game.cpp">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClCompile>
     <ClCompile Include="Source\E_MainMenuBar.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
@@ -455,6 +449,9 @@
     </ClCompile>
     <ClCompile Include="Source\Dependencies\ImGuizmo\include\ImGuizmo.cpp">
       <Filter>Dependencies\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\E_Viewport.cpp">
+      <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -577,9 +574,6 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\Brofiler\include\Brofiler.h">
       <Filter>Dependencies\Brofiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\E_Scene.h">
-      <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
     <ClInclude Include="Source\R_Material.h">
       <Filter>Source\3_Resources</Filter>
@@ -974,9 +968,6 @@
     <ClInclude Include="Source\EditorPanel.h">
       <Filter>Source\2_Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Source\E_Game.h">
-      <Filter>Source\2_Editor\Panels</Filter>
-    </ClInclude>
     <ClInclude Include="Source\E_MainMenuBar.h">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
@@ -991,6 +982,9 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\ImGuizmo\include\ImGuizmo.h">
       <Filter>Dependencies\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Viewport.h">
+      <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

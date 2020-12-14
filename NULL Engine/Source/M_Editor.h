@@ -18,7 +18,7 @@ class E_Hierarchy;
 class E_Inspector;
 class E_Console;
 class E_Project;
-class E_Scene;
+class E_Viewport;
 class E_Game;
 class E_ImGuiDemo;
 class E_About;
@@ -117,8 +117,7 @@ public:
 	E_Inspector*				inspector;
 	E_Console*					console;
 	E_Project*					project;
-	E_Scene*					scene;
-	E_Game*						game;
+	E_Viewport*					viewport;
 	E_ImGuiDemo*				imgui_demo;
 	E_About*					about;
 	E_LoadFile*					load_file;
