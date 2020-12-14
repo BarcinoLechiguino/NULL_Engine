@@ -491,6 +491,11 @@ bool M_Editor::UsingGuizmoInScene() const
 	return this->scene->UsingGuizmo();
 }
 
+bool M_Editor::HoveringGuizmo() const
+{
+	return this->scene->HoveringGuizmo();
+}
+
 bool M_Editor::SelectedIsSceneRoot() const
 {
 	return (App->scene->GetSelectedGameObject() == App->scene->GetSceneRoot());

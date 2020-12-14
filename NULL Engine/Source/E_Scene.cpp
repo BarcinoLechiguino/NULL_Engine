@@ -18,7 +18,8 @@ tex_size			({ 0.0f, 0.0f }),
 tex_origin			({ 0.0f, 0.0f }),
 cursor_pos			({ 0.0f, 0.0f }),
 guizmo_operation	(ImGuizmo::OPERATION::TRANSLATE),
-guizmo_mode			(ImGuizmo::MODE::WORLD)
+guizmo_mode			(ImGuizmo::MODE::WORLD),
+using_guizmo		(false)
 {
 
 }
@@ -128,33 +129,42 @@ bool E_Scene::UsingGuizmo()
 	return ImGuizmo::IsUsing();
 }
 
+bool E_Scene::HoveringGuizmo()
+{
+	return /*ImGuizmo::IsUsing ||*/ ImGuizmo::IsOver();
+}
+
 void E_Scene::CheckSceneIsClicked()
 {
-	if (ImGui::IsWindowHovered())
-	{
-		ImGui::FocusWindow(ImGui::GetCurrentWindow());
-	}
-	else
-	{
-		if (ImGui::IsWindowFocused())
-		{
-			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
-				|| ImGui::IsMouseClicked(ImGuiMouseButton_Right) 
-				|| ImGui::IsMouseClicked(ImGuiMouseButton_Middle))
-			{
-				ImGui::FocusWindow(nullptr);
-			}
-		}
-	}
-
-	if (ImGui::IsWindowFocused())
-	{
-		SetIsClicked(true);
-	}
-	else
-	{
-		SetIsClicked(false);
-	}
+	SetIsHovered();
+	
+	//if (ImGui::IsWindowHovered())
+	//{
+	//	ImGui::FocusWindow(ImGui::GetCurrentWindow());
+	//}
+	//else
+	//{
+	//	//ImGui::FocusWindow();
+	//	
+	//	/*if (ImGui::IsWindowFocused())
+	//	{
+	//		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) 
+	//			|| ImGui::IsMouseClicked(ImGuiMouseButton_Right) 
+	//			|| ImGui::IsMouseClicked(ImGuiMouseButton_Middle))
+	//		{
+	//			ImGui::FocusWindow(nullptr);
+	//		}
+	//	}*/
+	//}
+	//
+	//if (ImGui::IsWindowFocused())
+	//{
+	//	SetIsClicked(true);
+	//}
+	//else
+	//{
+	//	SetIsClicked(false);
+	//}
 }
 
 void E_Scene::AdaptTextureToWindowSize()
@@ -198,6 +208,8 @@ void E_Scene::DrawSceneTexture()
 
 void E_Scene::HandleGuizmos()
 {	
+	using_guizmo = false;
+
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_DOWN)
 	{
 		guizmo_operation	= ImGuizmo::OPERATION::TRANSLATE;
@@ -246,6 +258,8 @@ void E_Scene::HandleGuizmos()
 
 	if (ImGuizmo::IsUsing())
 	{
+		using_guizmo = true;
+
 		world_transform = world_transform.Transposed();
 		selected->GetTransformComponent()->SetWorldTransform(world_transform);
 	}

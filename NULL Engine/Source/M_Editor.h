@@ -100,6 +100,7 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 
 	bool			SceneIsHovered						() const;
 	bool			UsingGuizmoInScene					() const;
+	bool			HoveringGuizmo						() const;
 
 	void			LoadFileThroughEditor				(const char* path);						// Load File: Will send the given path to the Importer.
 
