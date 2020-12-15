@@ -216,7 +216,7 @@ void Importer::Scenes::Utilities::ImportFromAssets(const char* path, std::vector
 
 		if (game_objects.size() > size)
 		{
-			game_objects[size]->GetTransformComponent()->Translate(float3::zero);	// Dirty way to refresh the transforms after the import is done. TMP.
+			game_objects[size]->GetComponent<C_Transform>()->Translate(float3::zero);	// Dirty way to refresh the transforms after the import is done. TMP.
 		}
 	}
 }
@@ -278,7 +278,7 @@ const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node
 		ma_t.scale.Mul(dummy.scale);																		// ----------------------------------------------------
 	}
 	
-	game_object->GetTransformComponent()->ImportTransform(ma_t.position, ma_t.rotation, ma_t.scale);		// Importing the final Transform into the game object's transform component.
+	game_object->GetComponent<C_Transform>()->ImportTransform(ma_t.position, ma_t.rotation, ma_t.scale);	// Importing the final Transform into the game object's transform component.
 
 	LOG("[IMPORTER] Imported the transforms of node: %s", ai_node->mName.C_Str());
 

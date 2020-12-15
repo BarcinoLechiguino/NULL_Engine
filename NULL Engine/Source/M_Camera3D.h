@@ -4,8 +4,6 @@
 #include "MathGeoLib/include/Geometry/LineSegment.h";
 #include "Module.h"
 
-#include "glmath.h"
-
 class ParsonNode;
 class GameObject;
 class C_Camera;

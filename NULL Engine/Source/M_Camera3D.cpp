@@ -47,7 +47,7 @@ bool M_Camera3D::Init(ParsonNode& root)
 	//Position.y = root.GetNumber("Y");
 	//Position.z = root.GetNumber("Z");
 	
-	master_camera->GetTransformComponent()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
+	master_camera->GetComponent<C_Transform>()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
 	LookAt(reference);
 	//current_camera->UpdateFrustumTransform();
 
@@ -122,9 +122,9 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 			{
 				if (App->scene->GetSelectedGameObject() != nullptr)
 				{
-					if (App->scene->GetSelectedGameObject()->GetCameraComponent() != current_camera)
+					if (App->scene->GetSelectedGameObject()->GetComponent<C_Camera>() != current_camera)
 					{
-						reference = App->scene->GetSelectedGameObject()->GetTransformComponent()->GetWorldPosition();
+						reference = App->scene->GetSelectedGameObject()->GetComponent<C_Transform>()->GetWorldPosition();
 					}
 				}
 				else
@@ -156,7 +156,7 @@ UPDATE_STATUS M_Camera3D::Update(float dt)
 
 		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_STATE::KEY_DOWN)
 		{
-			float3 target = App->scene->GetSelectedGameObject()->GetTransformComponent()->GetWorldPosition();
+			float3 target = App->scene->GetSelectedGameObject()->GetComponent<C_Transform>()->GetWorldPosition();
 			Focus(target);
 		}
 	}
@@ -170,15 +170,17 @@ void M_Camera3D::CreateMasterCamera()
 	master_camera = new GameObject();
 	master_camera->SetName("MasterCamera");
 	master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
-	master_camera->GetCameraComponent()->SetFarPlaneDistance(1000.0f);
-	SetCurrentCamera(master_camera->GetCameraComponent());
+	
+	C_Camera* c_camera = master_camera->GetComponent<C_Camera>();
+	c_camera->SetFarPlaneDistance(1000.0f);
+	SetCurrentCamera(c_camera);
 	
 	if (App != nullptr)
 	{
 		float win_width		= (float)App->window->GetWidth();
 		float win_height	= (float)App->window->GetHeight();
 		
-		master_camera->GetCameraComponent()->SetAspectRatio(win_width/ win_height);
+		c_camera->SetAspectRatio(win_width/ win_height);
 	}
 }
 
@@ -228,7 +230,8 @@ void M_Camera3D::SetMasterCameraAsCurrentCamera()
 		CreateMasterCamera();
 	}
 
-	if (master_camera->GetCameraComponent() == nullptr)
+	C_Camera* c_camera = master_camera->GetComponent<C_Camera>();
+	if (c_camera == nullptr)
 	{
 		LOG("[ERROR] Camera: Could not set the master camera as the current camera! Error: Master Camera did not have a Camera Component.");
 		LOG("[WARNING] Camera: Created a new Camera Component for the Master Camera. Reason: Master Camera did not have a Camera Component!");
@@ -236,7 +239,7 @@ void M_Camera3D::SetMasterCameraAsCurrentCamera()
 		master_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
 	}
 
-	current_camera = master_camera->GetCameraComponent();
+	current_camera = c_camera;
 	current_camera->SetUpdateProjectionMatrix(true);
 }
 
@@ -494,34 +497,34 @@ void M_Camera3D::SetZoomSpeed(const float& zoom_speed)
 
 float3 M_Camera3D::GetMasterCameraPosition() const
 {
-	return master_camera->GetTransformComponent()->GetWorldPosition();
+	return master_camera->GetComponent<C_Transform>()->GetWorldPosition();
 }
 
 float3 M_Camera3D::GetMasterCameraRotation() const
 {
 	//return master_camera->GetTransformComponent()->GetWorldEulerRotation();
-	return master_camera->GetTransformComponent()->GetLocalEulerRotation();
+	return master_camera->GetComponent<C_Transform>()->GetLocalEulerRotation();
 }
 
 float3 M_Camera3D::GetMasterCameraScale() const
 {
-	return master_camera->GetTransformComponent()->GetWorldScale();
+	return master_camera->GetComponent<C_Transform>()->GetWorldScale();
 }
 
 void M_Camera3D::SetMasterCameraPosition(const float3& position)
 {
-	master_camera->GetTransformComponent()->SetWorldPosition(position);
+	master_camera->GetComponent<C_Transform>()->SetWorldPosition(position);
 }
 
 void M_Camera3D::SetMasterCameraRotation(const float3& rotation)
 {
 	//master_camera->GetTransformComponent()->SetWorldRotation(rotation);
-	master_camera->GetTransformComponent()->SetLocalRotation(rotation);
+	master_camera->GetComponent<C_Transform>()->SetLocalRotation(rotation);
 }
 
 void M_Camera3D::SetMasterCameraScale(const float3& scale)
 {
-	master_camera->GetTransformComponent()->SetWorldScale(scale);
+	master_camera->GetComponent<C_Transform>()->SetWorldScale(scale);
 }
 
 void M_Camera3D::CastRay()

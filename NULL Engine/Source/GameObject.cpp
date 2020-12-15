@@ -188,7 +188,7 @@ bool GameObject::LoadState(ParsonNode& root)
 
 		if (type == COMPONENT_TYPE::TRANSFORM)
 		{
-			GetTransformComponent()->LoadState(component_node);
+			GetComponent<C_Transform>()->LoadState(component_node);
 			continue;
 		}
 		else
@@ -252,7 +252,7 @@ void GameObject::FreeChilds()
 void GameObject::UpdateBoundingBoxes()
 {
 	std::vector<C_Mesh*> c_meshes;
-	GetAllMeshComponents(c_meshes);
+	GetComponents<C_Mesh>(c_meshes);
 
 	for (uint i = 0; i < c_meshes.size(); ++i)
 	{
@@ -262,7 +262,7 @@ void GameObject::UpdateBoundingBoxes()
 		}
 		
 		obb = c_meshes[i]->GetMesh()->GetAABB();
-		obb.Transform(GetTransformComponent()->GetWorldTransform());
+		obb.Transform(GetComponent<C_Transform>()->GetWorldTransform());
 
 		aabb.SetNegativeInfinity();
 		aabb.Enclose(obb);
@@ -284,10 +284,10 @@ float3* GameObject::GetAABBVertices() const
 void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers)
 {
 	std::vector<C_Mesh*> c_meshes;
-	GetAllMeshComponents(c_meshes);
+	GetComponents<C_Mesh>(c_meshes);
 
-	C_Material* c_material	= GetMaterialComponent();
-	C_Camera* c_camera		= GetCameraComponent();
+	C_Material* c_material	= GetComponent<C_Material>();
+	C_Camera* c_camera		= GetComponent<C_Camera>();
 
 	for (uint i = 0; i < c_meshes.size(); ++i)
 	{
@@ -295,7 +295,7 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 		{
 			if (c_meshes[i]->IsActive() && c_meshes[i]->GetMesh() != nullptr)
 			{
-				mesh_renderers.push_back(MeshRenderer(GetTransformComponent()->GetWorldTransform(), c_meshes[i], c_material));
+				mesh_renderers.push_back(MeshRenderer(GetComponent<C_Transform>()->GetWorldTransform(), c_meshes[i], c_material));
 			}
 		}
 	}
@@ -345,8 +345,7 @@ bool GameObject::SetParent(GameObject* new_parent)
 		success = parent->DeleteChild(this);
 		if (success)
 		{
-			GetTransformComponent()->SyncLocalToWorld();
-			//GetTransformComponent()->sync_local_to_global = true;
+			GetComponent<C_Transform>()->SyncLocalToWorld();
 		}
 		else
 		{
@@ -466,6 +465,78 @@ bool GameObject::HasChilds() const
 	return !childs.empty();
 }
 
+// --- GAME OBJECT GETTERS AND SETTERS ---
+const char* GameObject::GetName() const
+{
+	return name.c_str();
+}
+
+bool GameObject::IsActive() const
+{
+	return is_active;
+}
+
+bool GameObject::IsStatic() const
+{
+	return is_static;
+}
+
+void GameObject::ForceUID(const uint32& UID)
+{
+	uid = UID;
+}
+
+void GameObject::SetName(const char* new_name)
+{
+	name = new_name;
+}
+
+void GameObject::SetIsActive(const bool& set_to)
+{
+	is_active = set_to;
+
+	SetChildsIsActive(set_to, this);
+}
+
+void GameObject::SetIsStatic(const bool& set_to)
+{
+	is_static = set_to;
+
+	SetChildsIsStatic(set_to, this);
+}
+
+void GameObject::SetChildsIsActive(const bool& set_to, GameObject* parent)
+{
+	if (parent != nullptr)
+	{
+		for (uint i = 0; i < parent->childs.size(); ++i)
+		{
+			parent->childs[i]->is_active = set_to;
+
+			SetChildsIsActive(set_to, parent->childs[i]);
+		}
+	}
+}
+
+void GameObject::SetChildsIsStatic(const bool& set_to, GameObject* parent)
+{
+	if (parent != nullptr)
+	{
+		for (uint i = 0; i < parent->childs.size(); ++i)
+		{
+			parent->childs[i]->is_static = set_to;
+
+			SetChildsIsStatic(set_to, parent->childs[i]);
+		}
+	}
+}
+
+uint32 GameObject::GetParentUID() const
+{
+	return parent_uid;
+}
+
+// --- COMPONENT METHODS ---
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
 	Component* component = nullptr;
@@ -556,156 +627,22 @@ bool GameObject::DeleteComponent(Component* component_to_delete)
 	return false;
 }
 
-Component* GameObject::GetComponent(COMPONENT_TYPE type)
+const std::vector<Component*>& GameObject::GetAllComponents() const
 {
-	for (uint i = 0; i < components.size(); ++i)
+	return components;
+}
+
+bool GameObject::GetAllComponents(std::vector<Component*>& components) const
+{
+	for (uint i = 0; i < this->components.size(); ++i)
 	{
-		if (components[i]->GetType() == type)
-		{
-			return components[i];
-		}
+		components.push_back(this->components[i]);
 	}
 
-	//LOG("[WARNING] Could not find %s Component in %s", GetComponentNameFromType(type), name.c_str());
-
-	return nullptr;
-}
-
-const char* GameObject::GetComponentNameFromType(COMPONENT_TYPE type)
-{
-	switch (type)
-	{
-	case COMPONENT_TYPE::NONE:		{ return "None"; }		break;
-	case COMPONENT_TYPE::TRANSFORM: { return "Transform"; } break;
-	case COMPONENT_TYPE::MESH:		{ return "Mesh"; }		break;
-	case COMPONENT_TYPE::MATERIAL:	{ return "Material"; }	break;
-	case COMPONENT_TYPE::LIGHT:		{ return "Light"; }		break;
-	}
-
-	LOG("[ERROR] Could Not Get Component Name From Type");
-
-	return "Invalid Component Type";
-}
-
-void GameObject::GetAllComponentsWithType(std::vector<Component*>& components_with_type, COMPONENT_TYPE type)
-{	
-	for (uint i = 0; i < components.size(); ++i)
-	{
-		if (components[i]->GetType() == type)
-		{
-			components_with_type.push_back(components[i]);
-		}
-	}
-}
-
-C_Transform* GameObject::GetTransformComponent()
-{
-	return (C_Transform*)GetComponent(COMPONENT_TYPE::TRANSFORM);					// The component is returned directly without any checks as the checks will be done in GetComponent().
-}
-
-C_Mesh* GameObject::GetMeshComponent()
-{
-	return (C_Mesh*)GetComponent(COMPONENT_TYPE::MESH);
-}
-
-C_Material* GameObject::GetMaterialComponent()
-{
-	return (C_Material*)GetComponent(COMPONENT_TYPE::MATERIAL);
-}
-
-C_Light* GameObject::GetLightComponent()
-{
-	return (C_Light*)GetComponent(COMPONENT_TYPE::LIGHT);
-}
-
-C_Camera* GameObject::GetCameraComponent()
-{
-	return (C_Camera*)GetComponent(COMPONENT_TYPE::CAMERA);
-}
-
-void GameObject::GetAllMeshComponents(std::vector<C_Mesh*>& c_meshes)
-{
-	for (uint i = 0; i < components.size(); ++i)
-	{
-		if (components[i]->GetType() == COMPONENT_TYPE::MESH)
-		{
-			c_meshes.push_back((C_Mesh*)components[i]);
-		}
-	}
+	return components.empty() ? false : true;
 }
 
 uint32 GameObject::GetUID() const
 {
 	return uid;
-}
-
-// --- GAME OBJECT GETTERS AND SETTERS ---
-const char* GameObject::GetName() const
-{
-	return name.c_str();
-}
-
-bool GameObject::IsActive() const
-{
-	return is_active;
-}
-
-bool GameObject::IsStatic() const
-{
-	return is_static;
-}
-
-void GameObject::ForceUID(const uint32& UID)
-{
-	uid = UID;
-}
-
-void GameObject::SetName(const char* new_name)
-{
-	name = new_name;
-}
-
-void GameObject::SetIsActive(const bool& set_to)
-{
-	is_active = set_to;
-
-	SetChildsIsActive(set_to, this);
-}
-
-void GameObject::SetIsStatic(const bool& set_to)
-{
-	is_static = set_to;
-
-	SetChildsIsStatic(set_to, this);
-}
-
-void GameObject::SetChildsIsActive(const bool& set_to, GameObject* parent)
-{	
-	if (parent != nullptr)
-	{
-		for (uint i = 0; i < parent->childs.size(); ++i)
-		{
-			parent->childs[i]->is_active = set_to;
-
-			SetChildsIsActive(set_to, parent->childs[i]);
-		}
-	}
-}
-
-void GameObject::SetChildsIsStatic(const bool& set_to, GameObject* parent)
-{
-	if (parent != nullptr)
-	{
-		for (uint i = 0; i < parent->childs.size(); ++i)
-		{
-			parent->childs[i]->is_static = set_to;
-
-			SetChildsIsStatic(set_to, parent->childs[i]);
-		}
-	}
-}
-
-uint32 GameObject::GetParentUID() const
-{
-	return parent_uid;
 }

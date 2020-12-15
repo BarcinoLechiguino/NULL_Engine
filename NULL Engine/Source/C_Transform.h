@@ -19,6 +19,8 @@ public:
 	bool SaveState	(ParsonNode& root) const override;
 	bool LoadState	(ParsonNode& root) override;
 
+	static inline COMPONENT_TYPE GetType()	{ return COMPONENT_TYPE::TRANSFORM; }	// This is needed to be able to use templeates for functions such as GetComponent<>();
+
 public:																				// --- C_TRANSFORM METHODS ---
 	void		SyncLocalToWorld();													// Recalcuates the local transform to sync it to world_transform.	Ex: new world --> SyncLocalToWorld();
 	

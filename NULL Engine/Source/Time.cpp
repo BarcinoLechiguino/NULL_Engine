@@ -93,7 +93,7 @@ float Time::Real::GetDT()
 // --- GAME CLOCK METHODS ---
 void Time::Game::Update()
 {
-	uint ms = game_frame_timer.Read() * time_scale;
+	uint ms = (uint)((float)game_frame_timer.Read() * time_scale);
 
 	game_clock.Update(ms);
 	game_frame_data.Update(ms);

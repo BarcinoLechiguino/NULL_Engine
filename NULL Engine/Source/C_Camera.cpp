@@ -109,7 +109,7 @@ void C_Camera::InitFrustum()
 
 void C_Camera::UpdateFrustumTransform()
 {
-	float4x4 world_transform	= this->GetOwner()->GetTransformComponent()->GetWorldTransform();
+	float4x4 world_transform	= this->GetOwner()->GetComponent<C_Transform>()->GetWorldTransform();
 	float3x4 world_matrix		= float3x4::identity;
 
 	world_matrix.SetTranslatePart(world_transform.TranslatePart());
@@ -177,12 +177,12 @@ void C_Camera::LookAt(const float3& target)
 	frustum.SetUp(look_at_matrix.MulDir(frustum.Up()).Normalized());
 
 	float4x4 world_matrix = frustum.WorldMatrix();
-	this->GetOwner()->GetTransformComponent()->SetWorldTransform(world_matrix);											// Setting the updated world transform.
+	this->GetOwner()->GetComponent<C_Transform>()->SetWorldTransform(world_matrix);											// Setting the updated world transform.
 }
 
 void C_Camera::Move(const float3& velocity)
 {
-	this->GetOwner()->GetTransformComponent()->Translate(velocity);
+	this->GetOwner()->GetComponent<C_Transform>()->Translate(velocity);
 }
 
 void C_Camera::Rotate(const float3x3& rotation_matrix)
@@ -191,7 +191,7 @@ void C_Camera::Rotate(const float3x3& rotation_matrix)
 
 	world_matrix.SetRotatePart(rotation_matrix);
 
-	this->GetOwner()->GetTransformComponent()->SetWorldTransform(world_matrix);											// Setting the updated world transform.
+	this->GetOwner()->GetComponent<C_Transform>()->SetWorldTransform(world_matrix);											// Setting the updated world transform.
 }
 
 void C_Camera::Focus(const float3& target, const float& distance_to_target)
@@ -209,7 +209,7 @@ void C_Camera::Focus(const float3& target, const float& distance_to_target)
 
 void C_Camera::SetPosition(const float3& position)
 {
-	this->GetOwner()->GetTransformComponent()->SetWorldPosition(position);
+	this->GetOwner()->GetComponent<C_Transform>()->SetWorldPosition(position);
 }
 
 void C_Camera::UpdateFrustumPlanes()

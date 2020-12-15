@@ -76,10 +76,10 @@ void Component::SetIsActive(const bool& set_to)
 	is_active = set_to;
 }
 
-COMPONENT_TYPE Component::GetType() const
-{
-	return type;
-}
+//COMPONENT_TYPE Component::GetType() const
+//{
+//	return type;
+//}
 
 GameObject* Component::GetOwner() const
 {

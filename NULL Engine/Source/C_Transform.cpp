@@ -124,7 +124,7 @@ void C_Transform::UpdateWorldTransform()
 
 	if (owner->parent != nullptr)
 	{
-		world_transform = owner->parent->GetTransformComponent()->world_transform * local_transform;
+		world_transform = owner->parent->GetComponent<C_Transform>()->world_transform * local_transform;
 	}
 	else
 	{
@@ -133,14 +133,14 @@ void C_Transform::UpdateWorldTransform()
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
-		owner->childs[i]->GetTransformComponent()->UpdateWorldTransform();
+		owner->childs[i]->GetComponent<C_Transform>()->UpdateWorldTransform();
 		//owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
 
-	if (owner->GetCameraComponent() != nullptr)
+	C_Camera* c_camera = owner->GetComponent<C_Camera>();
+	if (c_camera != nullptr)
 	{
-		//owner->GetCameraComponent()->SetUpdateFrustumTransform(true);
-		owner->GetCameraComponent()->UpdateFrustumTransform();
+		c_camera->UpdateFrustumTransform();
 	}
 
 	//update_world_transform = false;
@@ -152,7 +152,7 @@ void C_Transform::SyncWorldToLocal()
 
 	if (owner->parent != nullptr)
 	{
-		world_transform = owner->parent->GetTransformComponent()->world_transform * local_transform;
+		world_transform = owner->parent->GetComponent<C_Transform>()->world_transform * local_transform;
 	}
 	else
 	{
@@ -161,7 +161,7 @@ void C_Transform::SyncWorldToLocal()
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
-		owner->childs[i]->GetTransformComponent()->UpdateWorldTransform();
+		owner->childs[i]->GetComponent<C_Transform>()->UpdateWorldTransform();
 		//owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
 }
@@ -172,7 +172,7 @@ void C_Transform::SyncLocalToWorld()
 	
 	if (owner->parent != nullptr)
 	{
-		local_transform = owner->parent->GetTransformComponent()->world_transform.Inverted() * world_transform;
+		local_transform = owner->parent->GetComponent<C_Transform>()->world_transform.Inverted() * world_transform;
 	}
 	else
 	{
@@ -188,14 +188,14 @@ void C_Transform::SyncLocalToWorld()
 
 	for (uint i = 0; i < owner->childs.size(); ++i)
 	{
-		owner->childs[i]->GetTransformComponent()->UpdateWorldTransform();
+		owner->childs[i]->GetComponent<C_Transform>()->UpdateWorldTransform();
 		//owner->childs[i]->GetTransformComponent()->update_world_transform = true;
 	}
 
-	if (owner->GetCameraComponent() != nullptr)
+	C_Camera* c_camera = owner->GetComponent<C_Camera>();
+	if (c_camera != nullptr)
 	{
-		owner->GetCameraComponent()->UpdateFrustumTransform();
-		//owner->GetCameraComponent()->SetUpdateFrustumTransform(true);
+		c_camera->UpdateFrustumTransform();
 	}
 
 	//sync_local_to_global = false;

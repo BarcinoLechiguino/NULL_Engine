@@ -141,9 +141,6 @@
     <ClCompile Include="Source\Light.cpp">
       <Filter>Source\5_GameObjects\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Source\glmath.cpp">
-      <Filter>Source\6_Containers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\M_Editor.cpp">
       <Filter>Source\1_Modules</Filter>
     </ClCompile>
@@ -472,9 +469,6 @@
     </ClInclude>
     <ClInclude Include="Source\Light.h">
       <Filter>Source\5_GameObjects\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\glmath.h">
-      <Filter>Source\6_Containers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\glew\include\eglew.h">
       <Filter>Dependencies\glew</Filter>

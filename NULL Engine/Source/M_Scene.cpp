@@ -71,7 +71,9 @@ bool M_Scene::Start()
 	
 	CreateSceneCamera("SceneCamera");
 
-	Importer::ImportFile("Assets/Models/street/Street Environment_V01.FBX");
+	Importer::ImportFile(DEFAULT_SCENE);
+	SaveScene();																					// Autosave just right after loading the scene.
+
 	//Importer::ImportFile("Assets/Scenes/MainScene.json");											// TMP Just to show that custom file format and serialization works.
 
 	return ret;
@@ -200,7 +202,6 @@ bool M_Scene::SaveScene(const char* scene_name) const
 	uint size			= root_node.SerializeToBuffer(&buffer);
 	std::string name	= (scene_name != nullptr) ? scene_name : scene_root->GetName();
 	std::string path	= ASSETS_SCENES_PATH + name + JSON_EXTENSION;
-	//std::string path	= std::string(ASSETS_SCENES_PATH) + std::string(scene_root->GetName()) + std::string(JSON_EXTENSION);
 
 	uint written = App->file_system->Save(path.c_str(), buffer, size);
 	if (written > 0)
@@ -257,12 +258,12 @@ bool M_Scene::LoadScene(const char* path)
 				scene_root->SetParent(master_root);
 			}
 
-			if (game_object->GetCameraComponent() != nullptr)
+			C_Camera* c_camera = game_object->GetComponent<C_Camera>();
+			if (c_camera != nullptr)
 			{
-				if (game_object->GetCameraComponent()->IsCulling())
+				if (c_camera->IsCulling())
 				{
-					//scene_camera = game_object;
-					culling_camera = game_object->GetCameraComponent();
+					culling_camera = c_camera;
 				}
 			}
 
@@ -285,7 +286,7 @@ bool M_Scene::LoadScene(const char* path)
 				item->second->SetParent(parent->second);
 			}
 
-			item->second->GetTransformComponent()->Translate(float3::zero);							// Dirty way to refresh the transforms after the import is done. TMP Un-hardcode later.
+			item->second->GetComponent<C_Transform>()->Translate(float3::zero);						// Dirty way to refresh the transforms after the import is done. TMP Un-hardcode later.
 			game_objects.push_back(item->second);
 		}
 
@@ -335,15 +336,16 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 		selected_game_object = nullptr;
 	}
 	
-	if (game_object->GetMeshComponent() != nullptr)
+	std::vector<C_Mesh*> c_meshes;
+	bool found_meshes = game_object->GetComponents<C_Mesh>(c_meshes);
+	if (found_meshes)
 	{
-		std::vector<C_Mesh*> c_meshes;
-		game_object->GetAllMeshComponents(c_meshes);
-
 		for (uint i = 0; i < c_meshes.size(); ++i)
 		{
 			App->renderer->DeleteFromMeshRenderers(c_meshes[i]);
 		}
+
+		c_meshes.clear();
 	}
 
 	if (!game_objects.empty())
@@ -402,11 +404,10 @@ bool M_Scene::ApplyNewTextureToSelectedGameObject(R_Texture* r_texture)
 	}
 
 	// --- SETTING THE NEW TEXTURE ---
-	C_Material* c_material = selected_game_object->GetMaterialComponent();										// GetMaterialComponent() == nullptr if game object does not have a C_Material.
-
+	C_Material* c_material = selected_game_object->GetComponent<C_Material>();									// GetMaterialComponent() == nullptr if GO does not have a C_Material.
 	if (c_material == nullptr)
 	{
-		c_material = (C_Material*)selected_game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);				// Creating a Material Component if none was found in the selected game object.
+		c_material = (C_Material*)selected_game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);				// Creating a Material Component if none was found in the selected GO.
 	}
 
 	c_material->SetTexture(r_texture);																			// Setting the Material Component's texture with the newly created one.
@@ -475,8 +476,8 @@ void M_Scene::CreateSceneCamera(const char* camera_name)
 {
 	GameObject* scene_camera = CreateGameObject(camera_name, scene_root);
 	scene_camera->CreateComponent(COMPONENT_TYPE::CAMERA);
-	scene_camera->GetCameraComponent()->SetAspectRatio(App->window->GetWidth() / App->window->GetHeight());
-	scene_camera->GetTransformComponent()->SetLocalPosition(float3(0.0f, 5.0f, 25.0f));
+	scene_camera->GetComponent<C_Camera>()->SetAspectRatio((float)App->window->GetWidth() / (float)App->window->GetHeight());
+	scene_camera->GetComponent<C_Transform>()->SetLocalPosition(float3(0.0f, 5.0f, 25.0f));
 }
 
 C_Camera* M_Scene::GetCullingCamera() const
@@ -548,7 +549,7 @@ void M_Scene::SetSelectedGameObject(GameObject* game_object)
 			
 			selected_game_object = game_object;
 			
-			float3 go_ref = game_object->GetTransformComponent()->GetWorldPosition();
+			float3 go_ref = game_object->GetComponent<C_Transform>()->GetWorldPosition();
 			float3 reference = { go_ref.x, go_ref.y, go_ref.z };
 
 			App->camera->SetReference(reference);
@@ -574,7 +575,12 @@ void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
 	std::vector<C_Mesh*> c_meshes;
 	for (item = hits.begin(); item != hits.end(); ++item)
 	{
-		item->second->GetAllMeshComponents(c_meshes);
+		bool found_meshes = item->second->GetComponents<C_Mesh>(c_meshes);
+		if (!found_meshes)
+		{
+			LOG("[ERROR] Scene: GameObject hit by Raycast did not have any Mesh Component!");
+			continue;
+		}
 		
 		std::vector<Triangle> faces;
 		for (uint m = 0; m < c_meshes.size(); ++m)
@@ -587,7 +593,7 @@ void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
 			}
 			
 			LineSegment local_ray = ray;
-			local_ray.Transform(item->second->GetTransformComponent()->GetWorldTransform().Inverted());
+			local_ray.Transform(item->second->GetComponent<C_Transform>()->GetWorldTransform().Inverted());
 			
 			GetFaces(r_mesh->vertices, faces);
 			for (uint f = 0; f < faces.size(); ++f)
@@ -622,7 +628,7 @@ void M_Scene::GetRaycastHits(const LineSegment& ray, std::map<float, GameObject*
 	{
 		if (ray.Intersects(game_objects[i]->GetAABB()))
 		{
-			float3 position = game_objects[i]->GetTransformComponent()->GetWorldPosition();
+			float3 position = game_objects[i]->GetComponent<C_Transform>()->GetWorldPosition();
 			hits.emplace(ray.Distance(position), game_objects[i]);
 		}
 	}

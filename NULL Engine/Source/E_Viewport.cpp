@@ -245,7 +245,7 @@ void E_Viewport::HandleGuizmos()
 
 	float4x4 view_matrix		= current_camera->GetFrustum().ViewMatrix();
 	float4x4 projection_matrix	= current_camera->GetFrustum().ProjectionMatrix();
-	float4x4 world_transform	= selected->GetTransformComponent()->GetWorldTransform();
+	float4x4 world_transform	= selected->GetComponent<C_Transform>()->GetWorldTransform();
 	view_matrix.Transpose();																				// MathGeoLib works with Row-Major matrices and ImGuizmo works with
 	projection_matrix.Transpose();																			// Column-Major matrices. Hence the need to transpose them.
 	world_transform.Transpose();																			// ----------------------------------------------------------------
@@ -265,6 +265,6 @@ void E_Viewport::HandleGuizmos()
 		using_guizmo = true;
 
 		world_transform = world_transform.Transposed();
-		selected->GetTransformComponent()->SetWorldTransform(world_transform);
+		selected->GetComponent<C_Transform>()->SetWorldTransform(world_transform);
 	}
 }

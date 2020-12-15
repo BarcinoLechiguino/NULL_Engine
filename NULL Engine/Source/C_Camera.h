@@ -22,6 +22,8 @@ public:
 	bool SaveState	(ParsonNode& root) const override;
 	bool LoadState	(ParsonNode& root) override;
 
+	static inline COMPONENT_TYPE GetType() { return COMPONENT_TYPE::CAMERA; }								// This is needed to use templeates for functions such as GetComponent<>();
+
 public:																										// --- FRUSTUM METHODS
 	void		InitFrustum					();
 	void		UpdateFrustumTransform		();
@@ -34,15 +36,13 @@ public:																										// --- FRUSTUM METHODS
 	float*		GetOGLProjectionMatrix		();
 
 public:																										// --- CAMERA TRANSFORM
-	void PointAt							(const float3& position, const float3& target);
-	void LookAt								(const float3& target);
-	void Move								(const float3& velocity);
+	void		PointAt							(const float3& position, const float3& target);
+	void		LookAt							(const float3& target);
+	void		Move							(const float3& velocity);
+	void		Rotate							(const float3x3& rotation_matrix);
+	void		Focus							(const float3& target, const float& distance_to_target = 10.0f);
 
-	void Rotate								(const float3x3& rotation_matrix);
-
-	void Focus								(const float3& target, const float& distance_to_target = 10.0f);
-
-	void SetPosition						(const float3& position);
+	void		SetPosition						(const float3& position);
 
 public:																										// --- FRUSTUM CULLING
 	void		UpdateFrustumPlanes			();

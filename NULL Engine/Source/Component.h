@@ -1,10 +1,10 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
-typedef unsigned __int32 uint32;
-
 class ParsonNode;
 class GameObject;
+
+typedef unsigned __int32 uint32;
 
 enum class COMPONENT_TYPE
 {
@@ -28,6 +28,8 @@ public:
 	virtual bool SaveState	(ParsonNode& root) const;
 	virtual bool LoadState	(ParsonNode& root);
 
+	virtual inline COMPONENT_TYPE GetType() const { return type; }						// This is needed to be able to use templeates for functions such as GetComponent<>();
+
 public:
 	const char*		GetNameFromType		() const;										// Will return a string with the name of the component. Depends on COMPONENT_TYPE.
 	
@@ -37,8 +39,7 @@ public:
 	bool			IsActive			() const;										// 
 	void			SetIsActive			(const bool& set_to);							// 
 
-	COMPONENT_TYPE	GetType				() const;										//
-	GameObject*		GetOwner			() const;										//
+	GameObject*		GetOwner	() const;												//
 
 private:
 	uint32			id;																	// 

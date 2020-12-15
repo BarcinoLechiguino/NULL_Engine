@@ -97,7 +97,6 @@
     <ClCompile Include="Source\JSONParser.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\M_Editor.cpp" />
-    <ClCompile Include="Source\glmath.cpp" />
     <ClCompile Include="Source\Light.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Module.cpp" />
@@ -272,7 +271,6 @@
     <ClInclude Include="Source\MathGeoTransform.h" />
     <ClInclude Include="Source\MemoryManager.h" />
     <ClInclude Include="Source\M_Editor.h" />
-    <ClInclude Include="Source\glmath.h" />
     <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\ImGui.h" />
     <ClInclude Include="Source\Light.h" />

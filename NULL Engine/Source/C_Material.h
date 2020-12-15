@@ -39,6 +39,8 @@ public:
 	bool SaveState			(ParsonNode& root) const override;
 	bool LoadState			(ParsonNode& root) override;
 
+	static inline COMPONENT_TYPE GetType() { return COMPONENT_TYPE::MATERIAL; }				// This is needed to be able to use templeates for functions such as GetComponent<>();
+
 public:																						// --- GET/SET RESOURCES
 	R_Material*		GetMaterial				() const;
 	R_Texture*		GetTexture				() const;
