@@ -1,5 +1,7 @@
 #include "glew/include/glew.h"						// Maybe remove later so dependencies are kept to the minimum?
 
+#include "Time.h"
+
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Renderer3D.h"
@@ -51,7 +53,8 @@ bool E_Configuration::Draw(ImGuiIO& io)
 	TexturesMenu();
 	AudioMenu();
 	PhysicsMenu();
-	HardwareMenu();
+	SystemInfoMenu();
+	TimeManagementMenu();
 	ImGuiEditorMenu();
 
 	ImGui::End();
@@ -255,7 +258,7 @@ bool E_Configuration::FileSystemMenu()
 	return ret;
 }
 
-bool E_Configuration::HardwareMenu()
+bool E_Configuration::SystemInfoMenu()
 {
 	bool ret = true;
 
@@ -290,6 +293,31 @@ bool E_Configuration::HardwareMenu()
 		ImGui::Unindent();
 	}
  
+	return ret;
+}
+
+bool E_Configuration::TimeManagementMenu()
+{
+	bool ret = true;
+	
+	if (ImGui::CollapsingHeader("Time Management"))
+	{
+		ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Real Time Clock:");
+		
+		Hourglass clock			= Time::Real::GetClock();
+		FrameData frame_data	= Time::Real::GetFrameData();
+
+		ImGui::Text("Time Since Start:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "  %s",			clock.GetTimeAsString().c_str());
+		ImGui::Text("Frame Count:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "       %llu",	frame_data.frame_count);
+
+		ImGui::Separator();
+
+		ImGui::Text("Average FPS:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "       %.3f",	frame_data.avg_fps);
+		ImGui::Text("Frames Last Second:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u",				frame_data.frames_last_second);
+		ImGui::Text("Ms Last Frame:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "     %u",		frame_data.ms_last_frame);
+		ImGui::Text("Delta Time:");			ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "        %.3f",	frame_data.dt);
+	}
+
 	return ret;
 }
 

@@ -472,7 +472,7 @@ float2 M_Editor::GetSceneTextureSizeThroughEditor() const
 	return this->viewport->GetSceneTextureSize();
 }
 
-bool M_Editor::SceneIsHovered() const
+bool M_Editor::ViewportIsHovered() const
 {
 	return this->viewport->IsHovered();
 }

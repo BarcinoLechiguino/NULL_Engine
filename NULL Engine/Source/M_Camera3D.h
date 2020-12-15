@@ -31,7 +31,7 @@ public:
 	void			SetMasterCameraAsCurrentCamera	();
 
 public:
-	void			PointAt							(const float3& position, const float3& reference, bool RotateAroundReference = false);
+	void			PointAt							(const float3& position, const float3& reference, bool orbit = false);
 	void			LookAt							(const float3& Spot);
 	void			Focus							(const float3& target_position, const float& distance_from_target = 10.0f);
 	void			Move							(const float3& velocity);
@@ -67,7 +67,7 @@ public:
 private:
 	void			WASDMovement					();								// Translates the camera along XYZ (Right, Up, Forward), which will act as the camera's axis.
 	void			FreeLookAround					();								// Receives information about the mouse's motion values and rotates the camera on it's axis.
-	void			RotateAroundReference			();								// Will rotate the camera around a point specified by the reference var.. ~identical to FreeLookAround();
+	void			Orbit							();								// Will rotate the camera around a point specified by the reference var.. ~identical to FreeLookAround();
 	void			PanCamera						();								// Will translate the camera along XY (Right, Up). Moving the camera in the plane of the camera frame.
 	void			Zoom							();								// Will translate the camera along the Z (Forward) axis. The camera will move forwards and backwards. 
 

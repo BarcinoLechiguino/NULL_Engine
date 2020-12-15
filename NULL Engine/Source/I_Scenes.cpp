@@ -115,7 +115,7 @@ void Importer::Scenes::Utilities::ImportFromLibrary(const char* path, std::vecto
 				{
 					R_Mesh* r_mesh = new R_Mesh();
 
-					r_mesh->ForceUID(component_node.GetNumber("UID"));
+					r_mesh->ForceUID((uint32)component_node.GetNumber("UID"));
 					r_mesh->SetAssetsFile(component_node.GetString("Name"));
 					r_mesh->SetLibraryPath(component_node.GetString("Path"));
 					r_mesh->SetLibraryFile(component_node.GetString("File"));
@@ -146,7 +146,7 @@ void Importer::Scenes::Utilities::ImportFromLibrary(const char* path, std::vecto
 					{
 						R_Material* r_material = new R_Material();
 
-						r_material->ForceUID(material_node.GetNumber("UID"));
+						r_material->ForceUID((uint32)material_node.GetNumber("UID"));
 						r_material->SetLibraryPath(material_node.GetString("Path"));
 						r_material->SetLibraryFile(material_node.GetString("File"));
 
@@ -170,7 +170,7 @@ void Importer::Scenes::Utilities::ImportFromLibrary(const char* path, std::vecto
 					{
 						R_Texture* r_texture = new R_Texture();
 
-						r_texture->ForceUID(texture_node.GetNumber("UID"));
+						r_texture->ForceUID((uint32)texture_node.GetNumber("UID"));
 						r_texture->SetAssetsFile(texture_node.GetString("Name"));
 						r_texture->SetLibraryPath(texture_node.GetString("Path"));
 						r_texture->SetLibraryFile(texture_node.GetString("File"));

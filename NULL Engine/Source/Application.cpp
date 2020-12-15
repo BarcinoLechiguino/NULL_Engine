@@ -3,6 +3,9 @@
 #include <memory>				//Smart pointers
 
 #include "JSONParser.h"
+#include "Time.h"
+#include "FrameData.h"
+#include "Hourglass.h"
 
 #include "Module.h"
 #include "M_Window.h"
@@ -19,7 +22,6 @@
 Application::Application() :
 quit			(false),
 debug			(false), 
-dt				(0.0f),
 hardware_info	(),
 window			(nullptr),
 input			(nullptr),
@@ -30,7 +32,7 @@ camera			(nullptr),
 file_system		(nullptr),
 resource_manager(nullptr)
 {
-	PERF_TIMER_START(perf_timer);
+	//PERF_TIMER_START(perf_timer);
 	
 	// Modules -----------------------------------
 	window				= new M_Window();
@@ -70,10 +72,6 @@ resource_manager(nullptr)
 	frame_cap				= 0;
 	seconds_since_startup	= 0.0f;
 	frames_are_capped		= FRAMES_ARE_CAPPED;
-	frame_count				= 0;
-	frames_last_second		= 0;
-	prev_sec_frame_count	= 0;
-	dt						= 0.0f;
 	display_framerate_data	= false;
 
 	// Game Mode variables
@@ -82,7 +80,7 @@ resource_manager(nullptr)
 	step					= false;
 	stop					= false;
 
-	PERF_TIMER_PEEK(perf_timer);
+	//PERF_TIMER_PEEK(perf_timer);
 }
 
 Application::~Application()
@@ -100,7 +98,7 @@ Application::~Application()
 
 bool Application::Init()
 {
-	PERF_TIMER_START(perf_timer);
+	//PERF_TIMER_START(perf_timer);
 	
 	LOG("Application Init --------------");
 
@@ -161,9 +159,9 @@ bool Application::Init()
 		++item;
 	}
 
-	startup_timer.Start();
+	Time::Real::InitRealTimers();
 
-	PERF_TIMER_PEEK(perf_timer);
+	//PERF_TIMER_PEEK(perf_timer);
 
 	//ms_timer.Start();
 	return ret;
@@ -243,11 +241,7 @@ bool Application::CleanUp()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	++frame_count;
-	++frames_last_second;
-
-	dt = frame_timer.ReadSec();
-	frame_timer.Start();
+	Time::Real::Update();
 }
 
 UPDATE_STATUS Application::PreUpdate()
@@ -260,7 +254,8 @@ UPDATE_STATUS Application::PreUpdate()
 	{
 		if ((*item)->IsActive())
 		{
-			ret = (*item)->PreUpdate(dt);
+			//ret = (*item)->PreUpdate(dt);
+			ret = (*item)->PreUpdate(Time::Real::GetDT());
 		}
 
 		++item;
@@ -288,7 +283,8 @@ UPDATE_STATUS Application::DoUpdate()
 		{
 			if (!pause)
 			{
-				ret = (*item)->Update(dt);
+				//ret = (*item)->Update(dt);
+				ret = (*item)->Update(Time::Real::GetDT());
 			}
 			else
 			{
@@ -319,7 +315,8 @@ UPDATE_STATUS Application::PostUpdate()
 	{
 		if ((*item)->IsActive())
 		{
-			ret = (*item)->PostUpdate(dt);
+			//ret = (*item)->PostUpdate(dt);
+			ret = (*item)->PostUpdate(Time::Real::GetDT());
 		}
 		
 		++item;
@@ -350,46 +347,20 @@ void Application::FinishUpdate()
 	}
 
 	// ------------ Framerate Calculations ------------
-	// Frames in the last second.
-	if (last_second_timer.ReadMs() > 1000)								// This here, initialize before this? Add another condition?
-	{
-		last_second_timer.Start();
-		prev_sec_frame_count = frames_last_second;
-		frames_last_second = 0;
-
-		//LOG("%d frames last second", prev_sec_frame_count);
-	}
-	
-	uint current_frame_ms = frame_timer.Read();
-
-	// Frame cap and delay.
 	if (frames_are_capped)
 	{
-		uint frame_cap_ms = 1000 / frame_cap;							// [ATTENTION] Quick fix to avoid cases where frame_cap = 0.
-
-		if (current_frame_ms < frame_cap_ms)
-		{
-			precise_delay_timer.Start();
-
-			uint required_delay = frame_cap_ms - current_frame_ms;
-
-			SDL_Delay(required_delay);
-		}
+		Time::Real::DelayUntilFrameCap(frame_cap);
 	}
-
-	// Other frame calculations
-	float avg_fps					= frame_count / startup_timer.ReadSec();
-	uint32 ms_last_frame			= frame_timer.Read();
-	uint32 frames_on_last_update	= prev_sec_frame_count;
-	//seconds_since_startup			= startup_timer.ReadSec();
-	startup_timer.AddTimeToClock();
 	
+	FrameData frame_data	= Time::Real::GetFrameData();
+	Hourglass clock			= Time::Real::GetClock();
+
 	if (display_framerate_data)
 	{
 		static char framerate_data[256];
 
 		sprintf_s(framerate_data, 256, "Av.FPS: %.2f / Last Frame Ms: %02u / Last sec frames: %i / Last dt: %.3f / Time since startup: %dh %dm %.3fs / Frame Count: %llu",
-			avg_fps, ms_last_frame, frames_on_last_update, dt, startup_timer.clock.hours, startup_timer.clock.minutes, startup_timer.clock.seconds/*seconds_since_startup*/, frame_count);
+			frame_data.avg_fps, frame_data.ms_last_frame, frame_data.frames_last_second, frame_data.dt, clock.hours, clock.minutes, clock.seconds, frame_data.frame_count);
 
 		App->window->SetTitle(framerate_data);
 	}
@@ -399,7 +370,7 @@ void Application::FinishUpdate()
 	}
 
 	// Editor: Configuration Frame Data Histograms
-	UpdateFrameData(frames_on_last_update, ms_last_frame);
+	UpdateFrameData(frame_data.frames_last_second, frame_data.ms_last_frame);
 }
 // ---------------------------------------------
 
@@ -486,23 +457,6 @@ void Application::EngineShortcuts()
 }
 
 // --- FRAMERATE METHODS ---
-float Application::GetDt() const
-{
-	if (!pause)
-	{
-		return dt;
-	}
-	else
-	{
-		return 0.0f;
-	}
-}
-
-float Application::GetUnpausableDt() const
-{
-	return dt;
-}
-
 uint Application::GetFrameCap() const
 {
 	return frame_cap;

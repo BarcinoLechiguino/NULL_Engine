@@ -45,7 +45,7 @@ void Importer::Materials::Import(const char* path, const aiMaterial* ai_material
 	}
 
 	char* buffer = nullptr;
-	uint written = Importer::Materials::Save(r_material, &buffer);
+	uint64 written = Importer::Materials::Save(r_material, &buffer);
 	if (written > 0)
 	{
 		bool success = Importer::Materials::Load(buffer, r_material);

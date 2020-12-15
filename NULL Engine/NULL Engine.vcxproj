@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
+    <ClCompile Include="Source\Hourglass.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Component.cpp" />
     <ClCompile Include="Source\C_Camera.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="Source\E_Viewport.cpp" />
     <ClCompile Include="Source\E_MainMenuBar.cpp" />
     <ClCompile Include="Source\E_Toolbar.cpp" />
+    <ClCompile Include="Source\FrameData.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\HardwareInfo.cpp" />
     <ClCompile Include="Source\Importer.cpp" />
@@ -112,17 +114,18 @@
     <ClCompile Include="Source\SoftwareInfo.cpp" />
     <ClCompile Include="Source\SystemInfo.cpp" />
     <ClCompile Include="Source\Time.cpp" />
-    <ClCompile Include="Source\T_PerfectTimer.cpp" />
+    <ClCompile Include="Source\PerfectTimer.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
     <ClCompile Include="Source\Resource.cpp" />
     <ClCompile Include="Source\R_Material.cpp" />
     <ClCompile Include="Source\R_Mesh.cpp" />
     <ClCompile Include="Source\R_Model.cpp" />
-    <ClCompile Include="Source\T_Timer.cpp" />
+    <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
+    <ClInclude Include="Source\Hourglass.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Component.h" />
     <ClInclude Include="Source\ConfigurationSettings.h" />
@@ -252,6 +255,7 @@
     <ClInclude Include="Source\E_ImGuiDemo.h" />
     <ClInclude Include="Source\E_Viewport.h" />
     <ClInclude Include="Source\E_MainMenuBar.h" />
+    <ClInclude Include="Source\FrameData.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\HardwareInfo.h" />
     <ClInclude Include="Source\Importer.h" />
@@ -288,13 +292,13 @@
     <ClInclude Include="Source\SoftwareInfo.h" />
     <ClInclude Include="Source\SystemInfo.h" />
     <ClInclude Include="Source\Time.h" />
-    <ClInclude Include="Source\T_PerfectTimer.h" />
+    <ClInclude Include="Source\PerfectTimer.h" />
     <ClInclude Include="Source\Primitive.h" />
     <ClInclude Include="Source\Resource.h" />
     <ClInclude Include="Source\R_Material.h" />
     <ClInclude Include="Source\R_Mesh.h" />
     <ClInclude Include="Source\R_Model.h" />
-    <ClInclude Include="Source\T_Timer.h" />
+    <ClInclude Include="Source\Timer.h" />
     <ClInclude Include="Source\UpdateStatus.h" />
     <ClInclude Include="Source\VariableDefinitions.h" />
     <ClInclude Include="Source\VariableTypedefs.h" />

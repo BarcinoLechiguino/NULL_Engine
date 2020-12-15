@@ -5,8 +5,8 @@
 #include <string>
 
 #include "Globals.h"
-#include "T_Timer.h"
-#include "T_PerfectTimer.h"
+#include "Timer.h"
+#include "PerfectTimer.h"
 #include "HardwareInfo.h"
 
 class Module;															// Modules are forward declared in call order.
@@ -54,9 +54,6 @@ public:																					// --- APPLICATION & ENGINE STATE
 	void			EngineShortcuts();
 
 public:																					// --- FRAMERATE
-	float			GetDt					() const;
-	float			GetUnpausableDt			() const;
-	
 	uint			GetFrameCap				() const;
 	void			SetFrameCap				(uint frame);
 
@@ -108,18 +105,6 @@ private:
 	bool					want_to_save;												// Will keep track of whether or not the user wants to save a configuration.
 	std::string				load_config_file;											// Will store the name string of the configuration file to be loaded.
 	std::string				save_config_file;											// Will store the name string og the configuration file to be loaded.
-
-	// --- FRAMERATE
-	uint64					frame_count;												// Will keep track of the amount of frames that have been processed since application start.
-	T_Timer					startup_timer;												// Will keep track of the time that has elapsed since application start.
-	T_Timer					frame_timer;												// Will keep track of the amount of milliseconds that have elapsed since last frame. dt origin.
-	T_PerfectTimer			perf_timer;													// Will keep track of the time that different methods of Application take to process. High precision.
-	T_PerfectTimer			last_second_timer;											// Will keep track of whether or not a second has elapsed since last FPS check.
-	uint32					frames_last_second;											// Will keep track of the amount of frames that have been processed in the last second.
-	uint32					prev_sec_frame_count;										// Will keep track of the frame count of the previous second. Stores frames_last_second for +1 frame.
-
-	T_PerfectTimer			precise_delay_timer;										// Will keep track of the amount of time spent delaying the processing of the next frame.
-	float					dt;															// Amount of ms that have elapsed in a frame. Employed to keep everything in the same timestep.
 
 	// --- HARDWARE INFO
 	HardwareInfo			hardware_info;												// All the info/data about the software and the hardware of the system will be extracted from here.

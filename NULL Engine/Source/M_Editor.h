@@ -96,7 +96,7 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	float2			GetWorldMouseMotionThroughEditor	() const;
 	float2			GetSceneTextureSizeThroughEditor	() const;
 
-	bool			SceneIsHovered						() const;
+	bool			ViewportIsHovered					() const;
 	bool			UsingGuizmoInScene					() const;
 	bool			HoveringGuizmo						() const;
 

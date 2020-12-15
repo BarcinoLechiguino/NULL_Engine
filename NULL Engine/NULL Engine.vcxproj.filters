@@ -94,12 +94,6 @@
     <Filter Include="Source\7_Tools">
       <UniqueIdentifier>{880511d6-016b-4f4c-9c9a-c2b51f422055}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\7_Tools\Timers">
-      <UniqueIdentifier>{8383af2d-812c-46ce-988c-4cfcc424cdba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\7_Tools\LibIncludes">
-      <UniqueIdentifier>{27351bd9-d935-41ef-a866-e00cc8cdf476}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\7_Tools\Random">
       <UniqueIdentifier>{65defa9a-373d-47ef-ac1d-b0544ee05aa3}</UniqueIdentifier>
     </Filter>
@@ -126,6 +120,15 @@
     </Filter>
     <Filter Include="Source\2_Editor\Panels\Popups">
       <UniqueIdentifier>{5f0f2c8f-4430-4e5f-ac54-7c0436d600b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\7_Tools\Includes">
+      <UniqueIdentifier>{27351bd9-d935-41ef-a866-e00cc8cdf476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\7_Tools\Time">
+      <UniqueIdentifier>{8383af2d-812c-46ce-988c-4cfcc424cdba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\7_Tools\Time\TimeContainers">
+      <UniqueIdentifier>{f5fec8cd-efb1-4ea1-aca0-246d5d53cb37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -249,14 +252,8 @@
     <ClCompile Include="Source\Dependencies\PCG\include\pcg_basic.c">
       <Filter>Dependencies\PCG</Filter>
     </ClCompile>
-    <ClCompile Include="Source\T_Timer.cpp">
-      <Filter>Source\7_Tools\Timers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\T_PerfectTimer.cpp">
-      <Filter>Source\7_Tools\Timers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Time.cpp">
-      <Filter>Source\7_Tools\Timers</Filter>
+      <Filter>Source\7_Tools\Time</Filter>
     </ClCompile>
     <ClCompile Include="Source\HardwareInfo.cpp">
       <Filter>Source\6_Containers\SystemInfo</Filter>
@@ -453,6 +450,18 @@
     <ClCompile Include="Source\E_Viewport.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
     </ClCompile>
+    <ClCompile Include="Source\FrameData.cpp">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Timer.cpp">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PerfectTimer.cpp">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Hourglass.cpp">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -638,32 +647,26 @@
     <ClInclude Include="Source\Dependencies\PCG\include\pcg_basic.h">
       <Filter>Dependencies\PCG</Filter>
     </ClInclude>
-    <ClInclude Include="Source\T_Timer.h">
-      <Filter>Source\7_Tools\Timers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\T_PerfectTimer.h">
-      <Filter>Source\7_Tools\Timers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Assimp.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\DevIL.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\ImGui.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\OpenGL.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Time.h">
-      <Filter>Source\7_Tools\Timers</Filter>
+      <Filter>Source\7_Tools\Time</Filter>
     </ClInclude>
     <ClInclude Include="Source\MemoryManager.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Profiler.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\HardwareInfo.h">
       <Filter>Source\6_Containers\SystemInfo</Filter>
@@ -930,13 +933,13 @@
       <Filter>Source\7_Tools\Globals</Filter>
     </ClInclude>
     <ClInclude Include="Source\MathGeoTransform.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\MathGeoBoundingBox.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\MathGeoFrustum.h">
-      <Filter>Source\7_Tools\LibIncludes</Filter>
+      <Filter>Source\7_Tools\Includes</Filter>
     </ClInclude>
     <ClInclude Include="Source\UpdateStatus.h">
       <Filter>Source\7_Tools\Globals</Filter>
@@ -985,6 +988,18 @@
     </ClInclude>
     <ClInclude Include="Source\E_Viewport.h">
       <Filter>Source\2_Editor\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\FrameData.h">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Timer.h">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PerfectTimer.h">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Hourglass.h">
+      <Filter>Source\7_Tools\Time\TimeContainers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

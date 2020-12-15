@@ -78,8 +78,8 @@ bool C_Camera::LoadState(ParsonNode& root)
 {
 	bool ret = true;
 
-	min_fov				= root.GetNumber("MinFOV");
-	max_fov				= root.GetNumber("MaxFOV");
+	min_fov				= (uint)root.GetNumber("MinFOV");
+	max_fov				= (uint)root.GetNumber("MaxFOV");
 
 	is_culling			= root.GetBool("Culling");
 	in_orthogonal_view	= root.GetBool("OrthogonalView");
