@@ -10,6 +10,7 @@
 #include "M_Input.h"
 #include "M_Scene.h"
 #include "M_FileSystem.h"
+#include "M_ResourceManager.h"
 
 #include "Importer.h"
 
@@ -24,6 +25,7 @@
 #include "E_Console.h"
 #include "E_Project.h"
 #include "E_Viewport.h"
+#include "E_Resources.h"
 #include "E_ImGuiDemo.h"
 #include "E_About.h"
 #include "E_LoadFile.h"
@@ -44,6 +46,7 @@ inspector		(nullptr),
 console			(nullptr),
 project			(nullptr),
 viewport		(nullptr),
+resources		(nullptr),
 imgui_demo		(nullptr),
 about			(nullptr),
 load_file		(nullptr)
@@ -56,6 +59,7 @@ load_file		(nullptr)
 	console			= new E_Console();
 	project			= new E_Project();
 	viewport		= new E_Viewport();
+	resources		= new E_Resources();
 	imgui_demo		= new E_ImGuiDemo();
 	about			= new E_About();
 	load_file		= new E_LoadFile();
@@ -68,6 +72,7 @@ load_file		(nullptr)
 	AddEditorPanel(console);
 	AddEditorPanel(project);
 	AddEditorPanel(viewport);
+	AddEditorPanel(resources);
 	AddEditorPanel(imgui_demo);
 	AddEditorPanel(about);
 	AddEditorPanel(load_file);
@@ -490,6 +495,11 @@ bool M_Editor::HoveringGuizmo() const
 bool M_Editor::SelectedIsSceneRoot() const
 {
 	return (App->scene->GetSelectedGameObject() == App->scene->GetSceneRoot());
+}
+
+void M_Editor::GetResourcesThroughEditor(std::map<uint32, Resource*>& resources) const
+{
+	resources = App->resource_manager->GetResources();
 }
 
 void M_Editor::SaveSceneThroughEditor(const char* scene_name)

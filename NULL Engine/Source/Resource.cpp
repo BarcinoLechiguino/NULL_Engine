@@ -8,6 +8,7 @@
 Resource::Resource(RESOURCE_TYPE type) : 
 type			(type),
 uid				(Random::LCG::GetRandomUint()),
+references		(0),
 name			("[NONE]"),
 assets_path		("[NONE]"), 
 assets_file		("[NONE]"), 
@@ -26,6 +27,7 @@ bool Resource::CleanUp()
 {
 	bool ret = true;
 
+	name.clear();
 	assets_path.clear();
 	assets_file.clear();
 	library_path.clear();
@@ -57,11 +59,26 @@ uint32 Resource::GetUID() const
 	return uid;
 }
 
-void Resource::ForceUID(uint32 UID)
+void Resource::ForceUID(const uint32& UID)
 {
-	uid = UID;											// TMP just for the delivery.
+	uid = UID;											// TMP
 	
 	//uid = Random::LCG::GetRandomUint();
+}
+
+uint Resource::GetReferences() const
+{
+	return references;
+}
+
+void Resource::SetReferences(const uint& references)
+{
+	this->references = references;
+}
+
+const char* Resource::GetName() const
+{
+	return name.c_str();
 }
 
 const char* Resource::GetAssetsPath() const
@@ -88,7 +105,8 @@ void Resource::SetAssetsPath(const char* assets_path)
 
 void Resource::SetAssetsFile(const char* assets_file)
 {
-	this->assets_file = assets_file;
+	this->assets_file	= assets_file;
+	name				= assets_file;
 }
 
 void Resource::SetLibraryPath(const char* library_path)

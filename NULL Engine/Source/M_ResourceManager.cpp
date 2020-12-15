@@ -201,13 +201,18 @@ Resource* M_ResourceManager::GetResource(uint32 UID)
 	//std::map<uint32, Resource*>::iterator item = resources.find(UID);
 
 	RESOURCE_ITEM item = resources.find(UID);
-
 	if (item != resources.end())
 	{
+		item->second->SetReferences(item->second->GetReferences() + 1);
 		return item->second;
 	}
 
 	return nullptr;
+}
+
+std::map<uint32, Resource*> M_ResourceManager::GetResources() const
+{
+	return resources;
 }
 
 bool M_ResourceManager::IsResourceAlready(std::string assets_file)

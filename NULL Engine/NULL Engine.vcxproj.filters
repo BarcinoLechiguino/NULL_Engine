@@ -459,6 +459,9 @@
     <ClCompile Include="Source\Hourglass.cpp">
       <Filter>Source\7_Tools\Time\TimeContainers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\E_Resources.cpp">
+      <Filter>Source\2_Editor\Panels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -994,6 +997,9 @@
     </ClInclude>
     <ClInclude Include="Source\Hourglass.h">
       <Filter>Source\7_Tools\Time\TimeContainers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\E_Resources.h">
+      <Filter>Source\2_Editor\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
