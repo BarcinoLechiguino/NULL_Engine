@@ -5,7 +5,8 @@
 
 #include "Time.h"
 
-using namespace Time::Real::Utilities;
+using namespace Time::Real::Utilities;																	// Not the cleanest but prefer to avoid having to write these
+using namespace Time::Game::Utilities;																	// strings every time i need a Utilities variable.
 
 void Time::Sleep(uint ms)
 {
@@ -13,7 +14,7 @@ void Time::Sleep(uint ms)
 }
 
 // --- REAL CLOCK METHODS ---
-void Time::Real::InitRealTimers()
+void Time::Real::InitRealClock()
 {
 	//startup_timer.Start();
 	frame_timer.Start();
@@ -90,3 +91,90 @@ float Time::Real::GetDT()
 }
 
 // --- GAME CLOCK METHODS ---
+void Time::Game::Update()
+{
+	uint ms = game_frame_timer.Read() * time_scale;
+
+	game_clock.Update(ms);
+	game_frame_data.Update(ms);
+
+	game_frame_timer.Start();
+}
+
+float Time::Game::GetTimeScale()
+{
+	return time_scale;
+}
+
+void Time::Game::SetTimeScale(float new_time_scale)
+{
+	if (new_time_scale < 0.25f || new_time_scale > 4.0f)
+	{
+		LOG("[ERROR] Time: Cannot set Game Time Scale below 0.25 or above 4.00!");
+		return;
+	}
+	
+	time_scale = new_time_scale;
+}
+
+void Time::Game::Play()
+{
+	game_frame_timer.Start();
+}
+
+void Time::Game::Pause()
+{
+	game_frame_timer.Stop();
+}
+
+void Time::Game::Step(uint num_steps)
+{
+
+}
+
+void Time::Game::Stop()
+{
+	game_frame_timer.Stop();
+	game_clock.ResetClock();
+	game_frame_data.ResetData();
+}
+
+Hourglass Time::Game::GetClock()
+{
+	return game_clock;
+}
+
+FrameData Time::Game::GetFrameData()
+{
+	return game_frame_data;
+}
+
+uint64 Time::Game::GetFrameCount()
+{
+	return game_frame_data.frame_count;
+}
+
+float Time::Game::GetTimeSinceStart()
+{
+	return game_frame_data.time_since_start;
+}
+
+uint32 Time::Game::GetFramesLastSecond()
+{
+	return game_frame_data.frames_last_second;
+}
+
+float Time::Game::GetAverageFPS()
+{
+	return game_frame_data.avg_fps;
+}
+
+uint32 Time::Game::GetMsLastFrame()
+{
+	return game_frame_data.ms_last_frame;
+}
+
+float Time::Game::GetDT()
+{
+	return game_frame_data.dt;
+}

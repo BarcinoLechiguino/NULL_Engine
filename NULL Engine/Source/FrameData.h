@@ -9,8 +9,9 @@ struct FrameData
 {
 	FrameData();
 	
-	void Update();
-	void Update(uint ms);
+	//void Update();
+	void Update		(uint ms);
+	void ResetData	();
 
 	float	time_since_start;													// 
 	uint64	frame_count;														// Amount of frames that have been processed since Application Start.

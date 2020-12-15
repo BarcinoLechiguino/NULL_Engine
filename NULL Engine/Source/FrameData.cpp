@@ -36,3 +36,19 @@ void FrameData::Update(uint ms)
 	ms_last_frame			= ms;															// --- DELTA TIME DATA
 	dt						= (float)ms / 1000.0f;											// -------------------
 }
+
+void FrameData::ResetData()
+{
+	time_since_start		= 0;
+	frame_count				= 0;
+	frames_this_second		= 0;
+	frames_last_second		= 0;
+
+	avg_fps					= 0.0f;
+	ms_last_frame			= 0;
+
+	dt						= 0.0f;
+
+	frames_this_second		= 0;
+	milliseconds_counter	= 0;
+}

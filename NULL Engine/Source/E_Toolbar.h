@@ -14,7 +14,12 @@ public:
 
 private:
 	void PlayAndStopButtons();
+	void PauseAndStepButtons();
+	void TimeScaleSlider();
 	void TimeDisplays();
+
+private:
+	bool played_once;
 };
 
 #endif // !__E_TOOLBAR_H__

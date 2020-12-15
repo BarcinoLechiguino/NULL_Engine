@@ -15,7 +15,7 @@ namespace Time
 	
 	namespace Real
 	{
-		void		InitRealTimers		();
+		void		InitRealClock		();
 		void		Update				();								// Will update the frame data for the frame it was called on. frame_count, prev_sec_frames, dt..
 		void		DelayUntilFrameCap	(uint frame_cap);
 
@@ -40,25 +40,34 @@ namespace Time
 
 	namespace Game
 	{
-		// See Time Management presentation. Slide nº 5.
-		void	UpdateFrameData		();
+		void		Update				();
+		
+		void		SetTimeScale		(float new_time_scale);
+		float		GetTimeScale		();
 
-		void	ActivateClock		();
-		void	DeactivateClock		();
+		void		Play				();
+		void		Pause				();
+		void		Step				(uint num_steps = 1);
+		void		Stop				();
 
-		bool	Play				();
-		bool	Pause				();
-		bool	Step				(uint num_steps);
-		bool	Stop				();
+		Hourglass	GetClock			();
+		FrameData	GetFrameData		();
+
+		float		GetDT				();
+		uint64		GetFrameCount		();
+		float		GetTimeSinceStart	();
+		uint32		GetFramesLastSecond	();
+		float		GetAverageFPS		();
+		uint32		GetMsLastFrame		();
 
 		namespace Utilities
 		{
 			static float			time_scale;
 			
-			static Timer			startup_timer;
-			static Timer			frame_timer;
-			static Hourglass		clock;
-			static FrameData		frame_data;
+			//static Timer			startup_timer;
+			static Timer			game_frame_timer;
+			static Hourglass		game_clock;
+			static FrameData		game_frame_data;
 		}
 	}
 }
