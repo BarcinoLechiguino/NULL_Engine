@@ -72,7 +72,7 @@ bool M_Camera3D::CleanUp()
 }
 
 // -----------------------------------------------------------------
-bool M_Camera3D::LoadConfiguration(ParsonNode& root)
+bool M_Camera3D::LoadConfiguration(ParsonNode& configuration)
 {
 	bool ret = true;
 
@@ -83,7 +83,7 @@ bool M_Camera3D::LoadConfiguration(ParsonNode& root)
 	return ret;
 }
 
-bool M_Camera3D::SaveConfiguration(ParsonNode& root) const
+bool M_Camera3D::SaveConfiguration(ParsonNode& configuration) const
 {
 	bool ret = true;
 

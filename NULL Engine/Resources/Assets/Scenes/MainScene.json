@@ -1,8 +1,8 @@
 {
     "Game Objects": [
         {
-            "UID": 1350405678,
-            "ParentUID": 2070435384,
+            "UID": 113443760,
+            "ParentUID": 1169133602,
             "Name": "MainScene",
             "IsActive": true,
             "IsStatic": false,
@@ -31,8 +31,8 @@
             ]
         },
         {
-            "UID": 1084271651,
-            "ParentUID": 1350405678,
+            "UID": 1640747316,
+            "ParentUID": 113443760,
             "Name": "SceneCamera",
             "IsActive": true,
             "IsStatic": false,
@@ -69,8 +69,8 @@
             ]
         },
         {
-            "UID": 319693391,
-            "ParentUID": 1350405678,
+            "UID": 807957095,
+            "ParentUID": 113443760,
             "Name": "Street Environment_V01.FBX",
             "IsActive": true,
             "IsStatic": false,
@@ -99,8 +99,8 @@
             ]
         },
         {
-            "UID": 2042234378,
-            "ParentUID": 319693391,
+            "UID": 78182855,
+            "ParentUID": 807957095,
             "Name": "Sky001",
             "IsActive": true,
             "IsStatic": false,
@@ -129,8 +129,8 @@
             ]
         },
         {
-            "UID": 411230745,
-            "ParentUID": 319693391,
+            "UID": 383195435,
+            "ParentUID": 807957095,
             "Name": "Dummy001",
             "IsActive": true,
             "IsStatic": false,
@@ -159,8 +159,8 @@
             ]
         },
         {
-            "UID": 556238462,
-            "ParentUID": 411230745,
+            "UID": 501956724,
+            "ParentUID": 383195435,
             "Name": "City_building_004",
             "IsActive": true,
             "IsStatic": false,
@@ -188,32 +188,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1287815518,
+                    "UID": 1495377856,
                     "Name": "City_building_004.nemesh",
-                    "Path": "Library\/Meshes\/1287815518.nemesh",
-                    "File": "1287815518.nemesh",
+                    "Path": "Library\/Meshes\/1495377856.nemesh",
+                    "File": "1495377856.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 54200649,
-                        "Path": "Library\/Materials\/54200649.nemat",
-                        "File": "54200649.nemat"
+                        "UID": 2028863471,
+                        "Path": "Library\/Materials\/2028863471.nemat",
+                        "File": "2028863471.nemat"
                     },
                     "Texture": {
-                        "UID": 374616250,
+                        "UID": 766833066,
                         "Name": "building03_c.tga",
-                        "Path": "Library\/Textures\/374616250.netex",
-                        "File": "374616250.netex"
+                        "Path": "Library\/Textures\/766833066.netex",
+                        "File": "766833066.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1194674723,
-            "ParentUID": 411230745,
+            "UID": 1523231324,
+            "ParentUID": 383195435,
             "Name": "City_building_001",
             "IsActive": true,
             "IsStatic": false,
@@ -241,32 +241,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 653736759,
+                    "UID": 1150354932,
                     "Name": "City_building_001.nemesh",
-                    "Path": "Library\/Meshes\/653736759.nemesh",
-                    "File": "653736759.nemesh",
+                    "Path": "Library\/Meshes\/1150354932.nemesh",
+                    "File": "1150354932.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1369994032,
-                        "Path": "Library\/Materials\/1369994032.nemat",
-                        "File": "1369994032.nemat"
+                        "UID": 203897483,
+                        "Path": "Library\/Materials\/203897483.nemat",
+                        "File": "203897483.nemat"
                     },
                     "Texture": {
-                        "UID": 2015804014,
+                        "UID": 679757273,
                         "Name": "Building_V02_C.png",
-                        "Path": "Library\/Textures\/2015804014.netex",
-                        "File": "2015804014.netex"
+                        "Path": "Library\/Textures\/679757273.netex",
+                        "File": "679757273.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1102339659,
-            "ParentUID": 411230745,
+            "UID": 440918852,
+            "ParentUID": 383195435,
             "Name": "City_building_007",
             "IsActive": true,
             "IsStatic": false,
@@ -294,32 +294,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 829730535,
+                    "UID": 183922108,
                     "Name": "City_building_007.nemesh",
-                    "Path": "Library\/Meshes\/829730535.nemesh",
-                    "File": "829730535.nemesh",
+                    "Path": "Library\/Meshes\/183922108.nemesh",
+                    "File": "183922108.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 510621237,
-                        "Path": "Library\/Materials\/510621237.nemat",
-                        "File": "510621237.nemat"
+                        "UID": 1043185960,
+                        "Path": "Library\/Materials\/1043185960.nemat",
+                        "File": "1043185960.nemat"
                     },
                     "Texture": {
-                        "UID": 516848739,
+                        "UID": 1900263267,
                         "Name": "building_016_c.tga",
-                        "Path": "Library\/Textures\/516848739.netex",
-                        "File": "516848739.netex"
+                        "Path": "Library\/Textures\/1900263267.netex",
+                        "File": "1900263267.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 2090286986,
-            "ParentUID": 411230745,
+            "UID": 1828569895,
+            "ParentUID": 383195435,
             "Name": "City_building_008",
             "IsActive": true,
             "IsStatic": false,
@@ -347,32 +347,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1501169032,
+                    "UID": 1329768734,
                     "Name": "City_building_008.nemesh",
-                    "Path": "Library\/Meshes\/1501169032.nemesh",
-                    "File": "1501169032.nemesh",
+                    "Path": "Library\/Meshes\/1329768734.nemesh",
+                    "File": "1329768734.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1532413714,
-                        "Path": "Library\/Materials\/1532413714.nemat",
-                        "File": "1532413714.nemat"
+                        "UID": 1447737315,
+                        "Path": "Library\/Materials\/1447737315.nemat",
+                        "File": "1447737315.nemat"
                     },
                     "Texture": {
-                        "UID": 1187599434,
+                        "UID": 774635670,
                         "Name": "building_025_c.tga",
-                        "Path": "Library\/Textures\/1187599434.netex",
-                        "File": "1187599434.netex"
+                        "Path": "Library\/Textures\/774635670.netex",
+                        "File": "774635670.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 212646473,
-            "ParentUID": 411230745,
+            "UID": 55636444,
+            "ParentUID": 383195435,
             "Name": "Line002",
             "IsActive": true,
             "IsStatic": false,
@@ -400,26 +400,26 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 13981851,
+                    "UID": 1598552073,
                     "Name": "Line002.nemesh",
-                    "Path": "Library\/Meshes\/13981851.nemesh",
-                    "File": "13981851.nemesh",
+                    "Path": "Library\/Meshes\/1598552073.nemesh",
+                    "File": "1598552073.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1787907163,
-                        "Path": "Library\/Materials\/1787907163.nemat",
-                        "File": "1787907163.nemat"
+                        "UID": 1128330300,
+                        "Path": "Library\/Materials\/1128330300.nemat",
+                        "File": "1128330300.nemat"
                     }
                 }
             ]
         },
         {
-            "UID": 1499110259,
-            "ParentUID": 411230745,
+            "UID": 791948239,
+            "ParentUID": 383195435,
             "Name": "Plane001",
             "IsActive": true,
             "IsStatic": false,
@@ -447,26 +447,26 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1726061406,
+                    "UID": 1764573478,
                     "Name": "Plane001.nemesh",
-                    "Path": "Library\/Meshes\/1726061406.nemesh",
-                    "File": "1726061406.nemesh",
+                    "Path": "Library\/Meshes\/1764573478.nemesh",
+                    "File": "1764573478.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 388220648,
-                        "Path": "Library\/Materials\/388220648.nemat",
-                        "File": "388220648.nemat"
+                        "UID": 921731951,
+                        "Path": "Library\/Materials\/921731951.nemat",
+                        "File": "921731951.nemat"
                     }
                 }
             ]
         },
         {
-            "UID": 2086412842,
-            "ParentUID": 411230745,
+            "UID": 1834421536,
+            "ParentUID": 383195435,
             "Name": "City_building_010",
             "IsActive": true,
             "IsStatic": false,
@@ -494,41 +494,41 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 732411297,
+                    "UID": 1914947717,
                     "Name": "City_building_010.nemesh",
-                    "Path": "Library\/Meshes\/732411297.nemesh",
-                    "File": "732411297.nemesh",
+                    "Path": "Library\/Meshes\/1914947717.nemesh",
+                    "File": "1914947717.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 272246904,
-                        "Path": "Library\/Materials\/272246904.nemat",
-                        "File": "272246904.nemat"
+                        "UID": 711252478,
+                        "Path": "Library\/Materials\/711252478.nemat",
+                        "File": "711252478.nemat"
                     },
                     "Texture": {
-                        "UID": 411034962,
+                        "UID": 1430838312,
                         "Name": "building 01_c.tga",
-                        "Path": "Library\/Textures\/411034962.netex",
-                        "File": "411034962.netex"
+                        "Path": "Library\/Textures\/1430838312.netex",
+                        "File": "1430838312.netex"
                     }
                 },
                 {
                     "Type": 2,
-                    "UID": 1298329153,
+                    "UID": 499645758,
                     "Name": "City_building_010.nemesh",
-                    "Path": "Library\/Meshes\/1298329153.nemesh",
-                    "File": "1298329153.nemesh",
+                    "Path": "Library\/Meshes\/499645758.nemesh",
+                    "File": "499645758.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 }
             ]
         },
         {
-            "UID": 1499547730,
-            "ParentUID": 411230745,
+            "UID": 880665253,
+            "ParentUID": 383195435,
             "Name": "City_building_011",
             "IsActive": true,
             "IsStatic": false,
@@ -556,32 +556,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 540787165,
+                    "UID": 2032788458,
                     "Name": "City_building_011.nemesh",
-                    "Path": "Library\/Meshes\/540787165.nemesh",
-                    "File": "540787165.nemesh",
+                    "Path": "Library\/Meshes\/2032788458.nemesh",
+                    "File": "2032788458.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 779209311,
-                        "Path": "Library\/Materials\/779209311.nemat",
-                        "File": "779209311.nemat"
+                        "UID": 1355378238,
+                        "Path": "Library\/Materials\/1355378238.nemat",
+                        "File": "1355378238.nemat"
                     },
                     "Texture": {
-                        "UID": 1747034264,
+                        "UID": 209374971,
                         "Name": "building_016_c.tga",
-                        "Path": "Library\/Textures\/1747034264.netex",
-                        "File": "1747034264.netex"
+                        "Path": "Library\/Textures\/209374971.netex",
+                        "File": "209374971.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 822923439,
-            "ParentUID": 411230745,
+            "UID": 923514004,
+            "ParentUID": 383195435,
             "Name": "City_building_013",
             "IsActive": true,
             "IsStatic": false,
@@ -609,32 +609,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 516553978,
+                    "UID": 2009283195,
                     "Name": "City_building_013.nemesh",
-                    "Path": "Library\/Meshes\/516553978.nemesh",
-                    "File": "516553978.nemesh",
+                    "Path": "Library\/Meshes\/2009283195.nemesh",
+                    "File": "2009283195.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 329465873,
-                        "Path": "Library\/Materials\/329465873.nemat",
-                        "File": "329465873.nemat"
+                        "UID": 228356025,
+                        "Path": "Library\/Materials\/228356025.nemat",
+                        "File": "228356025.nemat"
                     },
                     "Texture": {
-                        "UID": 470710526,
+                        "UID": 553377784,
                         "Name": "building 06_ c.tga",
-                        "Path": "Library\/Textures\/470710526.netex",
-                        "File": "470710526.netex"
+                        "Path": "Library\/Textures\/553377784.netex",
+                        "File": "553377784.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1945730481,
-            "ParentUID": 411230745,
+            "UID": 1178240518,
+            "ParentUID": 383195435,
             "Name": "City_building_014",
             "IsActive": true,
             "IsStatic": false,
@@ -662,32 +662,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1302800658,
+                    "UID": 425748611,
                     "Name": "City_building_014.nemesh",
-                    "Path": "Library\/Meshes\/1302800658.nemesh",
-                    "File": "1302800658.nemesh",
+                    "Path": "Library\/Meshes\/425748611.nemesh",
+                    "File": "425748611.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1430447680,
-                        "Path": "Library\/Materials\/1430447680.nemat",
-                        "File": "1430447680.nemat"
+                        "UID": 266489760,
+                        "Path": "Library\/Materials\/266489760.nemat",
+                        "File": "266489760.nemat"
                     },
                     "Texture": {
-                        "UID": 1791283302,
+                        "UID": 1172354527,
                         "Name": "building03_c.tga",
-                        "Path": "Library\/Textures\/1791283302.netex",
-                        "File": "1791283302.netex"
+                        "Path": "Library\/Textures\/1172354527.netex",
+                        "File": "1172354527.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 112402354,
-            "ParentUID": 411230745,
+            "UID": 1219620482,
+            "ParentUID": 383195435,
             "Name": "City_building_016",
             "IsActive": true,
             "IsStatic": false,
@@ -715,41 +715,41 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 652767106,
+                    "UID": 453996987,
                     "Name": "City_building_016.nemesh",
-                    "Path": "Library\/Meshes\/652767106.nemesh",
-                    "File": "652767106.nemesh",
+                    "Path": "Library\/Meshes\/453996987.nemesh",
+                    "File": "453996987.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1328522600,
-                        "Path": "Library\/Materials\/1328522600.nemat",
-                        "File": "1328522600.nemat"
+                        "UID": 535662387,
+                        "Path": "Library\/Materials\/535662387.nemat",
+                        "File": "535662387.nemat"
                     },
                     "Texture": {
-                        "UID": 951258310,
+                        "UID": 150031525,
                         "Name": "building 01_c.tga",
-                        "Path": "Library\/Textures\/951258310.netex",
-                        "File": "951258310.netex"
+                        "Path": "Library\/Textures\/150031525.netex",
+                        "File": "150031525.netex"
                     }
                 },
                 {
                     "Type": 2,
-                    "UID": 134656497,
+                    "UID": 866879233,
                     "Name": "City_building_016.nemesh",
-                    "Path": "Library\/Meshes\/134656497.nemesh",
-                    "File": "134656497.nemesh",
+                    "Path": "Library\/Meshes\/866879233.nemesh",
+                    "File": "866879233.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 }
             ]
         },
         {
-            "UID": 1311431500,
-            "ParentUID": 411230745,
+            "UID": 605908790,
+            "ParentUID": 383195435,
             "Name": "City_building_017",
             "IsActive": true,
             "IsStatic": false,
@@ -777,41 +777,41 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 681550853,
+                    "UID": 1373580640,
                     "Name": "City_building_017.nemesh",
-                    "Path": "Library\/Meshes\/681550853.nemesh",
-                    "File": "681550853.nemesh",
+                    "Path": "Library\/Meshes\/1373580640.nemesh",
+                    "File": "1373580640.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 439397296,
-                        "Path": "Library\/Materials\/439397296.nemat",
-                        "File": "439397296.nemat"
+                        "UID": 111371168,
+                        "Path": "Library\/Materials\/111371168.nemat",
+                        "File": "111371168.nemat"
                     },
                     "Texture": {
-                        "UID": 374593301,
+                        "UID": 1356121658,
                         "Name": "building 01_c.tga",
-                        "Path": "Library\/Textures\/374593301.netex",
-                        "File": "374593301.netex"
+                        "Path": "Library\/Textures\/1356121658.netex",
+                        "File": "1356121658.netex"
                     }
                 },
                 {
                     "Type": 2,
-                    "UID": 830144720,
+                    "UID": 1266128491,
                     "Name": "City_building_017.nemesh",
-                    "Path": "Library\/Meshes\/830144720.nemesh",
-                    "File": "830144720.nemesh",
+                    "Path": "Library\/Meshes\/1266128491.nemesh",
+                    "File": "1266128491.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 }
             ]
         },
         {
-            "UID": 286924485,
-            "ParentUID": 411230745,
+            "UID": 546218515,
+            "ParentUID": 383195435,
             "Name": "City_building_022",
             "IsActive": true,
             "IsStatic": false,
@@ -839,32 +839,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 297108769,
+                    "UID": 325751549,
                     "Name": "City_building_022.nemesh",
-                    "Path": "Library\/Meshes\/297108769.nemesh",
-                    "File": "297108769.nemesh",
+                    "Path": "Library\/Meshes\/325751549.nemesh",
+                    "File": "325751549.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1071720280,
-                        "Path": "Library\/Materials\/1071720280.nemat",
-                        "File": "1071720280.nemat"
+                        "UID": 1247325648,
+                        "Path": "Library\/Materials\/1247325648.nemat",
+                        "File": "1247325648.nemat"
                     },
                     "Texture": {
-                        "UID": 2065782512,
+                        "UID": 115222022,
                         "Name": "building05 _c.tga",
-                        "Path": "Library\/Textures\/2065782512.netex",
-                        "File": "2065782512.netex"
+                        "Path": "Library\/Textures\/115222022.netex",
+                        "File": "115222022.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1753407961,
-            "ParentUID": 411230745,
+            "UID": 1538525604,
+            "ParentUID": 383195435,
             "Name": "City_building_023",
             "IsActive": true,
             "IsStatic": false,
@@ -892,32 +892,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1804651514,
+                    "UID": 1773849983,
                     "Name": "City_building_023.nemesh",
-                    "Path": "Library\/Meshes\/1804651514.nemesh",
-                    "File": "1804651514.nemesh",
+                    "Path": "Library\/Meshes\/1773849983.nemesh",
+                    "File": "1773849983.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1682305386,
-                        "Path": "Library\/Materials\/1682305386.nemat",
-                        "File": "1682305386.nemat"
+                        "UID": 1131869832,
+                        "Path": "Library\/Materials\/1131869832.nemat",
+                        "File": "1131869832.nemat"
                     },
                     "Texture": {
-                        "UID": 25171326,
+                        "UID": 2144630654,
                         "Name": "building_016_c.tga",
-                        "Path": "Library\/Textures\/25171326.netex",
-                        "File": "25171326.netex"
+                        "Path": "Library\/Textures\/2144630654.netex",
+                        "File": "2144630654.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 9163506,
-            "ParentUID": 411230745,
+            "UID": 1624348870,
+            "ParentUID": 383195435,
             "Name": "City_building_024",
             "IsActive": true,
             "IsStatic": false,
@@ -945,32 +945,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 309955872,
+                    "UID": 1350861467,
                     "Name": "City_building_024.nemesh",
-                    "Path": "Library\/Meshes\/309955872.nemesh",
-                    "File": "309955872.nemesh",
+                    "Path": "Library\/Meshes\/1350861467.nemesh",
+                    "File": "1350861467.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1113244961,
-                        "Path": "Library\/Materials\/1113244961.nemat",
-                        "File": "1113244961.nemat"
+                        "UID": 1383536191,
+                        "Path": "Library\/Materials\/1383536191.nemat",
+                        "File": "1383536191.nemat"
                     },
                     "Texture": {
-                        "UID": 395125904,
+                        "UID": 2089134720,
                         "Name": "building_025_c.tga",
-                        "Path": "Library\/Textures\/395125904.netex",
-                        "File": "395125904.netex"
+                        "Path": "Library\/Textures\/2089134720.netex",
+                        "File": "2089134720.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 809019309,
-            "ParentUID": 411230745,
+            "UID": 46965892,
+            "ParentUID": 383195435,
             "Name": "City_building_026",
             "IsActive": true,
             "IsStatic": false,
@@ -998,32 +998,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 892501295,
+                    "UID": 1467861753,
                     "Name": "City_building_026.nemesh",
-                    "Path": "Library\/Meshes\/892501295.nemesh",
-                    "File": "892501295.nemesh",
+                    "Path": "Library\/Meshes\/1467861753.nemesh",
+                    "File": "1467861753.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 2110051093,
-                        "Path": "Library\/Materials\/2110051093.nemat",
-                        "File": "2110051093.nemat"
+                        "UID": 1349687826,
+                        "Path": "Library\/Materials\/1349687826.nemat",
+                        "File": "1349687826.nemat"
                     },
                     "Texture": {
-                        "UID": 953305424,
+                        "UID": 1321675814,
                         "Name": "building05 _c.tga",
-                        "Path": "Library\/Textures\/953305424.netex",
-                        "File": "953305424.netex"
+                        "Path": "Library\/Textures\/1321675814.netex",
+                        "File": "1321675814.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 972492838,
-            "ParentUID": 411230745,
+            "UID": 737864976,
+            "ParentUID": 383195435,
             "Name": "City_building_028",
             "IsActive": true,
             "IsStatic": false,
@@ -1051,32 +1051,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 891526853,
+                    "UID": 1468567525,
                     "Name": "City_building_028.nemesh",
-                    "Path": "Library\/Meshes\/891526853.nemesh",
-                    "File": "891526853.nemesh",
+                    "Path": "Library\/Meshes\/1468567525.nemesh",
+                    "File": "1468567525.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1535763335,
-                        "Path": "Library\/Materials\/1535763335.nemat",
-                        "File": "1535763335.nemat"
+                        "UID": 110459972,
+                        "Path": "Library\/Materials\/110459972.nemat",
+                        "File": "110459972.nemat"
                     },
                     "Texture": {
-                        "UID": 315845552,
+                        "UID": 194770705,
                         "Name": "Building_V01_C.png",
-                        "Path": "Library\/Textures\/315845552.netex",
-                        "File": "315845552.netex"
+                        "Path": "Library\/Textures\/194770705.netex",
+                        "File": "194770705.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1262079817,
-            "ParentUID": 411230745,
+            "UID": 415132717,
+            "ParentUID": 383195435,
             "Name": "Object010",
             "IsActive": true,
             "IsStatic": false,
@@ -1104,26 +1104,26 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1406362365,
+                    "UID": 373206228,
                     "Name": "Object010.nemesh",
-                    "Path": "Library\/Meshes\/1406362365.nemesh",
-                    "File": "1406362365.nemesh",
+                    "Path": "Library\/Meshes\/373206228.nemesh",
+                    "File": "373206228.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1329848458,
-                        "Path": "Library\/Materials\/1329848458.nemat",
-                        "File": "1329848458.nemat"
+                        "UID": 33137294,
+                        "Path": "Library\/Materials\/33137294.nemat",
+                        "File": "33137294.nemat"
                     }
                 }
             ]
         },
         {
-            "UID": 1444442085,
-            "ParentUID": 411230745,
+            "UID": 744003796,
+            "ParentUID": 383195435,
             "Name": "City_building_030",
             "IsActive": true,
             "IsStatic": false,
@@ -1151,32 +1151,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1096251196,
+                    "UID": 966569023,
                     "Name": "City_building_030.nemesh",
-                    "Path": "Library\/Meshes\/1096251196.nemesh",
-                    "File": "1096251196.nemesh",
+                    "Path": "Library\/Meshes\/966569023.nemesh",
+                    "File": "966569023.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 783837207,
-                        "Path": "Library\/Materials\/783837207.nemat",
-                        "File": "783837207.nemat"
+                        "UID": 567673224,
+                        "Path": "Library\/Materials\/567673224.nemat",
+                        "File": "567673224.nemat"
                     },
                     "Texture": {
-                        "UID": 1823234630,
+                        "UID": 1835972363,
                         "Name": "Building_V01_C.png",
-                        "Path": "Library\/Textures\/1823234630.netex",
-                        "File": "1823234630.netex"
+                        "Path": "Library\/Textures\/1835972363.netex",
+                        "File": "1835972363.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 446412503,
-            "ParentUID": 411230745,
+            "UID": 615735787,
+            "ParentUID": 383195435,
             "Name": "City_building_031",
             "IsActive": true,
             "IsStatic": false,
@@ -1204,32 +1204,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 885424794,
+                    "UID": 1707767688,
                     "Name": "City_building_031.nemesh",
-                    "Path": "Library\/Meshes\/885424794.nemesh",
-                    "File": "885424794.nemesh",
+                    "Path": "Library\/Meshes\/1707767688.nemesh",
+                    "File": "1707767688.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 371362460,
-                        "Path": "Library\/Materials\/371362460.nemat",
-                        "File": "371362460.nemat"
+                        "UID": 1617431249,
+                        "Path": "Library\/Materials\/1617431249.nemat",
+                        "File": "1617431249.nemat"
                     },
                     "Texture": {
-                        "UID": 1070201427,
+                        "UID": 1728472537,
                         "Name": "Building_V01_C.png",
-                        "Path": "Library\/Textures\/1070201427.netex",
-                        "File": "1070201427.netex"
+                        "Path": "Library\/Textures\/1728472537.netex",
+                        "File": "1728472537.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 773689989,
-            "ParentUID": 411230745,
+            "UID": 115303805,
+            "ParentUID": 383195435,
             "Name": "City_building_032",
             "IsActive": true,
             "IsStatic": false,
@@ -1257,32 +1257,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 405518835,
+                    "UID": 131086836,
                     "Name": "City_building_032.nemesh",
-                    "Path": "Library\/Meshes\/405518835.nemesh",
-                    "File": "405518835.nemesh",
+                    "Path": "Library\/Meshes\/131086836.nemesh",
+                    "File": "131086836.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1537807308,
-                        "Path": "Library\/Materials\/1537807308.nemat",
-                        "File": "1537807308.nemat"
+                        "UID": 1818663405,
+                        "Path": "Library\/Materials\/1818663405.nemat",
+                        "File": "1818663405.nemat"
                     },
                     "Texture": {
-                        "UID": 885369083,
+                        "UID": 1529092385,
                         "Name": "building03_c.tga",
-                        "Path": "Library\/Textures\/885369083.netex",
-                        "File": "885369083.netex"
+                        "Path": "Library\/Textures\/1529092385.netex",
+                        "File": "1529092385.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1973314371,
-            "ParentUID": 411230745,
+            "UID": 1466129621,
+            "ParentUID": 383195435,
             "Name": "City_building_033",
             "IsActive": true,
             "IsStatic": false,
@@ -1310,32 +1310,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1947790476,
+                    "UID": 1849844532,
                     "Name": "City_building_033.nemesh",
-                    "Path": "Library\/Meshes\/1947790476.nemesh",
-                    "File": "1947790476.nemesh",
+                    "Path": "Library\/Meshes\/1849844532.nemesh",
+                    "File": "1849844532.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1485463842,
-                        "Path": "Library\/Materials\/1485463842.nemat",
-                        "File": "1485463842.nemat"
+                        "UID": 2069833049,
+                        "Path": "Library\/Materials\/2069833049.nemat",
+                        "File": "2069833049.nemat"
                     },
                     "Texture": {
-                        "UID": 960671656,
+                        "UID": 1251539788,
                         "Name": "building 06_ c.tga",
-                        "Path": "Library\/Textures\/960671656.netex",
-                        "File": "960671656.netex"
+                        "Path": "Library\/Textures\/1251539788.netex",
+                        "File": "1251539788.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1875649098,
-            "ParentUID": 411230745,
+            "UID": 1151209253,
+            "ParentUID": 383195435,
             "Name": "City_building_034",
             "IsActive": true,
             "IsStatic": false,
@@ -1363,32 +1363,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1011937353,
+                    "UID": 747937555,
                     "Name": "City_building_034.nemesh",
-                    "Path": "Library\/Meshes\/1011937353.nemesh",
-                    "File": "1011937353.nemesh",
+                    "Path": "Library\/Meshes\/747937555.nemesh",
+                    "File": "747937555.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 45804920,
-                        "Path": "Library\/Materials\/45804920.nemat",
-                        "File": "45804920.nemat"
+                        "UID": 1669495594,
+                        "Path": "Library\/Materials\/1669495594.nemat",
+                        "File": "1669495594.nemat"
                     },
                     "Texture": {
-                        "UID": 2118603172,
+                        "UID": 1547839646,
                         "Name": "building05 _c.tga",
-                        "Path": "Library\/Textures\/2118603172.netex",
-                        "File": "2118603172.netex"
+                        "Path": "Library\/Textures\/1547839646.netex",
+                        "File": "1547839646.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1549929931,
-            "ParentUID": 411230745,
+            "UID": 1410628006,
+            "ParentUID": 383195435,
             "Name": "City_building_035",
             "IsActive": true,
             "IsStatic": false,
@@ -1416,32 +1416,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 594798984,
+                    "UID": 1173102514,
                     "Name": "City_building_035.nemesh",
-                    "Path": "Library\/Meshes\/594798984.nemesh",
-                    "File": "594798984.nemesh",
+                    "Path": "Library\/Meshes\/1173102514.nemesh",
+                    "File": "1173102514.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 654548292,
-                        "Path": "Library\/Materials\/654548292.nemat",
-                        "File": "654548292.nemat"
+                        "UID": 931960342,
+                        "Path": "Library\/Materials\/931960342.nemat",
+                        "File": "931960342.nemat"
                     },
                     "Texture": {
-                        "UID": 703647992,
+                        "UID": 2087543571,
                         "Name": "Building_V01_C.png",
-                        "Path": "Library\/Textures\/703647992.netex",
-                        "File": "703647992.netex"
+                        "Path": "Library\/Textures\/2087543571.netex",
+                        "File": "2087543571.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 349688950,
-            "ParentUID": 411230745,
+            "UID": 1873802537,
+            "ParentUID": 383195435,
             "Name": "City_building_036",
             "IsActive": true,
             "IsStatic": false,
@@ -1469,32 +1469,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 952675106,
+                    "UID": 212034289,
                     "Name": "City_building_036.nemesh",
-                    "Path": "Library\/Meshes\/952675106.nemesh",
-                    "File": "952675106.nemesh",
+                    "Path": "Library\/Meshes\/212034289.nemesh",
+                    "File": "212034289.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 415815430,
-                        "Path": "Library\/Materials\/415815430.nemat",
-                        "File": "415815430.nemat"
+                        "UID": 2113862274,
+                        "Path": "Library\/Materials\/2113862274.nemat",
+                        "File": "2113862274.nemat"
                     },
                     "Texture": {
-                        "UID": 1406490470,
+                        "UID": 3565597,
                         "Name": "building 06_ c.tga",
-                        "Path": "Library\/Textures\/1406490470.netex",
-                        "File": "1406490470.netex"
+                        "Path": "Library\/Textures\/3565597.netex",
+                        "File": "3565597.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 673083301,
-            "ParentUID": 411230745,
+            "UID": 361505495,
+            "ParentUID": 383195435,
             "Name": "City_building_037",
             "IsActive": true,
             "IsStatic": false,
@@ -1522,32 +1522,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 608127399,
+                    "UID": 1753042693,
                     "Name": "City_building_037.nemesh",
-                    "Path": "Library\/Meshes\/608127399.nemesh",
-                    "File": "608127399.nemesh",
+                    "Path": "Library\/Meshes\/1753042693.nemesh",
+                    "File": "1753042693.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 555382222,
-                        "Path": "Library\/Materials\/555382222.nemat",
-                        "File": "555382222.nemat"
+                        "UID": 1560105288,
+                        "Path": "Library\/Materials\/1560105288.nemat",
+                        "File": "1560105288.nemat"
                     },
                     "Texture": {
-                        "UID": 822613627,
+                        "UID": 662357882,
                         "Name": "building05 _c.tga",
-                        "Path": "Library\/Textures\/822613627.netex",
-                        "File": "822613627.netex"
+                        "Path": "Library\/Textures\/662357882.netex",
+                        "File": "662357882.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1761791705,
-            "ParentUID": 411230745,
+            "UID": 1163954565,
+            "ParentUID": 383195435,
             "Name": "City_building_038",
             "IsActive": true,
             "IsStatic": false,
@@ -1575,32 +1575,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1699253944,
+                    "UID": 2108910396,
                     "Name": "City_building_038.nemesh",
-                    "Path": "Library\/Meshes\/1699253944.nemesh",
-                    "File": "1699253944.nemesh",
+                    "Path": "Library\/Meshes\/2108910396.nemesh",
+                    "File": "2108910396.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1943652500,
-                        "Path": "Library\/Materials\/1943652500.nemat",
-                        "File": "1943652500.nemat"
+                        "UID": 1458262894,
+                        "Path": "Library\/Materials\/1458262894.nemat",
+                        "File": "1458262894.nemat"
                     },
                     "Texture": {
-                        "UID": 1791137736,
+                        "UID": 1284047602,
                         "Name": "building05 _c.tga",
-                        "Path": "Library\/Textures\/1791137736.netex",
-                        "File": "1791137736.netex"
+                        "Path": "Library\/Textures\/1284047602.netex",
+                        "File": "1284047602.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 319723927,
-            "ParentUID": 411230745,
+            "UID": 1722352460,
+            "ParentUID": 383195435,
             "Name": "City_building_039",
             "IsActive": true,
             "IsStatic": false,
@@ -1628,32 +1628,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 1572893773,
+                    "UID": 210299235,
                     "Name": "City_building_039.nemesh",
-                    "Path": "Library\/Meshes\/1572893773.nemesh",
-                    "File": "1572893773.nemesh",
+                    "Path": "Library\/Meshes\/210299235.nemesh",
+                    "File": "210299235.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1913290863,
-                        "Path": "Library\/Materials\/1913290863.nemat",
-                        "File": "1913290863.nemat"
+                        "UID": 2090271943,
+                        "Path": "Library\/Materials\/2090271943.nemat",
+                        "File": "2090271943.nemat"
                     },
                     "Texture": {
-                        "UID": 1107516807,
+                        "UID": 446121001,
                         "Name": "Building_V01_C.png",
-                        "Path": "Library\/Textures\/1107516807.netex",
-                        "File": "1107516807.netex"
+                        "Path": "Library\/Textures\/446121001.netex",
+                        "File": "446121001.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 90382364,
-            "ParentUID": 411230745,
+            "UID": 1027966015,
+            "ParentUID": 383195435,
             "Name": "City_building_040",
             "IsActive": true,
             "IsStatic": false,
@@ -1681,32 +1681,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 628391910,
+                    "UID": 736536102,
                     "Name": "City_building_040.nemesh",
-                    "Path": "Library\/Meshes\/628391910.nemesh",
-                    "File": "628391910.nemesh",
+                    "Path": "Library\/Meshes\/736536102.nemesh",
+                    "File": "736536102.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 16410009,
-                        "Path": "Library\/Materials\/16410009.nemat",
-                        "File": "16410009.nemat"
+                        "UID": 493029091,
+                        "Path": "Library\/Materials\/493029091.nemat",
+                        "File": "493029091.nemat"
                     },
                     "Texture": {
-                        "UID": 19936385,
+                        "UID": 1947214510,
                         "Name": "Building_V01_C.png",
-                        "Path": "Library\/Textures\/19936385.netex",
-                        "File": "19936385.netex"
+                        "Path": "Library\/Textures\/1947214510.netex",
+                        "File": "1947214510.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1747980279,
-            "ParentUID": 411230745,
+            "UID": 619995400,
+            "ParentUID": 383195435,
             "Name": "City_building_041",
             "IsActive": true,
             "IsStatic": false,
@@ -1734,32 +1734,32 @@
                 },
                 {
                     "Type": 2,
-                    "UID": 196307304,
+                    "UID": 1993334878,
                     "Name": "City_building_041.nemesh",
-                    "Path": "Library\/Meshes\/196307304.nemesh",
-                    "File": "196307304.nemesh",
+                    "Path": "Library\/Meshes\/1993334878.nemesh",
+                    "File": "1993334878.nemesh",
                     "ShowWireframe": false,
                     "ShowBoundingBox": false
                 },
                 {
                     "Type": 3,
                     "Material": {
-                        "UID": 1247200044,
-                        "Path": "Library\/Materials\/1247200044.nemat",
-                        "File": "1247200044.nemat"
+                        "UID": 903312126,
+                        "Path": "Library\/Materials\/903312126.nemat",
+                        "File": "903312126.nemat"
                     },
                     "Texture": {
-                        "UID": 2107964173,
+                        "UID": 434921851,
                         "Name": "Building_V02_C.png",
-                        "Path": "Library\/Textures\/2107964173.netex",
-                        "File": "2107964173.netex"
+                        "Path": "Library\/Textures\/434921851.netex",
+                        "File": "434921851.netex"
                     }
                 }
             ]
         },
         {
-            "UID": 1061312144,
-            "ParentUID": 319693391,
+            "UID": 1872882536,
+            "ParentUID": 807957095,
             "Name": "Camera001",
             "IsActive": true,
             "IsStatic": false,
@@ -1788,8 +1788,8 @@
             ]
         },
         {
-            "UID": 1572676704,
-            "ParentUID": 319693391,
+            "UID": 1222670146,
+            "ParentUID": 807957095,
             "Name": "Camera001.Target",
             "IsActive": true,
             "IsStatic": false,
@@ -1818,8 +1818,8 @@
             ]
         },
         {
-            "UID": 1337335696,
-            "ParentUID": 319693391,
+            "UID": 888085693,
+            "ParentUID": 807957095,
             "Name": "Spot001",
             "IsActive": true,
             "IsStatic": false,
@@ -1848,8 +1848,8 @@
             ]
         },
         {
-            "UID": 1329172509,
-            "ParentUID": 319693391,
+            "UID": 431811008,
+            "ParentUID": 807957095,
             "Name": "Spot001.Target",
             "IsActive": true,
             "IsStatic": false,

@@ -105,29 +105,28 @@ bool Application::Init()
 	bool ret = true;
 
 	char* buffer = nullptr;
-
-	uint size = file_system->Load("Configuration/configuration.JSON", &buffer);
-	
-	if (size <= 0)																	// Check if the configuration is empty and load the default configuration for the engine.
+	uint size = file_system->Load("Engine/Configuration/configuration.JSON", &buffer);
+	if (size > 0)																			// Check if the configuration is empty and load the default configuration for the engine.
 	{
-		uint default_size = file_system->Load("Configuration/default_configuration.JSON", &buffer);
-
+		engine_name			= TITLE;														// Change Later?
+		organization		= ORGANIZATION;
+		frame_cap			= 60;
+		frames_are_capped	= true;
+	}
+	else
+	{
+		uint default_size = file_system->Load("Engine/Configuration/default_configuration.JSON", &buffer);
 		if (default_size <= 0)
 		{
-			LOG("[error] Failed to load project settings.");
+			LOG("[ERROR] Failed to load project settings.");
 			return false;
 		}
-		
+
 		engine_name			= TITLE;
 		organization		= ORGANIZATION;
 		frame_cap			= 60;
 		frames_are_capped	= true;
 	}
-
-	engine_name			= TITLE;														// Change Later?
-	organization		= ORGANIZATION;
-	frame_cap			= 60;
-	frames_are_capped	= true;
 
 	ParsonNode config(buffer);
 	ParsonNode node = config.GetNode("EditorState");
@@ -140,6 +139,8 @@ bool Application::Init()
 		++item;
 	}
 	
+	RELEASE_ARRAY(buffer);
+
 	// Initializing hardware info and Logging it.
 	hardware_info.InitializeInfo();
 	LogHardwareInfo();
@@ -367,7 +368,7 @@ void Application::FinishUpdate()
 void Application::SaveConfiguration(const char* file)
 {
 	want_to_save = true;
-	save_config_file = ("Configuration/configuration.json");
+	save_config_file = ("Engine/Configuration/configuration.json");
 }
 
 void Application::LoadConfiguration(const char* file)

@@ -87,30 +87,11 @@ UPDATE_STATUS M_Scene::Update(float dt)
 		HandleDebugInput();
 	}
 
-	for (uint n = 0; n < primitives.size(); n++)
-	{
-		primitives[n]->Update();
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_STATE::KEY_DOWN)
-	{
-		App->SaveConfiguration("Resources/Configuration/configuration.JSON");
-
-		//DebugSpawnPrimitive(new Sphere(1.0f, 1.0f));
-	}
-
-	return UPDATE_STATUS::CONTINUE;
-}
-
-UPDATE_STATUS M_Scene::PostUpdate(float dt)
-{
-	BROFILER_CATEGORY("M_Scene PostUpdate", Profiler::Color::Yellow)
-
 	std::vector<MeshRenderer>	mesh_renderers;
 	std::vector<CuboidRenderer> cuboid_renderers;
 
 	// --- Sort GameObjects by Z-Buffer value
-	
+
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
 		if (game_objects[i]->to_delete)
@@ -118,11 +99,11 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 			DeleteGameObject(game_objects[i], i);
 			continue;
 		}
-		
+
 		if (game_objects[i]->IsActive())
 		{
 			game_objects[i]->Update();
-			
+
 			if (GameObjectIsInsideCullingCamera(game_objects[i]) || game_objects[i] == culling_camera->GetOwner())
 			{
 				game_objects[i]->GetRenderers(mesh_renderers, cuboid_renderers);
@@ -135,6 +116,29 @@ UPDATE_STATUS M_Scene::PostUpdate(float dt)
 
 	mesh_renderers.clear();
 	cuboid_renderers.clear();
+	
+	// --- Primitives
+	for (uint n = 0; n < primitives.size(); n++)
+	{
+		primitives[n]->Update();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_STATE::KEY_DOWN)
+	{
+		App->SaveConfiguration("Resources/Engine/Configuration/configuration.JSON");
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_STATE::KEY_DOWN)
+	{
+		App->LoadConfiguration("Resources/Engine/Configuration/configuration.JSON");
+	}
+
+	return UPDATE_STATUS::CONTINUE;
+}
+
+UPDATE_STATUS M_Scene::PostUpdate(float dt)
+{
+	BROFILER_CATEGORY("M_Scene PostUpdate", Profiler::Color::Yellow)
 	
 	for (uint n = 0; n < primitives.size(); n++)
 	{
@@ -348,7 +352,7 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 		c_meshes.clear();
 	}
 
-	if (!game_objects.empty())
+	if (!game_objects.empty())													// Extra check just to make sure that at least one GameObject remains in the Scene.
 	{
 		game_object->CleanUp();													// As it has not been Cleaned Up by its parent, the GameObject needs to call its CleanUp();
 		
@@ -487,14 +491,6 @@ C_Camera* M_Scene::GetCullingCamera() const
 
 void M_Scene::SetCullingCamera(C_Camera* culling_camera)
 {
-	//if (this->culling_camera != nullptr)
-	//{
-	//	if (this->culling_camera != culling_camera)
-	//	{
-	//		this->culling_camera->SetIsCulling(false);
-	//	}
-	//}
-
 	C_Camera* prev_cull_cam = this->culling_camera;
 
 	this->culling_camera = culling_camera;
@@ -564,15 +560,15 @@ void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
 	std::map<float, GameObject*> hits;
 	GetRaycastHits(ray, hits);
 
-	if (hits.size() == 0)
+	if (hits.size() == 0)																									// --- If no GameObject's AABB was hit
 	{
 		SetSelectedGameObject(nullptr);
 		hits.clear();
 		return;
 	}
 
-	std::map<float, GameObject*>::iterator item;
 	std::vector<C_Mesh*> c_meshes;
+	std::map<float, GameObject*>::iterator item;
 	for (item = hits.begin(); item != hits.end(); ++item)
 	{
 		bool found_meshes = item->second->GetComponents<C_Mesh>(c_meshes);
@@ -616,9 +612,7 @@ void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
 		c_meshes.clear();
 	}
 
-	// If no GameObject was hit
-	SetSelectedGameObject(nullptr);
-
+	SetSelectedGameObject(nullptr);																							// If no GameObject's Mesh was hit
 	hits.clear();
 }
 

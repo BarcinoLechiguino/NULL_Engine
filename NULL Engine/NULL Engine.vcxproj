@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\AnimationSettings.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\E_Resources.cpp" />
     <ClCompile Include="Source\Hourglass.cpp" />
@@ -97,6 +98,9 @@
     <ClCompile Include="Source\I_Textures.cpp" />
     <ClCompile Include="Source\JSONParser.cpp" />
     <ClCompile Include="Source\Log.cpp" />
+    <ClCompile Include="Source\MaterialSettings.cpp" />
+    <ClCompile Include="Source\MeshSettings.cpp" />
+    <ClCompile Include="Source\ModelSettings.cpp" />
     <ClCompile Include="Source\M_Editor.cpp" />
     <ClCompile Include="Source\Light.cpp" />
     <ClCompile Include="Source\Main.cpp" />
@@ -110,9 +114,13 @@
     <ClCompile Include="Source\M_FileSystem.cpp" />
     <ClCompile Include="Source\PathNode.cpp" />
     <ClCompile Include="Source\Random.cpp" />
+    <ClCompile Include="Source\R_Animation.cpp" />
+    <ClCompile Include="Source\R_Folder.cpp" />
+    <ClCompile Include="Source\R_Scene.cpp" />
     <ClCompile Include="Source\R_Texture.cpp" />
     <ClCompile Include="Source\SoftwareInfo.cpp" />
     <ClCompile Include="Source\SystemInfo.cpp" />
+    <ClCompile Include="Source\TextureSettings.cpp" />
     <ClCompile Include="Source\Time.cpp" />
     <ClCompile Include="Source\PerfectTimer.cpp" />
     <ClCompile Include="Source\Primitive.cpp" />
@@ -123,6 +131,7 @@
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\AnimationSettings.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
     <ClInclude Include="Source\E_Resources.h" />
@@ -268,10 +277,13 @@
     <ClInclude Include="Source\JSONParser.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\Macros.h" />
+    <ClInclude Include="Source\MaterialSettings.h" />
     <ClInclude Include="Source\MathGeoBoundingBox.h" />
     <ClInclude Include="Source\MathGeoFrustum.h" />
     <ClInclude Include="Source\MathGeoTransform.h" />
     <ClInclude Include="Source\MemoryManager.h" />
+    <ClInclude Include="Source\MeshSettings.h" />
+    <ClInclude Include="Source\ModelSettings.h" />
     <ClInclude Include="Source\M_Editor.h" />
     <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\ImGui.h" />
@@ -288,9 +300,13 @@
     <ClInclude Include="Source\PathNode.h" />
     <ClInclude Include="Source\Profiler.h" />
     <ClInclude Include="Source\Random.h" />
+    <ClInclude Include="Source\R_Animation.h" />
+    <ClInclude Include="Source\R_Folder.h" />
+    <ClInclude Include="Source\R_Scene.h" />
     <ClInclude Include="Source\R_Texture.h" />
     <ClInclude Include="Source\SoftwareInfo.h" />
     <ClInclude Include="Source\SystemInfo.h" />
+    <ClInclude Include="Source\TextureSettings.h" />
     <ClInclude Include="Source\Time.h" />
     <ClInclude Include="Source\PerfectTimer.h" />
     <ClInclude Include="Source\Primitive.h" />
@@ -304,8 +320,8 @@
     <ClInclude Include="Source\VariableTypedefs.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Configuration\configuration.JSON" />
-    <None Include="Resources\Configuration\default_configuration.JSON" />
+    <None Include="Resources\Engine\Configuration\configuration.JSON" />
+    <None Include="Resources\Engine\Configuration\default_configuration.JSON" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{746CC4C3-787F-4B0E-AA66-E388FE3FF4F6}</ProjectGuid>

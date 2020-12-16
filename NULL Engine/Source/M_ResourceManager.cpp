@@ -1,6 +1,8 @@
 #include "VariableTypedefs.h"
 #include "JSONParser.h"
 
+#include "Time.h"
+
 #include "Resource.h"
 #include "R_Mesh.h"
 #include "R_Material.h"
@@ -12,7 +14,9 @@ typedef std::pair<std::map<uint32, Resource*>::iterator, bool>	INSERT_RESULT;			
 typedef std::map<uint32, Resource*>::iterator					RESOURCE_ITEM;
 typedef std::map<std::string, uint32>::iterator					FILE_ITEM;
 
-M_ResourceManager::M_ResourceManager() : Module("ResourceManager")
+M_ResourceManager::M_ResourceManager() : Module("ResourceManager"),
+file_refresh_timer(0.0f),
+file_refresh_rate(0.0f)
 {
 
 }
@@ -25,6 +29,9 @@ M_ResourceManager::~M_ResourceManager()
 bool M_ResourceManager::Init(ParsonNode& configuration)
 {
 	bool ret = true;
+
+	//file_refresh_rate = (float)configuration.GetNumber("RefreshRate");
+	file_refresh_rate = 1.0f;
 
 	return ret;
 }
@@ -40,7 +47,18 @@ UPDATE_STATUS M_ResourceManager::PreUpdate(float dt)
 {
 	UPDATE_STATUS status = UPDATE_STATUS::CONTINUE;
 
+	file_refresh_timer += Time::Real::GetDT();
 
+	if (file_refresh_timer > file_refresh_rate)
+	{
+		// Refresh folders create .meta files for all those
+		// files that do not have one.
+
+		// Also update the .meta and reimport all those files
+		// that have been modified.
+
+		file_refresh_timer = 0.0f;
+	}
 
 	return status;
 }

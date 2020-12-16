@@ -7,7 +7,9 @@
 #define ASSETS_SCENES_PATH		"Assets/Scenes/"
 #define ASSETS_TEXTURES_PATH	"Assets/Textures/"
 
-#define CONFIGURATION_PATH		"Configuration/"
+#define CONFIGURATION_PATH		"Engine/Configuration/"
+#define DEFAULTS_PATH			"Engine/Defaults/"
+#define ICONS_PATH				"Engine/Icons/"
 
 #define LIBRARY_PATH			"Library/"
 #define ANIMATIONS_PATH			"Library/Animations/"
@@ -22,6 +24,8 @@
 #define TEXTURES_PATH			"Library/Textures/"
 
 // File Extensions ----------------------------------
+#define ANIMATION_EXTENSION		".neanimat"
+#define FOLDER_EXTENSION		".nefolder"
 #define MESHES_EXTENSION		".nemesh"
 #define MATERIALS_EXTENSION		".nemat"
 #define SCENES_EXTENSION		".nescene"

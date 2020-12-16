@@ -1,7 +1,7 @@
 #ifndef __CAMERA_3D_H__
 #define __CAMERA_3D_H__
 
-#include "MathGeoLib/include/Geometry/LineSegment.h";
+#include "MathGeoLib/include/Geometry/LineSegment.h"
 #include "Module.h"
 
 class ParsonNode;
@@ -19,8 +19,8 @@ public:
 	UPDATE_STATUS	Update				(float dt) override;
 	bool			CleanUp				() override;
 
-	bool			LoadConfiguration	(ParsonNode& root) override;
-	bool			SaveConfiguration	(ParsonNode& root) const override;
+	bool			LoadConfiguration	(ParsonNode& configuration) override;
+	bool			SaveConfiguration	(ParsonNode& configuration) const override;
 
 public:
 	void			CreateMasterCamera				();

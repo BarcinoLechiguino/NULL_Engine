@@ -51,7 +51,7 @@ public:																					// --- APPLICATION & ENGINE STATE
 	void			SetEngineName			(const char* engine_name);
 	void			SetOrganizationName		(const char* organization_name);
 
-	void			EngineShortcuts();
+	void			EngineShortcuts			();
 
 public:																					// --- FRAMERATE
 	uint			GetFrameCap				() const;
