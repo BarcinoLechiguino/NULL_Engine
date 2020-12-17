@@ -31,10 +31,10 @@ namespace Importer
 			void			ImportFromLibrary			(const char* path, R_Model* r_model);
 			void			ProcessNode					(const char* scene_path, const aiScene* ai_scene, const aiNode* ai_node, R_Model* r_model, const ModelNode& parent);
 			
-			const aiNode*	ImportTransform				(const aiNode* ai_node, ModelNode& mod_node);
-			void			ImportMeshesAndMaterials	(const char* path, const aiScene* ai_scene, const aiNode* ai_node, ModelNode& mod_node);
-			void			ImportMesh					(const char* path, const char* name, const aiMesh* ai_mesh, ModelNode& mod_node);
-			void			ImportMaterial				(const char* path, const char* name, const aiMaterial* ai_material, ModelNode& mod_node);
+			const aiNode*	ImportTransform				(const aiNode* ai_node, ModelNode& model_node);
+			void			ImportMeshesAndMaterials	(const char* path, const aiScene* ai_scene, const aiNode* ai_node, ModelNode& model_node);
+			void			ImportMesh					(const char* path, const char* name, const aiMesh* ai_mesh, ModelNode& model_node);
+			void			ImportMaterial				(const char* path, const char* name, const aiMaterial* ai_material, ModelNode& model_node);
 
 			// --- IMPORTING DIRECTLY INTO GAME OBJECTS ---
 			void			ImportFromAssets			(const char* path, std::vector<GameObject*>& game_objects);

@@ -6,6 +6,7 @@
 #include "M_Scene.h"
 #include "M_ResourceManager.h"
 
+#include "R_Model.h"
 #include "R_Texture.h"
 
 #include "I_Scenes.h"
@@ -56,11 +57,15 @@ bool Importer::ImportFile(const char* path)
 	return ret;
 }
 
-bool Importer::Utilities::ImportScene(const char* path)
+uint32 Importer::Utilities::ImportScene(const char* path)
 {
 	Importer::Scenes::Import(path, *App->scene->GetGameObjects());
 
-	return true;
+	R_Model* r_model = (R_Model*)App->resource_manager->CreateResource(RESOURCE_TYPE::MODEL);
+
+	Importer::Scenes::Import(path, r_model);
+
+	return r_model->GetUID();
 }
 
 bool Importer::Utilities::ImportTexture(const char* path)

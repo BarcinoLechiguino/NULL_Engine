@@ -10,9 +10,11 @@
 #include "M_Input.h"
 #include "M_FileSystem.h"
 #include "M_Editor.h"
+#include "M_ResourceManager.h"
 
 #include "Importer.h"
 #include "Resource.h"
+#include "R_Model.h"
 #include "R_Mesh.h"
 #include "R_Texture.h"
 
@@ -71,7 +73,9 @@ bool M_Scene::Start()
 	
 	CreateSceneCamera("SceneCamera");
 
-	Importer::ImportFile(DEFAULT_SCENE);
+	uint32 model_uid = Importer::ImportFile(DEFAULT_SCENE);
+	GenerateGameObjectsFromModel(model_uid);
+
 	SaveScene();																					// Autosave just right after loading the scene.
 
 	//Importer::ImportFile("Assets/Scenes/MainScene.json");											// TMP Just to show that custom file format and serialization works.
@@ -377,6 +381,70 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 	}
 
 	LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
+}
+
+void GenerateGameObjectsFromModel(uint32 model_UID)
+{
+	R_Model* r_model = (R_Model*)App->resource_manager->GetResource(model_UID);
+
+	if (r_model == nullptr)
+	{
+		LOG("[ERROR] Scene: Could not generate GameObjects from Model Resource! Error: R_Model* was nullptr.");
+		return;
+	}
+
+	std::map<uint32, GameObject*> tmp;
+	std::vector<ModelNode> m_nodes = r_model->model_nodes;
+	for (uint i = 0; i < m_nodes.size(); ++i)
+	{
+		GameObject* game_object = new GameObject();
+
+		game_object->SetName(m_nodes[i].name.c_str());
+		game_object->GetComponent<C_Transform>()->ImportTransform(m_nodes[i].transform);
+
+		tmp.emplace(m_nodes[i].uid, game_object);
+
+		// Set Mesh
+		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
+		R_Mesh* r_mesh = (R_Mesh*)App->resource_manager->GetResource(m_nodes[i].mesh_uid);
+		if (r_mesh == nullptr)
+		{
+			LOG("[ERROR] Scene: Could not generate the Mesh Resource from the Model Node! Error: R_Mesh* could not be found in resources.");
+			game_object->DeleteComponent(c_mesh);
+			continue;
+		}
+
+		c_mesh->SetMesh(r_mesh);
+
+		// Set Material
+		C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
+		R_Material* r_material = (R_Material*)App->resource_manager->GetResource(m_nodes[i].material_uid);
+		if (r_material == nullptr)
+		{
+			LOG("[ERROR] Scene: Could not generate the Material Resource from the Model Node! Error: R_Material* could not be found in resources.");
+			game_object->DeleteComponent(c_material);
+			continue;
+		}
+
+		c_material->SetMaterial(r_material);
+
+		// Set Texture
+		R_Texture* r_texture = (R_Texture*)App->resource_manager->GetResource(m_nodes[i].texture_uid);
+		if (r_texture == nullptr)
+		{
+			LOG("[ERROR] Scene: Could not generate the Texture Resource from the Model Node! Error: R_Texture* could not be found in resources.");
+			continue;
+		}
+
+		c_material->SetTexture(r_texture);
+	}
+
+	// Re-Parent
+	std::map<uint32, GameObject*>::iterator item;
+	for (item = tmp.begin(); item != tmp.end(); ++item)
+	{
+		//uint32 parent_uid = item->;
+	}
 }
 
 std::vector<GameObject*>* M_Scene::GetGameObjects()

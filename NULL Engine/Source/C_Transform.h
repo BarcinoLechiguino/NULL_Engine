@@ -31,6 +31,7 @@ public:																				// --- C_TRANSFORM METHODS ---
 	void		SetWorldTransform		(const float4x4& world_transform);			// Sets the world transform's 4x4 matrix with the one passed as argument.
 
 	void		ImportTransform			(const float3& position, const Quat& rotation, const float3& scale);
+	void		ImportTransform			(const Transform& transform);
 
 public:																				// --- GET/SET LOCAL AND WORLD POSITION, ROTATION AND SCALE
 	float3		GetLocalPosition		() const;									// Returns the position vector of the local transform.

@@ -245,6 +245,17 @@ void C_Transform::ImportTransform(const float3& position, const Quat& rotation, 
 	UpdateLocalTransform();
 }
 
+void C_Transform::ImportTransform(const Transform& transform)
+{
+	local_position	= transform.position;
+	local_rotation	= transform.rotation;
+	local_scale		= transform.scale;
+
+	local_euler_rotation = local_rotation.ToEulerXYZ();
+
+	UpdateLocalTransform();
+}
+
 // --- POSITION, ROTATION AND SCALE METHODS
 // -- GET METHODS
 float3 C_Transform::GetLocalPosition() const

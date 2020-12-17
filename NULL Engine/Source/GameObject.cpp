@@ -184,7 +184,7 @@ bool GameObject::LoadState(ParsonNode& root)
 			continue;
 		}
 		
-		COMPONENT_TYPE type	= (COMPONENT_TYPE)component_node.GetNumber("Type");
+		/*COMPONENT_TYPE type	= (COMPONENT_TYPE)component_node.GetNumber("Type");
 
 		if (type == COMPONENT_TYPE::TRANSFORM)
 		{
@@ -209,7 +209,7 @@ bool GameObject::LoadState(ParsonNode& root)
 				component->LoadState(component_node);
 				components.push_back(component);
 			}
-		}
+		}*/
 	}
 
 	return ret;

@@ -7,6 +7,10 @@
 #include "R_Mesh.h"
 #include "R_Material.h"
 #include "R_Texture.h"
+#include "R_Model.h"
+#include "R_Folder.h"
+#include "R_Scene.h"
+#include "R_Animation.h"
 
 #include "M_ResourceManager.h"
 
@@ -135,6 +139,10 @@ Resource* M_ResourceManager::CreateResource(RESOURCE_TYPE type)
 	case RESOURCE_TYPE::MESH:		{ resource = new R_Mesh(); }		break;
 	case RESOURCE_TYPE::MATERIAL:	{ resource = new R_Material(); }	break;
 	case RESOURCE_TYPE::TEXTURE:	{ resource = new R_Texture(); }		break;
+	case RESOURCE_TYPE::MODEL:		{ resource = new R_Model(); }		break;
+	case RESOURCE_TYPE::FOLDER:		{ resource = new R_Folder(); }		break;
+	case RESOURCE_TYPE::SCENE:		{ resource = new R_Scene(); }		break;
+	case RESOURCE_TYPE::ANIMATION:	{ resource = new R_Animation(); }	break;
 	}
 
 	if (resource != nullptr)

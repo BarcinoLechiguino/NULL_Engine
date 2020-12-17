@@ -103,24 +103,24 @@ void Importer::Scenes::Utilities::ProcessNode(const char* scene_path, const aiSc
 {
 	std::string scene_file = App->file_system->GetFileAndExtension(scene_path);
 
-	ModelNode mod_node		= ModelNode();
-	mod_node.name			= (ai_node == ai_scene->mRootNode) ? scene_file.c_str() : ai_node->mName.C_Str();
-	mod_node.parent_uid		= parent.uid;
+	ModelNode model_node		= ModelNode();
+	model_node.name			= (ai_node == ai_scene->mRootNode) ? scene_file.c_str() : ai_node->mName.C_Str();
+	model_node.parent_uid		= parent.uid;
 
-	ai_node = Utilities::ImportTransform(ai_node, mod_node);
-	Utilities::ImportMeshesAndMaterials(scene_path, ai_scene, ai_node, mod_node);
+	ai_node = Utilities::ImportTransform(ai_node, model_node);
+	Utilities::ImportMeshesAndMaterials(scene_path, ai_scene, ai_node, model_node);
 
-	r_model->model_nodes.push_back(mod_node);
+	r_model->model_nodes.push_back(model_node);
 
 	for (uint i = 0; i < ai_node->mNumChildren; ++i)
 	{
-		ProcessNode(scene_path, ai_scene, ai_node, r_model, mod_node);
+		ProcessNode(scene_path, ai_scene, ai_node, r_model, model_node);
 	}
 
 	scene_file.clear();
 }
 
-const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, ModelNode& mod_node)
+const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node, ModelNode& model_node)
 {
 	// Assimp generates dummy nodes to store multiple FBX transformations.
 	// All those transformations will be collapsed to the first non-dummy node.
@@ -150,14 +150,14 @@ const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node
 		ma_t.scale.Mul(dummy.scale);																		// ----------------------------------------------------
 	}
 	
-	mod_node.transform = ma_t;
+	model_node.transform = ma_t;
 
 	LOG("[IMPORTER] Imported the transforms of node: %s", ai_node->mName.C_Str());
 
 	return ai_node;
 }
 
-void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const char* path, const aiScene* ai_scene, const aiNode* ai_node, ModelNode& mod_node)
+void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const char* path, const aiScene* ai_scene, const aiNode* ai_node, ModelNode& model_node)
 {
 	const char* node_name = ai_node->mName.C_Str();
 
@@ -167,19 +167,19 @@ void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const char* path, con
 
 		if (ai_mesh != nullptr && ai_mesh->HasFaces())
 		{
-			Importer::Scenes::Utilities::ImportMesh(path, node_name, ai_mesh, mod_node);
+			Importer::Scenes::Utilities::ImportMesh(path, node_name, ai_mesh, model_node);
 
 			if (ai_mesh->mMaterialIndex >= 0)
 			{
 				aiMaterial* ai_material = ai_scene->mMaterials[ai_mesh->mMaterialIndex];
 
-				Importer::Scenes::Utilities::ImportMaterial(path, node_name, ai_material, mod_node);
+				Importer::Scenes::Utilities::ImportMaterial(path, node_name, ai_material, model_node);
 			}
 		}
 	}
 }
 
-void Importer::Scenes::Utilities::ImportMesh(const char* path, const char* name, const aiMesh* ai_mesh, ModelNode& mod_node)
+void Importer::Scenes::Utilities::ImportMesh(const char* path, const char* name, const aiMesh* ai_mesh, ModelNode& model_node)
 {
 	R_Mesh* r_mesh = new R_Mesh();
 
@@ -195,7 +195,7 @@ void Importer::Scenes::Utilities::ImportMesh(const char* path, const char* name,
 		r_mesh->SetLibraryPathAndFile();
 		App->resource_manager->AddResource(r_mesh);
 
-		mod_node.mesh_uid = r_mesh->GetUID();
+		model_node.mesh_uid = r_mesh->GetUID();
 	}
 	else
 	{
@@ -203,7 +203,7 @@ void Importer::Scenes::Utilities::ImportMesh(const char* path, const char* name,
 	}
 }
 
-void Importer::Scenes::Utilities::ImportMaterial(const char* path, const char* name, const aiMaterial* ai_material, ModelNode& mod_node)
+void Importer::Scenes::Utilities::ImportMaterial(const char* path, const char* name, const aiMaterial* ai_material, ModelNode& model_node)
 {
 	R_Material* r_material	= new R_Material();																	// Only considering one texture per mesh.
 	R_Texture* r_texture	= new R_Texture();
@@ -234,11 +234,11 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* path, const char* n
 
 	r_material->SetLibraryPathAndFile();																		// Adding the resources to the resource manager's maps
 	App->resource_manager->AddResource(r_material);																//
-	mod_node.material_uid = r_material->GetUID();																//
+	model_node.material_uid = r_material->GetUID();																//
 	if (r_texture != nullptr)																					// 
 	{																											// 
 		App->resource_manager->AddResource(r_texture);															// 
-		mod_node.texture_uid = r_texture->GetUID();																//
+		model_node.texture_uid = r_texture->GetUID();															//
 	}																											// ----------------------------------------------------																										// -------------------------------------------------------------------
 }
 
@@ -302,16 +302,16 @@ void Importer::Scenes::Utilities::ImportFromLibrary(const char* path, std::vecto
 					continue;
 				}
 
-				COMPONENT_TYPE type = (COMPONENT_TYPE)component_node.GetNumber("Type");
+				//COMPONENT_TYPE type = (COMPONENT_TYPE)component_node.GetNumber("Type");
 
 				bool is_mesh		= false;
 				bool is_material	= false;
 
-				switch (type)
+				/*switch (type)
 				{
 				case COMPONENT_TYPE::MESH:		{is_mesh = true; }		break;
 				case COMPONENT_TYPE::MATERIAL:	{is_material = true; }	break;
-				}
+				}*/
 
 				if (is_mesh)
 				{
