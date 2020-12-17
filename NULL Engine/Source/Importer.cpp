@@ -28,9 +28,9 @@ void Importer::ShutDownImporters()
 
 }
 
-bool Importer::ImportFile(const char* path)
+uint32 Importer::ImportFile(const char* path)
 {
-	bool ret = true;
+	uint32 r_uid = 0;
 
 	path = Utilities::GetValidPath(path);
 
@@ -42,56 +42,65 @@ bool Importer::ImportFile(const char* path)
 
 	if (Utilities::FileHasModelExtension(path))
 	{
-		Utilities::ImportScene(path);
+		r_uid = Utilities::ImportScene(path);
 	}
 	else if (Utilities::FileHasTextureExtension(path))
 	{
-		Utilities::ImportTexture(path);
+		r_uid = Utilities::ImportTexture(path);
 	}
 	else
 	{
 		LOG("[ERROR] Importer: Could not import the dropped file! Error: File extension is not supported!");
-		ret = false;
+		return 0;
 	}
 
-	return ret;
+	return r_uid;
 }
 
 uint32 Importer::Utilities::ImportScene(const char* path)
-{
-	Importer::Scenes::Import(path, *App->scene->GetGameObjects());
-
+{	
+	uint32 r_uid = 0;
+	
 	R_Model* r_model = (R_Model*)App->resource_manager->CreateResource(RESOURCE_TYPE::MODEL);
-
 	Importer::Scenes::Import(path, r_model);
+	
+	if (r_model == nullptr)
+	{
+		r_model->CleanUp();
+		RELEASE(r_model);
+		return 0;
+	}
 
-	return r_model->GetUID();
+	r_model->SetAssetsPath(path);
+	r_model->SetAssetsFile(App->file_system->GetFileAndExtension(path).c_str());
+	r_uid = r_model->GetUID();
+
+	return r_uid;
 }
 
-bool Importer::Utilities::ImportTexture(const char* path)
+uint32 Importer::Utilities::ImportTexture(const char* path)
 {
-	bool ret = true;
+	uint32 r_uint = 0;
 	
-	R_Texture* r_texture = new R_Texture();
+	R_Texture* r_texture = (R_Texture*)App->resource_manager->CreateResource(RESOURCE_TYPE::TEXTURE);
 	Importer::Textures::Import(path, r_texture);
 
 	if (r_texture != nullptr && r_texture->GetTextureID() != 0)
-	{
-		r_texture = (R_Texture*)App->resource_manager->AddResource(r_texture);
-		
+	{	
 		if (r_texture != nullptr)
 		{
-			ret = App->scene->ApplyNewTextureToSelectedGameObject(r_texture);
+			App->scene->ApplyNewTextureToSelectedGameObject(r_texture);
+			r_uint = r_texture->GetUID();
 		}
 	}
 	else
 	{
 		LOG("[ERROR] Importer: Could not import the dropped texture!");
 		RELEASE(r_texture);
-		ret = false;
+		return 0;
 	}
 
-	return ret;
+	return r_uint;
 }
 
 const char* Importer::Utilities::GetValidPath(const char* path)

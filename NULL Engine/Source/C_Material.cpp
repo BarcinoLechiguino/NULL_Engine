@@ -142,12 +142,11 @@ void C_Material::SetMaterial(R_Material* r_material)
 
 void C_Material::SetTexture(R_Texture* r_texture)
 {
-	if (this->r_texture != nullptr)												// Change later to tex_id array.
-	{
-		this->r_texture->CleanUp();
-		
-		RELEASE(this->r_texture);
-	}
+	//if (this->r_texture != nullptr)												// Change later to tex_id array.
+	//{
+	//	//this->r_texture->CleanUp();
+	//	//RELEASE(this->r_texture);
+	//}
 
 	this->r_texture = r_texture;
 }

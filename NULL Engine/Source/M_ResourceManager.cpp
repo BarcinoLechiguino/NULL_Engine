@@ -19,8 +19,8 @@ typedef std::map<uint32, Resource*>::iterator					RESOURCE_ITEM;
 typedef std::map<std::string, uint32>::iterator					FILE_ITEM;
 
 M_ResourceManager::M_ResourceManager() : Module("ResourceManager"),
-file_refresh_timer(0.0f),
-file_refresh_rate(0.0f)
+file_refresh_timer	(0.0f),
+file_refresh_rate	(0.0f)
 {
 
 }

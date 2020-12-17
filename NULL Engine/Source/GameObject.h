@@ -58,6 +58,7 @@ public:																									// --- GAME OBJECT GETTERS AND SETTERS
 	void			SetChildsIsStatic					(const bool& set_to, GameObject* parent);		// 
 
 	uint32			GetParentUID						() const;
+	void			SetParentUID						(const uint32& parent_UID);
 
 public:																									// --- COMPONENT GETTERS AND SETTERS
 	Component*		CreateComponent						(COMPONENT_TYPE type);							// Creates a component of the given type and adds it to the components vector.

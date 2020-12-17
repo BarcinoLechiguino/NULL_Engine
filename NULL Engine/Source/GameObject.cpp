@@ -52,8 +52,6 @@ is_scene_root		(false),
 to_delete			(false),
 show_bounding_boxes	(false)
 {
-	uid = Random::LCG::GetRandomUint();
-
 	if (name.empty())
 	{
 		name = "GameObject";
@@ -64,8 +62,8 @@ show_bounding_boxes	(false)
 	obb.SetNegativeInfinity();
 	aabb.SetNegativeInfinity();
 
-	obb_vertices = new float3[8];																	// Bounding boxes will always have 8 vertices as they are Cuboids.
-	aabb_vertices = new float3[8];																	// Bounding boxes will always have 8 vertices as they are Cuboids.
+	obb_vertices	= new float3[8];																		// Bounding boxes will always have 8 vertices as they are Cuboids.
+	aabb_vertices	= new float3[8];																		// Bounding boxes will always have 8 vertices as they are Cuboids.
 }
 
 GameObject::~GameObject()
@@ -117,36 +115,6 @@ bool GameObject::SaveState(ParsonNode& root) const
 	root.SetBool("IsSceneRoot", is_scene_root);
 	root.SetBool("ShowBoundingBoxes", show_bounding_boxes);
 
-	// --- OBB ---
-	/*ParsonArray obb_array = root.SetArray("OBB");
-
-	math::vec* obb_points = new math::vec[8];
-	obb.GetCornerPoints(obb_points);
-
-	for (uint i = 0; i < 8; ++i)
-	{
-		obb_array.SetNumber(obb_points[i].x);
-		obb_array.SetNumber(obb_points[i].y);
-		obb_array.SetNumber(obb_points[i].z);
-	}
-
-	delete[] obb_points;
-
-	// --- AABB ---
-	ParsonArray aabb_array = root.SetArray("AABB");
-
-	math::vec* aabb_points = new math::vec[8];
-	aabb.GetCornerPoints(aabb_points);
-
-	for (uint i = 0; i < 8; ++i)
-	{
-		aabb_array.SetNumber(aabb_points[i].x);
-		aabb_array.SetNumber(aabb_points[i].y);
-		aabb_array.SetNumber(aabb_points[i].z);
-	}
-
-	delete[] aabb_points;*/
-
 	ParsonArray component_array = root.SetArray("Components");
 
 	for (uint i = 0; i < components.size(); ++i)
@@ -184,7 +152,7 @@ bool GameObject::LoadState(ParsonNode& root)
 			continue;
 		}
 		
-		/*COMPONENT_TYPE type	= (COMPONENT_TYPE)component_node.GetNumber("Type");
+		COMPONENT_TYPE type	= (COMPONENT_TYPE)component_node.GetNumber("Type");
 
 		if (type == COMPONENT_TYPE::TRANSFORM)
 		{
@@ -209,7 +177,7 @@ bool GameObject::LoadState(ParsonNode& root)
 				component->LoadState(component_node);
 				components.push_back(component);
 			}
-		}*/
+		}
 	}
 
 	return ret;
@@ -534,6 +502,11 @@ void GameObject::SetChildsIsStatic(const bool& set_to, GameObject* parent)
 uint32 GameObject::GetParentUID() const
 {
 	return parent_uid;
+}
+
+void GameObject::SetParentUID(const uint32& parent_UID)
+{
+	parent_uid = parent_UID;
 }
 
 // --- COMPONENT METHODS ---

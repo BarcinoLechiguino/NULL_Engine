@@ -8,12 +8,12 @@ namespace Importer
 	void InitializeImporters	();
 	void ShutDownImporters		();
 
-	bool ImportFile				(const char* path);
+	uint32 ImportFile			(const char* path);
 
 	namespace Utilities
 	{
 		uint32		ImportScene					(const char* path);
-		bool		ImportTexture				(const char* path);
+		uint32		ImportTexture				(const char* path);
 
 		const char* GetValidPath				(const char* path);
 		bool		FileHasModelExtension		(const char* path);
