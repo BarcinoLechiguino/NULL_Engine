@@ -9,6 +9,13 @@
 
 struct Transform
 {
+	Transform()
+	{
+		position	= float3::zero;
+		rotation	= Quat::identity;
+		scale		= float3::one;
+	}
+	
 	float3	position;
 	Quat	rotation;
 	float3	scale;
