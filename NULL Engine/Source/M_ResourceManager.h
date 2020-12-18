@@ -30,16 +30,18 @@ public:
 	bool			LoadConfiguration	(ParsonNode& configuration) override;
 
 public:
-	Resource*					CreateResource		(RESOURCE_TYPE type);							// 
-	Resource*					AddResource			(Resource* resource);							// 
-	bool						DeleteResource		(uint32 UID);									// 
-	Resource*					GetResource			(uint32 UID);									// 
-	std::map<uint32, Resource*> GetResources		() const;										// 
+	uint32							ImportFile				(const char* assets_path);
+	
+	Resource*						CreateResource			(RESOURCE_TYPE type);					// 
+	Resource*						AddResource				(Resource* resource);					// 
+	bool							DeleteResource			(uint32 UID);							// 
+	Resource*						GetResource				(uint32 UID);							// 
+	std::map<uint32, Resource*>		GetResources			() const;								// 
 
-	const char*					AddLoadedPath		(std::string assets_file);						// 
-	const char*					DeleteLoadedPath	(std::string assets_file);						// 
-	bool						IsResourceAlready	(std::string assets_file);						// 
-	Resource*					GetResourceFromFile	(std::string assets_file);						// 
+	void							AddLoadedPath			(std::string assets_file);				// 
+	void							DeleteLoadedPath		(std::string assets_file);				// 
+	bool							IsResourceAlready		(std::string assets_file);				// 
+	Resource*						GetResourceFromFile		(std::string assets_file);				// 
 
 private:
 	std::map<uint32, Resource*>		resources;														// 

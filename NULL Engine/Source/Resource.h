@@ -5,7 +5,9 @@
 #include <string>
 
 #include "Log.h"
-#include "ImportSettings.h"
+#include "ImportSettings.h"												// No need to centralize it, each resource will have their own settings.
+
+class ParsonNode;
 
 typedef unsigned int		uint;
 typedef unsigned __int32	uint32;
@@ -29,6 +31,9 @@ public:
 	virtual ~Resource();
 
 	virtual bool CleanUp();
+
+	virtual bool SaveMeta(ParsonNode& meta_root) const;
+	virtual bool LoadMeta(const ParsonNode& meta_root);
 
 public:
 	RESOURCE_TYPE		GetType					() const;

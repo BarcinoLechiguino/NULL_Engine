@@ -12,7 +12,6 @@
 #include "M_Editor.h"
 #include "M_ResourceManager.h"
 
-#include "Importer.h"
 #include "Resource.h"
 #include "R_Model.h"
 #include "R_Mesh.h"
@@ -73,7 +72,7 @@ bool M_Scene::Start()
 	
 	CreateSceneCamera("SceneCamera");
 
-	uint32 model_uid = Importer::ImportFile(DEFAULT_SCENE);
+	uint32 model_uid = App->resource_manager->ImportFile(DEFAULT_SCENE);
 	GenerateGameObjectsFromModel(model_uid);
 	SaveScene();																					// Autosave just right after loading the scene.
 

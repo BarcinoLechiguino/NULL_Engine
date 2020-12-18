@@ -2,8 +2,7 @@
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 #include "M_Editor.h"
-
-#include "Importer.h"
+#include "M_ResourceManager.h"
 
 #include "M_Input.h"
 
@@ -171,11 +170,12 @@ UPDATE_STATUS M_Input::PreUpdate(float dt)
 			case SDL_DROPFILE:
 				if (event.drop.file != nullptr)
 				{
-					Importer::ImportFile(event.drop.file);
+					App->resource_manager->ImportFile(event.drop.file);
+					//Importer::ImportFile(event.drop.file);
 				}
 				else
 				{
-					LOG("[ERROR] String from Drop Event was nullptr!");
+					LOG("[ERROR] Input: String from SDL_DROPFILE Event was nullptr!");
 				}
 
 				SDL_free(event.drop.file);

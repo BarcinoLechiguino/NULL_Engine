@@ -30,9 +30,7 @@ namespace Importer
 	namespace Meshes
 	{
 		void	Import	(const aiMesh* ai_mesh, R_Mesh* r_mesh);											// Loads all mesh data from the given aiNode & stores it in a new R_Mesh.
-
 		uint64	Save	(const R_Mesh* r_mesh, char** buffer);												// Processes R_Mesh data into ready-to-save buffer. Will return buffer file's size.
-
 		bool	Load	(const char* buffer, R_Mesh* r_mesh);												// Processes buffer data into a ready-to-use R_Mesh. Will return nullptr on ERROR.
 
 		namespace Utilities

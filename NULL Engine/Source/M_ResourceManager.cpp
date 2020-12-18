@@ -2,6 +2,7 @@
 #include "JSONParser.h"
 
 #include "Time.h"
+#include "Importer.h"
 
 #include "Resource.h"
 #include "R_Mesh.h"
@@ -128,6 +129,26 @@ bool M_ResourceManager::LoadConfiguration(ParsonNode& configuration)
 }
 
 // --- M_RESOURCEMANAGER METHODS ---
+uint32 M_ResourceManager::ImportFile(const char* assets_path)
+{
+	uint32 resource_uid = 0;
+
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not Import File from the given path! Error: Path was nullptr.");
+		return 0;
+	}
+
+	resource_uid = Importer::ImportFile(assets_path);
+
+	if (resource_uid == 0)
+	{
+		LOG("[ERROR] Resource Manager: Could not Import File! Check for [IMPORTER] errors in the Console Panel.");
+	}
+
+	return resource_uid;
+}
+
 Resource* M_ResourceManager::CreateResource(RESOURCE_TYPE type)
 {
 	Resource* resource = nullptr;
