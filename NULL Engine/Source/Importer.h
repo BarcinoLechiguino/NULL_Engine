@@ -1,35 +1,22 @@
 #ifndef __IMPORTER_H__
 #define __IMPORTER_H__
 
-typedef unsigned __int32 uint32;
+class Resource;
+class R_Model;
+class R_Mesh;
+class R_Texture;
+
+typedef unsigned int		uint;
+typedef unsigned __int32	uint32;
 
 namespace Importer
 {
-	void InitializeImporters	();
-	void ShutDownImporters		();
+	void	InitializeImporters	();
+	void	ShutDownImporters	();
 
-	uint32 ImportFile			(const char* path);
-
-	namespace Utilities
-	{
-		uint32		ImportScene					(const char* path);
-		uint32		ImportTexture				(const char* path);
-
-		const char* GetValidPath				(const char* path);
-		bool		FileHasModelExtension		(const char* path);
-		bool		FileHasTextureExtension		(const char* path);
-
-		void		GenerateMetaFile			();
-		void		ReadMetaFile				();
-	}
-
-	/*namespace Settings
-	{
-		static ImportSettings import_settings;
-
-		ImportSettings GetImporterSettings();
-		void SetImporterSettings(const ImportSettings& importer_settings);
-	}*/
+	bool	ImportScene			(const char* buffer, uint size, R_Model* r_model);
+	bool	ImportMesh			(const char* buffer, R_Mesh* r_mesh);
+	bool	ImportTexture		(const char* buffer, uint size, R_Texture* r_texture);
 }
 
 #endif // !__IMPORTER_H__

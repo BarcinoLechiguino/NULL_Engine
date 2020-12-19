@@ -13,13 +13,9 @@ namespace Importer
 		void	Init	();
 		void	CleanUp	();
 		
-		uint	Import	(const char* path, R_Texture* r_texture);
-
+		uint	Import	(const char* buffer, uint size, R_Texture* r_texture);
 		uint64	Save	(const R_Texture* r_texture, char** buffer);
-		uint64	Save	(R_Texture* r_texture, char** buffer);
-
 		bool	Load	(const char* buffer, const uint size, R_Texture* r_texture);
-		bool	Load	(R_Texture* r_texture);
 
 		namespace Utilities
 		{	

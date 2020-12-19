@@ -23,6 +23,18 @@ enum class TEXTURE_TYPE									// The enum values are set according to the valu
 	UNKNOWN			= 0xC								// 0xC = aiTextureType_UNKNOWN		--> Tex. ref. that does not match any of the above. Imported but excluded from postprocessing.
 };
 
+struct Material
+{
+	Material();
+	Material(TEXTURE_TYPE type, uint texture_uid, std::string texture_assets_path);
+	
+	void CleanUp();
+	
+	TEXTURE_TYPE	type;
+	uint			texture_uid;
+	std::string		texture_assets_path;
+};
+
 class R_Material : public Resource
 {
 public:
@@ -32,9 +44,8 @@ public:
 	bool CleanUp() override;
 
 public:
-	TEXTURE_TYPE	type;
-	Color			diffuse_color;
-	uint			texture_id;
+	std::vector<Material>	materials;									// In the end the amount of materials that will be used is "constant". It could be an array as mat[7] = { 0, 0,... };
+	Color					diffuse_color;
 
 private:
 	

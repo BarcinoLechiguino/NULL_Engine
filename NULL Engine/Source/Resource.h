@@ -43,8 +43,8 @@ public:
 	void				ForceUID				(const uint32& UID);
 	uint				GetReferences			() const;
 	void				SetReferences			(const uint& references);
-	const char*			GetName					() const;
 
+public:
 	const char*			GetAssetsPath			() const;								// 
 	const char*			GetAssetsFile			() const;								// 
 	const char*			GetLibraryPath			() const;								// 
@@ -65,7 +65,6 @@ private:
 
 	uint32				uid;															// UID for this Resource.
 	uint				references;
-	std::string			name;
 
 	std::string			assets_path;													// Path of the file in the Assets directory. Will be used to avoid making duplicates.
 	std::string			assets_file;													// File and extension string of the texture in the Assets directory.

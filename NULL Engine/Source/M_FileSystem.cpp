@@ -651,6 +651,18 @@ std::string M_FileSystem::GetUniqueName(const char* path, const char* name) cons
 	return final_name;
 }
 
+std::string M_FileSystem::GetDirectory(const char* path)
+{
+	std::string full_path	= NormalizePath(path);
+	std::string dir_path	= "";
+
+	SplitFilePath(full_path.c_str(), &dir_path, nullptr, nullptr);
+
+	full_path.clear();
+
+	return dir_path;
+}
+
 std::string M_FileSystem::GetLastDirectory(const char* path)
 {	
 	std::string full_path	= NormalizePath(path);											// Assets/Dir/LastDir/File.extension. Normalized to avoid errors regarding "\".

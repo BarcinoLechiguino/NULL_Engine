@@ -65,10 +65,11 @@ public:
 	uint64			GetLastModTime				(const char* filename) const;													// Returns the last time that the given file was modified.
 	std::string		GetUniqueName				(const char* path, const char* name) const;										// Gets a unique name for a file with the same base name as other files in the same directory.
 	
-	std::string		GetLastDirectory			(const char* path);																// 
-	std::string		GetFileExtension			(const char* path);																// 
-	std::string		GetFileAndExtension			(const char* path);																// 
-	std::string		GetLastDirectoryAndFile		(const char* path);																// 
+	std::string		GetDirectory				(const char* path);																// Ex: "Assets/Models/street/"
+	std::string		GetLastDirectory			(const char* path);																// Ex: "street/"
+	std::string		GetFileExtension			(const char* path);																// Ex: ".FBX"
+	std::string		GetFileAndExtension			(const char* path);																// Ex: "Street_Environment.FBX"
+	std::string		GetLastDirectoryAndFile		(const char* path);																// Ex: "street/Street_Environment.FBX"
 };
 
 #endif // !__M_FILE_SYSTEM_H__

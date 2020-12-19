@@ -24,8 +24,9 @@
 #define TEXTURES_PATH			"Library/Textures/"
 
 // File Extensions ----------------------------------
-#define ANIMATION_EXTENSION		".neanimat"
-#define FOLDER_EXTENSION		".nefolder"
+#define ANIMATIONS_EXTENSION	".neanimat"
+#define FOLDERS_EXTENSION		".nefolder"
+#define MODELS_EXTENSION		".nemodel"
 #define MESHES_EXTENSION		".nemesh"
 #define MATERIALS_EXTENSION		".nemat"
 #define SCENES_EXTENSION		".nescene"

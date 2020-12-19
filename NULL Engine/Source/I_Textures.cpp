@@ -46,79 +46,57 @@ void Importer::Textures::CleanUp()
 	ilShutDown();
 }
 
-uint Importer::Textures::Import(const char* path, R_Texture* r_texture)											// FIX: FLIP TEXTURE
+uint Importer::Textures::Import(const char* buffer, uint size, R_Texture* r_texture)								// FIX: FLIP TEXTURE
 {
 	uint tex_id = 0;
-	
-	LOG("[IMPORTER] Loading %s texture.", path);
 
-	if (path == nullptr || r_texture == nullptr)
+	if (buffer == nullptr || size == 0 || r_texture == nullptr)
 	{
 		LOG("[ERROR] Texture could not be imported: Path and/or R_Texture* was nullptr!");
 		return 0;
 	}
+	
+	LOG("[IMPORTER] Loading %s texture.", r_texture->GetAssetsPath());
 
-	char* tex_data = nullptr;
-	uint file_size = App->file_system->Load(path, &tex_data);
-
-	if (tex_data != nullptr && file_size > 0)
+	bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);												// IMPORT FROM BUFFER
+	if (success)
 	{
-		bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)tex_data, file_size);
-		if (success)
-		{	
-			char* buffer = nullptr;
-			uint written = Importer::Textures::Save(r_texture, &buffer);
-			
-			if (buffer != nullptr && written > 0)
+		char* save_buffer = nullptr;
+		uint written = Importer::Textures::Save(r_texture, &save_buffer);											// SAVE R_TEXTURE
+		if (save_buffer != nullptr && written > 0)
+		{
+			success = Importer::Textures::Load(save_buffer, written, r_texture);									// LOAD FROM SAVE BUFFER
+			if (success)
 			{
-				r_texture->SetAssetsPath(path);
-				r_texture->SetAssetsFile(App->file_system->GetFileAndExtension(path).c_str());
-				
-				//Importer::Textures::Load(buffer, written, r_texture);
-				success = Importer::Textures::Load(r_texture);
-				if (success)
-				{
-					tex_id = r_texture->GetTextureID();
-					LOG("[IMPORTER] Successfully loaded %s from Library!", r_texture->GetAssetsFile());
-				}
-				else
-				{
-					LOG("[IMPORTER] Could not load %s from Library!", r_texture->GetAssetsFile());
-				}
+				tex_id = r_texture->GetTextureID();
+				LOG("[IMPORTER] Successfully loaded %s from Library!", r_texture->GetAssetsFile());
 			}
 			else
 			{
-				LOG("[ERROR] Could not Save() %s in the Library!", path);
+				LOG("[IMPORTER] Could not load %s from Library!", r_texture->GetAssetsFile());
 			}
-
-			RELEASE_ARRAY(buffer);
 		}
 		else
 		{
-			LOG("[ERROR] Could not load %s from Assets! ilLoadL() Error: %s", path, iluErrorString(ilGetError()));
+			LOG("[ERROR] Could not Save() %s in the Library!", r_texture->GetAssetsPath());
 		}
+
+		RELEASE_ARRAY(buffer);
 	}
 	else
 	{
-		LOG("[ERROR] File System could not load %s!", path);
+		LOG("[ERROR] Could not load %s from Assets! ilLoadL() Error: %s", r_texture->GetAssetsPath(), iluErrorString(ilGetError()));
 	}
-
-	RELEASE_ARRAY(tex_data);
 
 	return tex_id;
 }
 
 uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 {
-	return 0;
-}
-
-uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
-{
 	uint64 written = 0;
 	
 	std::string directory	= TEXTURES_PATH;																	// --- Getting the path to which save the texture.
-	std::string file		= std::to_string(r_texture->GetUID()) + std::string(TEXTURES_EXTENSION);				// 
+	std::string file		= std::to_string(r_texture->GetUID()) + std::string(TEXTURES_EXTENSION);			// 
 	std::string full_path	= directory + file;																	// -----------------------------------------------
 
 	ilEnable(IL_FILE_OVERWRITE);																				// Allowing DevIL to overwrite existing files.
@@ -133,12 +111,8 @@ uint64 Importer::Textures::Save(R_Texture* r_texture, char** buffer)
 		{	
 			*buffer = (char*)data;
 			written = App->file_system->Save(full_path.c_str(), *buffer, size, false);							// Saving the texture throught the file system.
-			
 			if (written > 0)
-			{
-				r_texture->SetLibraryPath(full_path.c_str());													// Storing the library_path and the library_file name of the texture.
-				r_texture->SetLibraryFile(file.c_str());
-				
+			{	
 				LOG("[IMPORTER] Successfully saved %s in %s", file.c_str(), directory.c_str());
 			}
 			else
@@ -197,9 +171,6 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 			if (il_info.Origin == IL_ORIGIN_UPPER_LEFT)
 			{
 				iluFlipImage();
-
-				/*ilEnable(IL_ORIGIN_SET);
-				ilOriginFunc(IL_ORIGIN_LOWER_LEFT);*/
 			}
 
 			uint width		= il_info.Width;															// --------------------- Getting the imported texture's data.
@@ -238,89 +209,6 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 
 	ilDeleteImages(1, &il_image);
 
-	return ret;
-}
-
-bool Importer::Textures::Load(R_Texture* r_texture)
-{
-	bool ret = true;
-	
-	char* tex_data = nullptr;																			// Buffer where the binary data of the texture to import will be stored.
-	uint file_size = App->file_system->Load(r_texture->GetLibraryPath(), &tex_data);					// Generating a buffer with the data of the texture in the given path.
-
-	if (tex_data == nullptr || file_size == 0)
-	{
-		LOG("[ERROR] File System could not load tex data! Path: %s", r_texture->GetAssetsPath());
-		return false;
-	}
-	
-	ILuint il_image = 0;																				// Will be used to generate, bind and delete the buffers created by DevIL.
-	ilGenImages(1, &il_image);																			// DevIL's buffers work pretty much the same way as OpenGL's do.
-	ilBindImage(il_image);																				// The first step is to generate a buffer and then bind it.
-
-	bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)tex_data, file_size);							// ilLoadL() loads a texture from some buffer data. size == 0 = no bounds check.
-	if (success)																						// --- When type is IL_TYPE_UNKNOWN, DevIL will try to find the type on it's own.
-	{	
-		uint color_channels = ilGetInteger(IL_IMAGE_CHANNELS);
-		if (color_channels == 3)
-		{
-			success = ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);											// ilConvertImage() will convert the image to the given format and type.
-		}
-		else if (color_channels == 4)
-		{
-			success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);										// ilConvertImage() will return false if the system cannot store the image with
-		}																								// its new format or the operation is invalid (no bound img. or invalid identifier).
-		else
-		{
-			LOG("[WARNING] Texture has less than 3 color channels! Path: %s", r_texture->GetAssetsPath());
-		}
-
-		if (success)
-		{
-			ILinfo il_info;
-			iluGetImageInfo(&il_info);
-
-			if (il_info.Origin == IL_ORIGIN_UPPER_LEFT)
-			{
-				iluFlipImage();
-			}
-			
-			uint width		= il_info.Width;															// --------------------- Getting the imported texture's data.
-			uint height		= il_info.Height;															// 
-			uint depth		= il_info.Depth;															// 
-			uint bpp		= il_info.Bpp;																// 
-			uint size		= il_info.SizeOfData;														// 
-			uint format		= il_info.Format;															// Internal format will be forced to be the same as format.
-			uint target		= (uint)GL_TEXTURE_2D;														// 
-			int wrapping	= (int)GL_REPEAT;															// 
-			int filter		= (int)GL_LINEAR;															// ----------------------------------------------------------
-
-			uint tex_id = Utilities::CreateTexture(ilGetData(), width, height, target, wrapping, filter, format, format);	// Creates an OpenGL texture with the given data and parameters.
-
-			if (tex_id != 0)																							// If tex_id == 0, then it means the tex. could not be created.
-			{
-				r_texture->SetTextureData(tex_id, width, height, depth, bpp, size, (TEXTURE_FORMAT)format);
-			}
-			else
-			{
-				LOG("[ERROR] Could not get texture ID! Path: %s", r_texture->GetAssetsPath());
-				ret = false;
-			}
-		}
-		else
-		{
-			LOG("[ERROR] ilConvertImage() Error: %s", iluErrorString(ilGetError()));
-			ret = false;
-		}
-	}
-	else
-	{
-		LOG("[ERROR] ilLoadL() Error: %s", iluErrorString(ilGetError()));
-		ret = false;
-	}
-
-	ilDeleteImages(1, &il_image);
-	
 	return ret;
 }
 

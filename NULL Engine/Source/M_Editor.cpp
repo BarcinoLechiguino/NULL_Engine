@@ -499,7 +499,8 @@ bool M_Editor::SelectedIsSceneRoot() const
 
 void M_Editor::GetResourcesThroughEditor(std::map<uint32, Resource*>& resources) const
 {
-	resources = App->resource_manager->GetResources();
+	//resources = App->resource_manager->GetResources();
+	App->resource_manager->GetResources(resources);
 }
 
 void M_Editor::SaveSceneThroughEditor(const char* scene_name)
@@ -517,7 +518,7 @@ void M_Editor::LoadFileThroughEditor(const char* path)
 	}
 	else
 	{
-		Importer::ImportFile(path);
+		App->resource_manager->ImportFile(path);
 	}
 }
 

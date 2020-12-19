@@ -16,7 +16,34 @@ bool R_Material::CleanUp()
 {
 	bool ret = true;
 
+	for (uint i = 0; i < materials.size(); ++i)
+	{
+		materials[i].CleanUp();
+	}
 
+	materials.clear();
 
 	return ret;
+}
+
+// --- MATERIAL METHODS ---
+Material::Material() :
+type				(TEXTURE_TYPE::NONE),
+texture_uid			(0),
+texture_assets_path	("[NONE]")
+{
+
+}
+
+Material::Material(TEXTURE_TYPE type, uint texture_uid, std::string texture_assets_path) :
+type				(type),
+texture_uid			(texture_uid),
+texture_assets_path	(texture_assets_path)
+{
+
+}
+
+void Material::CleanUp()
+{
+	texture_assets_path.clear();
 }

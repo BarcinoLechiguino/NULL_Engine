@@ -4,6 +4,9 @@
 #include "Time.h"
 #include "Importer.h"
 
+#include "Application.h"
+#include "M_FileSystem.h"
+
 #include "Resource.h"
 #include "R_Mesh.h"
 #include "R_Material.h"
@@ -129,9 +132,12 @@ bool M_ResourceManager::LoadConfiguration(ParsonNode& configuration)
 }
 
 // --- M_RESOURCEMANAGER METHODS ---
+// --- IMPORT FILE METHODS--
 uint32 M_ResourceManager::ImportFile(const char* assets_path)
 {
 	uint32 resource_uid = 0;
+
+	assets_path = GetValidAssetsPath(assets_path);
 
 	if (assets_path == nullptr)
 	{
@@ -139,17 +145,124 @@ uint32 M_ResourceManager::ImportFile(const char* assets_path)
 		return 0;
 	}
 
-	resource_uid = Importer::ImportFile(assets_path);
-
-	if (resource_uid == 0)
+	// Get Metas, Check Metas, Choose to Import or Load.
+	bool valid_metas = false;
+	if (!valid_metas)
 	{
-		LOG("[ERROR] Resource Manager: Could not Import File! Check for [IMPORTER] errors in the Console Panel.");
+		resource_uid = ImportFromAssets(assets_path);
+
+		// Create/Update Metas.
+	}
+	else
+	{
+		// Get Library Path.
+		//resource_uid = LoadFromLibrary(library_path);
 	}
 
 	return resource_uid;
 }
 
-Resource* M_ResourceManager::CreateResource(RESOURCE_TYPE type)
+uint32 M_ResourceManager::ImportFromAssets(const char* assets_path)
+{
+	uint32 resource_uid = 0;
+	
+	char* buffer = nullptr;
+	uint read = App->file_system->Load(assets_path, &buffer);
+	if (read > 0)
+	{
+		RESOURCE_TYPE type = GetTypeFromExtension(assets_path);
+		Resource* resource = CreateResource(type, assets_path);
+
+		bool success = false;
+		switch (type)
+		{
+		case RESOURCE_TYPE::MODEL:		{success = Importer::ImportScene(buffer, read, (R_Model*)resource); }		break;
+		case RESOURCE_TYPE::MESH:		{success = Importer::ImportMesh(buffer, (R_Mesh*)resource); }				break;
+		case RESOURCE_TYPE::TEXTURE:	{success = Importer::ImportTexture(buffer, read, (R_Texture*)resource); }	break;
+		}
+
+		if (!success)
+		{
+			LOG("[ERROR] Resource Manager: Could not Import File! Check for [IMPORTER] errors in the Console Panel.");
+			return 0;
+		}
+
+		resource_uid = resource->GetUID();
+	}
+
+	return resource_uid;
+}
+
+uint32 M_ResourceManager::LoadFromLibrary(const char* library_path)
+{
+	return 0;
+}
+
+const char* M_ResourceManager::GetValidAssetsPath(const char* assets_path)
+{
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not validate the Assets Path! Error: Given path was nullptr.");
+		return nullptr;
+	}
+	
+	std::string norm_path = App->file_system->NormalizePath(assets_path);
+
+	uint dir_path_start = norm_path.find("Assets");
+	if (dir_path_start != std::string::npos)
+	{
+		norm_path = norm_path.substr(dir_path_start, norm_path.size());
+		assets_path = _strdup(norm_path.c_str());
+	}
+	else
+	{
+		LOG("[ERROR] Resource Manager: Could not validate the Assets Path! Error: Given path did not contain the Assets Directory");
+		assets_path = nullptr;
+	}
+
+	norm_path.clear();
+
+	return assets_path;
+}
+
+RESOURCE_TYPE M_ResourceManager::GetTypeFromExtension(const char* assets_path)
+{
+	RESOURCE_TYPE type = RESOURCE_TYPE::NONE;
+
+	std::string extension = App->file_system->GetFileExtension(assets_path);
+
+	if (extension == "fbx" || extension == "FBX" 
+		|| extension == "obj" || extension == "OBJ")
+	{
+		type = RESOURCE_TYPE::MODEL;
+	}
+	else if (extension == "png" || extension == "PNG" 
+			|| extension == "tga" || extension == "TGA" 
+			|| extension == "dds" || extension == "DDS")
+	{
+		type = RESOURCE_TYPE::TEXTURE;
+	}
+	else
+	{
+		LOG("[ERROR] Resource Manager: Could not import from the given Assets Path! Error: File extension is not supported!");
+	}
+
+	return type;
+}
+
+void M_ResourceManager::SetResourceAssetsPathAndFile(const char* assets_path, Resource* resource)
+{
+	resource->SetAssetsPath(assets_path);
+	resource->SetAssetsFile(App->file_system->GetFileAndExtension(assets_path).c_str());
+}
+
+void M_ResourceManager::SetResourceLibraryPathAndFile(Resource* resource)
+{
+	resource->SetLibraryPathAndFile();
+}
+
+// --- RESOURCE METHODS ---
+Resource* M_ResourceManager::CreateResource(RESOURCE_TYPE type, const char* assets_path)
 {
 	Resource* resource = nullptr;
 
@@ -175,18 +288,26 @@ Resource* M_ResourceManager::CreateResource(RESOURCE_TYPE type)
 			LOG("[ERROR] Created %s was already in std::map!", resource->GetTypeAsString());					// However, it never hurts to add a simple safety check such as this.
 			resource->CleanUp();
 			RELEASE(resource);
+			return nullptr;
 		}
+
+		if (assets_path != nullptr)
+		{
+			SetResourceAssetsPathAndFile(assets_path, resource);
+		}
+
+		SetResourceLibraryPathAndFile(resource);
 	}
 
 	return resource;
 }
 
-Resource* M_ResourceManager::AddResource(Resource* resource)
+bool M_ResourceManager::AddResource(Resource* resource)
 {
 	if (resource == nullptr)
 	{
 		LOG("[ERROR] Resource Manager: Could not add the resource to the resources std::map! Error: Resource* was nullptr.");
-		return nullptr;
+		return false;
 	}
 	
 	if (IsResourceAlready(resource->GetAssetsFile()))
@@ -216,22 +337,25 @@ Resource* M_ResourceManager::AddResource(Resource* resource)
 	if (!result.second)
 	{
 		LOG("[ERROR] Resource Manager: Could not insert the resource in the resources std::map!");
-		return nullptr;
+		return false;
 	}
 	else
 	{
 		LOG("[STATUS] Resource Manager: Successfully inserted %s in resources std::map!", resource->GetAssetsFile());
 	}
 
-	return resource;
+	return true;
 }
 
 bool M_ResourceManager::DeleteResource(uint32 UID)
 {
 	bool ret = true;
 
-	if (resources.find(UID) != resources.end())
+	std::map<uint32, Resource*>::iterator item = resources.find(UID);
+	if(item != resources.end())
 	{
+		item->second->CleanUp();
+		RELEASE(item->second);
 		resources.erase(UID);
 	}
 	else
@@ -257,9 +381,9 @@ Resource* M_ResourceManager::GetResource(uint32 UID)
 	return nullptr;
 }
 
-std::map<uint32, Resource*> M_ResourceManager::GetResources() const
+void M_ResourceManager::GetResources(std::map<uint32, Resource*>& resources) const
 {
-	return resources;
+	resources = this->resources;
 }
 
 bool M_ResourceManager::IsResourceAlready(std::string assets_file)
