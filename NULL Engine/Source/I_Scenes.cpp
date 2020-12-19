@@ -61,7 +61,22 @@ void Importer::Scenes::Import(const char* buffer, uint size, R_Model* r_model)
 		return;
 	}
 
+	for (uint i = 0; i < ai_scene->mNumMeshes; ++i)
+	{
+		Utilities::ai_meshes.push_back(ai_scene->mMeshes[i]);
+	
+		uint mat_index = ai_scene->mMeshes[i]->mMaterialIndex;
+		if (mat_index >= 0)
+		{
+			Utilities::ai_materials.push_back(ai_scene->mMaterials[mat_index]);
+		}
+	}
+
 	Utilities::ProcessNode(ai_scene, ai_scene->mRootNode, r_model, ModelNode());							// First Parent is empty. Later assigned to scene_root.
+
+	Utilities::ai_meshes.clear();
+	Utilities::ai_materials.clear();
+	Utilities::loaded_nodes.clear();
 }
 
 void Importer::Scenes::Utilities::ProcessNode(const aiScene* ai_scene, const aiNode* ai_node, R_Model* r_model, const ModelNode& parent)
@@ -125,7 +140,16 @@ void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const aiScene* ai_sce
 	const char* node_name = ai_node->mName.C_Str();
 
 	for (uint i = 0; i < ai_node->mNumMeshes; ++i)
-	{
+	{	
+		std::map<uint, ModelNode>::iterator item = loaded_nodes.find(ai_node->mMeshes[i]);
+		if (item != loaded_nodes.end())
+		{
+			model_node.mesh_uid		= item->second.mesh_uid;
+			model_node.material_uid = item->second.material_uid;
+			model_node.texture_uid	= item->second.texture_uid;
+			continue;
+		}
+		
 		aiMesh* ai_mesh = ai_scene->mMeshes[ai_node->mMeshes[i]];
 
 		if (ai_mesh != nullptr && ai_mesh->HasFaces())
@@ -139,6 +163,8 @@ void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const aiScene* ai_sce
 				Importer::Scenes::Utilities::ImportMaterial(node_name, ai_material, r_model, model_node);
 			}
 		}
+
+		loaded_nodes.emplace(ai_node->mMeshes[i], model_node);
 	}
 }
 
@@ -150,14 +176,12 @@ void Importer::Scenes::Utilities::ImportMesh(const char* node_name, const aiMesh
 
 	Importer::Meshes::Import(ai_mesh, r_mesh);
 
-	if (r_mesh != nullptr)
-	{ 
-		model_node.mesh_uid = r_mesh->GetUID();
-	}
-	else
+	if (r_mesh == nullptr)
 	{
-		App->resource_manager->DeleteResource(r_mesh->GetUID());
+		return;
 	}
+	
+	model_node.mesh_uid = r_mesh->GetUID();
 }
 
 void Importer::Scenes::Utilities::ImportMaterial(const char* node_name, const aiMaterial* ai_material, R_Model* r_model, ModelNode& model_node)
@@ -173,15 +197,18 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* node_name, const ai
 	
 	Importer::Materials::Import(ai_material, r_material);
 
-	model_node.material_uid = r_material->GetUID();																		//
+	model_node.material_uid = r_material->GetUID();																				//
 
-	for (uint i = 0; i < r_material->materials.size(); ++i)
+	Utilities::ImportTexture(r_material->materials, model_node);
+}
+
+void Importer::Scenes::Utilities::ImportTexture(std::vector<Material> materials, ModelNode& model_node)
+{
+	for (uint i = 0; i < materials.size(); ++i)
 	{
-		Material material = r_material->materials[i];																	//
-		
-		const char* tex_path	= material.texture_assets_path.c_str();
-		char* buffer			= nullptr;
-		uint read				= App->file_system->Load(tex_path, &buffer);
+		const char* tex_path = materials[i].texture_assets_path.c_str();
+		char* buffer = nullptr;
+		uint read = App->file_system->Load(tex_path, &buffer);
 		if (buffer != nullptr && read > 0)
 		{
 			R_Texture* r_texture = (R_Texture*)App->resource_manager->CreateResource(RESOURCE_TYPE::TEXTURE, tex_path);
@@ -194,7 +221,7 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* node_name, const ai
 				continue;
 			}
 
-			if (material.type == TEXTURE_TYPE::DIFFUSE)																	// For now only the diffuse texture will be used on models' meshes.
+			if (materials[i].type == TEXTURE_TYPE::DIFFUSE)																// For now only the diffuse texture will be used on models' meshes.
 			{
 				model_node.texture_uid = r_texture->GetUID();
 			}

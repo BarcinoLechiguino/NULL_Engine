@@ -25,6 +25,12 @@ bool E_Resources::Draw(ImGuiIO& io)
 
 	ImGui::Begin("References");
 	
+	uint models		= 0;
+	uint meshes		= 0;
+	uint materials	= 0;
+	uint textures	= 0;
+	uint animations = 0;
+	
 	std::map<uint32, Resource*> resources;
 	App->editor->GetResourcesThroughEditor(resources);
 
@@ -36,6 +42,15 @@ bool E_Resources::Draw(ImGuiIO& io)
 			continue;
 		}
 
+		switch (item->second->GetType())
+		{
+		case RESOURCE_TYPE::MODEL:		{ ++models; }		break;
+		case RESOURCE_TYPE::MESH:		{ ++meshes; }		break;
+		case RESOURCE_TYPE::MATERIAL:	{ ++materials; }	break;
+		case RESOURCE_TYPE::TEXTURE:	{ ++textures; }		break;
+		case RESOURCE_TYPE::ANIMATION:	{ ++animations; }	break;
+		}
+
 		//ImGui::Text("Name:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "      %s",		item->second->GetName());
 		ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", item->second->GetAssetsFile());
 		
@@ -45,6 +60,12 @@ bool E_Resources::Draw(ImGuiIO& io)
 
 		ImGui::Separator();
 	}
+
+	ImGui::Text("Num Models:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %u",	models);
+	ImGui::Text("Num Meshes:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %u",	meshes);
+	ImGui::Text("Num Materials:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " %u",		materials);
+	ImGui::Text("Num Textures:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "  %u",		textures);
+	ImGui::Text("Num Animations:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u",		animations);
 
 	ImGui::End();
 
