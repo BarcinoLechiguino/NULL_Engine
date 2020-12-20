@@ -349,32 +349,32 @@ bool M_Editor::InitializeImGui() const
 
 bool M_Editor::GetShowWorldGrid() const
 {
-	return App->renderer->GetDrawWorldGrid();
+	return App->renderer->GetRenderWorldGrid();
 }
 
 bool M_Editor::GetShowWorldAxis() const
 {
-	return App->renderer->GetDrawWorldAxis();
+	return App->renderer->GetRenderWorldAxis();
 }
 
 bool M_Editor::GetShowPrimitiveExamples() const
 {
-	return App->renderer->GetDrawPrimitiveExamples();
+	return App->renderer->GetRenderPrimitiveExamples();
 }
 
 void M_Editor::SetShowWorldGrid(bool set_to)
 {
-	App->renderer->SetDrawWorldGrid(set_to);
+	App->renderer->SetRenderWorldGrid(set_to);
 }
 
 void M_Editor::SetShowWorldAxis(bool set_to)
 {
-	App->renderer->SetDrawWorldAxis(set_to);
+	App->renderer->SetRenderWorldAxis(set_to);
 }
 
 void M_Editor::SetShowPrimitiveExamples(bool set_to)
 {
-	App->renderer->SetDrawPrimtiveExamples(set_to);
+	App->renderer->SetRenderPrimtiveExamples(set_to);
 }
 
 void M_Editor::UpdateFrameData(int frames, int ms)

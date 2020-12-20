@@ -1,6 +1,9 @@
 #include "Profiler.h"																			// Libraries & Other 3rd Party Softwares
 #include "OpenGL.h"																				// -------------------------------------
 
+#include "Macros.h"																				// Global Utilities
+#include "Log.h"																				// ----------------
+
 #include "Color.h"																				// Containers
 #include "Primitive.h"																			// ----------
 
@@ -37,10 +40,12 @@
 M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), 
 context					(),
 vsync					(VSYNC),
-draw_world_grid			(true),
-draw_world_axis			(true),
-in_wireframe_mode		(false),
-draw_primitive_examples	(false),
+render_world_grid		(true),
+render_world_axis		(true),
+render_wireframes		(false),
+render_vertex_normals	(false),
+render_face_normals		(false),
+render_primitive_examples	(false),
 scene_framebuffer		(0),
 depth_buffer			(0),
 scene_render_texture	(0),
@@ -436,17 +441,17 @@ void M_Renderer3D::RendererShortcuts()
 {
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_STATE::KEY_DOWN)
 	{
-		draw_world_grid = !draw_world_grid;
+		render_world_grid = !render_world_grid;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_STATE::KEY_DOWN)
 	{
-		draw_world_axis = !draw_world_axis;
+		render_world_axis = !render_world_axis;
 	}
 	
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_STATE::KEY_DOWN)
 	{
-		SetInWireframeMode(!in_wireframe_mode);
+		SetRenderWireframes(!render_wireframes);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_STATE::KEY_DOWN)
@@ -483,12 +488,12 @@ void M_Renderer3D::RenderScene()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	if (draw_world_grid)
+	if (render_world_grid)
 	{
 		DrawWorldGrid(WORLD_GRID_SIZE);
 	}
 
-	if (draw_world_axis)
+	if (render_world_axis)
 	{
 		DrawWorldAxis();
 	}
@@ -508,7 +513,7 @@ void M_Renderer3D::RenderScene()
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	if (draw_primitive_examples)
+	if (render_primitive_examples)
 	{
 		for (uint i = 0; i < primitives.size(); ++i)
 		{
@@ -519,7 +524,7 @@ void M_Renderer3D::RenderScene()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void M_Renderer3D::DrawWorldGrid(int size)
+void M_Renderer3D::DrawWorldGrid(const int& size)
 {
 	glBegin(GL_LINES);
 
@@ -665,7 +670,7 @@ void M_Renderer3D::CreatePrimitiveExamples()
 	primitives.push_back(pyramid);
 }
 
-void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
+void M_Renderer3D::GenerateBuffers(const R_Mesh* mesh)
 {
 	if (!mesh->vertices.empty())
 	{
@@ -694,98 +699,6 @@ void M_Renderer3D::GenerateBuffers(R_Mesh* mesh)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);																// Binds IBO with the GL_ARRAY_BUFFER biding point (target):
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->indices.size(), &mesh->indices[0], GL_STATIC_DRAW);	// Inits the data stored inside IBO and specifies how the data will be accessed.
 	}
-}
-
-void M_Renderer3D::RenderMesh(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material)
-{	
-	//glBindFramebuffer(GL_FRAMEBUFFER, scene_framebuffer);
-	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
-	//glClear(GL_COLOR_BUFFER_BIT);
-	//glClear(GL_DEPTH_BUFFER_BIT);
-
-
-	R_Mesh* r_mesh = c_mesh->GetMesh();
-	
-	if (in_wireframe_mode)
-	{
-		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-	}
-
-	//glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glMultMatrixf((GLfloat*)&transform.Transposed());												// OpenGL requires that the 4x4 matrices are column-major instead of row-major.
-
-	if (c_material != nullptr)
-	{
-		if (!c_material->IsActive())
-		{
-			SetGLFlag(GL_TEXTURE_2D, false);
-		}
-
-		if (c_material->GetTexture() == nullptr)														// If the Material Component does not have a Texture Resource.
-		{
-			Color color = c_material->GetMaterialColour();
-			glColor4f(color.r, color.g, color.b, color.a);												// Apply the diffuse color to the mesh.
-		}
-		else if (c_material->UseDefaultTexture())														// If the default texture is set to be used (bool use_default_texture)
-		{
-			glBindTexture(GL_TEXTURE_2D, debug_texture_id);												// Binding the texture that will be rendered. Index = 0 means we are clearing the binding.
-		}
-		else
-		{
-			glBindTexture(GL_TEXTURE_2D, c_material->GetTextureID());									// Binding the texture_id in the Texture Resource of the Material Component.
-		}
-	}
-
-	glEnableClientState(GL_VERTEX_ARRAY);															// Enables the vertex array for writing and to be used during rendering.
-	glEnableClientState(GL_NORMAL_ARRAY);															// Enables the normal array for writing and to be used during rendering.
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);													// Enables the texture coordinate array for writing and to be used during rendering.
-
-	glBindBuffer(GL_ARRAY_BUFFER, r_mesh->TBO);														// Will bind the buffer object with the mesh->TBO identifyer for rendering.
-	glTexCoordPointer(2, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of tex coords to use when rendering.
-
-	glBindBuffer(GL_ARRAY_BUFFER, r_mesh->NBO);														// The normal buffer is bound so the normal positions can be interpreted correctly.
-	glNormalPointer(GL_FLOAT, 0, nullptr);															// 
-
-	glBindBuffer(GL_ARRAY_BUFFER, r_mesh->VBO);														// The vertex buffer is bound so the vertex positions can be interpreted correctly.
-	glVertexPointer(3, GL_FLOAT, 0, nullptr);														// Specifies the location and data format of an array of vert coords to use when rendering.
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r_mesh->IBO);												// Will bind the buffer object with the mesh->IBO identifyer for rendering.
-	glDrawElements(GL_TRIANGLES, r_mesh->indices.size(), GL_UNSIGNED_INT, nullptr);					// 
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);														// Clearing the buffers.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);																// 												
-	glBindTexture(GL_TEXTURE_2D, 0);																// ---------------------
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);													// Disabling the client-side capabilities enabled at the beginning.
-	glDisableClientState(GL_NORMAL_ARRAY);															// 
-	glDisableClientState(GL_VERTEX_ARRAY);															// Disabling GL_TEXTURE_COORD_ARRAY, GL_NORMAL_ARRAY and GL_VERTEX_ARRAY.
-
-	if (c_material != nullptr)
-	{
-		if (!c_material->IsActive())
-		{
-			SetGLFlag(GL_TEXTURE_2D, true);
-		} 
-	}
-
-	// --- DEBUG DRAW ---
-	if (r_mesh->draw_vertex_normals)
-	{
-		r_mesh->DrawVertexNormals();
-	}
-
-	if (r_mesh->draw_face_normals)
-	{
-		r_mesh->DrawFaceNormals();
-	}
-
-	glPopMatrix();
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glClearColor(0.278f, 0.278f, 0.278f, 0.278f);
 }
 
 uint M_Renderer3D::GetDebugTextureID() const
@@ -828,7 +741,7 @@ bool M_Renderer3D::GetVsync() const
 	return vsync;
 }
 
-void M_Renderer3D::SetVsync(bool set_to)
+void M_Renderer3D::SetVsync(const bool& set_to)
 {
 	if (set_to != vsync)
 	{
@@ -875,49 +788,59 @@ void M_Renderer3D::SetGLFlag(RENDERER_FLAGS flag, bool set_to)
 	}
 }
 
-bool M_Renderer3D::GetDrawWorldGrid() const
+bool M_Renderer3D::GetRenderWorldGrid() const
 {
-	return draw_world_grid;
+	return render_world_grid;
 }
 
-bool M_Renderer3D::GetDrawWorldAxis() const
+bool M_Renderer3D::GetRenderWorldAxis() const
 {
-	return draw_world_axis;
+	return render_world_axis;
 }
 
-bool M_Renderer3D::GetInWireframeMode() const
+bool M_Renderer3D::GetRenderWireframes() const
 {
-	return in_wireframe_mode;
+	return render_wireframes;
 }
 
-bool M_Renderer3D::GetDrawPrimitiveExamples() const
+bool M_Renderer3D::GetRenderVertexNormals() const
 {
-	return draw_primitive_examples;
+	return render_vertex_normals;
 }
 
-void M_Renderer3D::SetDrawWorldGrid(bool set_to)
+bool M_Renderer3D::GetRenderFaceNormals() const
 {
-	if (set_to != draw_world_grid)
+	return render_face_normals;
+}
+
+bool M_Renderer3D::GetRenderPrimitiveExamples() const
+{
+	return render_primitive_examples;
+}
+
+void M_Renderer3D::SetRenderWorldGrid(const bool& set_to)
+{
+	if (set_to != render_world_grid)
 	{
-		draw_world_grid = set_to;
+		render_world_grid = set_to;
 	}
 }
 
-void M_Renderer3D::SetDrawWorldAxis(bool set_to)
+void M_Renderer3D::SetRenderWorldAxis(const bool& set_to)
 {
-	if (set_to != draw_world_axis)
+	if (set_to != render_world_axis)
 	{
-		draw_world_axis = set_to;
+		render_world_axis = set_to;
 	}
 }
 
-void M_Renderer3D::SetInWireframeMode(bool set_to)
+void M_Renderer3D::SetRenderWireframes(const bool& set_to)
 {
-	if (set_to != in_wireframe_mode)
+	if (set_to != render_wireframes)
 	{
-		in_wireframe_mode = set_to;
+		render_wireframes = set_to;
 
-		if (in_wireframe_mode)
+		if (render_wireframes)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			SetGLFlag(GL_TEXTURE_2D, false);
@@ -932,11 +855,27 @@ void M_Renderer3D::SetInWireframeMode(bool set_to)
 	}
 }
 
-void M_Renderer3D::SetDrawPrimtiveExamples(bool set_to)
+void M_Renderer3D::SetRenderVertexNormals(const bool& set_to)
 {
-	if (set_to != draw_primitive_examples)
+	if (render_vertex_normals != set_to)
 	{
-		draw_primitive_examples = set_to;
+		render_vertex_normals = set_to;
+	}
+}
+
+void M_Renderer3D::SetRenderFaceNormals(const bool& set_to)
+{
+	if (render_face_normals != set_to)
+	{
+		render_face_normals = set_to;
+	}
+}
+
+void M_Renderer3D::SetRenderPrimtiveExamples(const bool& set_to)
+{
+	if (set_to != render_primitive_examples)
+	{
+		render_primitive_examples = set_to;
 	}
 }
 
@@ -955,7 +894,7 @@ void MeshRenderer::Render()
 
 	if (r_mesh == nullptr)
 	{
-		LOG("[ERROR] Renderer 3D: Could not render mesh! Error: R_Mesh* was nullptr.");
+		LOG("[ERROR] Renderer 3D: Could not render Mesh! Error: R_Mesh* was nullptr.");
 		return;
 	}
 
@@ -994,27 +933,141 @@ void MeshRenderer::Render()
 	ClearDebugParameters();																			// Clear the specifications applied in ApplyDebugParameters().
 
 	// --- DEBUG DRAW ---
-	if (r_mesh->draw_vertex_normals)
+	if (r_mesh->draw_vertex_normals || App->renderer->GetRenderVertexNormals())
 	{
-		r_mesh->DrawVertexNormals();
+		RenderVertexNormals(r_mesh);
 	}
 
-	if (r_mesh->draw_face_normals)
+	if (r_mesh->draw_face_normals || App->renderer->GetRenderFaceNormals())
 	{
-		r_mesh->DrawFaceNormals();
+		RenderFaceNormals(r_mesh);
 	}
 
 	glPopMatrix();
 }
 
+void MeshRenderer::RenderVertexNormals(const R_Mesh* r_mesh)
+{
+	if (r_mesh == nullptr)
+	{
+		LOG("[ERROR] Renderer 3D: Could not render Mesh Vertex Normals! Error: R_Mesh* was nullptr.");
+		return;
+	}
+	
+	if (r_mesh->vertices.size() != r_mesh->normals.size())
+	{
+		LOG("[ERROR] Renderer 3D: Could not render Mesh Vertex Normals! Error: Num Vertices != Num Normals.");
+		return;
+	}
+
+	std::vector<float> vertices	= r_mesh->vertices;
+	std::vector<float> normals	= r_mesh->normals;
+
+	glBegin(GL_LINES);
+
+	glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+
+	for (uint i = 0; i < vertices.size(); i += 3)
+	{
+		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+		glVertex3f(vertices[i] + normals[i], vertices[i + 1] + normals[i + 1], vertices[i + 2] + normals[i + 2]);
+	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	glEnd();
+
+	// Clear vectors?
+}
+
+void MeshRenderer::RenderFaceNormals(const R_Mesh* r_mesh)
+{
+	if (r_mesh == nullptr)
+	{
+		LOG("[ERROR] Renderer 3D: Could not render Mesh Face Normals! Error: R_Mesh* was nullptr.");
+		return;
+	}
+	
+	if (r_mesh->vertices.size() != r_mesh->normals.size())
+	{
+		LOG("[ERROR] Renderer 3D: Could not render Mesh Face Normals! Error: Num Vertices != Num Normals.");
+		return;
+	}
+
+	std::vector<Triangle> vertex_faces;
+	std::vector<Triangle> normal_faces;
+	GetFaces(r_mesh, vertex_faces, normal_faces);
+
+	if (vertex_faces.size() != normal_faces.size())
+	{
+		LOG("[ERROR] Renderer 3D: Could not render Mesh Face Normals! Error: Num Vertex Faces != Num Normal Faces.");
+		return;
+	}
+
+	glBegin(GL_LINES);
+
+	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+
+	for (uint i = 0; i < vertex_faces.size(); ++i)
+	{
+		float3 origin		= vertex_faces[i].CenterPoint();											// Center vector of Face Vertices
+		float3 destination	= origin + normal_faces[i].CenterPoint();									// Center of Face Vertices + Center of Face Normals.
+
+		glVertex3f(origin.x, origin.y, origin.z);
+		glVertex3f(destination.x, destination.y, destination.z);
+	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	glEnd();
+
+	vertex_faces.clear();
+	normal_faces.clear();
+}
+
+void MeshRenderer::GetFaces(const R_Mesh* r_mesh, std::vector<Triangle>& vertex_faces, std::vector<Triangle>& normal_faces)
+{
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	
+	for (uint i = 0; i < r_mesh->vertices.size(); i += 3)
+	{
+		float3 vertex;
+		float3 normal;
+
+		vertex.x = r_mesh->vertices[i];
+		vertex.y = r_mesh->vertices[i + 1];
+		vertex.z = r_mesh->vertices[i + 2];
+
+		normal.x = r_mesh->normals[i];
+		normal.y = r_mesh->normals[i + 1];
+		normal.z = r_mesh->normals[i + 2];
+
+		vertices.push_back(vertex);
+		normals.push_back(normal);
+
+		if (vertices.size() == 3 && normals.size() == 3)
+		{
+			vertex_faces.push_back(Triangle(vertices[0], vertices[1], vertices[2]));
+			normal_faces.push_back(Triangle(normals[0], normals[1], normals[2]));
+
+			vertices.clear();
+			normals.clear();
+		}
+	}
+
+	vertices.clear();
+	normals.clear();
+}
+
 void MeshRenderer::ApplyDebugParameters()
 {
-	if (App->renderer->GetInWireframeMode() || c_mesh->GetShowWireframe())
+	if (App->renderer->GetRenderWireframes() || c_mesh->GetShowWireframe())
 	{
 		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 	}
 
-	if (c_mesh->GetShowWireframe() && !App->renderer->GetInWireframeMode())
+	if (c_mesh->GetShowWireframe() && !App->renderer->GetRenderWireframes())
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDisable(GL_TEXTURE_2D);
@@ -1024,7 +1077,7 @@ void MeshRenderer::ApplyDebugParameters()
 
 void MeshRenderer::ClearDebugParameters()
 {
-	if (c_mesh->GetShowWireframe() && !App->renderer->GetInWireframeMode())
+	if (c_mesh->GetShowWireframe() && !App->renderer->GetRenderWireframes())
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glEnable(GL_TEXTURE_2D);

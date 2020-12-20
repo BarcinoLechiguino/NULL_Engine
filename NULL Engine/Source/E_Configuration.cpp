@@ -515,11 +515,11 @@ void E_Configuration::RendererFlags()
 	bool blend				= App->renderer->GetGLFlag(RENDERER_FLAGS::BLEND);
 
 	// --- SHOW FLAGS
-	bool in_wireframe_mode		= App->renderer->GetInWireframeMode();
+	bool in_wireframe_mode		= App->renderer->GetRenderWireframes();
 
 	// --- DRAW FLAGS
-	bool draw_grid			= App->renderer->GetDrawWorldGrid();
-	bool draw_axis			= App->renderer->GetDrawWorldAxis();
+	bool draw_grid			= App->renderer->GetRenderWorldGrid();
+	bool draw_axis			= App->renderer->GetRenderWorldAxis();
 
 
 	// --- OPENGL FLAGS
@@ -569,20 +569,20 @@ void E_Configuration::RendererFlags()
 	// --- SHOW FLAGS
 	if (ImGui::Checkbox("Show Wireframes", &in_wireframe_mode))
 	{
-		App->renderer->SetInWireframeMode(in_wireframe_mode);
+		App->renderer->SetRenderWireframes(in_wireframe_mode);
 	}
 
 	// --- DRAW FLAGS
 	if (ImGui::Checkbox("Draw World Grid", &draw_grid))
 	{
-		App->renderer->SetDrawWorldGrid(draw_grid);
+		App->renderer->SetRenderWorldGrid(draw_grid);
 	}
 
 	ImGui::SameLine(175.0f);
 
 	if (ImGui::Checkbox("Draw World Axis", &draw_axis))
 	{
-		App->renderer->SetDrawWorldAxis(draw_axis);
+		App->renderer->SetRenderWorldAxis(draw_axis);
 	}
 }
 

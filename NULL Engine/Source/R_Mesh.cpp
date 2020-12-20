@@ -2,6 +2,8 @@
 
 #include "VariableTypedefs.h"
 
+#include "JSONParser.h"
+
 #include "R_Mesh.h"
 
 #define CHECKERS_WIDTH 64
@@ -42,55 +44,25 @@ bool R_Mesh::CleanUp()
 	return true;
 }
 
+bool R_Mesh::SaveMeta(ParsonNode& meta_root) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool R_Mesh::LoadMeta(const ParsonNode& meta_root)
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
 // --- R_MESH METHODS
-void R_Mesh::DrawVertexNormals()
-{
-	glBegin(GL_LINES);
-
-	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-
-	for (uint i = 0; i < vertices.size(); i += 3)																
-	{
-		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
-		glVertex3f(vertices[i] + normals[i], vertices[i + 1] + normals[i + 1], vertices[i + 2] + normals[i + 2]);
-	}
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	glEnd();
-}
-
-void R_Mesh::DrawFaceNormals()
-{
-	glBegin(GL_LINES);
-
-	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-
-	/*for (uint i = 0; i < vertices.size(); i += 9)												// FIX THIS: Face normals are not displayed correctly.
-	{
-		if ((i + 8) < vertices.size())
-		{
-			float3 vertex_A = float3(vertices[i], vertices[i + 1], vertices[i + 2]);
-			float3 vertex_B = float3(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
-			float3 vertex_C = float3(vertices[i + 6], vertices[i + 7], vertices[i + 8]);
-
-			float3 normal_A = float3(vertices[i] + normals[i], vertices[i + 1] + normals[i + 1], vertices[i + 2] + normals[i + 2]);
-			float3 normal_B = float3(vertices[i + 3] + normals[i + 3], vertices[i + 4] + normals[i + 4], vertices[i + 5] + normals[i + 5]);
-			float3 normal_C = float3(vertices[i + 6] + normals[i + 6], vertices[i + 7] + normals[i + 7], vertices[i + 8] + normals[i + 8]);
-
-			float3 vertex_avg = (vertex_A + vertex_B + vertex_C) * 0.333f;
-			float3 normal_avg = (normal_A + normal_B + normal_C) * 0.333f;
-
-			glVertex3f(vertex_avg.x, vertex_avg.y, vertex_avg.z);
-			glVertex3f(normal_avg.x, normal_avg.y, normal_avg.z);
-		}
-	}*/
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	glEnd();
-}
-
 void R_Mesh::LoadBuffers()
 {
 	if (!vertices.empty())
@@ -122,7 +94,7 @@ void R_Mesh::LoadBuffers()
 	}
 }
 
-AABB R_Mesh::GetAABB()
+AABB R_Mesh::GetAABB() const
 {
 	return aabb;
 }

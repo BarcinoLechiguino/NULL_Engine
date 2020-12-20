@@ -5,6 +5,8 @@
 #include "MathGeoLib/include/Math/float2.h"
 #include "Resource.h"
 
+class ParsonNode;
+
 typedef unsigned __int32 uint;
 
 struct Vertex
@@ -22,13 +24,13 @@ public:
 
 	bool CleanUp() override;
 
-public:
-	void DrawVertexNormals();
-	void DrawFaceNormals();
+	bool SaveMeta(ParsonNode& meta_root) const override;
+	bool LoadMeta(const ParsonNode& meta_root) override;
 
+public:
 	void LoadBuffers();
 
-	AABB GetAABB();
+	AABB GetAABB() const;
 	void SetAABB();
 
 public:

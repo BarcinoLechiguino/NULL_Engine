@@ -2,6 +2,8 @@
 
 #include "VariableTypedefs.h"
 
+#include "JSONParser.h"
+
 #include "R_Texture.h"
 
 R_Texture::R_Texture() : Resource(RESOURCE_TYPE::TEXTURE)
@@ -22,6 +24,25 @@ bool R_Texture::CleanUp()
 
 	return ret;
 }
+
+bool R_Texture::SaveMeta(ParsonNode& meta_root) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool R_Texture::LoadMeta(const ParsonNode& meta_root)
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
 
 // --- R_TEXTURE METHODS ---
 Texture R_Texture::GetTextureData() const

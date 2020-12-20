@@ -1,3 +1,5 @@
+#include "JSONParser.h"
+
 #include "R_Model.h"
 
 R_Model::R_Model() : Resource(RESOURCE_TYPE::NONE)
@@ -10,6 +12,35 @@ R_Model::~R_Model()
 
 }
 
+bool R_Model::CleanUp()
+{
+	bool ret = true;
+
+	model_nodes.clear();
+
+	return ret;
+}
+
+bool R_Model::SaveMeta(ParsonNode& meta_root) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool R_Model::LoadMeta(const ParsonNode& meta_root)
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+
+// --- MODEL NODE METHODS ---
 ModelNode::ModelNode() :
 name			("[NONE]"),
 uid				(0),

@@ -3,6 +3,7 @@
 
 #include "MathGeoTransform.h"
 #include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/include/Geometry/Triangle.h"
 
 #include "Module.h"
 #include "Light.h"
@@ -10,10 +11,10 @@
 struct Color;
 class ParsonNode;
 
+class R_Model;
 class R_Mesh;
 class R_Material;
 class R_Texture;
-class R_Model;
 
 class C_Mesh;	
 class C_Material;
@@ -37,14 +38,18 @@ struct MeshRenderer
 {
 	MeshRenderer(const float4x4& transform, C_Mesh* c_mesh, C_Material* c_material);							// Will render the given mesh at the given position with the given mat & tex.
 
-	void Render();
+	void Render						();
 
-	void ApplyDebugParameters();
-	void ClearDebugParameters();
+	void RenderVertexNormals		(const R_Mesh* r_mesh);
+	void RenderFaceNormals			(const R_Mesh* r_mesh);
+
+	void GetFaces					(const R_Mesh* r_mesh, std::vector<Triangle>& vertex_faces, std::vector<Triangle>& normal_faces);
+
+	void ApplyDebugParameters		();
+	void ClearDebugParameters		();
 	
-	void ApplyTextureAndMaterial();
-	void ClearTextureAndMaterial();
-
+	void ApplyTextureAndMaterial	();
+	void ClearTextureAndMaterial	();
 
 	float4x4	transform;
 	C_Mesh*		c_mesh;
@@ -102,9 +107,9 @@ public:
 	void			RenderScene					();
 
 public:																											// --- RENDER GEOMETRY
-	void			GenerateBuffers				(R_Mesh* mesh);
+	void			GenerateBuffers				(const R_Mesh* mesh);
 		
-	void			DrawWorldGrid				(int size);
+	void			DrawWorldGrid				(const int& size);
 	void			DrawWorldAxis				();
 
 	void			AddRenderersBatch			(const std::vector<MeshRenderer>& mesh_renderers, const std::vector<CuboidRenderer>& cuboid_renderers);
@@ -114,8 +119,6 @@ public:																											// --- RENDER GEOMETRY
 	void			DeleteFromMeshRenderers		(C_Mesh* c_mesh_to_delete);
 	void			DeleteFromCuboids			(float3* cuboid_to_delete);
 	void			ClearRenderers				();																// Loading scene measure.
-
-	void			RenderMesh					(float4x4 transform, C_Mesh* c_mesh, C_Material* c_material);
 
 	void			AddPrimitive				(Primitive* primitive);
 	void			CreatePrimitiveExamples		();
@@ -131,22 +134,26 @@ public:																											// --- GET/SET METHODS
 
 	const char*		GetDrivers					() const;														// 
 	bool			GetVsync					() const;														// 
-	void			SetVsync					(bool set_to);													// 
+	void			SetVsync					(const bool& set_to);											// 
 
 	bool			GetGLFlag					(GLenum flag) const;											// 
 	bool			GetGLFlag					(RENDERER_FLAGS flag) const;									// 
 	void			SetGLFlag					(GLenum flag, bool set_to);										// 
 	void			SetGLFlag					(RENDERER_FLAGS flag, bool set_to);								// 
 
-	bool			GetDrawWorldGrid			() const;														// 
-	bool			GetDrawWorldAxis			() const;														//
-	bool			GetInWireframeMode			() const;														//
-	bool			GetDrawPrimitiveExamples	() const;														// 
+	bool			GetRenderWorldGrid			() const;														// 
+	bool			GetRenderWorldAxis			() const;														//
+	bool			GetRenderWireframes			() const;														//
+	bool			GetRenderVertexNormals		() const;														// 
+	bool			GetRenderFaceNormals		() const;														// 
+	bool			GetRenderPrimitiveExamples	() const;														// 
 	
-	void			SetDrawWorldGrid			(bool set_to);													// 
-	void			SetDrawWorldAxis			(bool set_to);													// 
-	void			SetInWireframeMode			(bool set_to);													//
-	void			SetDrawPrimtiveExamples		(bool set_to);													//
+	void			SetRenderWorldGrid			(const bool& set_to);											// 
+	void			SetRenderWorldAxis			(const bool& set_to);											// 
+	void			SetRenderWireframes			(const bool& set_to);											// 
+	void			SetRenderVertexNormals		(const bool& set_to);											// 
+	void			SetRenderFaceNormals		(const bool& set_to);											// 
+	void			SetRenderPrimtiveExamples	(const bool& set_to);											// 
 
 public:
 	Light					lights[MAX_LIGHTS];																	// 
@@ -167,11 +174,13 @@ private:
 
 	bool					vsync;																				// Will keep track of whether or not the vsync is currently active.
 
-	bool					draw_world_grid;																	//
-	bool					draw_world_axis;																	//
-	bool					in_wireframe_mode;																	//
+	bool					render_world_grid;																	// 
+	bool					render_world_axis;																	// 
+	bool					render_wireframes;																	//
+	bool					render_vertex_normals;																// 
+	bool					render_face_normals;																// 
 
-	bool					draw_primitive_examples;															//
+	bool					render_primitive_examples;															//
 };
 
 #endif // !__M_RENDERER_3D_H__

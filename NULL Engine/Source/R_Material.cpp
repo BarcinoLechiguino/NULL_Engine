@@ -1,5 +1,7 @@
 #include "VariableTypedefs.h"
 
+#include "JSONParser.h"
+
 #include "R_Material.h"
 
 R_Material::R_Material() : Resource(RESOURCE_TYPE::MATERIAL)
@@ -22,6 +24,24 @@ bool R_Material::CleanUp()
 	}
 
 	materials.clear();
+
+	return ret;
+}
+
+bool R_Material::SaveMeta(ParsonNode& meta_root) const
+{
+	bool ret = true;
+
+
+
+	return ret;
+}
+
+bool R_Material::LoadMeta(const ParsonNode& meta_root)
+{
+	bool ret = true;
+
+
 
 	return ret;
 }

@@ -3,13 +3,18 @@
 
 #include "Resource.h"
 
+class ParsonNode;
+
 class R_Scene : public Resource
 {
 public:
 	R_Scene();
 	~R_Scene();
 
+	bool CleanUp();
 
+	bool SaveMeta(ParsonNode& meta_root) const override;
+	bool LoadMeta(const ParsonNode& meta_root) override;
 
 private:
 
