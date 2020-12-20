@@ -12,7 +12,7 @@ ModelSettings::~ModelSettings()
 
 }
 
-bool ModelSettings::SaveImportSettings(ParsonNode& settings) const
+bool ModelSettings::Save(ParsonNode& settings) const
 {
 	bool ret = true;
 
@@ -21,7 +21,7 @@ bool ModelSettings::SaveImportSettings(ParsonNode& settings) const
 	return ret;
 }
 
-bool ModelSettings::LoadImportSettings(const ParsonNode& settings)
+bool ModelSettings::Load(const ParsonNode& settings)
 {
 	bool ret = true;
 

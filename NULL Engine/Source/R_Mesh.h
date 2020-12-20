@@ -3,7 +3,9 @@
 
 #include "MathGeoBoundingBox.h"
 #include "MathGeoLib/include/Math/float2.h"
+
 #include "Resource.h"
+#include "MeshSettings.h"
 
 class ParsonNode;
 
@@ -52,6 +54,7 @@ public:
 	AABB						aabb;
 
 private:
+	MeshSettings				mesh_settings;
 
 };
 

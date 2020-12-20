@@ -17,7 +17,7 @@ public:
 	bool LoadMeta(const ParsonNode& meta_root) override;
 
 private:
-
+	// NO IMPORT SETTINGS?
 };
 
 #endif // !__R_SCENE_H__

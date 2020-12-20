@@ -29,7 +29,10 @@ bool R_Texture::SaveMeta(ParsonNode& meta_root) const
 {
 	bool ret = true;
 
+	ParsonArray contained_array = meta_root.SetArray("ContainedResources");
 
+	ParsonNode settings = meta_root.SetNode("ImportSettings");
+	texture_settings.Save(settings);
 
 	return ret;
 }

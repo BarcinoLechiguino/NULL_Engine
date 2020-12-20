@@ -2,6 +2,7 @@
 #define __R_ANIMATION_H__
 
 #include "Resource.h"
+#include "AnimationSettings.h"
 
 class ParsonNode;
 
@@ -17,7 +18,7 @@ public:
 	bool LoadMeta(const ParsonNode& meta_root) override;
 
 private:
-
+	AnimationSettings animation_settings;
 };
 
 #endif // !__R_ANIMATION_H__

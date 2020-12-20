@@ -14,6 +14,9 @@
 
 #include "Color.h"																				// Containers
 
+#include "Application.h"																		// Not quite sure whether or not this is a dependency to have here.
+#include "M_FileSystem.h"																		// ----------------------------------------------------------------
+
 #include "JSONParser.h"																			// Header file of this cpp file.
 
 ParsonNode::ParsonNode() : 
@@ -67,6 +70,30 @@ uint ParsonNode::SerializeToBuffer(char** buffer)
 	}
 
 	return size;
+}
+
+uint64 ParsonNode::SerializeToFile(const char* path, char** buffer)
+{
+	uint64 written = 0;
+	
+	uint size = SerializeToBuffer(buffer);
+	if (size == 0)
+	{
+		LOG("[ERROR] JSON Parser: Could not Serialize Root Node into File! Error: Could not Serialize Root Node into buffer.");
+		return 0;
+	}
+
+	written = App->file_system->Save(path, *buffer, size);
+	if (written > 0)
+	{
+		LOG("[STATUS] JSON Parser: Successfully Serialized Root Node to File! Path: %s", path);
+	}
+	else
+	{
+		LOG("[ERROR] JSON Parser: Could not Serialize Root Node into File! Error: File System could not write the File.");
+	}
+
+	return written;
 }
 
 bool ParsonNode::Release()

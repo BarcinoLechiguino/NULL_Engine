@@ -1,3 +1,4 @@
+#include "FileSystemDefinitions.h"
 #include "VariableTypedefs.h"
 
 #include "JSONParser.h"
@@ -27,7 +28,61 @@ bool R_Model::SaveMeta(ParsonNode& meta_root) const
 {
 	bool ret = true;
 
+	ParsonArray contained_array = meta_root.SetArray("ContainedResources");
 
+	for (uint i = 0; i < model_nodes.size(); ++i)
+	{	
+		if (model_nodes[i].mesh_uid != 0)
+		{
+			std::string mesh_name = model_nodes[i].name + MESHES_EXTENSION;
+			std::string mesh_path = MESHES_PATH + std::to_string(model_nodes[i].mesh_uid) + MESHES_EXTENSION;
+
+			ParsonNode mesh_node = contained_array.SetNode(mesh_name.c_str());
+
+			mesh_node.SetNumber("UID", model_nodes[i].mesh_uid);
+			mesh_node.SetNumber("Type", (uint)RESOURCE_TYPE::MESH);
+			mesh_node.SetString("Name", mesh_name.c_str());
+			mesh_node.SetString("LibraryPath", mesh_path.c_str());
+
+			mesh_name.clear();
+			mesh_path.clear();
+		}
+
+		if (model_nodes[i].material_uid != 0)
+		{
+			std::string material_name = model_nodes[i].name + MATERIALS_EXTENSION;
+			std::string material_path = MATERIALS_PATH + std::to_string(model_nodes[i].material_uid) + MATERIALS_EXTENSION;
+
+			ParsonNode material_node = contained_array.SetNode(material_name.c_str());
+
+			material_node.SetNumber("UID", model_nodes[i].material_uid);
+			material_node.SetNumber("Type", (uint)RESOURCE_TYPE::MATERIAL);
+			material_node.SetString("Name", material_name.c_str());
+			material_node.SetString("LibraryPath", material_path.c_str());
+
+			material_name.clear();
+			material_path.clear();
+		}
+
+		if (model_nodes[i].texture_uid != 0)
+		{
+			std::string texture_name = model_nodes[i].name + TEXTURES_EXTENSION;
+			std::string texture_path = TEXTURES_PATH + std::to_string(model_nodes[i].texture_uid) + TEXTURES_EXTENSION;
+
+			ParsonNode texture_node = contained_array.SetNode(texture_name.c_str());
+
+			texture_node.SetNumber("UID", model_nodes[i].texture_uid);
+			texture_node.SetNumber("Type", (uint)RESOURCE_TYPE::TEXTURE);
+			texture_node.SetString("Name", texture_name.c_str());
+			texture_node.SetString("LibraryPath", texture_path.c_str());
+
+			texture_name.clear();
+			texture_path.clear();
+		}
+	}
+
+	ParsonNode settings = meta_root.SetNode("ImportSettings");
+	model_settings.Save(settings);
 
 	return ret;
 }
@@ -40,7 +95,6 @@ bool R_Model::LoadMeta(const ParsonNode& meta_root)
 
 	return ret;
 }
-
 
 // --- MODEL NODE METHODS ---
 ModelNode::ModelNode() :

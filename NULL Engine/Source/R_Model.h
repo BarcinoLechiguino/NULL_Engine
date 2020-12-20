@@ -4,7 +4,9 @@
 #include <string>
 
 #include "MathGeoTransform.h"
+
 #include "Resource.h"
+#include "ModelSettings.h"
 
 class ParsonNode;
 
@@ -39,7 +41,8 @@ public:
 	bool LoadMeta(const ParsonNode& meta_root) override;
 
 public:
-	std::vector<ModelNode> model_nodes;
+	std::vector<ModelNode>	model_nodes;
+	ModelSettings			model_settings;
 };
 
 #endif // !__R_MODEL_H__

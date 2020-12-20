@@ -2,7 +2,14 @@
 #include "JSONParser.h"
 
 #include "Time.h"
+
 #include "Importer.h"
+#include "I_Scenes.h"
+#include "I_Meshes.h"
+#include "I_Materials.h"
+#include "I_Textures.h"
+#include "I_Folders.h"
+#include "I_Animations.h"
 
 #include "Application.h"
 #include "M_FileSystem.h"
@@ -187,6 +194,8 @@ uint32 M_ResourceManager::ImportFromAssets(const char* assets_path)
 			return 0;
 		}
 
+		SaveResourceToLibrary(resource);
+
 		resource_uid = resource->GetUID();
 	}
 
@@ -198,9 +207,79 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* library_path)
 	return 0;
 }
 
-uint32 M_ResourceManager::SaveResourceToLibrary(Resource* resource)
+uint64 M_ResourceManager::SaveResourceToLibrary(Resource* resource)
 {
-	return 0;
+	uint64 written = 0;
+	
+	char* buffer = nullptr;
+
+	switch (resource->GetType())
+	{
+	case RESOURCE_TYPE::MODEL:		{ written = Importer::Scenes::Save((R_Model*)resource, &buffer); }			break;
+	case RESOURCE_TYPE::MESH:		{ written = Importer::Meshes::Save((R_Mesh*)resource, &buffer); }			break;
+	case RESOURCE_TYPE::MATERIAL:	{ written = Importer::Materials::Save((R_Material*)resource, &buffer); }	break;
+	case RESOURCE_TYPE::TEXTURE:	{ written = Importer::Textures::Save((R_Texture*)resource, &buffer); }		break;
+	case RESOURCE_TYPE::FOLDER:		{ written = Importer::Folders::Save((R_Folder*)resource, &buffer); }		break;
+	case RESOURCE_TYPE::SCENE:		{ /*written = TODO: HAVE A FUNCTIONAL R_SCENE AND SAVE/LOAD METHODS*/ }		break;
+	case RESOURCE_TYPE::ANIMATION:	{ written = Importer::Animations::Save((R_Animation*)resource, &buffer); }	break;
+	}
+
+	RELEASE_ARRAY(buffer);
+
+	if (written == 0)
+	{
+		LOG("[ERROR] Resource Manager: Could not save Resource in the Library! Error: Check for Importer Errors in the Console Panel.");
+		return 0;
+	}
+
+	SaveMetaFile(resource);
+
+	return written;
+}
+
+bool M_ResourceManager::SaveMetaFile(Resource* resource) const
+{
+	bool ret = true;
+
+	if (resource == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not Save the Meta File! Error: Given Resource* was nullptr.");
+		return false;
+	}
+
+	ParsonNode meta_root = ParsonNode();
+	meta_root.SetNumber("UID", resource->GetUID());																											// --- GENERAL RESOURCE META DATA
+	meta_root.SetNumber("Type", (uint)resource->GetType());																									// 
+	meta_root.SetString("Name", resource->GetAssetsFile());																									// 
+	meta_root.SetString("LibraryPath", resource->GetLibraryPath());																							// 
+	meta_root.SetNumber("ModificationTime", App->file_system->GetLastModTime(resource->GetAssetsPath()));													// -----------------------------
+
+	resource->SaveMeta(meta_root);																															// --- RESOURCE-SPECIFIC META DATA
+
+	char* buffer		= nullptr;
+	std::string path	= resource->GetAssetsPath() + std::string(META_EXTENSION);
+	uint64 written		= meta_root.SerializeToFile(path.c_str(), &buffer);																					// --- SERIALIZING TO META FILE
+	if (written > 0)
+	{
+		LOG("[STATUS] Resource Manager: Successfully Saved the Meta File for Resource %lu! Path: %s", resource->GetUID(), path.c_str());
+	}
+	else
+	{
+		LOG("[ERROR] Resource Manager: Could not Save the Meta File of Resource %lu! Error: File System could not write the file.", resource->GetUID());
+	}
+
+	RELEASE_ARRAY(buffer);
+
+	path.clear();
+
+	return ret;
+}
+
+bool M_ResourceManager::LoadMetaFile(const char* meta_path)
+{
+	bool ret = true;
+
+	return ret;
 }
 
 const char* M_ResourceManager::GetValidAssetsPath(const char* assets_path)
@@ -246,6 +325,10 @@ RESOURCE_TYPE M_ResourceManager::GetTypeFromExtension(const char* assets_path)
 			|| extension == "dds" || extension == "DDS")
 	{
 		type = RESOURCE_TYPE::TEXTURE;
+	}
+	else if (extension == "json" || extension == "JSON")
+	{
+		type = RESOURCE_TYPE::SCENE;
 	}
 	else
 	{

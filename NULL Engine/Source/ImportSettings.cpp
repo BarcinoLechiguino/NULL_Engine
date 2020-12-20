@@ -23,7 +23,7 @@ ImportSettings::~ImportSettings()
 
 }
 
-bool ImportSettings::SaveImportSettings(ParsonNode& settings) const
+bool ImportSettings::Save(ParsonNode& settings) const
 {
 	bool ret = true;
 
@@ -32,7 +32,7 @@ bool ImportSettings::SaveImportSettings(ParsonNode& settings) const
 	return ret;
 }
 
-bool ImportSettings::LoadImportSettings(const ParsonNode& settings)
+bool ImportSettings::Load(const ParsonNode& settings)
 {
 	bool ret = true;
 

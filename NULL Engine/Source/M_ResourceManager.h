@@ -12,6 +12,7 @@ class Resource;
 enum class RESOURCE_TYPE;
 
 typedef unsigned __int32 uint32;
+typedef unsigned __int64 uint64;
 
 class M_ResourceManager : public Module
 {
@@ -33,7 +34,10 @@ public:																												// --- IMPORT FILE METHODS ---
 	uint32			ImportFile						(const char* assets_path);
 	uint32			ImportFromAssets				(const char* assets_path);
 	uint32			LoadFromLibrary					(const char* library_path);
-	uint32			SaveResourceToLibrary			(Resource* resource);
+	uint64			SaveResourceToLibrary			(Resource* resource);
+
+	bool			SaveMetaFile					(Resource* resource) const;
+	bool			LoadMetaFile					(const char* meta_path);
 
 	const char*		GetValidAssetsPath				(const char* assets_path);
 	RESOURCE_TYPE	GetTypeFromExtension			(const char* assets_path);

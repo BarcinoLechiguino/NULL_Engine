@@ -12,7 +12,7 @@ MaterialSettings::~MaterialSettings()
 
 }
 
-bool MaterialSettings::SaveImportSettings(ParsonNode& settings) const
+bool MaterialSettings::Save(ParsonNode& settings) const
 {
 	bool ret = true;
 
@@ -21,7 +21,7 @@ bool MaterialSettings::SaveImportSettings(ParsonNode& settings) const
 	return ret;
 }
 
-bool MaterialSettings::LoadImportSettings(const ParsonNode& settings)
+bool MaterialSettings::Load(const ParsonNode& settings)
 {
 	bool ret = true;
 

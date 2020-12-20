@@ -12,7 +12,7 @@ TextureSettings::~TextureSettings()
 
 }
 
-bool TextureSettings::SaveImportSettings(ParsonNode& settings) const
+bool TextureSettings::Save(ParsonNode& settings) const
 {
 	bool ret = true;
 
@@ -21,7 +21,7 @@ bool TextureSettings::SaveImportSettings(ParsonNode& settings) const
 	return ret;
 }
 
-bool TextureSettings::LoadImportSettings(const ParsonNode& settings)
+bool TextureSettings::Load(const ParsonNode& settings)
 {
 	bool ret = true;
 

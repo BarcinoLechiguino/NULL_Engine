@@ -12,7 +12,7 @@ MeshSettings::~MeshSettings()
 
 }
 
-bool MeshSettings::SaveImportSettings(ParsonNode& settings) const
+bool MeshSettings::Save(ParsonNode& settings) const
 {
 	bool ret = true;
 
@@ -21,7 +21,7 @@ bool MeshSettings::SaveImportSettings(ParsonNode& settings) const
 	return ret;
 }
 
-bool MeshSettings::LoadImportSettings(const ParsonNode& settings)
+bool MeshSettings::Load(const ParsonNode& settings)
 {
 	bool ret = true;
 

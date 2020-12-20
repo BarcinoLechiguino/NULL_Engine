@@ -2,6 +2,7 @@
 #define __R_TEXTURE_H__
 
 #include "Resource.h"
+#include "TextureSettings.h"
 
 class ParsonNode;
 
@@ -60,6 +61,7 @@ public:
 
 private:
 	Texture			tex_data;
+	TextureSettings texture_settings;
 };
 
 #endif // !__R_TEXTURE_H__

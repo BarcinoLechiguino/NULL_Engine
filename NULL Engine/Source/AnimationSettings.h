@@ -11,8 +11,8 @@ public:
 	AnimationSettings();
 	~AnimationSettings();
 
-	bool SaveImportSettings(ParsonNode& settings) const override;
-	bool LoadImportSettings(const ParsonNode& settings) override;
+	bool Save(ParsonNode& settings) const override;
+	bool Load(const ParsonNode& settings) override;
 
 private:
 

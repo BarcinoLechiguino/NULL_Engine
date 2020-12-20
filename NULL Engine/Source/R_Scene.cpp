@@ -25,7 +25,7 @@ bool R_Scene::SaveMeta(ParsonNode& meta_root) const
 {
 	bool ret = true;
 
-
+	ParsonArray contained_array = meta_root.SetArray("ContainedResources");
 
 	return ret;
 }

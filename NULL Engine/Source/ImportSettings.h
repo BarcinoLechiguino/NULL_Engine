@@ -16,8 +16,8 @@ public:
 	ImportSettings();
 	 virtual ~ImportSettings();
 
-	virtual bool SaveImportSettings(ParsonNode& settings) const;
-	virtual bool LoadImportSettings(const ParsonNode& settings);
+	virtual bool Save(ParsonNode& settings) const;
+	virtual bool Load(const ParsonNode& settings);
 
 public:
 	float				global_scale;

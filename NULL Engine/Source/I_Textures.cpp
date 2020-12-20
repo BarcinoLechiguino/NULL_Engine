@@ -125,6 +125,8 @@ uint64 Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 		{
 			LOG("[ERROR] Could not save the texture! ilSaveL() Error: %s", iluErrorString(ilGetError()));
 		}
+
+		//RELEASE_ARRAY(data);
 	}
 	else
 	{
