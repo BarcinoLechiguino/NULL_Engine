@@ -12,9 +12,9 @@
 
 #include "M_Camera3D.h"
 
-#define MOVEMENT_SPEED 12.0f
+#define MOVEMENT_SPEED 24.0f
 #define ROTATION_SPEED 0.05f
-#define ZOOM_SPEED 24.0f
+#define ZOOM_SPEED 300.0f
 
 M_Camera3D::M_Camera3D(bool is_active) : Module("Camera3D", is_active),
 master_camera		(nullptr),

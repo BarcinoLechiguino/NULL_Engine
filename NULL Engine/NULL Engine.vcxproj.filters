@@ -489,6 +489,12 @@
     <ClCompile Include="Source\ModelSettings.cpp">
       <Filter>Source\6_Containers\ImportSettings\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Source\I_Folders.cpp">
+      <Filter>Source\4_Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\I_Animations.cpp">
+      <Filter>Source\4_Importers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -1051,6 +1057,12 @@
     </ClInclude>
     <ClInclude Include="Source\ModelSettings.h">
       <Filter>Source\6_Containers\ImportSettings\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\I_Folders.h">
+      <Filter>Source\4_Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\I_Animations.h">
+      <Filter>Source\4_Importers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
