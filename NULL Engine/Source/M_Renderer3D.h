@@ -142,10 +142,11 @@ public:																											// --- GET/SET METHODS
 	void			SetGLFlag					(RENDERER_FLAGS flag, bool set_to);								// 
 
 	bool			GetRenderWorldGrid			() const;														// 
-	bool			GetRenderWorldAxis			() const;														//
-	bool			GetRenderWireframes			() const;														//
+	bool			GetRenderWorldAxis			() const;														// 
+	bool			GetRenderWireframes			() const;														// 
 	bool			GetRenderVertexNormals		() const;														// 
 	bool			GetRenderFaceNormals		() const;														// 
+	bool			GetRenderBoundingBoxes		() const;														// 
 	bool			GetRenderPrimitiveExamples	() const;														// 
 	
 	void			SetRenderWorldGrid			(const bool& set_to);											// 
@@ -153,6 +154,7 @@ public:																											// --- GET/SET METHODS
 	void			SetRenderWireframes			(const bool& set_to);											// 
 	void			SetRenderVertexNormals		(const bool& set_to);											// 
 	void			SetRenderFaceNormals		(const bool& set_to);											// 
+	void			SetRenderBoundingBoxes		(const bool& set_to);											// 
 	void			SetRenderPrimtiveExamples	(const bool& set_to);											// 
 
 public:
@@ -179,6 +181,7 @@ private:
 	bool					render_wireframes;																	//
 	bool					render_vertex_normals;																// 
 	bool					render_face_normals;																// 
+	bool					render_bounding_boxes;																// 
 
 	bool					render_primitive_examples;															//
 };

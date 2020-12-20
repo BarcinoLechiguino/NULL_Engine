@@ -6,6 +6,7 @@
 
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/float4.h"
+#include "MathGeoLib/include/Math/Quat.h"
 
 #include "VariableTypedefs.h"																	// Globals										
 #include "Macros.h"																				// 
@@ -337,6 +338,22 @@ void ParsonArray::GetFloat4(const uint& index, float4& vec4) const
 	}
 }
 
+void ParsonArray::GetFloat4(const uint& index, Quat& vec4) const
+{
+	bool valid_x = HasValueOfTypeAtIndex(index, JSONNumber);																// Safety check
+	bool valid_y = HasValueOfTypeAtIndex(index + 1, JSONNumber);															// Safety check
+	bool valid_z = HasValueOfTypeAtIndex(index + 2, JSONNumber);															// Safety check
+	bool valid_w = HasValueOfTypeAtIndex(index + 3, JSONNumber);															// Safety check
+
+	if (valid_x && valid_y && valid_z && valid_w)
+	{
+		vec4.x = (float)json_array_get_number(json_array, index);															// Getting x from the array.
+		vec4.y = (float)json_array_get_number(json_array, index + 1);														// Getting y from the array.
+		vec4.z = (float)json_array_get_number(json_array, index + 2);														// Getting z from the array.
+		vec4.w = (float)json_array_get_number(json_array, index + 3);														// Getting w from the array.
+	}
+}
+
 ParsonNode ParsonArray::GetNode(const uint& index) const
 {
 	if (!HasValueOfTypeAtIndex(index, JSONObject))
@@ -448,4 +465,9 @@ bool ParsonArray::HasValueOfTypeAtIndex(const uint& index, JSON_Value_Type value
 	}
 	
 	return false;
+}
+
+bool ParsonArray::ArrayIsValid() const
+{
+	return (json_array == NULL);
 }

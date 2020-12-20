@@ -23,7 +23,7 @@ public:
 
 	bool IsContained(uint32 UID) const;
 
-private:
+public:
 	std::vector<uint32> contained_resources;
 };
 

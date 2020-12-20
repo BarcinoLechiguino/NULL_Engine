@@ -11,6 +11,7 @@ namespace math
 {
 	class float3;
 	class float4;
+	class Quat;
 }
 
 typedef unsigned int uint;
@@ -62,6 +63,7 @@ public:																										// --- GETTERS, SETTERS & UTILITIES
 	void					GetColor				(const uint& index, Color& color) const;
 	void					GetFloat3				(const uint& index, math::float3& vec3) const;
 	void					GetFloat4				(const uint& index, math::float4& vec4) const;
+	void					GetFloat4				(const uint& index, math::Quat& vec4) const;
 	ParsonNode				GetNode					(const uint& index) const;								//
 
 	void					SetNumber				(const double& number);									//
@@ -76,6 +78,8 @@ public:
 	uint					GetSize					() const;												//
 	JSON_Value_Type			GetTypeAtIndex			(const uint& index) const;								//
 	bool					HasValueOfTypeAtIndex	(const uint& index, JSON_Value_Type value_type) const;	//
+
+	bool					ArrayIsValid			() const;
 
 public:
 	JSON_Array*			json_array;																			//

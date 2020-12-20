@@ -1,3 +1,5 @@
+#include "VariableTypedefs.h"
+
 #include "JSONParser.h"
 
 #include "R_Model.h"
@@ -63,4 +65,54 @@ material_uid	(material_UID),
 texture_uid		(texture_UID)
 {
 
+}
+
+bool ModelNode::Save(ParsonNode& root) const
+{
+	bool ret = true;
+
+	root.SetString("Name", name.c_str());
+
+	root.SetNumber("UID", uid);
+	root.SetNumber("ParentUID", parent_uid);
+
+	ParsonNode transform_node	= root.SetNode("Transform");
+	ParsonArray position		= transform_node.SetArray("LocalPosition");
+	ParsonArray rotation		= transform_node.SetArray("LocalRotation");
+	ParsonArray scale			= transform_node.SetArray("LocalScale");
+
+	position.SetFloat3(transform.position);
+	rotation.SetFloat4(transform.rotation.CastToFloat4());
+	scale.SetFloat3(transform.scale);
+
+	root.SetNumber("MeshUID", mesh_uid);
+	root.SetNumber("MaterialUID", material_uid);
+	root.SetNumber("TextureUID", texture_uid);
+
+	return ret;
+}
+
+bool ModelNode::Load(const ParsonNode& root)
+{
+	bool ret = true;
+
+	name = root.GetString("Name");
+
+	uid				= (uint32)root.GetNumber("UID");
+	parent_uid		= (uint32)root.GetNumber("ParentUID");
+
+	ParsonNode transform_node	= root.GetNode("Transform");
+	ParsonArray position		= root.GetArray("LocalPosition");
+	ParsonArray rotation		= root.GetArray("LocalRotation");
+	ParsonArray scale			= root.GetArray("LocalScale");
+
+	position.GetFloat3(0, transform.position);
+	rotation.GetFloat4(0, transform.rotation);
+	scale.GetFloat3(0, transform.position);
+
+	mesh_uid		= (uint32)root.GetNumber("MeshUID");
+	material_uid	= (uint32)root.GetNumber("MaterialUID");
+	texture_uid		= (uint32)root.GetNumber("TextureUID");
+
+	return ret;
 }

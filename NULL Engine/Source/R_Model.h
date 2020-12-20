@@ -15,6 +15,9 @@ struct ModelNode
 	ModelNode();
 	ModelNode(const char* name, uint32 UID, uint32 parent_UID, Transform transform, uint32 mesh_UID, uint32 material_UID, uint32 texture_UID);
 
+	bool Save(ParsonNode& root) const; 
+	bool Load(const ParsonNode& root); 
+
 	std::string name;																										// Name of the Model Node.
 	uint32		uid;																										// UID of this Model Node.
 	uint32		parent_uid;																									// UID of the parent Model Node.

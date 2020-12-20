@@ -38,20 +38,21 @@
 #define CHECKERS_HEIGHT 64
 
 M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), 
-context					(),
-vsync					(VSYNC),
-render_world_grid		(true),
-render_world_axis		(true),
-render_wireframes		(false),
-render_vertex_normals	(false),
-render_face_normals		(false),
+context						(),
+vsync						(VSYNC),
+render_world_grid			(true),
+render_world_axis			(true),
+render_wireframes			(false),
+render_vertex_normals		(false),
+render_face_normals			(false),
+render_bounding_boxes		(false),
 render_primitive_examples	(false),
-scene_framebuffer		(0),
-depth_buffer			(0),
-scene_render_texture	(0),
-depth_buffer_texture	(0),
-game_framebuffer		(0),
-debug_texture_id		(0)
+scene_framebuffer			(0),
+depth_buffer				(0),
+scene_render_texture		(0),
+depth_buffer_texture		(0),
+game_framebuffer			(0),
+debug_texture_id			(0)
 {
 
 }
@@ -813,6 +814,11 @@ bool M_Renderer3D::GetRenderFaceNormals() const
 	return render_face_normals;
 }
 
+bool M_Renderer3D::GetRenderBoundingBoxes() const
+{
+	return render_bounding_boxes;
+}
+
 bool M_Renderer3D::GetRenderPrimitiveExamples() const
 {
 	return render_primitive_examples;
@@ -868,6 +874,14 @@ void M_Renderer3D::SetRenderFaceNormals(const bool& set_to)
 	if (render_face_normals != set_to)
 	{
 		render_face_normals = set_to;
+	}
+}
+
+void M_Renderer3D::SetRenderBoundingBoxes(const bool& set_to)
+{
+	if (render_bounding_boxes != set_to)
+	{
+		render_bounding_boxes = set_to;
 	}
 }
 

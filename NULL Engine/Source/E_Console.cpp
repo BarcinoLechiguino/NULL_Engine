@@ -107,27 +107,27 @@ void E_Console::ConsoleOutput()
 
 		if (strstr(logs[i], "[ERROR]") != nullptr)								// strstr() will look for a specific substring in the given string. Returns nullptr if the substr is not found.
 		{
-			text_colour = { 1.0f, 0.0f, 0.0f, 1.0f };							// [ERROR] logs will be red.
+			text_colour = { 1.0f, 0.33f, 0.33f, 1.0f };							// [ERROR] logs will be red.
 		}
 
 		if (strstr(logs[i], "[WARNING]") != nullptr)
 		{
-			text_colour = { 1.0f, 1.0f, 0.0f, 1.0f };							// [WARNING] logs will be yellow.
+			text_colour = { 1.0f, 1.0f, 0.33f, 1.0f };							// [WARNING] logs will be yellow.
 		}
 
 		if (strstr(logs[i], "[STATUS]") != nullptr)
 		{
-			text_colour = { 1.0f, 0.0f, 1.0f, 1.0f };
+			text_colour = { 1.0f, 0.33f, 1.0f, 1.0f };
 		}
 
 		if (strstr(logs[i], "[IMPORTER]") != nullptr)
 		{
-			text_colour = { 0.0f, 1.0f, 1.0f, 1.0f };
+			text_colour = { 0.33f, 1.0f, 1.0f, 1.0f };
 		}
 
 		if (strstr(logs[i], "[SCENE]") != nullptr)
 		{
-			text_colour = { 0.0f, 1.0f, 0.0f, 1.0f };
+			text_colour = { 0.33f, 1.0f, 0.33f, 1.0f };
 		}
 
 		ImGui::PushStyleColor(ImGuiCol_Text, text_colour);

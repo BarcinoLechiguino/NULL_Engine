@@ -198,6 +198,11 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* library_path)
 	return 0;
 }
 
+uint32 M_ResourceManager::SaveResourceToLibrary(Resource* resource)
+{
+	return 0;
+}
+
 const char* M_ResourceManager::GetValidAssetsPath(const char* assets_path)
 {
 	if (assets_path == nullptr)

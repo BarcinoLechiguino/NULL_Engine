@@ -2,6 +2,7 @@
 #include "MathGeoTransform.h"
 
 #include "JSONParser.h"
+#include "Random.h"
 
 #include "Application.h"														// ATTENTION: Globals.h already included in Module.h
 #include "M_Window.h"
@@ -16,6 +17,7 @@
 #include "R_Model.h"
 #include "R_Mesh.h"
 #include "R_Texture.h"
+#include "R_Scene.h"
 
 #include "Primitive.h"
 
@@ -210,17 +212,28 @@ bool M_Scene::SaveScene(const char* scene_name) const
 	uint written = App->file_system->Save(path.c_str(), buffer, size);
 	if (written > 0)
 	{
-		LOG("[SCENE] Successfully saved the current scene! Path: %s", path.c_str());
+		LOG("[SCENE] Scene: Successfully saved the current scene! Path: %s", path.c_str());
 	}
 	else
 	{
-		LOG("[ERROR] Could not save the current scene! Error: FileSystem could not write any data!");
+		LOG("[ERROR] Scene: Could not save the current scene! Error: FileSystem could not write any data!");
 	}
 
-	// Create Empty R_Scene* and Save the current scene with its UID.
+	R_Scene* r_scene			= (R_Scene*)App->resource_manager->CreateResource(RESOURCE_TYPE::SCENE, path.c_str());			// TMP until R_Scene is fully implemented.
+	std::string library_path	= SCENES_PATH + std::to_string(r_scene->GetUID()) + SCENES_EXTENSION;
+	written = App->file_system->Save(library_path.c_str(), buffer, size);
+	if (written > 0)
+	{
+		LOG("[SCENE] Scene: Successfully saved the current scene in Library! Path: %s", library_path.c_str());
+	}
+	else
+	{
+		LOG("[ERROR] Scene: Could not save the current scene in Library! Error: FileSystem could not write any data!");
+	}
 
 	name.clear();
 	path.clear();
+	library_path.clear();
 
 	return ret;
 }

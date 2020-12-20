@@ -506,21 +506,22 @@ void E_Configuration::RendererFlags()
 	ImGui::Text("Renderer flags: ");
 	
 	// --- OPENGL FLAGS
-	bool depth_test			= App->renderer->GetGLFlag(RENDERER_FLAGS::DEPTH_TEST);
-	bool cull_face			= App->renderer->GetGLFlag(RENDERER_FLAGS::CULL_FACE);
-	bool lighting			= App->renderer->GetGLFlag(RENDERER_FLAGS::LIGHTING);
-	bool color_material		= App->renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL);
-	bool texture_2D			= App->renderer->GetGLFlag(RENDERER_FLAGS::TEXTURE_2D);
-	bool alpha_test			= App->renderer->GetGLFlag(RENDERER_FLAGS::ALPHA_TEST);
-	bool blend				= App->renderer->GetGLFlag(RENDERER_FLAGS::BLEND);
+	bool depth_test					= App->renderer->GetGLFlag(RENDERER_FLAGS::DEPTH_TEST);
+	bool cull_face					= App->renderer->GetGLFlag(RENDERER_FLAGS::CULL_FACE);
+	bool lighting					= App->renderer->GetGLFlag(RENDERER_FLAGS::LIGHTING);
+	bool color_material				= App->renderer->GetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL);
+	bool texture_2D					= App->renderer->GetGLFlag(RENDERER_FLAGS::TEXTURE_2D);
+	bool alpha_test					= App->renderer->GetGLFlag(RENDERER_FLAGS::ALPHA_TEST);
+	bool blend						= App->renderer->GetGLFlag(RENDERER_FLAGS::BLEND);
 
 	// --- SHOW FLAGS
-	bool in_wireframe_mode		= App->renderer->GetRenderWireframes();
-
-	// --- DRAW FLAGS
-	bool draw_grid			= App->renderer->GetRenderWorldGrid();
-	bool draw_axis			= App->renderer->GetRenderWorldAxis();
-
+	bool render_world_grid			= App->renderer->GetRenderWorldGrid();
+	bool render_world_axis			= App->renderer->GetRenderWorldAxis();
+	bool render_wireframes			= App->renderer->GetRenderWireframes();
+	bool render_vertex_normals		= App->renderer->GetRenderVertexNormals();
+	bool render_face_normals		= App->renderer->GetRenderFaceNormals();
+	bool render_bounding_boxes		= App->renderer->GetRenderBoundingBoxes();
+	bool render_primitive_examples	= App->renderer->GetRenderPrimitiveExamples();
 
 	// --- OPENGL FLAGS
 	if (ImGui::Checkbox("Depth Test", &depth_test))
@@ -567,22 +568,45 @@ void E_Configuration::RendererFlags()
 	ImGui::SameLine(175.0f);
 
 	// --- SHOW FLAGS
-	if (ImGui::Checkbox("Show Wireframes", &in_wireframe_mode))
+	if (ImGui::Checkbox("Show World Grid", &render_world_grid))
 	{
-		App->renderer->SetRenderWireframes(in_wireframe_mode);
+		App->renderer->SetRenderWorldGrid(render_world_grid);
 	}
 
-	// --- DRAW FLAGS
-	if (ImGui::Checkbox("Draw World Grid", &draw_grid))
+	if (ImGui::Checkbox("Show World Axis", &render_world_axis))
 	{
-		App->renderer->SetRenderWorldGrid(draw_grid);
+		App->renderer->SetRenderWorldAxis(render_world_axis);
 	}
 
 	ImGui::SameLine(175.0f);
 
-	if (ImGui::Checkbox("Draw World Axis", &draw_axis))
+	if (ImGui::Checkbox("Show Wireframes", &render_wireframes))
 	{
-		App->renderer->SetRenderWorldAxis(draw_axis);
+		App->renderer->SetRenderWireframes(render_wireframes);
+	}
+
+	if (ImGui::Checkbox("Show Vertex Normals", &render_vertex_normals))
+	{
+		App->renderer->SetRenderVertexNormals(render_vertex_normals);
+	}
+
+	ImGui::SameLine(175.0f);
+
+	if (ImGui::Checkbox("Show Face Normals", &render_face_normals))
+	{
+		App->renderer->SetRenderFaceNormals(render_face_normals);
+	}
+
+	if (ImGui::Checkbox("Show Bounding Boxes", &render_bounding_boxes))
+	{
+		App->renderer->SetRenderBoundingBoxes(render_bounding_boxes);
+	}
+
+	ImGui::SameLine(175.0f);
+
+	if (ImGui::Checkbox("Show Primitive Examples", &render_primitive_examples))
+	{
+		App->renderer->SetRenderPrimtiveExamples(render_primitive_examples);
 	}
 }
 

@@ -17,11 +17,11 @@
 #include "M_FileSystem.h"
 #include "M_ResourceManager.h"
 
-#include "Resource.h"															// See if they can be delegated to the other importers.
-#include "R_Model.h"															// 
-#include "R_Mesh.h"																// 
-#include "R_Material.h"															// 
-#include "R_Texture.h"															// ----------------------------------------------------
+#include "Resource.h"																					// See if these includes can be delegated to the other importers.
+#include "R_Model.h"																					// 
+#include "R_Mesh.h"																						// 
+#include "R_Material.h"																					// 
+#include "R_Texture.h"																					// --------------------------------------------------------------
 
 #include "I_Meshes.h"
 #include "I_Materials.h"
@@ -37,16 +37,89 @@ using namespace Importer::Scenes;																		// Not a good thing to do but
 
 uint64 Importer::Scenes::Save(const R_Model* r_model, char** buffer)
 {
-	uint64 size = 0;
+	uint64 written = 0;
 
+	if (r_model == nullptr)
+	{
+		LOG("[ERROR] Importer: Could not Save R_Model* in Library! Error: Given R_Model* was nullptr.");
+		return 0;
+	}
+	
+	ParsonNode root_node			= ParsonNode();																						// --- GENERATING THE REQUIRED PARSON NODE AND ARRAY
+	ParsonArray model_nodes_array	= root_node.SetArray("ModelNodes");																	// -------------------------------------------------
 
+	for (uint i = 0; i < r_model->model_nodes.size(); ++i)																				// --- SAVING MODEL NODE DATA
+	{
+		ParsonNode model_node = model_nodes_array.SetNode(r_model->model_nodes[i].name.c_str());
+		r_model->model_nodes[i].Save(model_node);
+	}
 
-	return size;
+	uint size = root_node.SerializeToBuffer(buffer);																					// --- SERIALIZING PARSON ROOT NODE INTO A BUFFER
+	if (size == 0)
+	{
+		LOG("[ERROR] Importer: Could not Save R_Model* in Library! Error: Could not Serialize the Root Node to Buffer.");
+		return 0;
+	}
+
+	std::string path = MODELS_PATH + std::to_string(r_model->GetUID()) + MODELS_EXTENSION;
+	written = App->file_system->Save(path.c_str(), *buffer, size);																		// --- SAVING THE GENERATED BUFFER INTO A FILE
+	if (written > 0)
+	{
+		LOG("[IMPORTER] Importer: Successfully saved R_Model* in Library! Path: %s", path.c_str());
+	}
+	else
+	{
+		LOG("[ERROR] Importer: Could not save R_Model* in Library! Error: File System could not write the file.");
+	}
+
+	path.clear();
+
+	return written;
 }
 
 void Importer::Scenes::Load(const char* buffer, R_Model* r_model)
 {
+	if (buffer == nullptr)
+	{
+		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Given buffer was nullptr.");
+		return;
+	}
+	
+	ParsonNode root_node			= ParsonNode(buffer);
+	ParsonArray model_nodes_array	= root_node.GetArray("ModelNodes");
+	if (!root_node.NodeIsValid())
+	{
+		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Could not generate the Root Node from the passed buffer.");
+		return;
+	}
+	if (!model_nodes_array.ArrayIsValid())
+	{
+		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Could not get the ModelNodes array from the Root Node.");
+		return;
+	}
 
+	for (uint i = 0; i < model_nodes_array.size; ++i)
+	{
+		ParsonNode parson_node = model_nodes_array.GetNode(i);
+		if (!parson_node.NodeIsValid())
+		{
+			continue;
+		}
+
+		ModelNode model_node = ModelNode();
+		model_node.Load(parson_node);
+
+		r_model->model_nodes.push_back(model_node);
+	}
+
+	if (r_model->model_nodes.size() > 0)
+	{
+		LOG("[IMPORTER] Importer: Successfully loaded R_Model* from Library! UID: %lu", r_model->GetUID());
+	}
+	else
+	{
+		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Not a single Model Node could be Loaded.");
+	}
 }
 
 void Importer::Scenes::Import(const char* buffer, uint size, R_Model* r_model)

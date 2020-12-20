@@ -279,7 +279,7 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 		}
 	}
 
-	if (show_bounding_boxes)
+	if (show_bounding_boxes || App->renderer->GetRenderBoundingBoxes())
 	{
 		obb.GetCornerPoints(obb_vertices);
 		aabb.GetCornerPoints(aabb_vertices);

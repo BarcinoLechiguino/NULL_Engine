@@ -33,6 +33,7 @@ public:																												// --- IMPORT FILE METHODS ---
 	uint32			ImportFile						(const char* assets_path);
 	uint32			ImportFromAssets				(const char* assets_path);
 	uint32			LoadFromLibrary					(const char* library_path);
+	uint32			SaveResourceToLibrary			(Resource* resource);
 
 	const char*		GetValidAssetsPath				(const char* assets_path);
 	RESOURCE_TYPE	GetTypeFromExtension			(const char* assets_path);
@@ -42,7 +43,6 @@ public:																												// --- IMPORT FILE METHODS ---
 
 public:																												// --- RESOURCE METHODS ---
 	Resource*		CreateResource					(RESOURCE_TYPE type, const char* assets_path = nullptr);		//
-	Resource*		CreateEmptyResource				(RESOURCE_TYPE type);											// 
 	bool			AddResource						(Resource* resource);											// 
 	bool			DeleteResource					(uint32 UID);													// 
 	Resource*		GetResource						(uint32 UID);													// 
