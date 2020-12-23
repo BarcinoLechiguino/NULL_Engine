@@ -34,7 +34,7 @@
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")							// -------------------------
 
 #define WORLD_GRID_SIZE 64
-#define CHECKERS_WIDTH 64
+#define CHECKERS_WIDTH	64
 #define CHECKERS_HEIGHT 64
 
 M_Renderer3D::M_Renderer3D(bool is_active) : Module("Renderer3D", is_active), 
@@ -395,7 +395,7 @@ void M_Renderer3D::InitFramebuffers()
 
 void M_Renderer3D::LoadDebugTexture()
 {
-	GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];							// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
+	GLubyte checker_image[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];						// HEIGHT columns, WIDTH rows and 4 variables per checker (for RGBA purposes).
 
 	for (int i = 0; i < CHECKERS_HEIGHT; ++i)											// There will be CHECKERS_WIDTH rows per column.
 	{

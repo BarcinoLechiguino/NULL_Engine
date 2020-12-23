@@ -71,23 +71,15 @@ uint Importer::Textures::Import(const char* buffer, uint size, R_Texture* r_text
 
 	LOG("[STATUS] Importer: Importing Texture { %s }", r_texture->GetAssetsPath());
 
-	bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);														// IMPORT FROM BUFFER
+	bool success = Importer::Textures::Load(buffer, size, r_texture);
 	if (success)
 	{
-		success = Importer::Textures::Load(buffer, size, r_texture);														// LOAD FROM SAVE BUFFER
-		if (success)
-		{
-			tex_id = r_texture->GetTextureID();
-			LOG("[IMPORTER] Importer: Successfully Imported Texture { %s } from Assets!", r_texture->GetAssetsFile());
-		}
-		else
-		{
-			LOG("%s! Error: See Importer ERRORs above.", error_string.c_str());
-		}
+		tex_id = r_texture->GetTextureID();
+		LOG("[IMPORTER] Importer: Successfully Imported Texture { %s } from Assets!", r_texture->GetAssetsFile());
 	}
 	else
 	{
-		LOG("%s! Error: ilLoadL() Error [%s]", error_string.c_str(), iluErrorString(ilGetError()));
+		LOG("%s! Error: See Importer ERRORs above.", error_string.c_str());
 	}
 
 	error_string.clear();
@@ -119,6 +111,8 @@ uint Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 	if (size > 0)
 	{
 		ILubyte* data = new ILubyte[size];																						// Allocating the required memory to the data buffer.
+
+		LOG("[WARNING] IMAGE { %s } SIZE [%dx%d]", r_texture->GetAssetsFile(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
 
 		if (ilSaveL(IL_DDS, data, size) > 0)																					// ilSaveL() saves the current image with the specified type.
 		{	
@@ -177,7 +171,7 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 		LOG("%s! Error: Buffer Size was 0", error_string.c_str());
 		return false;
 	}
-	
+
 	ILuint il_image = 0;																				// Will be used to generate, bind and delete the buffers created by DevIL.
 	ilGenImages(1, &il_image);																			// DevIL's buffers work pretty much the same way as OpenGL's do.
 	ilBindImage(il_image);																				// The first step is to generate a buffer and then bind it.
@@ -201,6 +195,8 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 
 		if (success)
 		{
+			ilutGLBindTexImage();
+
 			ILinfo il_info;
 			iluGetImageInfo(&il_info);
 
@@ -208,7 +204,7 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 			{
 				iluFlipImage();
 			}
-
+			
 			uint width		= il_info.Width;																				// --------------------- Getting the imported texture's data.
 			uint height		= il_info.Height;																				// 
 			uint depth		= il_info.Depth;																				// 
@@ -220,7 +216,6 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 			int filter		= (int)GL_LINEAR;																				// ----------------------------------------------------------
 
 			uint tex_id = Utilities::CreateTexture(ilGetData(), width, height, target, wrapping, filter, format, format);	// Creates an OpenGL texture with the given data and parameters.
-
 			if (tex_id != 0)																								// If tex_id == 0, then it means the tex. could not be created.
 			{
 				r_texture->SetTextureData(tex_id, width, height, depth, bpp, size, (TEXTURE_FORMAT)format);
@@ -243,7 +238,7 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 		ret = false;
 	}
 
-	ilDeleteImages(1, &il_image);
+	//ilDeleteImages(1, &il_image);
 
 	error_string.clear();
 

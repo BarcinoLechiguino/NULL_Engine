@@ -483,7 +483,7 @@ bool M_ResourceManager::SaveMetaFile(Resource* resource) const
 	meta_root.SetString("Name", resource->GetAssetsFile());																									// 
 	// ASSETS PATH?
 	meta_root.SetString("LibraryPath", resource->GetLibraryPath());																							// 
-	meta_root.SetNumber("ModificationTime", (double)App->file_system->GetLastModTime(resource->GetAssetsPath()));											// -----------------------------
+	meta_root.SetNumber("ModificationTime", (double)App->file_system->GetLastModTime(resource->GetAssetsPath()));											// ------------------------------
 
 	resource->SaveMeta(meta_root);																															// --- RESOURCE-SPECIFIC META DATA
 

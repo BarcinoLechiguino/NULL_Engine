@@ -235,7 +235,6 @@ void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>&
 				model_node.texture_uid = r_texture->GetUID();
 			}
 
-			//App->resource_manager->SaveMetaFile(r_texture);
 			App->resource_manager->SaveResourceToLibrary(r_texture);
 
 			//RELEASE_ARRAY(buffer);																					// TMP Commented. MMGR breaks here
