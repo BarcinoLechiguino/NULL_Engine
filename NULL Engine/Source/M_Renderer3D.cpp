@@ -313,7 +313,7 @@ void M_Renderer3D::OnResize()
 	float win_width		= (float)App->window->GetWidth();
 	float win_height	= (float)App->window->GetHeight();
 
-	glViewport(0, 0, win_width, win_width);
+	glViewport(0, 0, (GLsizei)win_width, (GLsizei)win_width);
 
 	if (App->camera->GetCurrentCamera() != nullptr)
 	{

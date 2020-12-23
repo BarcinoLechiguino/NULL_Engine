@@ -21,7 +21,7 @@ M_FileSystem::M_FileSystem(bool is_active) : Module("FileSystem", is_active)
 	PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_setWriteDir(".");							// Method that tells where PhysFS can write files. Sets a new write dir with the given one.
 	if (result == PHYSFS_RESULT::FAILURE)
 	{
-		LOG("[error] File System error while creating write dir: %s\n", PHYSFS_getLastError());
+		LOG("[ERROR] File System:  Could not create Write Directory! Error: %s\n", PHYSFS_getLastError());
 	}
 
 	AddPath(".");																			// Adding the ProjectFolder path (working directory path). 
@@ -36,7 +36,7 @@ M_FileSystem::~M_FileSystem()
 
 bool M_FileSystem::Init(ParsonNode& config)
 {
-	LOG("Loading File System");
+	LOG("[STATUS] File System: Initializing File System");
 	
 	bool ret = true;
 
@@ -48,7 +48,7 @@ bool M_FileSystem::Init(ParsonNode& config)
 		PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_setWriteDir(write_path);
 		if (result == PHYSFS_RESULT::FAILURE)
 		{
-			LOG("[error] File System error while creating write dir: %s\n", PHYSFS_getLastError());
+			LOG("[ERROR] File System: Could not Create the Write Directory! Error: %s\n", PHYSFS_getLastError());
 		}
 	}
 
@@ -83,11 +83,11 @@ bool M_FileSystem::AddPath(const char* path_or_zip)
 {
 	bool ret = false;
 
-	PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_mount(path_or_zip, nullptr, 1);			// Method that adds an archive or directory to the search path. Returns 0 upon failure.
+	PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_mount(path_or_zip, nullptr, 1);						// Method that adds an archive or directory to the search path. Returns 0 on FAILURE.
 
 	if (result == PHYSFS_RESULT::FAILURE)
 	{
-		LOG("File System error while adding a path or zip: %s\n", PHYSFS_getLastError());	// Method that returns the string of the last error message issued by PhysFS.
+		LOG("[ERROR] File System: Could not add a path or zip! Error: %s\n", PHYSFS_getLastError());	// Method that returns the string of the last error message issued by PhysFS.
 	}
 	else
 	{
@@ -99,18 +99,9 @@ bool M_FileSystem::AddPath(const char* path_or_zip)
 
 bool M_FileSystem::Exists(const char* file) const
 {
-	PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_exists(file);								// Method that checks whether or not a file is in the search path. Returns 0 upon failure.
+	PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_exists(file);											// Checks whether or not a file is in the search path. Returns 0 upon FAILURE.
 
-	if (result == PHYSFS_RESULT::SUCCESS)
-	{
-		return true;
-	}
-	else
-	{
-		LOG("File %s does not exist within PhysFS search path.", file);
-
-		return false;
-	}
+	return (result == PHYSFS_RESULT::SUCCESS);
 }
 
 void M_FileSystem::CreateLibraryDirectories()
@@ -441,7 +432,7 @@ uint M_FileSystem::Load(const char* file, char** buffer) const
 
 			if (amount_read != size)
 			{
-				LOG(" [ERROR] File System, error while reading from file %s: %s\n", file, PHYSFS_getLastError());
+				LOG("[ERROR] File System: Could not read from File %s! Error: %s\n", file, PHYSFS_getLastError());
 				RELEASE_ARRAY(buffer);
 			}
 			else
@@ -454,12 +445,12 @@ uint M_FileSystem::Load(const char* file, char** buffer) const
 
 		if (PHYSFS_close(fs_file) == (int)PHYSFS_RESULT::FAILURE)							// Method that closes a given file previously opened by PhysFS.
 		{
-			LOG(" [ERROR] File System error while closing file %s: %s", file, PHYSFS_getLastError());
+			LOG(" [ERROR] File System: Could not close File %s! Error: %s\n", file, PHYSFS_getLastError());
 		}
 	}
 	else
 	{
-		LOG("[ERROR] File System error while opening file %s: %s", file, PHYSFS_getLastError());
+		LOG("[ERROR] File System: Could not open File %s! Error: %s\n", file, PHYSFS_getLastError());
 	}
 
 	return ret;
@@ -490,21 +481,21 @@ uint M_FileSystem::Save(const char* file, const void* buffer, uint size, bool ap
 
 		if (written != size)																// Checks whether or not all the data has been written.
 		{
-			LOG("[error] File System error while writing to file %s: %s", file, PHYSFS_getLastError());
+			LOG("[ERROR] File System: Could not write to File %s! Error: %s", file, PHYSFS_getLastError());
 		}
 		else
 		{
 			if (append)
 			{
-				LOG("Appended/Added %u data to [%s%s]", size, GetWriteDirectory(), file);
+				LOG("[FILE_SYSTEM] File System: Successfully Appended/Added %u data to [%s%s]", size, GetWriteDirectory(), file);
 			}
 			else if (overwrite)
 			{
-				LOG("File [%s%s] overwritten with %u bytes", GetWriteDirectory(), file, size);
+				LOG("[FILE_SYSTEM] File System: Successfully overwrote File [%s%s] with %u bytes", GetWriteDirectory(), file, size);
 			}
 			else
 			{
-				LOG("New file created [%s%s] of %u bytes", GetWriteDirectory(), file, size);
+				LOG("[FILE_SYSTEM] File System: Successfully created New File [%s%s] of %u bytes", GetWriteDirectory(), file, size);
 			}
 
 			ret = written;
@@ -513,12 +504,12 @@ uint M_FileSystem::Save(const char* file, const void* buffer, uint size, bool ap
 		PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_close(fs_file);						// Method that closes a PhysFS file handle. Returns 1 on success.
 		if (result == PHYSFS_RESULT::FAILURE)
 		{
-			LOG("[ERROR] File System error while closing file %s: %s", file, PHYSFS_getLastError());
+			LOG("[ERROR] File System: Could not close File %s! Error: %s", file, PHYSFS_getLastError());
 		}
 	}
 	else
 	{
-		LOG("[ERROR] File System error while opening file %s: %s", file, PHYSFS_getLastError());
+		LOG("[ERROR] File System: Could not open File %s! Error: %s", file, PHYSFS_getLastError());
 	}
 
 	return ret;
@@ -556,12 +547,12 @@ bool M_FileSystem::DuplicateFile(const char* source_file, const char* destinatio
 
 	if (source_is_open && destination_is_open)
 	{
-		LOG("[success] File Duplicated Correctly");
+		LOG("[FILE_SYSTEM] File System: File Duplicated Correctly!");
 		return true;
 	}
 	else
 	{
-		LOG("[ERROR] File could not be duplicated");
+		LOG("[ERROR] File System: File could not be Duplicated!");
 		return false;
 	}
 }
@@ -588,12 +579,12 @@ bool M_FileSystem::Remove(const char* file)
 		PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_delete(file);							// Method that deletes a file or directory. A directory must be empty before it can be deleted.
 		if (result == PHYSFS_RESULT::SUCCESS)
 		{
-			LOG("File deleted: [%s]", file);
+			LOG("[FILE_SYSTEM] File System: Successfully deleted File [%s]!", file);
 			ret = true;
 		}
 		else
 		{
-			LOG("[ERROR] File System error while trying to delete [%s]: %s", file, PHYSFS_getLastError());
+			LOG("[ERROR] File System: Could not delete File [%s]! Error: %s\n", file, PHYSFS_getLastError());
 		}
 	}
 	
@@ -606,7 +597,7 @@ uint64 M_FileSystem::GetLastModTime(const char* file_name) const
 
 	if (last_mod_time == -1)
 	{
-		LOG("[ERROR] File System error while trying to determine last modified time of file [%s]", file_name);
+		LOG("[ERROR] File System: Could not determine last modified time of File [%s]! Error: %s\n", file_name, PHYSFS_getLastError());
 	}
 	
 	return (uint)last_mod_time;
@@ -694,7 +685,7 @@ std::string M_FileSystem::GetFileExtension(const char* path)
 
 	if (extension == "")
 	{
-		LOG("[WARNING] Path %s does not have any file extension!", path);
+		LOG("[WARNING] File System: Path %s does not have any file extension!", path);
 	}
 
 	return extension;
@@ -717,7 +708,7 @@ std::string M_FileSystem::GetFileAndExtension(const char* path)
 	}
 	else
 	{
-		LOG("[WARNING] Path %s does not have any file!", path);
+		LOG("[WARNING] File System: Path %s does not have any file!", path);
 	}
 
 	if (extension_start != std::string::npos)
@@ -726,7 +717,7 @@ std::string M_FileSystem::GetFileAndExtension(const char* path)
 
 		if (extension == "")
 		{
-			LOG("[WARNING] Path %s does not have any file extension!", path);
+			LOG("[WARNING] File System: Path %s does not have any file extension!", path);
 		}
 	}
 

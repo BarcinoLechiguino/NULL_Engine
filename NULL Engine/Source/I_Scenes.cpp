@@ -35,102 +35,34 @@
 
 using namespace Importer::Scenes;																		// Not a good thing to do but it will be employed sparsely and only inside this .cpp
 
-uint64 Importer::Scenes::Save(const R_Model* r_model, char** buffer)
-{
-	uint64 written = 0;
-
-	if (r_model == nullptr)
-	{
-		LOG("[ERROR] Importer: Could not Save R_Model* in Library! Error: Given R_Model* was nullptr.");
-		return 0;
-	}
-	
-	ParsonNode root_node			= ParsonNode();																						// --- GENERATING THE REQUIRED PARSON NODE AND ARRAY
-	ParsonArray model_nodes_array	= root_node.SetArray("ModelNodes");																	// -------------------------------------------------
-
-	for (uint i = 0; i < r_model->model_nodes.size(); ++i)																				// --- SAVING MODEL NODE DATA
-	{
-		ParsonNode model_node = model_nodes_array.SetNode(r_model->model_nodes[i].name.c_str());
-		r_model->model_nodes[i].Save(model_node);
-	}
-
-	uint size = root_node.SerializeToBuffer(buffer);																					// --- SERIALIZING PARSON ROOT NODE INTO A BUFFER
-	if (size == 0)
-	{
-		LOG("[ERROR] Importer: Could not Save R_Model* in Library! Error: Could not Serialize the Root Node to Buffer.");
-		return 0;
-	}
-
-	std::string path = MODELS_PATH + std::to_string(r_model->GetUID()) + MODELS_EXTENSION;
-	written = App->file_system->Save(path.c_str(), *buffer, size);																		// --- SAVING THE GENERATED BUFFER INTO A FILE
-	if (written > 0)
-	{
-		LOG("[IMPORTER] Importer: Successfully saved R_Model* in Library! Path: %s", path.c_str());
-	}
-	else
-	{
-		LOG("[ERROR] Importer: Could not save R_Model* in Library! Error: File System could not write the file.");
-	}
-
-	path.clear();
-
-	return written;
-}
-
-void Importer::Scenes::Load(const char* buffer, R_Model* r_model)
-{
-	if (buffer == nullptr)
-	{
-		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Given buffer was nullptr.");
-		return;
-	}
-	
-	ParsonNode root_node			= ParsonNode(buffer);
-	ParsonArray model_nodes_array	= root_node.GetArray("ModelNodes");
-	if (!root_node.NodeIsValid())
-	{
-		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Could not generate the Root Node from the passed buffer.");
-		return;
-	}
-	if (!model_nodes_array.ArrayIsValid())
-	{
-		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Could not get the ModelNodes array from the Root Node.");
-		return;
-	}
-
-	for (uint i = 0; i < model_nodes_array.size; ++i)
-	{
-		ParsonNode parson_node = model_nodes_array.GetNode(i);
-		if (!parson_node.NodeIsValid())
-		{
-			continue;
-		}
-
-		ModelNode model_node = ModelNode();
-		model_node.Load(parson_node);
-
-		r_model->model_nodes.push_back(model_node);
-	}
-
-	if (r_model->model_nodes.size() > 0)
-	{
-		LOG("[IMPORTER] Importer: Successfully loaded R_Model* from Library! UID: %lu", r_model->GetUID());
-	}
-	else
-	{
-		LOG("[ERROR] Importer: Could not load R_Model* from Library! Error: Not a single Model Node could be Loaded.");
-	}
-}
-
 void Importer::Scenes::Import(const char* buffer, uint size, R_Model* r_model)
 {
+	if (r_model == nullptr)
+	{
+		LOG("[ERROR] Importer: Could not Import Model! Error: R_Model* was nullptr.");
+		return;
+	}
+	
+	std::string error_string = "[ERROR] Importer: Could not Import Model { " + std::string(r_model->GetAssetsFile()) + " }";
+	
+	if (buffer == nullptr)
+	{
+		LOG("%s! Error: Buffer was nullptr.", error_string.c_str());
+		return;
+	}
+	if (size == 0)
+	{
+		LOG("%s! Error: Size was 0.", error_string.c_str());
+		return;
+	}
+	
 	LOG("[STATUS] Importing Scene: %s", r_model->GetAssetsFile());
 
 	const aiScene* ai_scene = aiImportFileFromMemory(buffer, size, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
 	if (ai_scene == nullptr || ai_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !ai_scene->mRootNode)
 	{
-		LOG("[ERROR] Error loading scene %s", aiGetErrorString());
+		LOG("%s! Error: Assimp Error [%s]", error_string.c_str(), aiGetErrorString());
 		return;
 	}
 
@@ -150,6 +82,8 @@ void Importer::Scenes::Import(const char* buffer, uint size, R_Model* r_model)
 	Utilities::ai_meshes.clear();
 	Utilities::ai_materials.clear();
 	Utilities::loaded_nodes.clear();
+
+	error_string.clear();
 }
 
 void Importer::Scenes::Utilities::ProcessNode(const aiScene* ai_scene, const aiNode* ai_node, R_Model* r_model, const ModelNode& parent)
@@ -161,7 +95,7 @@ void Importer::Scenes::Utilities::ProcessNode(const aiScene* ai_scene, const aiN
 	ai_node = Utilities::ImportTransform(ai_node, model_node);
 	Utilities::ImportMeshesAndMaterials(ai_scene, ai_node, r_model, model_node);
 
-	model_node.name			= (ai_node == ai_scene->mRootNode) ? r_model->GetAssetsFile() : ai_node->mName.C_Str();
+	model_node.name	= (ai_node == ai_scene->mRootNode) ? r_model->GetAssetsFile() : ai_node->mName.C_Str();
 
 	r_model->model_nodes.push_back(model_node);
 
@@ -255,6 +189,7 @@ void Importer::Scenes::Utilities::ImportMesh(const char* node_name, const aiMesh
 	}
 	
 	model_node.mesh_uid = r_mesh->GetUID();
+	App->resource_manager->SaveResourceToLibrary(r_mesh);
 }
 
 void Importer::Scenes::Utilities::ImportMaterial(const char* node_name, const aiMaterial* ai_material, R_Model* r_model, ModelNode& model_node)
@@ -269,13 +204,14 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* node_name, const ai
 	}
 	
 	Importer::Materials::Import(ai_material, r_material);
-
+	
 	model_node.material_uid = r_material->GetUID();																				//
+	App->resource_manager->SaveResourceToLibrary(r_material);
 
 	Utilities::ImportTexture(r_material->materials, model_node);
 }
 
-void Importer::Scenes::Utilities::ImportTexture(std::vector<Material> materials, ModelNode& model_node)
+void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>& materials, ModelNode& model_node)
 {
 	for (uint i = 0; i < materials.size(); ++i)
 	{
@@ -285,11 +221,11 @@ void Importer::Scenes::Utilities::ImportTexture(std::vector<Material> materials,
 		if (buffer != nullptr && read > 0)
 		{
 			R_Texture* r_texture = (R_Texture*)App->resource_manager->CreateResource(RESOURCE_TYPE::TEXTURE, tex_path);
-			Importer::Textures::Import(buffer, read, r_texture);																//
+			Importer::Textures::Import(buffer, read, r_texture);														//
 
 			if (r_texture->GetTextureID() == 0)
 			{
-				App->resource_manager->DeleteResource(r_texture->GetUID());
+				App->resource_manager->DeleteResource(r_texture);
 				RELEASE_ARRAY(buffer);
 				continue;
 			}
@@ -298,6 +234,9 @@ void Importer::Scenes::Utilities::ImportTexture(std::vector<Material> materials,
 			{
 				model_node.texture_uid = r_texture->GetUID();
 			}
+
+			//App->resource_manager->SaveMetaFile(r_texture);
+			App->resource_manager->SaveResourceToLibrary(r_texture);
 
 			//RELEASE_ARRAY(buffer);																					// TMP Commented. MMGR breaks here
 		}
@@ -311,4 +250,95 @@ void Importer::Scenes::Utilities::ImportTexture(std::vector<Material> materials,
 bool Importer::Scenes::Utilities::NodeIsDummyNode(const aiNode& ai_node)
 {
 	return (strstr(ai_node.mName.C_Str(), "_$AssimpFbx$_") != nullptr && ai_node.mNumChildren == 1);	// All dummy nodes will contain the "_$AssimpFbx$_" string and only one child node.
+}
+
+uint Importer::Scenes::Save(const R_Model* r_model, char** buffer)
+{	
+	uint written = 0;
+
+	if (r_model == nullptr)
+	{
+		LOG("[ERROR] Importer: Could not Save R_Model* in Library! Error: Given R_Model* was nullptr.");
+		return 0;
+	}
+
+	std::string error_string = "[ERROR] Importer: Could not Save Model { " + std::string(r_model->GetAssetsFile()) + " } from Library";
+
+	ParsonNode root_node			= ParsonNode();																						// --- GENERATING THE REQUIRED PARSON NODE AND ARRAY
+	ParsonArray model_nodes_array	= root_node.SetArray("ModelNodes");																	// -------------------------------------------------
+
+	for (uint i = 0; i < r_model->model_nodes.size(); ++i)																				// --- SAVING MODEL NODE DATA
+	{
+		ParsonNode model_node = model_nodes_array.SetNode(r_model->model_nodes[i].name.c_str());
+		r_model->model_nodes[i].Save(model_node);
+	}
+
+	std::string path	= MODELS_PATH + std::to_string(r_model->GetUID()) + MODELS_EXTENSION;
+	written				= root_node.SerializeToFile(path.c_str(), buffer);
+	if (written > 0)
+	{
+		LOG("[STATUS] Importer: Successfully saved Model { %s } in Library! Path: %s", r_model->GetAssetsFile(), path.c_str());
+	}
+	else
+	{
+		LOG("%s! Error: File System could not write the file.", error_string.c_str());
+	}
+
+	path.clear();
+	error_string.clear();
+
+	return written;
+}
+
+bool Importer::Scenes::Load(const char* buffer, R_Model* r_model)
+{
+	bool ret = true;
+
+	if (r_model == nullptr)
+	{
+		LOG("[ERROR] Importer: Could not Load Model from Library! Error: R_Model was nullptr.");
+		return false;
+	}
+	
+	std::string error_string = "[ERROR] Importer: Could not Load Model { " + std::string(r_model->GetAssetsFile()) + " } from Library";
+
+	if (buffer == nullptr)
+	{
+		LOG("%s! Error: Given buffer was nullptr.", error_string.c_str());
+		return false;
+	}
+
+	ParsonNode root_node = ParsonNode(buffer);
+	ParsonArray model_nodes_array = root_node.GetArray("ModelNodes");
+	if (!root_node.NodeIsValid())
+	{
+		LOG("%s! Error: Could not get the Root Node from the passed buffer.", error_string.c_str());
+		return false;
+	}
+	if (!model_nodes_array.ArrayIsValid())
+	{
+		LOG("%s! Error: Could not get the ModelNodes array from the Root Node.", error_string.c_str());
+		return false;
+	}
+
+	for (uint i = 0; i < model_nodes_array.size; ++i)
+	{
+		ParsonNode parson_node = model_nodes_array.GetNode(i);
+		if (!parson_node.NodeIsValid())
+		{
+			LOG("%s! Error: Could not parse Node %s from Model Nodes Array.", error_string.c_str(), i);
+			return false;
+		}
+
+		ModelNode model_node = ModelNode();
+		model_node.Load(parson_node);
+
+		r_model->model_nodes.push_back(model_node);
+	}
+
+	LOG("[STATUS] Importer: Successfully loaded Model { %s } from Library! UID: %lu", r_model->GetAssetsFile(), r_model->GetUID());
+
+	error_string.clear();
+
+	return ret;
 }

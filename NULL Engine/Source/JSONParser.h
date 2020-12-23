@@ -15,7 +15,6 @@ namespace math
 }
 
 typedef unsigned int uint;
-typedef unsigned __int64 uint64;
 
 class ParsonNode
 {
@@ -25,9 +24,9 @@ public:
 	ParsonNode(JSON_Object* object);
 	~ParsonNode();
 
-	uint	SerializeToBuffer	(char** buffer);														//
-	uint64	SerializeToFile		(const char* path, char** buffer);										// 
-	bool	Release				();																		// Will free the memory allocated to the parson elements.
+	uint SerializeToBuffer	(char** buffer);															//
+	uint SerializeToFile	(const char* path, char** buffer);											// 
+	bool Release			();																			// Will free the memory allocated to the parson elements.
 
 public:																									// --- GETTERS, SETTERS & UTILITIES
 	double					GetNumber			(const char* name) const;								//

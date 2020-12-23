@@ -5,7 +5,7 @@
 
 #include "R_Model.h"
 
-R_Model::R_Model() : Resource(RESOURCE_TYPE::NONE)
+R_Model::R_Model() : Resource(RESOURCE_TYPE::MODEL)
 {
 
 }
@@ -156,13 +156,13 @@ bool ModelNode::Load(const ParsonNode& root)
 	parent_uid		= (uint32)root.GetNumber("ParentUID");
 
 	ParsonNode transform_node	= root.GetNode("Transform");
-	ParsonArray position		= root.GetArray("LocalPosition");
-	ParsonArray rotation		= root.GetArray("LocalRotation");
-	ParsonArray scale			= root.GetArray("LocalScale");
+	ParsonArray position		= transform_node.GetArray("LocalPosition");
+	ParsonArray rotation		= transform_node.GetArray("LocalRotation");
+	ParsonArray scale			= transform_node.GetArray("LocalScale");
 
 	position.GetFloat3(0, transform.position);
 	rotation.GetFloat4(0, transform.rotation);
-	scale.GetFloat3(0, transform.position);
+	scale.GetFloat3(0, transform.scale);
 
 	mesh_uid		= (uint32)root.GetNumber("MeshUID");
 	material_uid	= (uint32)root.GetNumber("MaterialUID");

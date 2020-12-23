@@ -589,8 +589,8 @@ void E_Inspector::TextureDisplay(C_Material* c_material)
 
 	if (c_material->UseDefaultTexture())
 	{
-		//tex_id = (ImTextureID)App->renderer->GetDebugTextureID();
-		tex_id = (ImTextureID)App->renderer->GetSceneRenderTexture();
+		tex_id = (ImTextureID)App->renderer->GetDebugTextureID();
+		//tex_id = (ImTextureID)App->renderer->GetSceneRenderTexture();
 	}
 	else
 	{

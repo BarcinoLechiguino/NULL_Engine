@@ -6,15 +6,15 @@ struct aiBone;
 
 class R_Animation;
 
-typedef unsigned __int64 uint64;
+typedef unsigned int uint;
 
 namespace Importer
 {
 	namespace Animations
 	{
-		void	Import	(aiAnimation* ai_animation, R_Animation* r_animation);
-		uint64	Save	(const R_Animation* r_animation, char** buffer);
-		void	Load	(const char* buffer, R_Animation* r_animation);
+		void Import	(aiAnimation* ai_animation, R_Animation* r_animation);
+		uint Save	(const R_Animation* r_animation, char** buffer);
+		bool Load	(const char* buffer, R_Animation* r_animation);
 	}
 }
 

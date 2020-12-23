@@ -75,6 +75,7 @@ bool M_Scene::Start()
 	CreateSceneCamera("SceneCamera");
 
 	uint32 model_uid = App->resource_manager->ImportFile(DEFAULT_SCENE);
+	model_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
 	GenerateGameObjectsFromModel(model_uid);
 	SaveScene();																					// Autosave just right after loading the scene.
 
@@ -396,7 +397,7 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 
 void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 {
-	R_Model* r_model = (R_Model*)App->resource_manager->GetResource(model_UID);
+	R_Model* r_model = (R_Model*)App->resource_manager->RequestResource(model_UID);
 
 	if (r_model == nullptr)
 	{
@@ -450,39 +451,52 @@ void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 
 void M_Scene::CreateComponentsFromModelNode(const ModelNode& model_node, GameObject* game_object)
 {
+	bool valid_mesh_uid			= (model_node.mesh_uid != 0)		?	true : false;
+	bool valid_material_uid		= (model_node.material_uid != 0)	?	true : false;
+	bool valid_texture_uid		= (model_node.texture_uid != 0)		?	true : false;
+	
 	// Set Mesh
-	C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
-	R_Mesh* r_mesh = (R_Mesh*)App->resource_manager->GetResource(model_node.mesh_uid);
-	if (r_mesh == nullptr)
+	if (valid_mesh_uid)
 	{
-		LOG("[ERROR] Scene: Could not generate the Mesh Resource from the Model Node! Error: R_Mesh* could not be found in resources.");
-		game_object->DeleteComponent(c_mesh);
-		return;
-	}
+		C_Mesh* c_mesh = (C_Mesh*)game_object->CreateComponent(COMPONENT_TYPE::MESH);
+		R_Mesh* r_mesh = (R_Mesh*)App->resource_manager->RequestResource(model_node.mesh_uid);
+		if (r_mesh == nullptr)
+		{
+			LOG("[ERROR] Scene: Could not generate the Mesh Resource from the Model Node! Error: R_Mesh* could not be found in resources.");
+			game_object->DeleteComponent(c_mesh);
+			return;
+		}
 
-	c_mesh->SetMesh(r_mesh);
+		c_mesh->SetMesh(r_mesh);
+	}
 
 	// Set Material
-	C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
-	R_Material* r_material = (R_Material*)App->resource_manager->GetResource(model_node.material_uid);
-	if (r_material == nullptr)
+	if (valid_material_uid)
 	{
-		LOG("[ERROR] Scene: Could not generate the Material Resource from the Model Node! Error: R_Material* could not be found in resources.");
-		game_object->DeleteComponent(c_material);
-		return;
+		C_Material* c_material = (C_Material*)game_object->CreateComponent(COMPONENT_TYPE::MATERIAL);
+		R_Material* r_material = (R_Material*)App->resource_manager->RequestResource(model_node.material_uid);
+		if (r_material == nullptr)
+		{
+			LOG("[ERROR] Scene: Could not generate the Material Resource from the Model Node! Error: R_Material* could not be found in resources.");
+			game_object->DeleteComponent(c_material);
+			return;
+		}
+
+		c_material->SetMaterial(r_material);
+
+		// Set Texture
+		if (valid_texture_uid)
+		{
+			R_Texture* r_texture = (R_Texture*)App->resource_manager->RequestResource(model_node.texture_uid);
+			if (r_texture == nullptr)
+			{
+				LOG("[ERROR] Scene: Could not generate the Texture Resource from the Model Node! Error: R_Texture* could not be found in resources.");
+				return;
+			}
+
+			c_material->SetTexture(r_texture);
+		}
 	}
-
-	c_material->SetMaterial(r_material);
-
-	// Set Texture
-	R_Texture* r_texture = (R_Texture*)App->resource_manager->GetResource(model_node.texture_uid);
-	if (r_texture == nullptr)
-	{
-		LOG("[ERROR] Scene: Could not generate the Texture Resource from the Model Node! Error: R_Texture* could not be found in resources.");
-		return;
-	}
-
-	c_material->SetTexture(r_texture);
 }
 
 std::vector<GameObject*>* M_Scene::GetGameObjects()
@@ -680,7 +694,7 @@ void M_Scene::SelectGameObjectThroughRaycast(const LineSegment& ray)
 		bool found_meshes = item->second->GetComponents<C_Mesh>(c_meshes);
 		if (!found_meshes)
 		{
-			LOG("[ERROR] Scene: GameObject hit by Raycast did not have any Mesh Component!");
+			//LOG("[ERROR] Scene: GameObject hit by Raycast did not have any Mesh Component!");								// Right Now GetHits() returns false positives.
 			continue;
 		}
 		

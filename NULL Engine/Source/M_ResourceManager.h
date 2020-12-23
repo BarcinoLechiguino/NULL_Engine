@@ -12,7 +12,6 @@ class Resource;
 enum class RESOURCE_TYPE;
 
 typedef unsigned __int32 uint32;
-typedef unsigned __int64 uint64;
 
 class M_ResourceManager : public Module
 {
@@ -31,32 +30,40 @@ public:
 	bool			LoadConfiguration	(ParsonNode& configuration) override;
 
 public:																												// --- IMPORT FILE METHODS ---
-	uint32			ImportFile						(const char* assets_path);
-	uint32			ImportFromAssets				(const char* assets_path);
-	uint32			LoadFromLibrary					(const char* library_path);
-	uint64			SaveResourceToLibrary			(Resource* resource);
-
-	bool			SaveMetaFile					(Resource* resource) const;
-	bool			LoadMetaFile					(const char* meta_path);
+	uint32			ImportFile						(const char* assets_path);										// 
+	uint32			ImportFromAssets				(const char* assets_path);										// 
+	uint			SaveResourceToLibrary			(Resource* resource);											// 
+	
+	uint32			LoadFromLibrary					(const char* assets_path);										// 
 
 	const char*		GetValidAssetsPath				(const char* assets_path);
-	RESOURCE_TYPE	GetTypeFromExtension			(const char* assets_path);
+	RESOURCE_TYPE	GetTypeFromAssetsExtension		(const char* assets_path);
+	RESOURCE_TYPE	GetTypeFromLibraryExtension		(const char* library_path);
 
 	void			SetResourceAssetsPathAndFile	(const char* assets_path, Resource* resource);
 	void			SetResourceLibraryPathAndFile	(Resource* resource);
 
+public:																												// --- META FILE METHODS ---
+	bool			SaveMetaFile					(Resource* resource) const;
+	ParsonNode		LoadMetaFile					(const char* assets_path);
+	
+	bool			MetaFileIsValid					(const char* assets_path);
+	bool			MetaFileIsValid					(ParsonNode& meta_root);
+	bool			ResourceHasMetaType				(Resource* resource) const;
+
 public:																												// --- RESOURCE METHODS ---
-	Resource*		CreateResource					(RESOURCE_TYPE type, const char* assets_path = nullptr);		//
-	bool			AddResource						(Resource* resource);											// 
-	bool			DeleteResource					(uint32 UID);													// 
-	Resource*		GetResource						(uint32 UID);													// 
-	void			GetResources					(std::map<uint32, Resource*>& resources) const;					// 
-
-	void			AddLoadedPath					(std::string assets_file);										// 
-	void			DeleteLoadedPath				(std::string assets_file);										// 
-	bool			IsResourceAlready				(std::string assets_file);										// 
-	Resource*		GetResourceFromFile				(std::string assets_file);										// 
-
+	Resource*		CreateResource					(RESOURCE_TYPE type, const char* assets_path = nullptr, const uint32& forced_UID = 0);	// 
+	bool			DeleteResource					(const uint32& UID);																	//
+	bool			DeleteResource					(Resource* resource_to_delete);															// FORCED DELETE
+	void			GetResources					(std::map<uint32, Resource*>& resources) const;											// 
+	
+	Resource*		RequestResource					(const uint32& UID);																	// 
+	bool			FreeResource					(const uint32& UID);																	// 
+	
+	Resource*		AllocateResource				(const uint32& UID, const char* assets_path = nullptr);									// 
+	bool			DeallocateResource				(const uint32& UID);																	// 
+	bool			DeallocateResource				(Resource* resource_to_deallocate);														// FORCED DEALLOCATE
+	
 private:
 	std::map<uint32, Resource*>		resources;																		// Resources currently in memory.
 	std::map<std::string, uint32>	loaded_files;																	// 

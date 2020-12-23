@@ -27,8 +27,6 @@ public:
 	static inline COMPONENT_TYPE GetType() { return COMPONENT_TYPE::MESH; }			// This is needed to be able to use templeates for functions such as GetComponent<>();
 
 public:
-	bool			Render					();										// Will render the mesh along with the corresponding textures and transform.
-
 	R_Mesh*			GetMesh					() const;								// Returns the R_Mesh* variable of the component. If there is no mesh the default value will be nullptr.
 	void			SetMesh					(R_Mesh* r_mesh);						// Sets the R_Mesh* variable of the component. Will be normally set when a model is imported.
 

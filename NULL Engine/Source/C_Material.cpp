@@ -41,8 +41,16 @@ bool C_Material::CleanUp()
 {
 	bool ret = true;
 
-	r_material	= nullptr;									// Resources are now taken care by M_ResourceManager.
-	r_texture	= nullptr;									// --------------------------------------------------
+	if (r_material != nullptr)
+	{
+		App->resource_manager->FreeResource(r_material->GetUID());
+		r_material = nullptr;
+	}
+	if (r_texture != nullptr)
+	{
+		App->resource_manager->FreeResource(r_texture->GetUID());
+		r_texture = nullptr;
+	}
 
 	return ret;
 }
@@ -89,31 +97,21 @@ bool C_Material::LoadState(ParsonNode& root)
 	
 	if (material_node.NodeIsValid())
 	{
-		r_material = (R_Material*)App->resource_manager->GetResource((uint)material_node.GetNumber("UID"));
+		r_material = (R_Material*)App->resource_manager->RequestResource((uint)material_node.GetNumber("UID"));
 
 		if (r_material == nullptr)
 		{
-			r_material = (R_Material*)App->resource_manager->GetResourceFromFile(material_node.GetString("File"));
-
-			if (r_material == nullptr)
-			{
-				LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), (uint)material_node.GetNumber("UID"));
-			}
+			LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), (uint)material_node.GetNumber("UID"));
 		}
 	}
 
 	if (texture_node.NodeIsValid())
 	{
-		r_texture = (R_Texture*)App->resource_manager->GetResource((uint)texture_node.GetNumber("UID"));
+		r_texture = (R_Texture*)App->resource_manager->RequestResource((uint)texture_node.GetNumber("UID"));
 
 		if (r_texture == nullptr)
 		{
-			r_texture = (R_Texture*)App->resource_manager->GetResourceFromFile(texture_node.GetString("File"));
-
-			if (r_texture == nullptr)
-			{
-				LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), (uint)texture_node.GetNumber("UID"));
-			}
+			LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), (uint)texture_node.GetNumber("UID"));
 		}
 	}
 	else
