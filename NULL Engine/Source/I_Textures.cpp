@@ -71,7 +71,7 @@ uint Importer::Textures::Import(const char* buffer, uint size, R_Texture* r_text
 
 	LOG("[STATUS] Importer: Importing Texture { %s }", r_texture->GetAssetsPath());
 
-	bool success = Importer::Textures::Load(buffer, size, r_texture);
+	/*bool success = Importer::Textures::Load(buffer, size, r_texture);
 	if (success)
 	{
 		tex_id = r_texture->GetTextureID();
@@ -80,6 +80,28 @@ uint Importer::Textures::Import(const char* buffer, uint size, R_Texture* r_text
 	else
 	{
 		LOG("%s! Error: See Importer ERRORs above.", error_string.c_str());
+	}*/
+
+	LOG("[WARNING] Importer: Successfully Imported Texture { %s } from Assets!", r_texture->GetAssetsFile());
+
+	bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);
+	if (success)
+	{
+		bool success = Importer::Textures::Load(buffer, size, r_texture);
+		if (success)
+		{
+			tex_id = r_texture->GetTextureID();
+			LOG("[IMPORTER] Importer: Successfully Imported Texture { %s } from Assets!", r_texture->GetAssetsFile());
+		}
+		else
+		{
+			LOG("%s! Error: See Importer ERRORs above.", error_string.c_str());
+		}
+	}
+	else
+	{
+		LOG("%s! Error: ilLoadL() Error [%s]", error_string.c_str(), iluErrorString(ilGetError()));
+		return 0;
 	}
 
 	error_string.clear();
@@ -111,8 +133,6 @@ uint Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 	if (size > 0)
 	{
 		ILubyte* data = new ILubyte[size];																						// Allocating the required memory to the data buffer.
-
-		LOG("[WARNING] IMAGE { %s } SIZE [%dx%d]", r_texture->GetAssetsFile(), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
 
 		if (ilSaveL(IL_DDS, data, size) > 0)																					// ilSaveL() saves the current image with the specified type.
 		{	
@@ -178,7 +198,7 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 
 	bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);									// ilLoadL() loads a texture from some buffer data. size == 0 = no bounds check.
 	if (success)																						// --- When type is IL_TYPE_UNKNOWN, DevIL will try to find the type on it's own.
-	{
+	{	
 		uint color_channels = ilGetInteger(IL_IMAGE_CHANNELS);
 		if (color_channels == 3)
 		{
@@ -195,7 +215,7 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 
 		if (success)
 		{
-			ilutGLBindTexImage();
+			//ilutGLBindTexImage();
 
 			ILinfo il_info;
 			iluGetImageInfo(&il_info);
@@ -238,7 +258,7 @@ bool Importer::Textures::Load(const char* buffer, const uint size, R_Texture* r_
 		ret = false;
 	}
 
-	//ilDeleteImages(1, &il_image);
+	ilDeleteImages(1, &il_image);
 
 	error_string.clear();
 

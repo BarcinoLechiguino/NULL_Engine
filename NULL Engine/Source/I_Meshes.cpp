@@ -17,8 +17,6 @@
 
 #include "MemoryManager.h"
 
-#include "Timer.h"
-
 #pragma comment (lib, "Source/Dependencies/Assimp/libx86/assimp.lib")
 
 #define HEADER_SIZE 8																				// Amount of items in the Header Data Array. (Save & Load)

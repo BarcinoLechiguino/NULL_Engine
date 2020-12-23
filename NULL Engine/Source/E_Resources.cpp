@@ -30,7 +30,9 @@ bool E_Resources::Draw(ImGuiIO& io)
 	uint materials	= 0;
 	uint textures	= 0;
 	uint animations = 0;
-	
+
+	std::multimap<uint, Resource*> sorted;
+
 	std::map<uint32, Resource*> resources;
 	App->editor->GetResourcesThroughEditor(resources);
 
@@ -51,15 +53,22 @@ bool E_Resources::Draw(ImGuiIO& io)
 		case RESOURCE_TYPE::ANIMATION:	{ ++animations; }	break;
 		}
 
-		//ImGui::Text("Name:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "      %s",		item->second->GetName());
-		ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", item->second->GetAssetsFile());
-		
-		ImGui::Text("UID:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "       %lu",	item->second->GetUID());
-		ImGui::Text("Type:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "      %s",		item->second->GetTypeAsString());
-		ImGui::Text("References:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u",			item->second->GetReferences());
+		sorted.emplace((uint)item->second->GetType(), item->second);
+	}
+
+	std::multimap<uint, Resource*>::iterator multi_item;
+	for (multi_item = sorted.begin(); multi_item != sorted.end(); ++multi_item)
+	{
+		ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", multi_item->second->GetAssetsFile());
+
+		ImGui::Text("UID:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "       %lu",	multi_item->second->GetUID());
+		ImGui::Text("Type:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "      %s",		multi_item->second->GetTypeAsString());
+		ImGui::Text("References:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u",			multi_item->second->GetReferences());
 
 		ImGui::Separator();
 	}
+
+	sorted.clear();
 
 	ImGui::Text("Num Models:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %u",	models);
 	ImGui::Text("Num Meshes:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %u",	meshes);

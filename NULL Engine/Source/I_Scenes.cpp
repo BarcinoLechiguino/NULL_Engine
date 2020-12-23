@@ -82,6 +82,7 @@ void Importer::Scenes::Import(const char* buffer, uint size, R_Model* r_model)
 	Utilities::ai_meshes.clear();
 	Utilities::ai_materials.clear();
 	Utilities::loaded_nodes.clear();
+	Utilities::loaded_textures.clear();
 
 	error_string.clear();
 }
@@ -220,6 +221,18 @@ void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>&
 		uint read = App->file_system->Load(tex_path, &buffer);
 		if (buffer != nullptr && read > 0)
 		{
+			std::map<std::string, uint32>::iterator item = loaded_textures.find(tex_path);
+			if (item != loaded_textures.end())
+			{
+				if (materials[i].type == TEXTURE_TYPE::DIFFUSE)
+				{
+					model_node.texture_uid = item->second;
+					model_node.texture_name = App->file_system->GetFileAndExtension(tex_path);
+				}
+
+				continue;
+			}
+			
 			R_Texture* r_texture = (R_Texture*)App->resource_manager->CreateResource(RESOURCE_TYPE::TEXTURE, tex_path);
 			Importer::Textures::Import(buffer, read, r_texture);														//
 
@@ -232,10 +245,13 @@ void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>&
 
 			if (materials[i].type == TEXTURE_TYPE::DIFFUSE)																// For now only the diffuse texture will be used on models' meshes.
 			{
-				model_node.texture_uid = r_texture->GetUID();
+				model_node.texture_uid	= r_texture->GetUID();
+				model_node.texture_name = r_texture->GetAssetsFile();
 			}
 
 			App->resource_manager->SaveResourceToLibrary(r_texture);
+
+			loaded_textures.emplace(tex_path, r_texture->GetUID());
 
 			//RELEASE_ARRAY(buffer);																					// TMP Commented. MMGR breaks here
 		}

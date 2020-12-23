@@ -15,7 +15,7 @@ typedef unsigned __int32 uint32;
 struct ModelNode
 {
 	ModelNode();
-	ModelNode(const char* name, uint32 UID, uint32 parent_UID, Transform transform, uint32 mesh_UID, uint32 material_UID, uint32 texture_UID);
+	ModelNode(const char* name, uint32 UID, uint32 parent_UID, Transform transform, uint32 mesh_UID, uint32 material_UID, uint32 texture_UID, std::string texture_name);
 
 	bool Save(ParsonNode& root) const; 
 	bool Load(const ParsonNode& root); 
@@ -27,6 +27,7 @@ struct ModelNode
 	uint32		mesh_uid;																									// UID of the Mesh Resource (R_Mesh) of the Model Node.
 	uint32		material_uid;																								// UID of the Material Resource (R_Material) of the Model Node.
 	uint32		texture_uid;																								// UID of the Texture Resource (R_Texture) of the Model Node.
+	std::string texture_name;
 };
 
 class R_Model : public Resource

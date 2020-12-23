@@ -10,6 +10,8 @@
 
 #include "I_Folders.h"
 
+#include "MemoryManager.h"
+
 uint Importer::Folders::Save(const R_Folder* r_folder, char** buffer)
 {
 	uint written = 0;
