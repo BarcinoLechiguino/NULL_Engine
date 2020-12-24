@@ -6,6 +6,8 @@
 
 #include "M_Input.h"
 
+#include "MemoryManager.h"
+
 #define MAX_KEYS 300
 #define MAX_DIR_LENGTH 300
 

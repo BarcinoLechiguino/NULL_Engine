@@ -81,7 +81,10 @@ UPDATE_STATUS M_ResourceManager::PreUpdate(float dt)
 		{
 			if (item->second->GetReferences() == 0)
 			{
-				DeallocateResource(item->second->GetUID());
+				uint32 resource_uid = item->second->GetUID();
+				++item;																							// Dirty Fix to avoid crashes after Deallocating an element while iterating.
+
+				DeallocateResource(resource_uid);
 			}
 		}
 
@@ -230,6 +233,8 @@ uint32 M_ResourceManager::ImportFromAssets(const char* assets_path)
 		resource_uid = resource->GetUID();
 
 		DeallocateResource(resource);
+
+		RELEASE_ARRAY(buffer);
 	}
 	else
 	{
@@ -333,7 +338,7 @@ uint M_ResourceManager::SaveResourceToLibrary(Resource* resource)
 	case RESOURCE_TYPE::ANIMATION:	{ written = Importer::Animations::Save((R_Animation*)resource, &buffer); }	break;
 	}
 
-	//RELEASE_ARRAY(buffer);																												// TMP Commented. Breaks with MMGR
+	RELEASE_ARRAY(buffer);																												// TMP Commented. Breaks with MMGR
 
 	if (written == 0)
 	{
@@ -508,8 +513,6 @@ bool M_ResourceManager::SaveMetaFile(Resource* resource) const
 
 ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path)
 {
-	bool ret = true;
-
 	if (assets_path == nullptr)
 	{
 		LOG("[ERROR] Resource Manager: Could not load the .meta File! Error: Given path was nullptr!");
@@ -522,8 +525,12 @@ ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path)
 	if (read == 0)
 	{
 		LOG("[ERROR] Resource Manager: Could not load the .meta File with Path: %s! Error: No Meta File exists with the given path.", meta_path);
+		//return ParsonNode(buffer);
 	}
 
+	//ParsonNode ret = { ParsonNode(buffer) };
+
+	//RELEASE_ARRAY(buffer);
 	meta_path.clear();
 
 	return ParsonNode(buffer);
@@ -666,16 +673,6 @@ Resource* M_ResourceManager::CreateResource(RESOURCE_TYPE type, const char* asse
 
 	if (resource != nullptr)
 	{
-		/*INSERT_RESULT result = resources.insert({ resource->GetUID(), resource });								// Inserting the newly created resource in the map along with it's UID.
-
-		if (!result.second)																						// As keys are UIDs, it is highly unlikely for 2 elements to collide.
-		{
-			LOG("[ERROR] Created %s was already in std::map!", resource->GetTypeAsString());					// However, it never hurts to add a simple safety check such as this.
-			resource->CleanUp();
-			RELEASE(resource);
-			return nullptr;
-		}*/
-
 		if (assets_path != nullptr)
 		{
 			SetResourceAssetsPathAndFile(assets_path, resource);
@@ -856,6 +853,7 @@ Resource* M_ResourceManager::AllocateResource(const uint32& UID, const char* ass
 		LOG("%s! Error: Importer could not load the Resource Data from File [%s].", error_string.c_str(), library_path);
 	}
 
+	RELEASE_ARRAY(buffer);
 	error_string.clear();
 
 	return resource;

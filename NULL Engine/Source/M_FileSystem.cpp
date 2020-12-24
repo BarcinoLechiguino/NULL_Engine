@@ -8,6 +8,8 @@
 
 #include "M_FileSystem.h"
 
+#include "MemoryManager.h"
+
 #pragma comment (lib, "Source/Dependencies/PhysFS/libx86/physfs.lib")
 
 M_FileSystem::M_FileSystem(bool is_active) : Module("FileSystem", is_active)

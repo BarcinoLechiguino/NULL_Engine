@@ -9,6 +9,8 @@
 
 #include "E_LoadFile.h"
 
+#include "MemoryManager.h"
+
 #define MAX_FILE_SIZE 500
 
 E_LoadFile::E_LoadFile() : EditorPanel("LoadFile", false),

@@ -71,14 +71,19 @@ bool C_Mesh::LoadState(ParsonNode& root)
 
 	r_mesh = nullptr;
 
-	r_mesh				= (R_Mesh*)App->resource_manager->RequestResource((uint)root.GetNumber("UID"));
-	show_wireframe		= root.GetBool("ShowWireframe");
-	show_bounding_box	= root.GetBool("ShowBoundingBox");
+	std::string assets_path = ASSETS_MODELS_PATH + std::string(root.GetString("Name"));
+	App->resource_manager->AllocateResource((uint32)root.GetNumber("UID"), assets_path.c_str());
+	
+	r_mesh					= (R_Mesh*)App->resource_manager->RequestResource((uint32)root.GetNumber("UID"));
+	show_wireframe			= root.GetBool("ShowWireframe");
+	show_bounding_box		= root.GetBool("ShowBoundingBox");
 
 	if (r_mesh == nullptr)
 	{
-		LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), (uint)root.GetNumber("UID"));
+		LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), (uint32)root.GetNumber("UID"));
 	}
+
+	assets_path.clear();
 
 	return ret;
 }

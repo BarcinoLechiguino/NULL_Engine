@@ -19,6 +19,8 @@
 
 #include "JSONParser.h"																			// Header file of this cpp file.
 
+#include "MemoryManager.h"
+
 ParsonNode::ParsonNode() : 
 root_value	(nullptr), 
 root_node	(nullptr)
@@ -30,7 +32,7 @@ root_node	(nullptr)
 ParsonNode::ParsonNode(const char* buffer) : 
 root_value	(nullptr), 
 root_node	(nullptr)
-{
+{	
 	root_value = json_parse_string(buffer);														// Creates a JSON_Object out of a given buffer. Used to load a previous .json file.
 	
 	if (root_value != NULL)																		// Using NULL instead of nullptr as parson is a library written in C, not C++.

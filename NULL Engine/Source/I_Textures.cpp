@@ -153,7 +153,7 @@ uint Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 			LOG("%s! Error: ilSaveL() Error [%s]", error_string.c_str(), iluErrorString(ilGetError()));
 		}
 
-		RELEASE_ARRAY(data);
+		//RELEASE_ARRAY(data);																									// Dealt with in Resource Manager.
 	}
 	else
 	{

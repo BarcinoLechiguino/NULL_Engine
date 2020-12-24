@@ -206,11 +206,9 @@ bool M_Scene::SaveScene(const char* scene_name) const
 	}
 
 	char* buffer		= nullptr;
-	uint size			= root_node.SerializeToBuffer(&buffer);
 	std::string name	= (scene_name != nullptr) ? scene_name : scene_root->GetName();
 	std::string path	= ASSETS_SCENES_PATH + name + JSON_EXTENSION;
-
-	uint written = App->file_system->Save(path.c_str(), buffer, size);
+	uint written = root_node.SerializeToFile(path.c_str(), &buffer);
 	if (written > 0)
 	{
 		LOG("[SCENE] Scene: Successfully saved the current scene! Path: %s", path.c_str());
@@ -221,8 +219,10 @@ bool M_Scene::SaveScene(const char* scene_name) const
 	}
 
 	R_Scene* r_scene			= (R_Scene*)App->resource_manager->CreateResource(RESOURCE_TYPE::SCENE, path.c_str());			// TMP until R_Scene is fully implemented.
+	//App->resource_manager->SaveResourceToLibrary(r_scene);
+
 	std::string library_path	= SCENES_PATH + std::to_string(r_scene->GetUID()) + SCENES_EXTENSION;
-	written = App->file_system->Save(library_path.c_str(), buffer, size);
+	written = App->file_system->Save(library_path.c_str(), buffer, written);
 	if (written > 0)
 	{
 		LOG("[SCENE] Scene: Successfully saved the current scene in Library! Path: %s", library_path.c_str());
@@ -231,6 +231,8 @@ bool M_Scene::SaveScene(const char* scene_name) const
 	{
 		LOG("[ERROR] Scene: Could not save the current scene in Library! Error: FileSystem could not write any data!");
 	}
+
+	App->resource_manager->DeallocateResource(r_scene);
 
 	name.clear();
 	path.clear();
@@ -313,6 +315,8 @@ bool M_Scene::LoadScene(const char* path)
 		tmp.clear();
 
 		App->renderer->ClearRenderers();
+
+		RELEASE_ARRAY(buffer);
 	}
 
 	return ret;

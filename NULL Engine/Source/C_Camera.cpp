@@ -9,6 +9,8 @@
 
 #include "C_Camera.h"
 
+#include "MemoryManager.h"
+
 #define NUM_FRUSTUM_PLANES		6																			// A Frustum will ALWAYS be composed by 6 Planes.
 #define NUM_FRUSTUM_VERTICES	8																			// As frustums are CUBOIDS, they will ALWAYS be composed by 8 Vertices.
 

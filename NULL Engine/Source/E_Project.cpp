@@ -8,6 +8,8 @@
 
 #include "E_Project.h"
 
+#include "MemoryManager.h"
+
 #define MAX_DIRECTORY_SIZE 500
 
 E_Project::E_Project() : EditorPanel("Project"),

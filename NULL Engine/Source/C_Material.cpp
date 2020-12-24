@@ -18,7 +18,7 @@
 
 C_Material::C_Material(GameObject* owner) : Component(owner, COMPONENT_TYPE::MATERIAL),
 r_material			(nullptr),
-r_texture				(nullptr),
+r_texture			(nullptr),
 use_default_tex		(false),
 use_albedo_tex		(true)
 {
@@ -67,6 +67,7 @@ bool C_Material::SaveState(ParsonNode& root) const
 		ParsonNode material = root.SetNode("Material");
 
 		material.SetNumber("UID", r_material->GetUID());
+		material.SetString("Name", r_material->GetAssetsFile());
 		material.SetString("Path", r_material->GetLibraryPath());
 		material.SetString("File", r_material->GetLibraryFile());
 	}
@@ -97,22 +98,32 @@ bool C_Material::LoadState(ParsonNode& root)
 	
 	if (material_node.NodeIsValid())
 	{
-		r_material = (R_Material*)App->resource_manager->RequestResource((uint)material_node.GetNumber("UID"));
+		std::string material_assets_path = ASSETS_MODELS_PATH + std::string(material_node.GetString("Name"));
+		App->resource_manager->AllocateResource((uint32)material_node.GetNumber("UID"), material_assets_path.c_str());
+
+		r_material = (R_Material*)App->resource_manager->RequestResource((uint32)material_node.GetNumber("UID"));
 
 		if (r_material == nullptr)
 		{
-			LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), (uint)material_node.GetNumber("UID"));
+			LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), (uint32)material_node.GetNumber("UID"));
 		}
+
+		material_assets_path.clear();
 	}
 
 	if (texture_node.NodeIsValid())
 	{
-		r_texture = (R_Texture*)App->resource_manager->RequestResource((uint)texture_node.GetNumber("UID"));
+		std::string texture_assets_path	= ASSETS_TEXTURES_PATH + std::string(texture_node.GetString("Name"));
+		App->resource_manager->AllocateResource((uint32)texture_node.GetNumber("UID"), texture_assets_path.c_str());
+
+		r_texture = (R_Texture*)App->resource_manager->RequestResource((uint32)texture_node.GetNumber("UID"));
 
 		if (r_texture == nullptr)
 		{
-			LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), (uint)texture_node.GetNumber("UID"));
+			LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), (uint32)texture_node.GetNumber("UID"));
 		}
+
+		texture_assets_path.clear();
 	}
 	else
 	{

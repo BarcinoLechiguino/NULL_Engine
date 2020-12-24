@@ -12,6 +12,8 @@
 
 #include "M_Camera3D.h"
 
+#include "MemoryManager.h"
+
 #define MOVEMENT_SPEED 24.0f
 #define ROTATION_SPEED 0.05f
 #define ZOOM_SPEED 300.0f

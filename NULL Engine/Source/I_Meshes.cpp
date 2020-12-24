@@ -277,6 +277,7 @@ bool Importer::Meshes::Load(const char* buffer, R_Mesh* r_mesh)
 	cursor += bytes;
 
 	r_mesh->aabb = AABB(aabb_corners[0], aabb_corners[7]);
+	r_mesh->LoadBuffers();																									// STORING VBO, NBO, TBO, IBO DATA IS IRRELEVANT IN THIS CASE
 
 	LOG("[STATUS] Importer: Successfully Loaded Mesh { %s } from Library!", r_mesh->GetAssetsFile());
 
