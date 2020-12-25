@@ -75,17 +75,18 @@ UPDATE_STATUS M_ResourceManager::PreUpdate(float dt)
 		// Also update the .meta and reimport all those files
 		// that have been modified.
 
-		// TMP Clear all Reference 0 resources
-		RESOURCE_ITEM item;
-		for (item = resources.begin(); item != resources.end(); ++item)
+		RESOURCE_ITEM item = resources.begin();
+		while (item != resources.end())
 		{
-			if (item->second->GetReferences() == 0)
-			{
-				uint32 resource_uid = item->second->GetUID();
-				++item;																							// Dirty Fix to avoid crashes after Deallocating an element while iterating.
-
-				DeallocateResource(resource_uid);
+			if (item->second->GetReferences() == 0)															// Clear all Reference 0 resources that might have gone past the 
+			{																								// FreeResource() method.
+				uint32 resource_uid = item->second->GetUID();												// 
+				++item;																						// Setting item to the next element so the reference is not lost after
+				DeallocateResource(resource_uid);															// erasing the element with the resource_uid from the resources std::map.
+				continue;																					// Going to the next iteration so item is not updated twice in the same loop.
 			}
+			
+			++item;
 		}
 
 		file_refresh_timer = 0.0f;
@@ -307,6 +308,11 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 
 		uint32 contained_uid = (uint32)contained_node.GetNumber("UID");
 
+		if (resources.find(contained_uid) != resources.end())																// No need to allocate if it is already allocated.
+		{
+			continue;
+		}
+
 		result = AllocateResource(contained_uid, contained_path.c_str());
 		if (result == nullptr)
 		{
@@ -518,27 +524,6 @@ bool M_ResourceManager::SaveMetaFile(Resource* resource) const
 
 	return ret;
 }
-
-/*ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path)
-{
-	if (assets_path == nullptr)
-	{
-		LOG("[ERROR] Resource Manager: Could not load the .meta File! Error: Given path was nullptr!");
-	}
-
-	std::string meta_path = assets_path + std::string(META_EXTENSION);
-
-	char* buffer = nullptr;
-	uint read = App->file_system->Load(meta_path.c_str(), &buffer);
-	if (read == 0)
-	{
-		LOG("[ERROR] Resource Manager: Could not load the .meta File with Path: %s! Error: No Meta File exists with the given path.", meta_path);
-	}
-
-	meta_path.clear();
-
-	return ParsonNode(buffer);
-}*/
 
 ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path, char** buffer)
 {
