@@ -75,8 +75,8 @@ bool M_Scene::Start()
 	CreateSceneCamera("SceneCamera");
 
 	uint32 model_uid = App->resource_manager->ImportFile(DEFAULT_SCENE);
-	model_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
-	GenerateGameObjectsFromModel(model_uid);
+	//model_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
+	//GenerateGameObjectsFromModel(model_uid);
 	SaveScene();																					// Autosave just right after loading the scene.
 
 	return ret;

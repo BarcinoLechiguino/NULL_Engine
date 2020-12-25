@@ -184,7 +184,8 @@ uint32 M_ResourceManager::ImportFile(const char* assets_path)
 	{
 		LOG("[WARNING] Resource Manager: Could not Import File to Library! Error: The file was already in the Library.");
 
-		ParsonNode meta_root = LoadMetaFile(assets_path);
+		char* buffer			= nullptr;
+		ParsonNode meta_root	= LoadMetaFile(assets_path, &buffer);
 		if (!meta_root.NodeIsValid())
 		{
 			LOG("[ERROR] Resource Manager: Could not Load File from the given Assets Path! Error: Could not get the Meta Root Node.");
@@ -192,6 +193,8 @@ uint32 M_ResourceManager::ImportFile(const char* assets_path)
 		}
 
 		resource_uid = (uint32)meta_root.GetNumber("UID");
+
+		RELEASE_ARRAY(buffer);
 	}
 
 	return resource_uid;
@@ -259,7 +262,8 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 		return 0;
 	}
 
-	ParsonNode meta_root	= LoadMetaFile(assets_path);
+	char* buffer = nullptr;
+	ParsonNode meta_root	= LoadMetaFile(assets_path, &buffer);
 	bool meta_is_valid		= MetaFileIsValid(meta_root);
 	if (!meta_root.NodeIsValid())
 	{
@@ -269,6 +273,7 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 	if (!meta_is_valid)
 	{
 		LOG("%s! Error: Could not Validate the Meta File.", error_string.c_str());
+		RELEASE_ARRAY(buffer);
 		return 0;
 	}
 
@@ -277,6 +282,7 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 	
 	if (resources.find(resource_uid) != resources.end())
 	{
+		RELEASE_ARRAY(buffer);
 		return resource_uid;																									// If the File To Load's Resource is already in memory.
 	}	
 
@@ -285,6 +291,7 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 	if (result == nullptr)
 	{
 		LOG("[ERROR] Resource Manager: Could not Allocate Resource %lu in memory!", resource_uid);
+		RELEASE_ARRAY(buffer);
 		return 0;
 	}
 
@@ -310,6 +317,7 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 		contained_path.clear();
 	}
 
+	RELEASE_ARRAY(buffer);
 	error_string.clear();
 
 	return resource_uid;
@@ -511,7 +519,7 @@ bool M_ResourceManager::SaveMetaFile(Resource* resource) const
 	return ret;
 }
 
-ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path)
+/*ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path)
 {
 	if (assets_path == nullptr)
 	{
@@ -525,15 +533,30 @@ ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path)
 	if (read == 0)
 	{
 		LOG("[ERROR] Resource Manager: Could not load the .meta File with Path: %s! Error: No Meta File exists with the given path.", meta_path);
-		//return ParsonNode(buffer);
 	}
 
-	//ParsonNode ret = { ParsonNode(buffer) };
-
-	//RELEASE_ARRAY(buffer);
 	meta_path.clear();
 
-	return /*ret*/ ParsonNode(buffer);
+	return ParsonNode(buffer);
+}*/
+
+ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path, char** buffer)
+{
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not load the .meta File! Error: Given path was nullptr!");
+	}
+
+	std::string meta_path	= assets_path + std::string(META_EXTENSION);
+	uint read				= App->file_system->Load(meta_path.c_str(), buffer);
+	if (read == 0)
+	{
+		LOG("[ERROR] Resource Manager: Could not load the .meta File with Path: %s! Error: No Meta File exists with the given path.", meta_path);
+	}
+
+	meta_path.clear();
+
+	return ParsonNode(*buffer);
 }
 
 bool M_ResourceManager::MetaFileIsValid(const char* assets_path)
@@ -543,7 +566,8 @@ bool M_ResourceManager::MetaFileIsValid(const char* assets_path)
 	std::string meta_path		= assets_path + std::string(META_EXTENSION);													// Will be used for [ERROR] Logs.
 	std::string error_string	= "[ERROR] Resource Manager: Could not validate Meta File " + meta_path;
 	
-	ParsonNode meta_root = LoadMetaFile(assets_path);
+	char* buffer = nullptr;
+	ParsonNode meta_root = LoadMetaFile(assets_path, &buffer);
 	if (!meta_root.NodeIsValid())
 	{
 		LOG("%s! Error: Could not get the Meta Root Node!", error_string.c_str());
@@ -558,12 +582,14 @@ bool M_ResourceManager::MetaFileIsValid(const char* assets_path)
 	{
 		LOG("%s! Error: Resource UID could not be found in Library.", error_string.c_str());
 		meta_path.clear();
+		RELEASE_ARRAY(buffer);
 		return false;
 	}
 	if (!contained_array.ArrayIsValid())
 	{
 		LOG("%s! Error: Could not get the ContainedResources Array from Meta Root!", error_string.c_str());
 		meta_path.clear();
+		RELEASE_ARRAY(buffer);
 		return false;
 	}
 
@@ -576,10 +602,12 @@ bool M_ResourceManager::MetaFileIsValid(const char* assets_path)
 		{
 			LOG("%s! Error: Contained Resource UID could not be found in Library.", error_string.c_str());
 			meta_path.clear();
+			RELEASE_ARRAY(buffer);
 			return false;
 		}
 	}
 
+	RELEASE_ARRAY(buffer);
 	error_string.clear();
 	meta_path.clear();
 

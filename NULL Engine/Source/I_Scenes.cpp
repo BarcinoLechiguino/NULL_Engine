@@ -219,9 +219,9 @@ void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>&
 {
 	for (uint i = 0; i < materials.size(); ++i)
 	{
-		const char* tex_path = materials[i].texture_assets_path.c_str();
-		char* buffer = nullptr;
-		uint read = App->file_system->Load(tex_path, &buffer);
+		const char* tex_path	= materials[i].texture_assets_path.c_str();
+		char* buffer			= nullptr;
+		uint read				= App->file_system->Load(tex_path, &buffer);
 		if (buffer != nullptr && read > 0)
 		{
 			std::map<std::string, uint32>::iterator item = loaded_textures.find(tex_path);
@@ -233,6 +233,7 @@ void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>&
 					model_node.texture_name = App->file_system->GetFileAndExtension(tex_path);
 				}
 
+				RELEASE_ARRAY(buffer);
 				continue;
 			}
 			
