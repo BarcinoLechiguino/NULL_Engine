@@ -22,7 +22,7 @@ directory_to_display	(nullptr)
 
 E_Project::~E_Project()
 {
-
+	delete[] directory_to_display;
 }
 
 bool E_Project::Draw(ImGuiIO& io)

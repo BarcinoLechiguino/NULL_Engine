@@ -234,6 +234,8 @@ bool M_Scene::SaveScene(const char* scene_name) const
 
 	App->resource_manager->DeallocateResource(r_scene);
 
+	RELEASE_ARRAY(buffer);
+
 	name.clear();
 	path.clear();
 	library_path.clear();

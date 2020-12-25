@@ -533,7 +533,7 @@ ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path)
 	//RELEASE_ARRAY(buffer);
 	meta_path.clear();
 
-	return ParsonNode(buffer);
+	return /*ret*/ ParsonNode(buffer);
 }
 
 bool M_ResourceManager::MetaFileIsValid(const char* assets_path)
