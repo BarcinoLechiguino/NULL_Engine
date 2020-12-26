@@ -46,14 +46,14 @@ void Importer::Textures::CleanUp()
 	ilShutDown();
 }
 
-uint Importer::Textures::Import(const char* buffer, uint size, R_Texture* r_texture)
+bool Importer::Textures::Import(const char* buffer, uint size, R_Texture* r_texture)
 {
-	uint tex_id = 0;
+	bool success = false;
 
 	if (r_texture == nullptr)
 	{
 		LOG("[ERROR] Could not Import Texture! Error: R_Texture* was nullptr.");
-		return 0;
+		return false;
 	}
 	
 	std::string error_string = "[ERROR] Could not Import Texture { " + std::string(r_texture->GetAssetsFile()) + " }";
@@ -61,52 +61,26 @@ uint Importer::Textures::Import(const char* buffer, uint size, R_Texture* r_text
 	if (buffer == nullptr)
 	{
 		LOG("%s! Error: Buffer was nullptr.", error_string.c_str());
-		return 0;
+		return false;
 	}
 	if (size == 0)
 	{
 		LOG("%s! Error: Buffer Size was 0.", error_string.c_str());
-		return 0;
+		return false;
 	}
 
 	LOG("[STATUS] Importer: Importing Texture { %s }", r_texture->GetAssetsPath());
 
-	/*bool success = Importer::Textures::Load(buffer, size, r_texture);
-	if (success)
-	{
-		tex_id = r_texture->GetTextureID();
-		LOG("[IMPORTER] Importer: Successfully Imported Texture { %s } from Assets!", r_texture->GetAssetsFile());
-	}
-	else
-	{
-		LOG("%s! Error: See Importer ERRORs above.", error_string.c_str());
-	}*/
-
-	LOG("[WARNING] Importer: Successfully Imported Texture { %s } from Assets!", r_texture->GetAssetsFile());
-
-	bool success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);
-	if (success)
-	{
-		bool success = Importer::Textures::Load(buffer, size, r_texture);
-		if (success)
-		{
-			tex_id = r_texture->GetTextureID();
-			LOG("[IMPORTER] Importer: Successfully Imported Texture { %s } from Assets!", r_texture->GetAssetsFile());
-		}
-		else
-		{
-			LOG("%s! Error: See Importer ERRORs above.", error_string.c_str());
-		}
-	}
-	else
+	success = ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, size);															// Only loading inside DevIL buffers. Needs to be saved after.
+	if (!success)																											// Import settings will be applied at Importer::Textures::Load().
 	{
 		LOG("%s! Error: ilLoadL() Error [%s]", error_string.c_str(), iluErrorString(ilGetError()));
-		return 0;
+		return false;
 	}
 
 	error_string.clear();
 
-	return tex_id;
+	return success;
 }
 
 uint Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
@@ -128,8 +102,7 @@ uint Importer::Textures::Save(const R_Texture* r_texture, char** buffer)
 	ilEnable(IL_FILE_OVERWRITE);																								// Allowing DevIL to overwrite existing files.
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);																						// Choosing a specific DXT compression.
 
-	// TODO: FIX NOT BEING ABLE TO SAVE FROM DDS TO DDS.
-	ILuint size = ilSaveL(IL_DDS, nullptr, 0);																					// Getting the size of the data buffer in bytes.
+	ILuint size = (ilGetInteger(IL_IMAGE_TYPE) != IL_DDS) ? ilSaveL(IL_DDS, nullptr, 0) : ilGetInteger(IL_IMAGE_SIZE_OF_DATA);	// Getting the size required by the texture.
 	if (size > 0)
 	{
 		ILubyte* data = new ILubyte[size];																						// Allocating the required memory to the data buffer.

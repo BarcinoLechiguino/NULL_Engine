@@ -157,6 +157,11 @@ void C_Material::SetTexture(R_Texture* r_texture)
 	//	//RELEASE(this->r_texture);
 	//}
 
+	if (this->r_texture != nullptr)
+	{
+		App->resource_manager->FreeResource(this->r_texture->GetUID());
+	}
+
 	this->r_texture = r_texture;
 }
 

@@ -238,9 +238,9 @@ void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>&
 			}
 			
 			R_Texture* r_texture = (R_Texture*)App->resource_manager->CreateResource(RESOURCE_TYPE::TEXTURE, tex_path);
-			Importer::Textures::Import(buffer, read, r_texture);														//
+			uint tex_id = Importer::Textures::Import(buffer, read, r_texture);											//
 
-			if (r_texture->GetTextureID() == 0)
+			if (tex_id == 0)
 			{
 				App->resource_manager->DeleteResource(r_texture);
 				RELEASE_ARRAY(buffer);

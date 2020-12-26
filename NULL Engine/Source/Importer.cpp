@@ -51,20 +51,20 @@ bool Importer::ImportMesh(const char* buffer, R_Mesh* r_mesh)
 
 bool Importer::ImportTexture(const char* buffer, uint size, R_Texture* r_texture)
 {
-	Importer::Textures::Import(buffer, size, r_texture);
+	bool success = Importer::Textures::Import(buffer, size, r_texture);
 
-	if (r_texture != nullptr && r_texture->GetTextureID() != 0)
+	/*if (r_texture != nullptr && r_texture->GetTextureID() != 0)
 	{
-		App->scene->ApplyNewTextureToSelectedGameObject(r_texture);
+		//App->scene->ApplyNewTextureToSelectedGameObject(r_texture->GetUID());					// Put on hold until the project panel is functional and in place.
 	}
 	else
 	{
 		return false;
 		
-		/*LOG("[ERROR] Importer: Could not import the dropped texture!");
+		LOG("[ERROR] Importer: Could not import the dropped texture!");
 		RELEASE(r_texture);
-		return 0;*/
-	}
+		return 0;
+	}*/
 
-	return true;
+	return success;
 }
