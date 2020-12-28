@@ -189,25 +189,87 @@ std::string M_FileSystem::GetPathRelativeToAssets(const char* original_path) con
 	return relative_path;
 }
 
-void M_FileSystem::DiscoverFiles(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const
+void M_FileSystem::DiscoverFiles(const char* directory, std::vector<std::string>& files, std::vector<std::string>& directories, const char* filter) const
 {
-	char** file_listing = PHYSFS_enumerateFiles(directory);									// Method that returns a listing with all the files in a given search path's directory.
+	if (directory == nullptr)
+	{
+		LOG("[ERROR] File System: Could not Discover Files inside the given directory! Error: Given Directory string was nullptr.");
+		return;
+	}
+	if (!Exists(directory))
+	{
+		LOG("[ERROR] File System: Could not Discover Files inside the { %s } directory! Error: Given Directory did not exist.", directory);
+		return;
+	}
+	
+	char** file_listing		= PHYSFS_enumerateFiles(directory);								// Method that returns a listing with all the files in a given search path's directory.
+	bool use_filter			= (filter != nullptr) ? true : false;
 
 	for (char** file = file_listing; *file != nullptr; ++file)								// Will iterate the file listing file per file.
 	{
-		std::string path = std::string(directory) + std::string("/") + std::string(*file);	// Will put together a path with the given directory and the file being currently iterated.
+		if (use_filter)
+		{
+			if (HasExtension(*file, std::string(filter)))									// Returns true if the given path has the given extension.
+			{
+				continue;																	// Goes to the next iteration as the current file had the filtered extension.
+			}
+		}
+		
+		std::string path = directory + std::string("/") + *file;							// Will put together a path with the given directory and the file being currently iterated.
 
 		if (IsDirectory(path.c_str()))
 		{
-			dir_list.push_back(*file);														// If the path is a directory, the file will be added to the directory list.
+			directories.push_back(*file);													// If the path is a directory, the file will be added to the directory list.
 		}
 		else
 		{
-			file_list.push_back(*file);														// If the path is not a directory, the file will be added to the file list.
+			files.push_back(*file);															// If the path is not a directory, the file will be added to the file list.
 		}
 	}
 
 	PHYSFS_freeList(file_listing);															// Method that deallocates the resources (memory) of lists returned by PhysFS.
+}
+
+void M_FileSystem::DiscoverAllFiles(const char* directory, std::vector<std::string>& files, std::vector<std::string>& directories, const char* filter) const
+{
+	if (directory == nullptr)
+	{
+		LOG("[ERROR] File System: Could not Discover All Files inside the given directory! Error: Given Directory string was nullptr.");
+		return;
+	}
+	if (!Exists(directory))
+	{
+		LOG("[ERROR] File System: Could not Discover All Files inside the { %s } directory! Error: Given Directory does not exist.", directory);
+		return;
+	}
+	
+	char** file_listing		= PHYSFS_enumerateFiles(directory);
+	bool use_filter			= (filter != nullptr) ? true : false;
+
+	for (char** file = file_listing; *file != nullptr; ++file)
+	{
+		if (use_filter)
+		{
+			if (HasExtension(*file, std::string(filter)))
+			{
+				continue;
+			}
+		}
+
+		std::string path = directory + std::string("/") + *file;
+
+		if (IsDirectory(path.c_str()))
+		{
+			directories.push_back(path);
+			DiscoverAllFiles(path.c_str(), files, directories, filter);
+		}
+		else
+		{
+			files.push_back(path);
+		}
+	}
+
+	PHYSFS_freeList(file_listing);
 }
 
 void M_FileSystem::GetAllFilesWithExtension(const char* directory, const char* extension, std::vector<std::string>& file_list) const
@@ -215,7 +277,8 @@ void M_FileSystem::GetAllFilesWithExtension(const char* directory, const char* e
 	std::vector<std::string> files;
 	std::vector<std::string> directories;
 
-	DiscoverFiles(directory, files, directories);											// Returns a file and directory lists in the given search path's directory.
+	//DiscoverFiles(directory, files, directories);											// Returns a file and directory lists in the given search path's directory.
+	DiscoverAllFiles(directory, files, directories);										// Returns a file and directory lists in the given search path's directory.
 
 	for (uint i = 0; i < files.size(); ++i)
 	{
@@ -563,31 +626,39 @@ bool M_FileSystem::Remove(const char* file)
 {
 	bool ret = false;
 
-	if (file != nullptr)
+	if (file == nullptr)
 	{
-		if (IsDirectory(file))																// If the given file is a directory, then all the files inside it need to be removed recursively.
-		{
-			std::vector<std::string> contained_files;										// Will store all the contained files in the directory. THIS HERE
-			std::vector<std::string> contained_directories;									// Will store all the contained directories in the directory.
+		LOG("[ERROR] File System: Could not delete File! Error: Given File Path was nullptr.");
+		return false;
+	}
+	if (!Exists(file))
+	{
+		LOG("[ERROR] File System: Could not delete File [%s]! Error: %s\n", file, PHYSFS_getLastError());
+		return false;
+	}
 
-			PathNode root_directory = GetAllFiles(file);									// Gets all the files and dirs contained in the given directory and stores them as its children.
+	if (IsDirectory(file))																// If the given file is a directory, then all the files inside it need to be removed recursively.
+	{
+		std::vector<std::string> contained_files;										// Will store all the contained files in the directory. THIS HERE
+		std::vector<std::string> contained_directories;									// Will store all the contained directories in the directory.
 
-			for (uint i = 0; i < root_directory.children.size(); ++i)
-			{
-				Remove(root_directory.children[i].path.c_str());							// Recursively removes the children being iterated. This means that the file will be deleted.
-			}
-		}
+		PathNode root_directory = GetAllFiles(file);									// Gets all the files and dirs contained in the given directory and stores them as its children.
 
-		PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_delete(file);							// Method that deletes a file or directory. A directory must be empty before it can be deleted.
-		if (result == PHYSFS_RESULT::SUCCESS)
+		for (uint i = 0; i < root_directory.children.size(); ++i)
 		{
-			LOG("[FILE_SYSTEM] File System: Successfully deleted File [%s]!", file);
-			ret = true;
+			Remove(root_directory.children[i].path.c_str());							// Recursively removes the children being iterated. This means that the file will be deleted.
 		}
-		else
-		{
-			LOG("[ERROR] File System: Could not delete File [%s]! Error: %s\n", file, PHYSFS_getLastError());
-		}
+	}
+
+	PHYSFS_RESULT result = (PHYSFS_RESULT)PHYSFS_delete(file);							// Method that deletes a file or directory. A directory must be empty before it can be deleted.
+	if (result == PHYSFS_RESULT::SUCCESS)
+	{
+		LOG("[FILE_SYSTEM] File System: Successfully deleted File [%s]!", file);
+		ret = true;
+	}
+	else
+	{
+		LOG("[ERROR] File System: Could not delete File [%s]! Error: %s\n", file, PHYSFS_getLastError());
 	}
 	
 	return ret;
@@ -651,8 +722,6 @@ std::string M_FileSystem::GetDirectory(const char* path)
 
 	SplitFilePath(full_path.c_str(), &dir_path, nullptr, nullptr);
 
-	full_path.clear();
-
 	return dir_path;
 }
 
@@ -664,14 +733,9 @@ std::string M_FileSystem::GetLastDirectory(const char* path)
 
 	SplitFilePath(full_path.c_str(), &dir_path, nullptr, nullptr);							// Assets/Dir/LastDir/
 
-	dir_path = dir_path.substr(0, dir_path.size() - 1);										// Assets/Dir/LastDir
-
+	dir_path			= dir_path.substr(0, dir_path.size() - 1);							// Assets/Dir/LastDir
 	uint last_dir_start	= dir_path.find_last_of("/") + 1;									// Getting the position of the "/" before the last directory.
-
-	last_dir = dir_path.substr(last_dir_start, dir_path.size()) + "/";						// LastDir/
-
-	full_path.clear();
-	dir_path.clear();
+	last_dir			= dir_path.substr(last_dir_start, dir_path.size()) + "/";			// LastDir/
 
 	return last_dir;
 }
@@ -723,9 +787,6 @@ std::string M_FileSystem::GetFileAndExtension(const char* path)
 		}
 	}
 
-	full_path.clear();
-	extension.clear();
-
 	return file;
 }
 
@@ -738,14 +799,9 @@ std::string M_FileSystem::GetLastDirectoryAndFile(const char* path)
 
 	SplitFilePath(path, &dir_path, &file, nullptr);
 
-	dir_path = dir_path.substr(0, dir_path.size() - 1);										// Assets/Dir/LastDir
-
+	dir_path			= dir_path.substr(0, dir_path.size() - 1);							// Assets/Dir/LastDir
 	uint last_dir_start = dir_path.find_last_of("/") + 1;									// Getting the position of the "/" before the last directory.
-
-	last_dir = dir_path.substr(last_dir_start, dir_path.size()) + "/";						// LastDir/
-
-	full_path.clear();
-	dir_path.clear();
+	last_dir			= dir_path.substr(last_dir_start, dir_path.size()) + "/";			// LastDir/
 
 	return (last_dir + file);
 }

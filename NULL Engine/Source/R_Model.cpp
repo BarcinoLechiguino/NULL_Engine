@@ -43,9 +43,6 @@ bool R_Model::SaveMeta(ParsonNode& meta_root) const
 			mesh_node.SetNumber("Type", (uint)RESOURCE_TYPE::MESH);
 			mesh_node.SetString("Name", mesh_name.c_str());
 			mesh_node.SetString("LibraryPath", mesh_path.c_str());
-
-			mesh_name.clear();
-			mesh_path.clear();
 		}
 
 		if (model_nodes[i].material_uid != 0)
@@ -59,9 +56,6 @@ bool R_Model::SaveMeta(ParsonNode& meta_root) const
 			material_node.SetNumber("Type", (uint)RESOURCE_TYPE::MATERIAL);
 			material_node.SetString("Name", material_name.c_str());
 			material_node.SetString("LibraryPath", material_path.c_str());
-
-			material_name.clear();
-			material_path.clear();
 		}
 
 		if (model_nodes[i].texture_uid != 0)
@@ -75,9 +69,6 @@ bool R_Model::SaveMeta(ParsonNode& meta_root) const
 			texture_node.SetNumber("Type", (uint)RESOURCE_TYPE::TEXTURE);
 			texture_node.SetString("Name", texture_name.c_str());
 			texture_node.SetString("LibraryPath", texture_path.c_str());
-
-			texture_name.clear();
-			texture_path.clear();
 		}
 	}
 

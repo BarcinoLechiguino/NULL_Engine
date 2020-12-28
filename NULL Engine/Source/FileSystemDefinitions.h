@@ -3,6 +3,7 @@
 
 // File Directories ---------------------------------
 #define ASSETS_PATH				"Assets/"
+#define ASSETS_DIRECTORY		"Assets"
 #define ASSETS_MODELS_PATH		"Assets/Models/"
 #define ASSETS_SCENES_PATH		"Assets/Scenes/"
 #define ASSETS_TEXTURES_PATH	"Assets/Textures/"
@@ -33,6 +34,7 @@
 #define TEXTURES_EXTENSION		".netex"
 
 #define META_EXTENSION			".meta"
+#define DOTLESS_META_EXTENSION	"meta"
 
 #define JSON_EXTENSION			".json"
 

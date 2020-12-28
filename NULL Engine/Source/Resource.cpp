@@ -33,6 +33,11 @@ bool Resource::CleanUp()
 	library_path.clear();
 	library_file.clear();
 
+	assets_path.shrink_to_fit();
+	assets_file.shrink_to_fit();
+	library_path.shrink_to_fit();
+	library_file.shrink_to_fit();
+
 	return ret;
 }
 
@@ -173,8 +178,4 @@ void Resource::SetLibraryPathAndFile()
 	
 	library_path = directory + file + extension;
 	library_file = file + extension;
-
-	directory.clear();
-	file.clear();
-	extension.clear();
 }

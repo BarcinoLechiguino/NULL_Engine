@@ -29,7 +29,7 @@ public:
 	// Utility functions
 	bool			AddPath						(const char* path_or_zip);														// Will add a new zip file or folder. Whichever it is, it will be used by PhysFS.
 	bool			Exists						(const char* file) const;														// Will check whether or not a file exists in the PHYSFS search path.
-	
+
 	void			CreateLibraryDirectories	();																				// Will call CreateDir() to create all the required directories in the same method.
 	bool			CreateDir					(const char* directory);														// Will create a directory. This directory will be used by PhysFS.
 	bool			IsDirectory					(const char* file) const;														// Will check whether or not the given directory is a PhysFS directory already (See above).
@@ -39,9 +39,10 @@ public:
 	void			GetRealDirectory			(const char* path, std::string& output) const;									// Will return the real directory path of the given path as the output.
 	std::string		GetPathRelativeToAssets		(const char* original_path) const;												// Will get the path relative to the assets from the given path.
 
-	void			DiscoverFiles				(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const;							// Will return two lists with every file in a given directory.
-	void			GetAllFilesWithExtension	(const char* directory, const char* extension, std::vector<std::string>& file_list) const;										// Will return a list with all files with the given extension.
-	PathNode		GetAllFiles					(const char* directory, std::vector<std::string>* filter_ext = nullptr, std::vector<std::string>* ignore_ext = nullptr) const;	// 
+	void			DiscoverFiles				(const char* directory, std::vector<std::string>& files, std::vector<std::string>& directories, const char* filter = nullptr) const;	// Will return two lists with every file in a given directory.
+	void			DiscoverAllFiles			(const char* directory, std::vector<std::string>& files, std::vector<std::string>& directories, const char* filter = nullptr) const;	// Will return two lists with every file in a given directory.
+	void			GetAllFilesWithExtension	(const char* directory, const char* extension, std::vector<std::string>& file_list) const;												// Will return a list with all files with the given extension.
+	PathNode		GetAllFiles					(const char* directory, std::vector<std::string>* filter_ext = nullptr, std::vector<std::string>* ignore_ext = nullptr) const;			// 
 
 	bool			HasExtension				(const char* path) const;														// Will check whether or not the given path has any extension in it.
 	bool			HasExtension				(const char* path, std::string extension) const;								// Will check whether or not the given path has the given extension in it.

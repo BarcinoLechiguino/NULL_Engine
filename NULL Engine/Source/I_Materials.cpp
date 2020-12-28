@@ -83,10 +83,6 @@ void Importer::Materials::Import(const aiMaterial* ai_material, R_Material* r_ma
 		full_path	= dir_path + file;
 		r_material->materials.push_back(MaterialData(TEXTURE_TYPE::NORMALS, 0, full_path));
 	}
-
-	dir_path.clear();
-	file.clear();
-	full_path.clear();
 }
 
 uint Importer::Materials::Save(const R_Material* r_material, char** buffer)

@@ -26,6 +26,11 @@ E_Configuration::E_Configuration() : EditorPanel("Configuration")
 		ms_data[i]	= 0;
 	}
 
+	peak_FPS	= 0;
+	min_FPS		= 0;
+	peak_ms		= 0;
+	min_ms		= 0;
+
 	input_log_scroll_to_bottom = true;
 }
 
@@ -400,6 +405,11 @@ void E_Configuration::PlotFrameDataHistogram()
 	{
 		average_FPS += FPS_data[i];
 		average_ms	+= ms_data[i];
+
+		peak_FPS	= (peak_FPS < (uint)FPS_data[i])	? (uint)FPS_data[i] : peak_FPS;
+		min_FPS		= (min_FPS > (uint)FPS_data[i])		? (uint)FPS_data[i] : min_FPS;
+		peak_ms		= (peak_ms < (uint)ms_data[i])		? (uint)ms_data[i] : peak_ms;
+		min_ms		= (min_ms > (uint)ms_data[i])		? (uint)ms_data[i] : min_ms;
 	}
 
 	average_FPS /= (float)MAX_HISTOGRAM_SIZE;
@@ -408,11 +418,15 @@ void E_Configuration::PlotFrameDataHistogram()
 	char overlay[32];
 	sprintf_s(overlay, "Framerate: %.2f", FPS_data[MAX_HISTOGRAM_SIZE - 1]);
 	ImGui::PlotHistogram("FPS", FPS_data, IM_ARRAYSIZE(FPS_data), 0, overlay, 0.0f, 120.0f, ImVec2(0, 80));
-	ImGui::Text("Average FPS: ");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f", average_FPS);
+	ImGui::Text("Average FPS:");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f", average_FPS);
+	ImGui::Text("Peak FPS:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "   %u", peak_FPS);
+	ImGui::Text("Min FPS:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %u", min_FPS);
 
 	sprintf_s(overlay, "ms last frame: %.2f", ms_data[MAX_HISTOGRAM_SIZE - 1]);
 	ImGui::PlotHistogram("MS", ms_data, IM_ARRAYSIZE(ms_data), 0, overlay, 0.0f, 40.0f, ImVec2(0, 80));
 	ImGui::Text("Average ms: ");	ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f", average_ms);
+	ImGui::Text("Peak ms:");		ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "   %u", peak_ms);
+	ImGui::Text("Min ms:");			ImGui::SameLine();	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "    %u", min_ms);
 }
 
 void E_Configuration::GenerateFrameCapSlider()

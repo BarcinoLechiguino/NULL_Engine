@@ -49,7 +49,7 @@ bool M_ResourceManager::Init(ParsonNode& configuration)
 	bool ret = true;
 
 	//file_refresh_rate = (float)configuration.GetNumber("RefreshRate");
-	file_refresh_rate = 1.0f;
+	file_refresh_rate = 5.0f;
 
 	return ret;
 }
@@ -57,6 +57,8 @@ bool M_ResourceManager::Init(ParsonNode& configuration)
 bool M_ResourceManager::Start()
 {
 	bool ret = true;
+
+	RefreshAssetFiles();
 
 	return ret;
 }
@@ -69,12 +71,6 @@ UPDATE_STATUS M_ResourceManager::PreUpdate(float dt)
 
 	if (file_refresh_timer > file_refresh_rate)
 	{
-		// Refresh folders create .meta files for all those
-		// files that do not have one.
-
-		// Also update the .meta and reimport all those files
-		// that have been modified.
-
 		RESOURCE_ITEM item = resources.begin();
 		while (item != resources.end())
 		{
@@ -85,9 +81,11 @@ UPDATE_STATUS M_ResourceManager::PreUpdate(float dt)
 				DeallocateResource(resource_uid);															// erasing the element with the resource_uid from the resources std::map.
 				continue;																					// Going to the next iteration so item is not updated twice in the same loop.
 			}
-			
+
 			++item;
 		}
+		
+		RefreshAssetFiles();
 
 		file_refresh_timer = 0.0f;
 	}
@@ -99,7 +97,7 @@ UPDATE_STATUS M_ResourceManager::Update(float dt)
 {
 	UPDATE_STATUS status = UPDATE_STATUS::CONTINUE;
 
-	// Check for modifications on the mirror file in "Assets/"
+	
 
 	return status;
 }
@@ -125,14 +123,7 @@ bool M_ResourceManager::CleanUp()
 	}
 
 	resources.clear();
-
-	std::map<std::string, uint32>::iterator f_item;
-	for (f_item = loaded_files.begin(); f_item != loaded_files.end(); ++f_item)
-	{
-		((std::string)f_item->first).clear();																// Does not look good at all, but if it works...
-	}
-
-	loaded_files.clear();
+	library.clear();
 
 	return ret;
 }
@@ -155,13 +146,487 @@ bool M_ResourceManager::LoadConfiguration(ParsonNode& configuration)
 	return ret;
 }
 
-// --- M_RESOURCEMANAGER METHODS ---
+// ----- M_RESOURCEMANAGER METHODS -----
+// --- ASSETS MONITORING METHODS ---
+void M_ResourceManager::RefreshAssetFiles()
+{
+	std::vector<std::string> files_to_import;															// Refresh folders and create .meta files for all those files that do not have one.
+	std::vector<std::string> files_to_update;															// Also update the .meta and reimport all those files that have been modified.
+	std::vector<std::string> files_to_delete;
+
+	RefreshAssetsDirectory(files_to_import, files_to_update, files_to_delete);
+
+	for (uint i = 0; i < files_to_delete.size(); ++i)
+	{
+		DeleteFromAssets(files_to_delete[i].c_str());
+	}
+	for (uint i = 0; i < files_to_update.size(); ++i)
+	{
+		DeleteFromLibrary(files_to_update[i].c_str());
+		ImportFile(files_to_update[i].c_str());
+	}
+	for (uint i = 0; i < files_to_import.size(); ++i)
+	{
+		ImportFile(files_to_import[i].c_str());
+	}
+
+	files_to_delete.clear();
+	files_to_update.clear();
+	files_to_import.clear();
+}
+
+void M_ResourceManager::RefreshAssetsDirectory(std::vector<std::string>& files_to_import, std::vector<std::string>& files_to_update, std::vector<std::string>& files_to_delete)
+{
+	std::vector<std::string> directories;
+	std::vector<std::string> asset_files;
+	std::vector<std::string> meta_files;
+	std::map<std::string, std::string> file_pairs;
+
+	App->file_system->DiscoverAllFiles(ASSETS_DIRECTORY, asset_files, directories, DOTLESS_META_EXTENSION);			// Directories (folders) will be ignored for now.
+	App->file_system->GetAllFilesWithExtension(ASSETS_DIRECTORY, DOTLESS_META_EXTENSION, meta_files);
+	
+	FindFilesToImport(asset_files, meta_files, file_pairs, files_to_import);										// Always call in this order!
+	FindFilesToUpdate(file_pairs, files_to_update);																	// At the very least FindFilesToImport() has to be the first to be called
+	FindFilesToDelete(meta_files, file_pairs, files_to_delete);														// as it is the one to fill file_pairs with asset and meta files!
+
+	LoadValidFilesIntoLibrary(file_pairs);																			// Will emplace all valid files' UID & library path into the library map.
+
+	file_pairs.clear();
+	meta_files.clear();
+	asset_files.clear();
+	directories.clear();
+}
+
+void M_ResourceManager::FindFilesToImport(const std::vector<std::string>& asset_files, const std::vector<std::string>& meta_files, 
+											std::map<std::string, std::string>& file_pairs, std::vector<std::string>& files_to_import)
+{
+	std::map<std::string, uint> meta_tmp;
+	for (uint i = 0; i < meta_files.size(); ++i)																	// Adding the meta_files to a map so the elements can be found with ease.
+	{
+		meta_tmp.emplace(meta_files[i], i);
+	}
+	
+	std::string meta_file = "[NONE]";
+	std::map<std::string, uint>::iterator item;
+	for (uint i = 0; i < asset_files.size(); ++i)																	// Assets files whose meta file is missing will be imported.
+	{
+		meta_file	= asset_files[i] + META_EXTENSION;
+		item		= meta_tmp.find(meta_file);
+
+		if (item != meta_tmp.end())
+		{
+			file_pairs.emplace(asset_files[i], item->first);														// Putting meta_file as the key so FindFilesToDelete()
+		}																											// can be performed with ease.
+		else
+		{
+			files_to_import.push_back(asset_files[i]);
+		}
+	}
+
+	meta_tmp.clear();
+}
+
+void M_ResourceManager::FindFilesToUpdate(const std::map<std::string, std::string>& file_pairs, std::vector<std::string>& files_to_update)
+{
+	uint64 asset_mod_time	= 0;
+	uint64 meta_mod_time	= 0;
+	std::map<std::string, std::string>::const_iterator item;
+	for (item = file_pairs.begin(); item != file_pairs.end(); ++item)
+	{
+		asset_mod_time	= App->file_system->GetLastModTime(item->first.c_str());						// Files with different modification time than their meta files
+		meta_mod_time	= GetAssetFileModTimeFromMeta(item->first.c_str());								// will need to be updated (Delete prev + Import new).
+
+		if (asset_mod_time != meta_mod_time)
+		{
+			files_to_update.push_back(item->first);
+		}
+	}
+}
+
+void M_ResourceManager::FindFilesToDelete(const std::vector<std::string>& meta_files, const std::map<std::string, std::string>& file_pairs, std::vector<std::string>& files_to_delete)
+{
+	std::string assets_path = "[NONE]";
+	for (uint i = 0; i < meta_files.size(); ++i)																	// Meta files whose asset_file is missing will be deleted.
+	{
+		assets_path = meta_files[i];
+		assets_path.resize(assets_path.size() - std::string(META_EXTENSION).size());								// Dirty-but-quick way of eliminating the extension.
+
+		if (file_pairs.find(assets_path) == file_pairs.end())														// If cannot find assets_path in the paired files.
+		{						
+			files_to_delete.push_back(assets_path);
+		}
+	}
+}
+
+void M_ResourceManager::LoadValidFilesIntoLibrary(const std::map<std::string, std::string>& file_pairs)
+{
+	std::map<std::string, std::string>::const_iterator item;
+	for (item = file_pairs.cbegin(); item != file_pairs.cend(); ++item)
+	{
+		LoadMetaLibraryPairsIntoLibrary(item->first.c_str());
+	}
+}
+
+bool M_ResourceManager::DeleteFromAssets(const char* assets_path)
+{
+	bool ret = true;
+
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not Delete File from Assets! Error: Given Assets Path was nullptr.");
+		return false;
+	}
+
+	std::vector<uint32> resource_uids;
+	std::vector<std::string> files_to_delete;
+
+	GetResourceUIDsFromMeta(assets_path, resource_uids);
+	GetLibraryFilePathsFromMeta(assets_path, files_to_delete);
+	
+	std::string meta_path = assets_path + std::string(META_EXTENSION);
+	files_to_delete.push_back(assets_path);
+	files_to_delete.push_back(meta_path);
+
+	for (uint i = 0; i < resource_uids.size(); ++i)
+	{
+		DeleteResource(resource_uids[i]);
+	}
+
+	for (uint i = 0; i < files_to_delete.size(); ++i)
+	{
+		/*ret =*/ App->file_system->Remove(files_to_delete[i].c_str());
+	}
+
+	files_to_delete.clear();
+	resource_uids.clear();
+
+	return ret;
+}
+
+bool M_ResourceManager::DeleteFromLibrary(const char* assets_path)
+{
+	bool ret = true;
+
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not delete Files from Library! Error: Given Assets Path was nullptr.");
+		return false;
+	}
+
+	std::vector<uint32> resource_uids;
+	std::vector<std::string> files_to_delete;
+
+	GetResourceUIDsFromMeta(assets_path, resource_uids);
+	GetLibraryFilePathsFromMeta(assets_path, files_to_delete);
+
+	for (uint i = 0; i < resource_uids.size(); ++i)
+	{
+		DeleteResource(resource_uids[i]);
+	}
+
+	for (uint i = 0; i < files_to_delete.size(); ++i)
+	{
+		App->file_system->Remove(files_to_delete[i].c_str());
+	}
+
+	files_to_delete.clear();
+	resource_uids.clear();
+
+	return ret;
+}
+
+bool M_ResourceManager::GetResourceUIDsFromMeta(const char* assets_path, std::vector<uint32>& resource_UIDs)
+{
+	bool ret = true;
+
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not get Resource UIDs from Meta! Error: Given Assets Path was nullptr.");
+		return false;
+	}
+
+	std::string error_string = "[ERROR] Resource Manager: Could not get Resource UIDs from { " + std::string(assets_path) + " }'s Meta";
+
+	char* buffer					= nullptr;
+	ParsonNode meta_root			= LoadMetaFile(assets_path, &buffer);
+	ParsonArray contained_array		= meta_root.GetArray("ContainedResources");
+	RELEASE_ARRAY(buffer);
+
+	if (!meta_root.NodeIsValid())
+	{
+		LOG("%s! Error: Given Assets Path had no correspondent Meta File.", error_string.c_str());
+		return false;
+	}
+	if (!contained_array.ArrayIsValid())
+	{
+		LOG("%s! Error: Contained Array in Meta File was not valid.", error_string.c_str());
+		return false;
+	}
+
+	// --- MAIN RESOURCE
+	uint32 resource_uid = (uint32)meta_root.GetNumber("UID");
+	if (resource_uid == 0)
+	{
+		LOG("%s! Error: Main Resource UID was 0.", error_string.c_str());
+		return false;
+	}
+
+	resource_UIDs.push_back(resource_uid);
+
+	// --- CONTAINED RESOURCES
+	uint32 contained_uid		= 0;
+	ParsonNode contained_node	= ParsonNode();
+	for (uint i = 0; i < contained_array.size; ++i)
+	{
+		contained_node = contained_array.GetNode(i);
+		if (!contained_node.NodeIsValid())
+		{
+			continue;
+		}
+
+		contained_uid = 0;																									// Resetting the contained uid
+		contained_uid = (uint32)contained_node.GetNumber("UID");
+		if (contained_uid == 0)
+		{
+			LOG("[WARNING] Resource Manager: Contained UID was not valid!");
+			continue;
+		}
+
+		resource_UIDs.push_back(contained_uid);
+	}
+
+	return ret;
+}
+
+bool M_ResourceManager::GetLibraryFilePathsFromMeta(const char* assets_path, std::vector<std::string>& file_paths)
+{
+	bool ret = true;
+	
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not get Library File Paths from Meta File! Error: Given Assets Path was nullptr.");
+		return false;
+	}
+	
+	std::string error_string = "[ERROR] Resoruce Manager: Could not get Library File Paths from { " + std::string(assets_path) + " }'s Meta File";
+
+	char* buffer					= nullptr;
+	ParsonNode meta_root			= LoadMetaFile(assets_path, &buffer);
+	ParsonArray contained_array		= meta_root.GetArray("ContainedResources");
+	RELEASE_ARRAY(buffer);
+
+	if (!meta_root.NodeIsValid())
+	{
+		LOG("%s! Error: Given Assets Path had no associated .meta file.", error_string.c_str());
+	}
+	if (!contained_array.ArrayIsValid())
+	{
+		LOG("%s! Error: ContainedResources array in Meta File was not valid.", error_string.c_str());
+		return false;
+	}
+
+	std::string directory = "[NONE]";
+	std::string extension = "[NONE]";
+
+	// --- MAIN RESOURCE
+	uint32 resource_uid		= (uint32)meta_root.GetNumber("UID");
+	RESOURCE_TYPE type		= (RESOURCE_TYPE)meta_root.GetNumber("Type");
+	bool success			= GetLibraryDirectoryAndExtensionFromType(type, directory, extension);
+	if (!success)
+	{
+		LOG("%s! Error: Could not get the Library Directory and Extension from Resource Type.", error_string.c_str());
+		return false;
+	}
+	if (resource_uid == 0)
+	{
+		LOG("%s! Error: Main Resource UID was 0.", error_string.c_str());
+		return false;
+	}
+	if (directory == "[NONE]" || extension == "[NONE]")
+	{
+		LOG("%s! Error: Main Resource Library Directory or Extension strings were not valid.", error_string.c_str());
+		return false;
+	}
+
+	std::string library_path = directory + std::to_string(resource_uid) + extension;
+	file_paths.push_back(library_path);
+
+	// --- CONTAINED RESOURCES
+	ParsonNode contained_node		= ParsonNode();
+	uint32 contained_uid			= 0;
+	RESOURCE_TYPE contained_type	= RESOURCE_TYPE::NONE;
+	std::string contained_path		= "[NONE]";
+	for (uint i = 0; i < contained_array.size; ++i)
+	{
+		contained_node = contained_array.GetNode(i);
+		if (!contained_node.NodeIsValid())
+		{
+			continue;
+		}
+
+		directory = "[NONE]";
+		extension = "[NONE]";
+
+		contained_uid	= (uint32)contained_node.GetNumber("UID");
+		contained_type	= (RESOURCE_TYPE)contained_node.GetNumber("Type");
+		success			= GetLibraryDirectoryAndExtensionFromType(contained_type, directory, extension);
+		if (!success)
+		{
+			continue;
+		}
+		if (contained_uid == 0)
+		{
+			continue;
+		}
+		if (directory == "[NONE]" || extension == "[NONE]")
+		{
+			continue;
+		}
+
+		contained_path = directory + std::to_string(contained_uid) + extension;
+		file_paths.push_back(contained_path);
+	}
+
+	return ret;
+}
+
+bool M_ResourceManager::GetLibraryDirectoryAndExtensionFromType(const RESOURCE_TYPE& type, std::string& directory, std::string& extension)
+{
+	bool ret = true;
+	
+	switch (type)
+	{
+	case RESOURCE_TYPE::MODEL:
+		directory = MODELS_PATH;
+		extension = MODELS_EXTENSION;
+		break;
+	case RESOURCE_TYPE::MESH:
+		directory = MESHES_PATH;
+		extension = MESHES_EXTENSION;
+		break;
+	case RESOURCE_TYPE::MATERIAL:
+		directory = MATERIALS_PATH;
+		extension = MATERIALS_EXTENSION;
+		break;
+	case RESOURCE_TYPE::TEXTURE:
+		directory = TEXTURES_PATH;
+		extension = TEXTURES_EXTENSION;
+		break;
+	case RESOURCE_TYPE::FOLDER:
+		directory = FOLDERS_PATH;
+		extension = FOLDERS_EXTENSION;
+		break;
+	case RESOURCE_TYPE::SCENE:
+		directory = SCENES_PATH;
+		extension = SCENES_EXTENSION;
+		break;
+	case RESOURCE_TYPE::ANIMATION:
+		directory = ANIMATIONS_PATH;
+		extension = ANIMATIONS_EXTENSION;
+		break;
+	case RESOURCE_TYPE::NONE:
+		ret = false;
+		break;
+	}
+
+	return ret;
+}
+
+bool M_ResourceManager::LoadMetaLibraryPairsIntoLibrary(const char* assets_path)
+{
+	bool ret = true;
+	
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not load Meta Library Pairs into Library! Error: Given Assets Path was nullptr.");
+		return false;
+	}
+
+	std::map<uint32, std::string> library_pairs;
+	GetLibraryPairsFromMeta(assets_path, library_pairs);
+
+	std::map<uint32, std::string>::iterator item;
+	for (item = library_pairs.begin(); item != library_pairs.end(); ++item)
+	{
+		library.emplace(item->first, item->second);
+	}
+
+	library_pairs.clear();
+
+	return ret;
+}
+
+bool M_ResourceManager::GetLibraryPairsFromMeta(const char* assets_path, std::map<uint32, std::string>& pairs)
+{
+	bool ret = true;
+
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not get Library Pairs from File's associated Meta File! Error: Given Assets Path was nullptr.");
+		return false;
+	}
+
+	std::string error_string = "[ERROR] Resource Manager: Could not get Libarary Pairs from { " + std::string(assets_path) + " }'s associated Meta File";
+
+	std::vector<uint32> resource_uids;
+	std::vector<std::string> library_paths;
+
+	GetResourceUIDsFromMeta(assets_path, resource_uids);
+	GetLibraryFilePathsFromMeta(assets_path, library_paths);
+
+	if (resource_uids.size() != library_paths.size())
+	{
+		LOG("%s! Error: Mismatched amount of Resource UIDs and Library Paths.", error_string.c_str());
+	}
+
+	for (uint i = 0; i < resource_uids.size(); ++i)
+	{
+		pairs.emplace(resource_uids[i], library_paths[i]);
+	}
+
+	resource_uids.clear();
+	library_paths.clear();
+
+	return ret;
+}
+
+uint64 M_ResourceManager::GetAssetFileModTimeFromMeta(const char* assets_path)
+{
+	uint64 ret = 0;
+	
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not get Library File Paths from Meta File! Error: Given Assets Path was nullptr.");
+		return 0;
+	}
+
+	std::string error_string = "[ERROR] Resoruce Manager: Could not get Asset File Mod Time from { " + std::string(assets_path) + " }'s Meta File";
+
+	char* buffer					= nullptr;
+	ParsonNode meta_root			= LoadMetaFile(assets_path, &buffer);
+	ParsonArray contained_array		= meta_root.GetArray("ContainedResources");
+	RELEASE_ARRAY(buffer);
+
+	if (!meta_root.NodeIsValid())
+	{
+		LOG("%s! Error: Given Assets Path had no associated .meta file.", error_string.c_str());
+		return 0;
+	}
+	if (!contained_array.ArrayIsValid())
+	{
+		LOG("%s! Error: ContainedResources array in Meta File was not valid.", error_string.c_str());
+		return 0;
+	}
+
+	ret = (uint64)meta_root.GetNumber("ModificationTime");
+
+	return ret;
+}
+
 // --- IMPORT FILE METHODS--
 uint32 M_ResourceManager::ImportFile(const char* assets_path)
 {
 	uint32 resource_uid = 0;
-
-	assets_path = GetValidAssetsPath(assets_path);
 
 	if (assets_path == nullptr)
 	{
@@ -169,33 +634,39 @@ uint32 M_ResourceManager::ImportFile(const char* assets_path)
 		return 0;
 	}
 
-	// Get Metas, Check Metas, Choose to Import or Load.
-	bool meta_is_valid = MetaFileIsValid(assets_path);
+	assets_path			= GetValidAssetsPath(assets_path);
+	bool meta_is_valid	= MetaFileIsValid(assets_path);
 	if (!meta_is_valid)
 	{
+		DeleteFromLibrary(assets_path);																				// Cleaning any remaining Library files.
+		
 		resource_uid = ImportFromAssets(assets_path); 
 
 		if (resource_uid == 0)
 		{
-			LOG("[ERROR] Resource Manager: Could not Import File %s! Error: See [IMPORTER] and Resource Manager ERRORS.", assets_path);
+			LOG("[ERROR] Resource Manager: Could not Import File { %s }! Error: See [IMPORTER] and Resource Manager ERRORS.", assets_path);
 			return 0;
 		}
 	}
 	else
 	{
-		LOG("[WARNING] Resource Manager: Could not Import File to Library! Error: The file was already in the Library.");
+		LOG("[WARNING] Resource Manager: The File to Import was already in the Library!");
 
-		char* buffer			= nullptr;
-		ParsonNode meta_root	= LoadMetaFile(assets_path, &buffer);
-		if (!meta_root.NodeIsValid())
+		std::map<uint32, std::string> library_items;
+		GetLibraryPairsFromMeta(assets_path, library_items);
+
+		std::map<uint32, std::string>::iterator item;
+		for (item = library_items.begin(); item != library_items.end(); ++item)
 		{
-			LOG("[ERROR] Resource Manager: Could not Load File from the given Assets Path! Error: Could not get the Meta Root Node.");
-			return 0;
+			if (library.find(item->first) == library.end())
+			{
+				library.emplace(item->first, item->second);
+			}
 		}
 
-		resource_uid = (uint32)meta_root.GetNumber("UID");
+		resource_uid = library_items.begin()->first;
 
-		RELEASE_ARRAY(buffer);
+		library_items.clear();
 	}
 
 	return resource_uid;
@@ -221,24 +692,24 @@ uint32 M_ResourceManager::ImportFromAssets(const char* assets_path)
 		bool success = false;
 		switch (type)
 		{
-		case RESOURCE_TYPE::MODEL:		{success = Importer::ImportScene(buffer, read, (R_Model*)resource); }		break;
-		case RESOURCE_TYPE::MESH:		{success = Importer::ImportMesh(buffer, (R_Mesh*)resource); }				break;
-		case RESOURCE_TYPE::TEXTURE:	{success = Importer::ImportTexture(buffer, read, (R_Texture*)resource); }	break;
+		case RESOURCE_TYPE::MODEL:		{ success = Importer::ImportScene(buffer, read, (R_Model*)resource); }		break;
+		case RESOURCE_TYPE::MESH:		{ success = Importer::ImportMesh(buffer, (R_Mesh*)resource); }				break;
+		case RESOURCE_TYPE::TEXTURE:	{ success = Importer::ImportTexture(buffer, read, (R_Texture*)resource); }	break;
+		case RESOURCE_TYPE::SCENE:		{ /*success = HAVE A FUNCTIONAL R_SCENE AND LOAD/SAVE METHODS*/}			break;
 		}
+
+		RELEASE_ARRAY(buffer);
 
 		if (!success)
 		{
 			LOG("[ERROR] Resource Manager: Could not Import File %s! Error: Check for [IMPORTER] errors in the Console Panel.", assets_path);
+			DeallocateResource(resource);
 			return 0;
 		}
 
-		SaveResourceToLibrary(resource);
-
 		resource_uid = resource->GetUID();
-
+		SaveResourceToLibrary(resource);
 		DeallocateResource(resource);
-
-		RELEASE_ARRAY(buffer);
 	}
 	else
 	{
@@ -263,8 +734,10 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 		return 0;
 	}
 
-	char* buffer = nullptr;
+	char* buffer			= nullptr;
 	ParsonNode meta_root	= LoadMetaFile(assets_path, &buffer);
+	RELEASE_ARRAY(buffer);
+
 	bool meta_is_valid		= MetaFileIsValid(meta_root);
 	if (!meta_root.NodeIsValid())
 	{
@@ -274,7 +747,6 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 	if (!meta_is_valid)
 	{
 		LOG("%s! Error: Could not Validate the Meta File.", error_string.c_str());
-		RELEASE_ARRAY(buffer);
 		return 0;
 	}
 
@@ -283,7 +755,6 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 	
 	if (resources.find(resource_uid) != resources.end())
 	{
-		RELEASE_ARRAY(buffer);
 		return resource_uid;																									// If the File To Load's Resource is already in memory.
 	}	
 
@@ -292,7 +763,6 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 	if (result == nullptr)
 	{
 		LOG("[ERROR] Resource Manager: Could not Allocate Resource %lu in memory!", resource_uid);
-		RELEASE_ARRAY(buffer);
 		return 0;
 	}
 
@@ -323,9 +793,6 @@ uint32 M_ResourceManager::LoadFromLibrary(const char* assets_path)
 		contained_path.clear();
 	}
 
-	RELEASE_ARRAY(buffer);
-	error_string.clear();
-
 	return resource_uid;
 }
 
@@ -352,7 +819,7 @@ uint M_ResourceManager::SaveResourceToLibrary(Resource* resource)
 	case RESOURCE_TYPE::ANIMATION:	{ written = Importer::Animations::Save((R_Animation*)resource, &buffer); }	break;
 	}
 
-	RELEASE_ARRAY(buffer);																												// TMP Commented. Breaks with MMGR
+	RELEASE_ARRAY(buffer);
 
 	if (written == 0)
 	{
@@ -391,8 +858,6 @@ const char* M_ResourceManager::GetValidAssetsPath(const char* assets_path)
 		LOG("[ERROR] Resource Manager: Could not validate the Assets Path! Error: Given path did not contain the Assets Directory");
 		assets_path = nullptr;
 	}
-
-	norm_path.clear();
 
 	return assets_path;
 }
@@ -520,8 +985,6 @@ bool M_ResourceManager::SaveMetaFile(Resource* resource) const
 
 	RELEASE_ARRAY(buffer);
 
-	path.clear();
-
 	return ret;
 }
 
@@ -539,8 +1002,6 @@ ParsonNode M_ResourceManager::LoadMetaFile(const char* assets_path, char** buffe
 		LOG("[ERROR] Resource Manager: Could not load the .meta File with Path: %s! Error: No Meta File exists with the given path.", meta_path);
 	}
 
-	meta_path.clear();
-
 	return ParsonNode(*buffer);
 }
 
@@ -548,53 +1009,57 @@ bool M_ResourceManager::MetaFileIsValid(const char* assets_path)
 {
 	bool ret = true;
 
-	std::string meta_path		= assets_path + std::string(META_EXTENSION);													// Will be used for [ERROR] Logs.
-	std::string error_string	= "[ERROR] Resource Manager: Could not validate Meta File " + meta_path;
-	
-	char* buffer = nullptr;
-	ParsonNode meta_root = LoadMetaFile(assets_path, &buffer);
+	std::string meta_path			= assets_path + std::string(META_EXTENSION);													// Will be used for [ERROR] Logs.
+	std::string error_string		= "[ERROR] Resource Manager: Could not validate Meta File " + meta_path;
+
+	char* buffer					= nullptr;
+	ParsonNode meta_root			= LoadMetaFile(assets_path, &buffer);
+	ParsonArray contained_array		= meta_root.GetArray("ContainedResources");
+	RELEASE_ARRAY(buffer);
+
 	if (!meta_root.NodeIsValid())
 	{
 		LOG("%s! Error: Could not get the Meta Root Node!", error_string.c_str());
-		meta_path.clear();
-		return false;
-	}
-
-	uint resource_uid				= (uint)meta_root.GetNumber("UID");
-	ParsonArray contained_array		= meta_root.GetArray("ContainedResources");
-
-	if (library.find(resource_uid) == library.end())
-	{
-		LOG("%s! Error: Resource UID could not be found in Library.", error_string.c_str());
-		meta_path.clear();
-		RELEASE_ARRAY(buffer);
 		return false;
 	}
 	if (!contained_array.ArrayIsValid())
 	{
 		LOG("%s! Error: Could not get the ContainedResources Array from Meta Root!", error_string.c_str());
-		meta_path.clear();
-		RELEASE_ARRAY(buffer);
 		return false;
 	}
 
+	std::string library_path	= meta_root.GetString("LibraryPath");
+	uint32 resource_uid			= (uint32)meta_root.GetNumber("UID");
+	if (!App->file_system->Exists(library_path.c_str()))
+	{
+		LOG("%s! Error: Resource Custom File could not be found in Library.", error_string.c_str());
+		return false;
+	}
+	if (library.find(resource_uid) == library.end())
+	{
+		LOG("%s! Error: Resource UID could not be found in Library.", error_string.c_str());
+		return false;
+	}
+
+	ParsonNode contained_node			= ParsonNode();
+	uint32 contained_uid				= 0;
+	std::string contained_library_path	= "[NONE]";
 	for (uint i = 0; i < contained_array.size; ++i)
 	{
-		ParsonNode contained_node		= contained_array.GetNode(i);
-		uint32 contained_resource_uid	= (uint32)contained_node.GetNumber("UID");
-
-		if (library.find(contained_resource_uid) == library.end())
+		contained_node			= contained_array.GetNode(i);
+		contained_uid			= (uint32)contained_node.GetNumber("UID");
+		contained_library_path	= contained_node.GetString("LibraryPath");
+		if (!App->file_system->Exists(contained_library_path.c_str()))
+		{
+			LOG("%s! Error: Contained Resource Custom File could not be found in Library.", error_string.c_str());
+			return false;
+		}
+		if (library.find(contained_uid) == library.end())
 		{
 			LOG("%s! Error: Contained Resource UID could not be found in Library.", error_string.c_str());
-			meta_path.clear();
-			RELEASE_ARRAY(buffer);
 			return false;
 		}
 	}
-
-	RELEASE_ARRAY(buffer);
-	error_string.clear();
-	meta_path.clear();
 
 	return ret;
 }
@@ -605,50 +1070,56 @@ bool M_ResourceManager::MetaFileIsValid(ParsonNode& meta_root)
 
 	std::string error_string = "[ERROR] Resource Manager: Could not validate Meta File";
 
+	ParsonArray contained_array = meta_root.GetArray("ContainedResources");
 	if (!meta_root.NodeIsValid())
 	{
 		LOG("%s! Error: Could not get the Meta Root Node!", error_string.c_str());
-		error_string.clear();
-		return false;
-	}
-
-	uint resource_uid				= (uint)meta_root.GetNumber("UID");
-	ParsonArray contained_array		= meta_root.GetArray("ContainedResources");
-
-	if (library.find(resource_uid) == library.end())
-	{
-		LOG("%s! Error: Resource UID could not be found in Library.", error_string.c_str());
-		error_string.clear();
 		return false;
 	}
 	if (!contained_array.ArrayIsValid())
 	{
 		LOG("%s! Error: Could not get the ContainedResources Array from Meta Root!", error_string.c_str());
-		error_string.clear();
 		return false;
 	}
 
+	std::string library_path		= meta_root.GetString("LibraryPath");
+	uint32 resource_uid				= (uint32)meta_root.GetNumber("UID");
+	if (!App->file_system->Exists(library_path.c_str()))
+	{
+		LOG("%s! Error: Resource Custom File could not be found in Library.", error_string.c_str());
+		return false;
+	}
+	if (library.find(resource_uid) == library.end())
+	{
+		LOG("%s! Error: Resource UID could not be found in Library.", error_string.c_str());
+		return false;
+	}
+
+	ParsonNode contained_node			= ParsonNode();
+	std::string contained_library_path	= "[NONE]";
+	uint32 contained_uid				= 0;
 	for (uint i = 0; i < contained_array.size; ++i)
 	{
-		ParsonNode contained_node		= contained_array.GetNode(i);
+		contained_node = contained_array.GetNode(i);
 		if (!contained_node.NodeIsValid())
 		{
 			LOG("%s! Error: Could not parse node %u from the Contained Array.", error_string.c_str(), i);
-			error_string.clear();
 			return false;
 		}
 
-		uint32 contained_resource_uid	= (uint32)contained_node.GetNumber("UID");
-
-		if (library.find(contained_resource_uid) == library.end())
+		contained_library_path	= contained_node.GetString("LibraryPath");
+		contained_uid			= (uint32)contained_node.GetNumber("UID");
+		if (!App->file_system->Exists(contained_library_path.c_str()))
+		{
+			LOG("%s! Error: Contained Resource Custom File could not be found in Library.", error_string.c_str());
+			return false;
+		}
+		if (library.find(contained_uid) == library.end())
 		{
 			LOG("%s! Error: Contained Resource UID could not be found in Library.", error_string.c_str());
-			error_string.clear();
 			return false;
 		}
 	}
-
-	error_string.clear();
 
 	return ret;
 }
@@ -717,7 +1188,7 @@ bool M_ResourceManager::DeleteResource(const uint32& UID)
 	if(item == resources.end())
 	{
 		LOG("[ERROR] Resource Manager: Resource to delete was not inside the resources std::map!");
-		ret = false;
+		return false;
 	}
 
 	resource_to_delete = item->second;
@@ -855,6 +1326,8 @@ Resource* M_ResourceManager::AllocateResource(const uint32& UID, const char* ass
 	case RESOURCE_TYPE::ANIMATION:	{ success = Importer::Animations::Load(buffer, (R_Animation*)resource); }		break;
 	}
 
+	RELEASE_ARRAY(buffer);
+
 	if (success)
 	{
 		resources.emplace(resource->GetUID(), resource);
@@ -865,9 +1338,6 @@ Resource* M_ResourceManager::AllocateResource(const uint32& UID, const char* ass
 		DeleteResource(resource);																									// ATTENTION: This deletes from resources and library!.
 		LOG("%s! Error: Importer could not load the Resource Data from File [%s].", error_string.c_str(), library_path);
 	}
-
-	RELEASE_ARRAY(buffer);
-	error_string.clear();
 
 	return resource;
 }

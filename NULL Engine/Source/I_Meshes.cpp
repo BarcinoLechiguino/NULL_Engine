@@ -213,8 +213,6 @@ uint Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 		LOG("[ERROR] Meshes Importer: Could not Save { %s } to Library! Error: File System could not Write File.", r_mesh->GetAssetsFile());
 	}
 
-	path.clear();
-
 	return written;
 }
 

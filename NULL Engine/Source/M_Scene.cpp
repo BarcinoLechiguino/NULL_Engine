@@ -76,8 +76,8 @@ bool M_Scene::Start()
 	
 	CreateSceneCamera("SceneCamera");
 
-	uint32 model_uid	= App->resource_manager->ImportFile(DEFAULT_SCENE);
-	model_uid			= App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
+	/*uint32 model_uid	= App->resource_manager->ImportFile(DEFAULT_SCENE);*/
+	uint32 model_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
 	GenerateGameObjectsFromModel(model_uid);
 	SaveScene();																					// Autosave just right after loading the scene.
 
@@ -238,10 +238,6 @@ bool M_Scene::SaveScene(const char* scene_name) const
 
 	RELEASE_ARRAY(buffer);
 
-	name.clear();
-	path.clear();
-	library_path.clear();
-
 	return ret;
 }
 
@@ -263,16 +259,17 @@ bool M_Scene::LoadScene(const char* path)
 
 		ParsonNode new_root			= ParsonNode(buffer);
 		ParsonArray objects_array	= new_root.GetArray("Game Objects");
+		RELEASE_ARRAY(buffer);
 
 		std::map<uint32, GameObject*> tmp;
 
 		for (uint i = 0; i < objects_array.size; ++i)																			// Getting all the GameObjects in the ParsonArray
 		{
 			ParsonNode object_node = objects_array.GetNode(i);
-			//if (!object_node.NodeIsValid())
-			//{
-			//	continue;
-			//}
+			if (!object_node.NodeIsValid())
+			{
+				continue;
+			}
 
 			GameObject* game_object = new GameObject();
 
@@ -317,10 +314,7 @@ bool M_Scene::LoadScene(const char* path)
 		}
 
 		tmp.clear();
-
 		App->renderer->ClearRenderers();
-
-		RELEASE_ARRAY(buffer);
 	}
 
 	return ret;

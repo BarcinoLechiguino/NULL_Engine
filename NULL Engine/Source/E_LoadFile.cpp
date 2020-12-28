@@ -70,7 +70,7 @@ void E_LoadFile::DrawFileBrowser()
 
 	if (ImGui::TreeNodeEx(ASSETS_PATH, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		DrawDirectoriesTree(ASSETS_PATH, META_EXTENSION);
+		DrawDirectoriesTree(ASSETS_PATH, DOTLESS_META_EXTENSION);
 		ImGui::TreePop();
 	}
 
@@ -121,7 +121,6 @@ void E_LoadFile::DrawDirectoriesTree(const char* root_directory, const char* ext
 		if (ImGui::TreeNodeEx(path.c_str(), 0, "%s/", directories[i].c_str()))
 		{
 			DrawDirectoriesTree(path.c_str(), extension_to_filter);
-			path.clear();
 			ImGui::TreePop();
 		}
 	}
@@ -130,6 +129,11 @@ void E_LoadFile::DrawDirectoriesTree(const char* root_directory, const char* ext
 
 	for (uint i = 0; i < files.size(); ++i)
 	{
+		if (App->file_system->GetFileExtension(files[i].c_str()) == extension_to_filter)
+		{
+			continue;
+		}
+		
 		if (ImGui::TreeNodeEx(files[i].c_str(), ImGuiTreeNodeFlags_Leaf))
 		{
 			if (ImGui::IsItemClicked())
@@ -150,5 +154,4 @@ void E_LoadFile::DrawDirectoriesTree(const char* root_directory, const char* ext
 
 	directories.clear();
 	files.clear();
-	root_dir.clear();
 }

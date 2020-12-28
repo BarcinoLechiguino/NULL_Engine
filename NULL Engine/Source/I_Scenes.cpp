@@ -83,8 +83,6 @@ void Importer::Scenes::Import(const char* buffer, uint size, R_Model* r_model)
 	Utilities::ai_materials.clear();
 	Utilities::loaded_nodes.clear();
 	Utilities::loaded_textures.clear();
-
-	error_string.clear();
 }
 
 void Importer::Scenes::Utilities::ProcessNode(const aiScene* ai_scene, const aiNode* ai_node, R_Model* r_model, const ModelNode& parent)
@@ -180,7 +178,6 @@ void Importer::Scenes::Utilities::ImportMesh(const char* node_name, const aiMesh
 {
 	std::string assets_path = ASSETS_MODELS_PATH + std::string(node_name) + MESHES_EXTENSION;						// As meshes are contained in models, the assets path is kind of made-up.
 	R_Mesh* r_mesh = (R_Mesh*)App->resource_manager->CreateResource(RESOURCE_TYPE::MESH, assets_path.c_str());
-	assets_path.clear();
 
 	Importer::Meshes::Import(ai_mesh, r_mesh);
 
@@ -197,8 +194,7 @@ void Importer::Scenes::Utilities::ImportMesh(const char* node_name, const aiMesh
 void Importer::Scenes::Utilities::ImportMaterial(const char* node_name, const aiMaterial* ai_material, R_Model* r_model, ModelNode& model_node)
 {
 	std::string mat_full_path	= App->file_system->GetDirectory(r_model->GetAssetsPath()) + node_name + MATERIALS_EXTENSION;
-	R_Material* r_material		= (R_Material*)App->resource_manager->CreateResource(RESOURCE_TYPE::MATERIAL, mat_full_path.c_str());		// Only considering one texture per mesh.
-	mat_full_path.clear();
+	R_Material* r_material		= (R_Material*)App->resource_manager->CreateResource(RESOURCE_TYPE::MATERIAL, mat_full_path.c_str());			// Only considering one texture per mesh.
 
 	if (r_material == nullptr)
 	{
@@ -304,9 +300,6 @@ uint Importer::Scenes::Save(const R_Model* r_model, char** buffer)
 		LOG("%s! Error: File System could not write the file.", error_string.c_str());
 	}
 
-	path.clear();
-	error_string.clear();
-
 	return written;
 }
 
@@ -357,8 +350,6 @@ bool Importer::Scenes::Load(const char* buffer, R_Model* r_model)
 	}
 
 	LOG("[STATUS] Importer: Successfully loaded Model { %s } from Library! UID: %lu", r_model->GetAssetsFile(), r_model->GetUID());
-
-	error_string.clear();
 
 	return ret;
 }

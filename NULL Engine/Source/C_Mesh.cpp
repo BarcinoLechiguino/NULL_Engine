@@ -83,8 +83,6 @@ bool C_Mesh::LoadState(ParsonNode& root)
 		LOG("[ERROR] Loading Scene: Could not find Mesh %s with UID: %u! Try reimporting the model.", root.GetString("File"), (uint32)root.GetNumber("UID"));
 	}
 
-	assets_path.clear();
-
 	return ret;
 }
 

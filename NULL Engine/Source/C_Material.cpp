@@ -107,8 +107,6 @@ bool C_Material::LoadState(ParsonNode& root)
 		{
 			LOG("[ERROR] Loading Scene: Could not find Material %s with UID: %u! Try reimporting the model.", material_node.GetString("File"), (uint32)material_node.GetNumber("UID"));
 		}
-
-		material_assets_path.clear();
 	}
 
 	if (texture_node.NodeIsValid())
@@ -122,8 +120,6 @@ bool C_Material::LoadState(ParsonNode& root)
 		{
 			LOG("[ERROR] Loading Scene: Could not find Texture %s with UID: %u! Try reimporting the model.", texture_node.GetString("File"), (uint32)texture_node.GetNumber("UID"));
 		}
-
-		texture_assets_path.clear();
 	}
 	else
 	{

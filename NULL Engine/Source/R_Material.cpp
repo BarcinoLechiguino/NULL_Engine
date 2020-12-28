@@ -69,4 +69,5 @@ texture_assets_path	(texture_assets_path)
 void MaterialData::CleanUp()
 {
 	texture_assets_path.clear();
+	texture_assets_path.shrink_to_fit();
 }

@@ -486,9 +486,6 @@ void Application::AddEditorLog(const char* log)
 		std::string short_log = full_log.substr(log_start, log_end);				// Returns the string that is within the given positions.
 
 		editor->AddConsoleLog(short_log.c_str());									// Priorized readability over reducing to AddConsoleLog(full_log.substr(log_start, log_end)).
-
-		short_log.clear();
-		full_log.clear();
 	}
 }
 

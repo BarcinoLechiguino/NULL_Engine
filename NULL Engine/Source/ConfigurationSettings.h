@@ -22,6 +22,6 @@
 #define TITLE					"NULL Engine"
 #define ORGANIZATION			"Angel Gonzalez // UPC - CITM - TTC"
 
-#define DEFAULT_SCENE			"Assets/Models/street/Street Environment_V01.FBX"
+#define DEFAULT_SCENE			"Assets/Models/street/Street environment_V01.FBX"
 
 #endif // !__CONFIGURATION_SETTINGS_H__

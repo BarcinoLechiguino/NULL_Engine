@@ -11,7 +11,9 @@ class Resource;
 
 enum class RESOURCE_TYPE;
 
-typedef unsigned __int32 uint32;
+typedef unsigned int		uint;
+typedef unsigned __int32	uint32;
+typedef unsigned __int64	uint64;
 
 class M_ResourceManager : public Module
 {
@@ -29,6 +31,32 @@ public:
 	bool			SaveConfiguration	(ParsonNode& configuration) const override;
 	bool			LoadConfiguration	(ParsonNode& configuration) override;
 
+public:																												// --- ASSETS MONITORING METHODS ---
+	void			RefreshAssetFiles				();
+	void			RefreshAssetsDirectory			(std::vector<std::string>& files_to_import, std::vector<std::string>& files_to_update, std::vector<std::string>& files_to_delete);
+	
+	void			FindFilesToImport				(const std::vector<std::string>& asset_files, const std::vector<std::string>& meta_files, 
+														std::map<std::string, std::string>& file_pairs, std::vector<std::string>& files_to_import);
+	
+	void			FindFilesToUpdate				(const std::map<std::string, std::string>& file_pairs, std::vector<std::string>& files_to_update);
+
+	void			FindFilesToDelete				(const std::vector<std::string>& meta_files, const std::map<std::string, std::string>& file_pairs, 
+														std::vector<std::string>& files_to_delete);
+
+	void			LoadValidFilesIntoLibrary		(const std::map<std::string, std::string>& file_pairs);
+
+	bool			DeleteFromAssets				(const char* assets_path);
+	bool			DeleteFromLibrary				(const char* assets_path);
+
+	bool			GetResourceUIDsFromMeta						(const char* assets_path, std::vector<uint32>& resource_UIDs);
+	bool			GetLibraryFilePathsFromMeta					(const char* assets_path, std::vector<std::string>& file_paths);
+	bool			GetLibraryDirectoryAndExtensionFromType		(const RESOURCE_TYPE& type, std::string& directory, std::string& extension);
+	
+	bool			LoadMetaLibraryPairsIntoLibrary				(const char* assets_path);
+	bool			GetLibraryPairsFromMeta						(const char* assets_path, std::map<uint32, std::string>& pairs);
+
+	uint64			GetAssetFileModTimeFromMeta		(const char* assets_path);
+
 public:																												// --- IMPORT FILE METHODS ---
 	uint32			ImportFile						(const char* assets_path);										// 
 	uint32			ImportFromAssets				(const char* assets_path);										// 
@@ -36,12 +64,12 @@ public:																												// --- IMPORT FILE METHODS ---
 	
 	uint32			LoadFromLibrary					(const char* assets_path);										// 
 
-	const char*		GetValidAssetsPath				(const char* assets_path);
-	RESOURCE_TYPE	GetTypeFromAssetsExtension		(const char* assets_path);
-	RESOURCE_TYPE	GetTypeFromLibraryExtension		(const char* library_path);
+	const char*		GetValidAssetsPath				(const char* assets_path);										// 
+	RESOURCE_TYPE	GetTypeFromAssetsExtension		(const char* assets_path);										// 
+	RESOURCE_TYPE	GetTypeFromLibraryExtension		(const char* library_path);										// 
 
-	void			SetResourceAssetsPathAndFile	(const char* assets_path, Resource* resource);
-	void			SetResourceLibraryPathAndFile	(Resource* resource);
+	void			SetResourceAssetsPathAndFile	(const char* assets_path, Resource* resource);					// 
+	void			SetResourceLibraryPathAndFile	(Resource* resource);											// 
 
 public:																												// --- META FILE METHODS ---
 	bool			SaveMetaFile					(Resource* resource) const;										//
@@ -66,7 +94,6 @@ public:																												// --- RESOURCE METHODS ---
 	
 private:
 	std::map<uint32, Resource*>		resources;																		// Resources currently in memory.
-	std::map<std::string, uint32>	loaded_files;																	// 
 	std::map<uint32, std::string>	library;																		// UID and Library Path string of all loaded resources.
 
 	float							file_refresh_timer;																// 
