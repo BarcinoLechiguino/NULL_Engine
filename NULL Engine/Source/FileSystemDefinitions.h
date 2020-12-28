@@ -8,6 +8,8 @@
 #define ASSETS_SCENES_PATH		"Assets/Scenes/"
 #define ASSETS_TEXTURES_PATH	"Assets/Textures/"
 
+#define ENGINE_PATH				"Engine/"
+#define ENGINE_DIRECTORY		"Engine"
 #define CONFIGURATION_PATH		"Engine/Configuration/"
 #define DEFAULTS_PATH			"Engine/Defaults/"
 #define ICONS_PATH				"Engine/Icons/"

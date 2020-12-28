@@ -32,8 +32,9 @@ public:
 	bool			LoadConfiguration	(ParsonNode& configuration) override;
 
 public:																												// --- ASSETS MONITORING METHODS ---
-	void			RefreshAssetFiles				();
-	void			RefreshAssetsDirectory			(std::vector<std::string>& files_to_import, std::vector<std::string>& files_to_update, std::vector<std::string>& files_to_delete);
+	void			RefreshDirectoryFiles			(const char* directory);
+	void			RefreshDirectory				(const char* directory, std::vector<std::string>& files_to_import, 
+														std::vector<std::string>& files_to_update, std::vector<std::string>& files_to_delete);
 	
 	void			FindFilesToImport				(const std::vector<std::string>& asset_files, const std::vector<std::string>& meta_files, 
 														std::map<std::string, std::string>& file_pairs, std::vector<std::string>& files_to_import);
@@ -64,7 +65,7 @@ public:																												// --- IMPORT FILE METHODS ---
 	
 	uint32			LoadFromLibrary					(const char* assets_path);										// 
 
-	const char*		GetValidAssetsPath				(const char* assets_path);										// 
+	const char*		GetValidPath					(const char* assets_path);										// 
 	RESOURCE_TYPE	GetTypeFromAssetsExtension		(const char* assets_path);										// 
 	RESOURCE_TYPE	GetTypeFromLibraryExtension		(const char* library_path);										// 
 
@@ -75,6 +76,7 @@ public:																												// --- META FILE METHODS ---
 	bool			SaveMetaFile					(Resource* resource) const;										//
 	ParsonNode		LoadMetaFile					(const char* assets_path, char** buffer);						// Passing the buffer so it can be safely RELEASED after calling it.
 	
+	bool			HasMetaFile						(const char* assets_path);
 	bool			MetaFileIsValid					(const char* assets_path);
 	bool			MetaFileIsValid					(ParsonNode& meta_root);
 	bool			ResourceHasMetaType				(Resource* resource) const;

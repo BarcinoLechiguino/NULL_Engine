@@ -90,6 +90,7 @@
     <ClCompile Include="Source\FrameData.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\HardwareInfo.cpp" />
+    <ClCompile Include="Source\Icons.cpp" />
     <ClCompile Include="Source\Importer.cpp" />
     <ClCompile Include="Source\ImportSettings.cpp" />
     <ClCompile Include="Source\I_Animations.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="Source\FrameData.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\HardwareInfo.h" />
+    <ClInclude Include="Source\Icons.h" />
     <ClInclude Include="Source\Importer.h" />
     <ClInclude Include="Source\ImportSettings.h" />
     <ClInclude Include="Source\I_Animations.h" />

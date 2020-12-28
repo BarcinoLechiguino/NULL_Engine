@@ -94,6 +94,11 @@ R_Mesh* C_Mesh::GetMesh() const
 
 void C_Mesh::SetMesh(R_Mesh* r_mesh)
 {
+	if (this->r_mesh != nullptr)
+	{
+		App->resource_manager->FreeResource(this->r_mesh->GetUID());
+	}
+	
 	this->r_mesh = r_mesh;
 }
 

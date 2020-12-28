@@ -5,6 +5,7 @@
 #include "Log.h"																				// ----------------
 
 #include "Color.h"																				// Containers
+#include "Icons.h"																				// 
 #include "Primitive.h"																			// ----------
 
 #include "Application.h"																		// Application and Modules
@@ -12,6 +13,7 @@
 #include "M_Camera3D.h"																			// 
 #include "M_Input.h"																			// 
 #include "M_FileSystem.h"																		// 
+#include "M_ResourceManager.h"																	// 
 #include "M_Editor.h"																			// -----------------------
 
 #include "R_Mesh.h"																				// Resources
@@ -79,6 +81,31 @@ bool M_Renderer3D::Init(ParsonNode& configuration)
 
 	//InitFramebuffers();
 	LoadDebugTexture();
+
+	return ret;
+}
+
+bool M_Renderer3D::Start()
+{
+	bool ret = true;
+	
+	uint32 animation_icon_uid	= App->resource_manager->LoadFromLibrary(ANIMATION_ICON_PATH);
+	uint32 file_icon_uid		= App->resource_manager->LoadFromLibrary(FILE_ICON_PATH);
+	uint32 folder_icon_uid		= App->resource_manager->LoadFromLibrary(FOLDER_ICON_PATH);
+	uint32 material_icon_uid	= App->resource_manager->LoadFromLibrary(MATERIAL_ICON_PATH);
+	uint32 model_icon_uid		= App->resource_manager->LoadFromLibrary(MODEL_ICON_PATH);
+
+	R_Texture* animation_icon	= (R_Texture*)App->resource_manager->RequestResource(animation_icon_uid);
+	R_Texture* file_icon		= (R_Texture*)App->resource_manager->RequestResource(file_icon_uid);
+	R_Texture* folder_icon		= (R_Texture*)App->resource_manager->RequestResource(folder_icon_uid);
+	R_Texture* material_icon	= (R_Texture*)App->resource_manager->RequestResource(material_icon_uid);
+	R_Texture* model_icon		= (R_Texture*)App->resource_manager->RequestResource(model_icon_uid);
+
+	engine_icons.animation_icon = animation_icon;
+	engine_icons.file_icon		= file_icon;
+	engine_icons.folder_icon	= folder_icon;
+	engine_icons.material_icon	= material_icon;
+	engine_icons.model_icon		= model_icon;
 
 	return ret;
 }
@@ -643,6 +670,18 @@ void M_Renderer3D::DeleteFromMeshRenderers(C_Mesh* c_mesh_to_delete)
 	}
 }
 
+void M_Renderer3D::DeleteFromMeshRenderers(R_Mesh* r_mesh_to_delete)
+{
+	for (uint i = 0; i < mesh_renderers.size(); ++i)
+	{
+		if (mesh_renderers[i].c_mesh->GetMesh() == r_mesh_to_delete)
+		{
+			mesh_renderers[i].c_mesh->SetMesh(nullptr);
+			mesh_renderers.erase(mesh_renderers.begin() + i);
+		}
+	}
+}
+
 void M_Renderer3D::ClearRenderers()
 {
 	mesh_renderers.clear();
@@ -700,6 +739,11 @@ void M_Renderer3D::GenerateBuffers(const R_Mesh* mesh)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);																// Binds IBO with the GL_ARRAY_BUFFER biding point (target):
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->indices.size(), &mesh->indices[0], GL_STATIC_DRAW);	// Inits the data stored inside IBO and specifies how the data will be accessed.
 	}
+}
+
+Icons M_Renderer3D::GetEngineIcons() const
+{
+	return engine_icons;
 }
 
 uint M_Renderer3D::GetDebugTextureID() const

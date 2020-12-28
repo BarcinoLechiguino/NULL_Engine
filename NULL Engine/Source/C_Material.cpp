@@ -142,16 +142,16 @@ R_Texture* C_Material::GetTexture() const
 
 void C_Material::SetMaterial(R_Material* r_material)
 {
+	if (this->r_material != nullptr)
+	{
+		App->resource_manager->FreeResource(this->r_material->GetUID());
+	}
+	
 	this->r_material = r_material;
 }
 
 void C_Material::SetTexture(R_Texture* r_texture)
 {
-	//if (this->r_texture != nullptr)												// Change later to tex_id array.
-	//{
-	//	//this->r_texture->CleanUp();
-	//	//RELEASE(this->r_texture);
-	//}
 
 	if (this->r_texture != nullptr)
 	{

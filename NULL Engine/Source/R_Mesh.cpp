@@ -4,6 +4,9 @@
 
 #include "JSONParser.h"
 
+#include "Application.h"
+#include "M_Renderer3D.h"
+
 #include "R_Mesh.h"
 
 #define CHECKERS_WIDTH 64
@@ -28,6 +31,8 @@ R_Mesh::~R_Mesh()
 bool R_Mesh::CleanUp()
 {
 	bool ret = true;
+	
+	App->renderer->DeleteFromMeshRenderers(this);
 
 	// --- Delete Buffers
 	glDeleteBuffers(1, (GLuint*)&VBO);

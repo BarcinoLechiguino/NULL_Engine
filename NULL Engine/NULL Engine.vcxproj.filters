@@ -133,6 +133,9 @@
     <Filter Include="Source\6_Containers\ImportSettings\Settings">
       <UniqueIdentifier>{f5c81a1d-712c-465d-b0e1-38d2895750db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\6_Containers\Icons">
+      <UniqueIdentifier>{cbf7300c-306a-40d9-a473-8f4ce3303b95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -494,6 +497,9 @@
     </ClCompile>
     <ClCompile Include="Source\I_Animations.cpp">
       <Filter>Source\4_Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Icons.cpp">
+      <Filter>Source\6_Containers\Icons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1063,6 +1069,9 @@
     </ClInclude>
     <ClInclude Include="Source\I_Animations.h">
       <Filter>Source\4_Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Icons.h">
+      <Filter>Source\6_Containers\Icons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

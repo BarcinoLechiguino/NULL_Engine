@@ -24,4 +24,11 @@
 
 #define DEFAULT_SCENE			"Assets/Models/street/Street environment_V01.FBX"
 
+#define ANIMATION_ICON_PATH		"Engine/Icons/animation_icon.png"
+#define FILE_ICON_PATH			"Engine/Icons/file_icon.png"
+#define FOLDER_ICON_PATH		"Engine/Icons/folder_icon.png"
+#define MATERIAL_ICON_PATH		"Engine/Icons/material_icon.png"
+#define MODEL_ICON_PATH			"Engine/Icons/model_icon.png"
+#define ENGINE_ICON_PATH		"Engine/Icons/null_icon.png"
+
 #endif // !__CONFIGURATION_SETTINGS_H__

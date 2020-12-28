@@ -3,8 +3,9 @@
 
 #include "Macros.h"
 
-#include "Application.h"
+#include "Application.h" 
 #include "M_FileSystem.h"
+#include "M_Editor.h"
 
 #include "E_Project.h"
 
@@ -13,7 +14,8 @@
 #define MAX_DIRECTORY_SIZE 500
 
 E_Project::E_Project() : EditorPanel("Project"),
-directory_to_display	(nullptr)
+directory_to_display	(nullptr),
+icons_are_loaded		(false)
 {
 	directory_to_display = new char[MAX_DIRECTORY_SIZE];
 
@@ -28,6 +30,12 @@ E_Project::~E_Project()
 bool E_Project::Draw(ImGuiIO& io)
 {
 	bool ret = true;
+
+	if (!icons_are_loaded)
+	{
+		App->editor->GetEngineIconsThroughEditor(engine_icons);
+		icons_are_loaded = true;
+	}
 
 	ImGui::Begin("Project##", (bool*)0, ImGuiWindowFlags_MenuBar);
 
@@ -81,7 +89,7 @@ void E_Project::DrawAssetsTree()
 
 	if (ImGui::TreeNodeEx(ASSETS_PATH, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		DrawDirectoriesTree(ASSETS_PATH, META_EXTENSION);
+		DrawDirectoriesTree(ASSETS_PATH, DOTLESS_META_EXTENSION);
 		ImGui::TreePop();
 	}
 
@@ -93,6 +101,16 @@ void E_Project::DrawFolderExplorer() const
 	ImGui::Begin("FolderExplorer", false);
 
 	ImGui::Text("WORK IN PROGRESS");
+
+	ImGui::Image((ImTextureID)engine_icons.GetAnimationIconID(),	ImVec2(60, 60),		ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::SameLine();
+	ImGui::Image((ImTextureID)engine_icons.GetFileIconID(),			ImVec2(60, 60),		ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::SameLine();
+	ImGui::Image((ImTextureID)engine_icons.GetFolderIconID(),		ImVec2(60, 60),		ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::SameLine();
+	ImGui::Image((ImTextureID)engine_icons.GetMaterialIconID(),		ImVec2(60, 60),		ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::SameLine();
+	ImGui::Image((ImTextureID)engine_icons.GetModelIconID(),		ImVec2(60, 60),		ImVec2(0, 1), ImVec2(1, 0));
 
 	ImGui::End();
 }
@@ -121,6 +139,11 @@ void E_Project::DrawDirectoriesTree(const char* root_directory, const char* exte
 
 	for (uint i = 0; i < files.size(); ++i)
 	{
+		if (App->file_system->GetFileExtension(files[i].c_str()) == extension_to_filter)
+		{
+			continue;
+		}
+		
 		if (ImGui::TreeNodeEx(files[i].c_str(), ImGuiTreeNodeFlags_Leaf))
 		{
 			if (ImGui::IsItemClicked())
