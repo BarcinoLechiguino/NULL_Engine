@@ -1205,6 +1205,37 @@ bool M_ResourceManager::ResourceHasMetaType(Resource* resource) const
 			|| type == RESOURCE_TYPE::TEXTURE);
 }
 
+Resource* M_ResourceManager::GetResourceFromMetaFile(const char* assets_path)
+{
+	Resource* resource = nullptr;
+	
+	if (assets_path == nullptr)
+	{
+		LOG("[ERROR] Resource Manager: Could not get Resource associated with Meta File! Error: Given Assets Path was nullptr.");
+		return nullptr;
+	}
+
+	std::string meta_file		= assets_path + std::string(META_EXTENSION);
+	std::string error_string	= "[ERROR] Resource Manager: Could not get Resource associated with { " + meta_file + " } Meta File";
+
+	if (!App->file_system->Exists(meta_file.c_str()))
+	{
+		LOG("%s! Error: File System could not find Meta File.", error_string.c_str());
+		return nullptr;
+	}
+
+	uint32 resource_uid = LoadFromLibrary(assets_path);
+	if (resource_uid == 0)
+	{
+		//LOG("%s! Error: Could not get Resource UID from Assets Path.", error_string.c_str());
+		return nullptr;
+	}
+
+	resource = RequestResource(resource_uid);
+
+	return resource;
+}
+
 // --- RESOURCE METHODS ---
 Resource* M_ResourceManager::CreateResource(RESOURCE_TYPE type, const char* assets_path, const uint32& forced_UID)
 {

@@ -1,9 +1,12 @@
 #ifndef __E_PROJECT_H__
 #define __E_PROJECT_H__
 
+#include "PathNode.h"
 #include "Icons.h"
 
 #include "EditorPanel.h"
+
+class Resource;
 
 class E_Project : public EditorPanel
 {
@@ -15,19 +18,45 @@ public:
 	bool CleanUp	() override;
 
 private:
-	void GenerateDockspace		(ImGuiIO& io) const;										// 
-	
-	void DrawMenuBar			() const;													// 
-	void DrawAssetsTree			();															// 
-	void DrawFolderExplorer		() const;													// 
-
-	void DrawDirectoriesTree	(const char* root_node, const char* extension_to_filter);
+	void			CheckFlags				();
+	void			OnResize				();
+	void			GenerateDockspace		(ImGuiIO& io) const;										// 
 
 private:
-	char*	directory_to_display;
+	void			DrawMenuBar				() const;													// 
+	void			DrawAssetsTree			();															// 
+	void			DrawFolderExplorer		();															// 
 
-	Icons	engine_icons;
-	bool	icons_are_loaded;
+	void			DrawDirectoriesTree		(const char* root_node, const char* extension_to_filter);
+	void			DrawDirectoriesTree		(const PathNode& root_node);
+
+	void			DrawResourceIcons		();
+
+private:
+	ImTextureID		GetIconTexID			(Resource* resource) const;
+	std::string		GetDisplayString		(std::string original_string, uint max_lenght) const;
+	void			ClearResourcesToDisplay	();
+
+private:																								// --- ENGINE DIRECTORIES VARS
+	PathNode				root_directory;
+
+	char*					directory_to_display;
+	PathNode				display_directory;
+
+	std::vector<Resource*>	resources_to_display;
+
+	bool					refresh_root_directory;
+	bool					refresh_directory_to_display;
+	bool					refresh_window_size;
+
+private:																								// --- ENGINE ICONS VARS
+	Icons					engine_icons;
+	bool					icons_are_loaded;
+
+	ImVec2					icon_size;
+	ImVec2					icon_offset;
+	ImVec2					text_offset;
+	ImVec2					win_size;
 };
 
 #endif // !__E_PROJECT_H__

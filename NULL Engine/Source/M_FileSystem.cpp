@@ -292,6 +292,53 @@ void M_FileSystem::GetAllFilesWithExtension(const char* directory, const char* e
 	}
 }
 
+PathNode M_FileSystem::GetFiles(const char* directory, std::vector<std::string>* filter_ext, std::vector<std::string>* ignore_ext) const
+{
+	PathNode root;
+
+	if (directory == nullptr)
+	{
+		LOG("[ERROR] File System: Could not Get Files From Directory! Error: Given Directory string was nullptr.");
+		return root;
+	}
+	if (!Exists(directory))
+	{
+		LOG("[ERROR] File System: Could not Get Files From { %s } Directory! Error: Given Directory does not exist.", directory);
+		return root;
+	}
+
+	root.path = directory;
+	SplitFilePath(directory, nullptr, &root.local_path);
+
+	if (root.local_path == "")
+	{
+		root.local_path = directory;
+	}
+
+	std::vector<std::string> files;
+	std::vector<std::string> directories;
+	DiscoverFiles(directory, files, directories);
+
+	for (uint i = 0; i < directories.size(); ++i)
+	{
+		PathNode dir;
+
+		dir.is_file = false;
+		dir.is_leaf = false;
+		dir.is_last_directory = IsLastDirectory(dir);
+
+		root.children.push_back(dir);
+	}
+
+	for (uint i = 0; i < files.size(); ++i)
+	{
+		// THIS FUNCTION HAS BEEN PUT ON HOLD
+	}
+
+	files.clear();
+	directories.clear();
+}
+
 PathNode M_FileSystem::GetAllFiles(const char* directory, std::vector<std::string>* filter_ext, std::vector<std::string>* ignore_ext) const
 {
 	PathNode root;
@@ -345,11 +392,53 @@ PathNode M_FileSystem::GetAllFiles(const char* directory, std::vector<std::strin
 			}
 		}
 
-		root.isFile = HasExtension(root.path.c_str());										// root.isFile will be true if its path has any extensions.
-		root.isLeaf = root.children.empty();												// root.isLeaf will be true if root has no child nodes.
+		root.is_file				= HasExtension(root.path.c_str());						// root.isFile will be true if its path has any extensions.
+		root.is_leaf				= root.children.empty();								// root.isLeaf will be true if root has no child nodes.
+		root.is_last_directory		= IsLastDirectory(root);
 	}
 
 	return root;
+}
+
+bool M_FileSystem::ContainsDirectory(const char* directory) const
+{
+	bool ret = true;
+	
+	if (directory == nullptr)
+	{
+		LOG("[ERROR] File System: Could not check whether or not Directory Contained Directories! Error: Given Directory Path was nullptr.");
+		return false;
+	}
+
+	if (!IsDirectory(directory))
+	{
+		return false;
+	}
+
+	std::vector<std::string> files;
+	std::vector<std::string> directories;
+
+	DiscoverFiles(directory, files, directories);
+
+	ret = !directories.empty();
+
+	files.clear();
+	directories.clear();
+
+	return ret;
+}
+
+bool M_FileSystem::IsLastDirectory(const PathNode& path_node) const
+{
+	for (uint i = 0; i < path_node.children.size(); ++i)
+	{
+		if (IsDirectory(path_node.children[i].path.c_str()))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool M_FileSystem::HasExtension(const char* path) const

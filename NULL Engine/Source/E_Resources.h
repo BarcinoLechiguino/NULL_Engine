@@ -13,7 +13,13 @@ public:
 	bool CleanUp();
 
 private:
-
+	void DrawModelsHeader		();
+	void DrawMeshesHeader		();
+	void DrawMaterialsHeader	();
+	void DrawTexturesHeader		();
+	void DrawFoldersHeader		();
+	void DrawAnimationsHeader	();
+	void DrawScenesHeader		();
 };
 
 #endif // !__E_RESOURCES_H__
