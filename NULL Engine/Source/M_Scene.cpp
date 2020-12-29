@@ -72,13 +72,11 @@ bool M_Scene::Start()
 		selected_game_object = scene_root;
 	}
 
-	//App->camera->SetCurrentCamera(master_camera);
-	
 	CreateSceneCamera("SceneCamera");
 
-	/*uint32 model_uid	= App->resource_manager->ImportFile(DEFAULT_SCENE);*/
 	uint32 model_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
 	GenerateGameObjectsFromModel(model_uid);
+	//LoadResourceIntoScene(model_uid);
 	SaveScene();																					// Autosave just right after loading the scene.
 
 	return ret;
@@ -320,6 +318,23 @@ bool M_Scene::LoadScene(const char* path)
 	return ret;
 }
 
+void M_Scene::LoadResourceIntoScene(Resource* resource)
+{
+	if (resource == nullptr)
+	{
+		LOG("[ERROR] Scene: Could not Load Resource Into Scene! Error: Given Resource* was nullptr.");
+		return;
+	}
+
+	bool success = false;
+
+	switch (resource->GetType())
+	{
+	case::RESOURCE_TYPE::MODEL:		{ GenerateGameObjectsFromModel(resource->GetUID()); }		break;
+	case::RESOURCE_TYPE::TEXTURE:	{ success = ApplyTextureToSelectedGameObject(resource->GetUID()); }	break;
+	}
+}
+
 GameObject* M_Scene::CreateGameObject(const char* name, GameObject* parent)
 {	
 	if (game_objects.empty())
@@ -506,7 +521,7 @@ std::vector<GameObject*>* M_Scene::GetGameObjects()
 	return &game_objects;
 }
 
-bool M_Scene::ApplyNewTextureToSelectedGameObject(const uint32& UID)
+bool M_Scene::ApplyTextureToSelectedGameObject(const uint32& UID)
 {
 	BROFILER_CATEGORY("ApplyNewTextureToSelectedGameObject()", Profiler::Color::Magenta);
 

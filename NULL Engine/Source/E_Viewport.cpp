@@ -142,7 +142,7 @@ void E_Viewport::DrawScene()
 
 	HandleGuizmos();
 
-	ImGui::End();
+	ResourceDragAndDropTargetListener();
 }
 
 void E_Viewport::DrawGame()
@@ -208,6 +208,21 @@ void E_Viewport::DrawSceneTexture()
 
 	ImGui::Image((ImTextureID)App->renderer->GetSceneRenderTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 	//ImGui::Image((ImTextureID)App->renderer->GetDepthBufferTexture(), tex_size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+}
+
+void E_Viewport::ResourceDragAndDropTargetListener()
+{
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAGGED_RESOURCE"))
+		{
+			App->editor->LoadResourceIntoSceneThroughEditor();
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::End();
 }
 
 void E_Viewport::HandleGuizmos()

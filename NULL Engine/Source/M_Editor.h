@@ -104,7 +104,8 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	bool			UsingGuizmoInScene					() const;								// Viewport: 
 	bool			HoveringGuizmo						() const;								// Viewport: 
 
-	void			GetEngineIconsThroughEditor			(Icons& engine_icons);
+	void			GetEngineIconsThroughEditor			(Icons& engine_icons);					// Project:
+	void			LoadResourceIntoSceneThroughEditor	();										// Project: As of now Drag&Drop Source is in Project and Target in Viewport. TODO FIX LATER
 
 	void			GetResourcesThroughEditor			(std::map<uint32, Resource*>& resources) const;	// Resources: 
 

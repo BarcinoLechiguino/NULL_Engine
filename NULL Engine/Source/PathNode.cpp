@@ -37,8 +37,6 @@ bool PathNode::FindChild(const char* path, PathNode& child) const
 
 	for (uint i = 0; i < children.size(); ++i)
 	{	
-		LOG("[WARNING] %s", children[i].path.c_str());
-		
 		if (children[i].path == path)
 		{
 			child = children[i];

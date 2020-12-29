@@ -504,6 +504,11 @@ void M_Editor::GetEngineIconsThroughEditor(Icons& engine_icons)
 	engine_icons = App->renderer->GetEngineIcons();
 }
 
+void M_Editor::LoadResourceIntoSceneThroughEditor()
+{
+	App->scene->LoadResourceIntoScene(project->GetDraggedResource());
+}
+
 void M_Editor::GetResourcesThroughEditor(std::map<uint32, Resource*>& resources) const
 {
 	//resources = App->resource_manager->GetResources();

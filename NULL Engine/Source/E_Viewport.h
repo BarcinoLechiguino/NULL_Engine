@@ -15,22 +15,24 @@ public:
 	bool CleanUp		() override;
 
 public:
-	float2	GetWorldMousePosition		();
-	float2	GetScreenMousePosition		();
-	float2	GetWorldMouseMotion			();
-	float2	GetSceneTextureSize			();
+	float2	GetWorldMousePosition				();
+	float2	GetScreenMousePosition				();
+	float2	GetWorldMouseMotion					();
+	float2	GetSceneTextureSize					();
 
-	bool	UsingGuizmo					();
-	bool	HoveringGuizmo				();
+	bool	UsingGuizmo							();
+	bool	HoveringGuizmo						();
 
 private:
-	void	DrawScene();
-	void	DrawGame();
+	void	DrawScene							();
+	void	DrawGame							();
 	
-	void	AdaptTextureToWindowSize	();
-	void	DrawSceneTexture			();
+	void	AdaptTextureToWindowSize			();
+	void	DrawSceneTexture					();
 
-	void	HandleGuizmos				();
+	void	ResourceDragAndDropTargetListener	();
+
+	void	HandleGuizmos						();
 
 private:
 	ImVec2					tex_size;
