@@ -277,6 +277,8 @@ void E_Project::DrawResourceIcons()
 	ImVec2 item_offset		= ImVec2(icon_size.x + icon_offset.x, 0.0f);
 	ImVec2 next_item_pos	= ImVec2(0.0f, 0.0f);
 
+	GoToPreviousDirectoryButton();
+
 	for (uint i = 0; i < resources_to_display.size(); ++i)
 	{	
 		original_pos = ImGui::GetCursorPos();
@@ -312,6 +314,39 @@ void E_Project::DrawResourceIcons()
 		{
 			ImGui::SetCursorPos(next_item_pos);
 		}
+	}
+}
+
+void E_Project::GoToPreviousDirectoryButton()
+{
+	ImVec2 uv_0			= ImVec2(0.0f, 1.0f);
+	ImVec2 uv_1			= ImVec2(1.0f, 0.0f);
+	ImVec4 bg_color		= ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+	ImVec4 tint_color	= ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+	
+	ImVec2 original_pos = ImGui::GetCursorPos();
+	ImVec2 item_offset	= ImVec2(icon_size.x + icon_offset.x, 0.0f);
+	
+	ImGui::SetCursorPos(original_pos + icon_offset);
+	ImGui::Image((ImTextureID)engine_icons.folder_icon->GetTextureID(), icon_size, uv_0, uv_1, tint_color, bg_color);
+
+	if (ImGui::IsItemClicked())
+	{
+		std::string prev_dir	= directory_to_display;
+		uint end_pos			= prev_dir.find_last_of("/");
+		prev_dir				= prev_dir.substr(0, end_pos);
+
+		sprintf_s(directory_to_display, MAX_DIRECTORY_SIZE, "%s", prev_dir.c_str());
+		refresh_directory_to_display = true;
+	}
+
+	ImGui::SetCursorPos(original_pos + text_offset);
+	ImGui::Text("../");
+
+	ImVec2 next_item_pos = original_pos + item_offset;
+	if (next_item_pos.x + item_offset.x < ImGui::GetWindowWidth())
+	{
+		ImGui::SetCursorPos(next_item_pos);
 	}
 }
 

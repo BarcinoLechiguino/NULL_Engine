@@ -38,6 +38,7 @@ private:
 	void			DrawResourceIcons			();
 
 private:
+	void			GoToPreviousDirectoryButton	();
 	void			ResourceDragAndDropEvent	(Resource* resource, ImTextureID texture_id);
 	
 	ImTextureID		GetIconTexID				(Resource* resource) const;
