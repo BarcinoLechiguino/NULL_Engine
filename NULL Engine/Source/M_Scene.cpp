@@ -156,6 +156,14 @@ bool M_Scene::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	
+	std::map<GameObject*, R_Model*>::const_iterator item;
+	for (item = models.begin(); item != models.end(); ++item)
+	{
+		App->resource_manager->FreeResource(item->second->GetUID());
+	}
+
+	models.clear();
+
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
 		game_objects[i]->CleanUp();
@@ -330,7 +338,7 @@ void M_Scene::LoadResourceIntoScene(Resource* resource)
 
 	switch (resource->GetType())
 	{
-	case::RESOURCE_TYPE::MODEL:		{ GenerateGameObjectsFromModel(resource->GetUID()); }		break;
+	case::RESOURCE_TYPE::MODEL:		{ GenerateGameObjectsFromModel(resource->GetUID()); }				break;
 	case::RESOURCE_TYPE::TEXTURE:	{ success = ApplyTextureToSelectedGameObject(resource->GetUID()); }	break;
 	}
 }

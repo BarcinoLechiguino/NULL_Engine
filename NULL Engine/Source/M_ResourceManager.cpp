@@ -86,7 +86,7 @@ UPDATE_STATUS M_ResourceManager::PreUpdate(float dt)
 			++item;
 		}
 		
-		RefreshDirectoryFiles(ASSETS_DIRECTORY);
+		//RefreshDirectoryFiles(ASSETS_DIRECTORY);
 
 		file_refresh_timer = 0.0f;
 	}

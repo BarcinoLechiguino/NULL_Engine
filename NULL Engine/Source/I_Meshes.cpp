@@ -153,9 +153,9 @@ uint Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 		r_mesh->IBO 																				// 7 --> Indices Buffer Object ID
 	};
 
-	uint header_data_size = sizeof(header_data) + sizeof(uint);
-	uint array_data_size = (header_data[0] + header_data[1] + header_data[2]) * sizeof(float) + header_data[3] * sizeof(uint);
-	uint precalculated_data_size = r_mesh->aabb.NumVertices() * sizeof(float) * 3;
+	uint header_data_size			= sizeof(header_data) + sizeof(uint);
+	uint array_data_size			= (header_data[0] + header_data[1] + header_data[2]) * sizeof(float) + header_data[3] * sizeof(uint);
+	uint precalculated_data_size	= r_mesh->aabb.NumVertices() * sizeof(float) * 3;
 
 	uint size = header_data_size + array_data_size + precalculated_data_size;
 
@@ -202,7 +202,7 @@ uint Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 	delete[] aabb_corners;
 
 	// --- SAVING THE BUFFER ---
-	std::string path	= std::string(MESHES_PATH) + std::to_string(r_mesh->GetUID()) + std::string(MESHES_EXTENSION);
+	std::string path	= MESHES_PATH + std::to_string(r_mesh->GetUID()) + MESHES_EXTENSION;
 	written				= App->file_system->Save(path.c_str(), *buffer, size);
 	if (written > 0)
 	{	

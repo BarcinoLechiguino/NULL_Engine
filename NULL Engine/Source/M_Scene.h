@@ -81,6 +81,10 @@ private:
 
 private:
 	std::vector<GameObject*>	game_objects;																				// 
+	
+	//std::vector<R_Model*>		models;
+	std::map<GameObject*, R_Model*> models;																					// TMP Until a better solution is found.
+	//std::map<R_Model*, std::vector<GameObject*>> models;																	// TMP Until a better solution is found.
 
 	GameObject*					master_root;																				// Root of everything. Parent of all scenes.
 	GameObject*					scene_root;																					// Root of the current scene.

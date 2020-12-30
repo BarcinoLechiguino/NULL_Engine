@@ -2,6 +2,7 @@
 #define __R_MODEL_H__
 
 #include <string>
+#include <map>
 
 #include "MathGeoTransform.h"
 
@@ -24,6 +25,7 @@ struct ModelNode
 	uint32		uid;																										// UID of this Model Node.
 	uint32		parent_uid;																									// UID of the parent Model Node.
 	Transform	transform;																									// Transform of the Model Node.
+	
 	uint32		mesh_uid;																									// UID of the Mesh Resource (R_Mesh) of the Model Node.
 	uint32		material_uid;																								// UID of the Material Resource (R_Material) of the Model Node.
 	uint32		texture_uid;																								// UID of the Texture Resource (R_Texture) of the Model Node.
@@ -42,7 +44,9 @@ public:
 	bool LoadMeta(const ParsonNode& meta_root) override;
 
 public:
-	std::vector<ModelNode>	model_nodes;
+	std::vector<ModelNode>			model_nodes;
+	std::map<uint32, std::string>	animations;
+
 	ModelSettings			model_settings;
 };
 

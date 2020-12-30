@@ -21,11 +21,13 @@
 #include "R_Model.h"																					// 
 #include "R_Mesh.h"																						// 
 #include "R_Material.h"																					// 
-#include "R_Texture.h"																					// --------------------------------------------------------------
+#include "R_Texture.h"																					//
+#include "R_Animation.h"																				// --------------------------------------------------------------
 
 #include "I_Meshes.h"
 #include "I_Materials.h"
 #include "I_Textures.h"
+#include "I_Animations.h"
 
 #include "I_Scenes.h"
 
@@ -78,6 +80,8 @@ void Importer::Scenes::Import(const char* buffer, uint size, R_Model* r_model)
 	}
 
 	Utilities::ProcessNode(ai_scene, ai_scene->mRootNode, r_model, ModelNode());							// First Parent is empty. Later assigned to scene_root.
+
+	Utilities::ImportAnimations(ai_scene, r_model);
 
 	Utilities::ai_meshes.clear();
 	Utilities::ai_materials.clear();
@@ -143,6 +147,15 @@ const aiNode* Importer::Scenes::Utilities::ImportTransform(const aiNode* ai_node
 
 void Importer::Scenes::Utilities::ImportMeshesAndMaterials(const aiScene* ai_scene, const aiNode* ai_node, R_Model* r_model, ModelNode& model_node)
 {
+	if (ai_scene == nullptr || ai_node == nullptr || r_model == nullptr)
+	{
+		return;
+	}
+	if (!ai_scene->HasMeshes())
+	{
+		return;
+	}
+	
 	const char* node_name = ai_node->mName.C_Str();
 
 	for (uint i = 0; i < ai_node->mNumMeshes; ++i)
@@ -203,7 +216,7 @@ void Importer::Scenes::Utilities::ImportMaterial(const char* node_name, const ai
 	
 	Importer::Materials::Import(ai_material, r_material);
 	
-	model_node.material_uid = r_material->GetUID();																				//
+	model_node.material_uid = r_material->GetUID();																								//
 
 	Utilities::ImportTexture(r_material->materials, model_node);
 	
@@ -260,6 +273,41 @@ void Importer::Scenes::Utilities::ImportTexture(const std::vector<MaterialData>&
 		{
 			LOG("[ERROR] Importer: Could not load texture from given path! Path: %s", tex_path);
 		}
+	}
+}
+
+void Importer::Scenes::Utilities::ImportAnimations(const aiScene* ai_scene, R_Model* r_model)
+{
+	if (ai_scene == nullptr)
+	{
+		LOG("[ERROR] Scene Importer: Could not Import Model's Animations! Error: Given aiScene* was nullptr");
+		return;
+	}
+	if (!ai_scene->HasAnimations())
+	{
+		LOG("[WARNING] Scene Importer: Model had no animations to import.");
+		return;
+	}
+
+	for (uint i = 0; i < ai_scene->mNumAnimations; ++i)
+	{
+		aiAnimation* ai_animation = ai_scene->mAnimations[i];
+
+		std::string name			= ai_animation->mName.C_Str();
+		std::string assets_path		= ASSETS_MODELS_PATH + name + ANIMATIONS_EXTENSION;
+		R_Animation* r_animation	= (R_Animation*)App->resource_manager->CreateResource(RESOURCE_TYPE::ANIMATION, assets_path.c_str());
+
+		if (r_animation == nullptr)
+		{
+			continue;
+		}
+
+		Importer::Animations::Import(ai_animation, r_animation);
+
+		r_model->animations.emplace(r_animation->GetUID(), r_animation->GetName());
+
+		App->resource_manager->SaveResourceToLibrary(r_animation);
+		App->resource_manager->DeallocateResource(r_animation);
 	}
 }
 

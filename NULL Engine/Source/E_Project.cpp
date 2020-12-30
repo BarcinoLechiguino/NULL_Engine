@@ -359,9 +359,7 @@ void E_Project::ResourceDragAndDropEvent(Resource* resource, ImTextureID texture
 	}
 
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-	{
-		LOG("[WARNING] IS IT WORKING AT ALL???");
-		
+	{	
 		ImGui::SetDragDropPayload("DRAGGED_RESOURCE", resource, sizeof(Resource));
 	
 		ImGui::Text("Dragging %s", resource->GetAssetsFile());

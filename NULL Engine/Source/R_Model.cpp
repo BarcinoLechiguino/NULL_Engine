@@ -20,6 +20,7 @@ bool R_Model::CleanUp()
 	bool ret = true;
 
 	model_nodes.clear();
+	animations.clear();
 
 	return ret;
 }
@@ -70,6 +71,20 @@ bool R_Model::SaveMeta(ParsonNode& meta_root) const
 			texture_node.SetString("Name", texture_name.c_str());
 			texture_node.SetString("LibraryPath", texture_path.c_str());
 		}
+	}
+
+	std::map<uint32, std::string>::const_iterator item;
+	for (item = animations.cbegin(); item != animations.cend(); ++item)
+	{
+		std::string animation_name = item->second;
+		std::string animation_path = ANIMATIONS_PATH + std::to_string(item->first) + ANIMATIONS_EXTENSION;
+		
+		ParsonNode animation_node = contained_array.SetNode(animation_name.c_str());
+
+		animation_node.SetNumber("UID", item->first);
+		animation_node.SetNumber("Type", (uint)RESOURCE_TYPE::ANIMATION);
+		animation_node.SetString("Name", animation_name.c_str());
+		animation_node.SetString("LibraryPath", animation_path.c_str());
 	}
 
 	ParsonNode settings = meta_root.SetNode("ImportSettings");

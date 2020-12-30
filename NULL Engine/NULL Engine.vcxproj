@@ -13,7 +13,10 @@
   <ItemGroup>
     <ClCompile Include="Source\AnimationSettings.cpp" />
     <ClCompile Include="Source\Application.cpp" />
+    <ClCompile Include="Source\Channel.cpp" />
+    <ClCompile Include="Source\C_Animation.cpp" />
     <ClCompile Include="Source\E_Resources.cpp" />
+    <ClCompile Include="Source\E_Timeline.cpp" />
     <ClCompile Include="Source\Hourglass.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Component.cpp" />
@@ -137,7 +140,10 @@
     <ClInclude Include="Source\AnimationSettings.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
+    <ClInclude Include="Source\Channel.h" />
+    <ClInclude Include="Source\C_Animation.h" />
     <ClInclude Include="Source\E_Resources.h" />
+    <ClInclude Include="Source\E_Timeline.h" />
     <ClInclude Include="Source\Hourglass.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Component.h" />

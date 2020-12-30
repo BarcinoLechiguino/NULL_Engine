@@ -8,6 +8,7 @@ struct aiScene;
 struct aiNode;
 struct aiMesh;
 struct aiMaterial;
+struct aiAnimation;
 
 struct ModelNode;
 struct MaterialData;
@@ -34,6 +35,8 @@ namespace Importer
 			void			ImportMesh					(const char* node_name, const aiMesh* ai_mesh, ModelNode& model_node);
 			void			ImportMaterial				(const char* node_name, const aiMaterial* ai_material, R_Model* r_model, ModelNode& model_node);
 			void			ImportTexture				(const std::vector<MaterialData>& materials, ModelNode& model_node);
+
+			void			ImportAnimations			(const aiScene* ai_scene, R_Model* model_node);
 
 			bool			NodeIsDummyNode				(const aiNode& ai_node);
 

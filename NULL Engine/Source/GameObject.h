@@ -116,7 +116,7 @@ public:																									// --- COMPONENT GETTERS AND SETTERS
 			}
 		}
 
-		return  components_with_type.empty() ? false : true;
+		return  (components_with_type.empty()) ? false : true;
 	}
 
 public:
