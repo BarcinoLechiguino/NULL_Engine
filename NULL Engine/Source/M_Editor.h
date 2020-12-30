@@ -23,6 +23,7 @@ class E_Console;
 class E_Project;
 class E_Viewport;
 class E_Resources;
+class E_Timeline;
 class E_ImGuiDemo;
 class E_About;
 class E_LoadFile;
@@ -128,6 +129,7 @@ public:
 	E_Project*					project;
 	E_Viewport*					viewport;
 	E_Resources*				resources;
+	E_Timeline*					timeline;
 	E_ImGuiDemo*				imgui_demo;
 	E_About*					about;
 	E_LoadFile*					load_file;

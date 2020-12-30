@@ -28,6 +28,7 @@
 #include "E_Project.h"
 #include "E_Viewport.h"
 #include "E_Resources.h"
+#include "E_Timeline.h"
 #include "E_ImGuiDemo.h"
 #include "E_About.h"
 #include "E_LoadFile.h"
@@ -40,41 +41,30 @@
 
 M_Editor::M_Editor(bool is_active) : Module("Editor", is_active),
 clear_color		(0.0f, 0.0f, 0.0f, 1.0f),
-main_menu_bar	(nullptr),
-toolbar			(nullptr),
-configuration	(nullptr),
-hierarchy		(nullptr),
-inspector		(nullptr),
-console			(nullptr),
-project			(nullptr),
-viewport		(nullptr),
-resources		(nullptr),
-imgui_demo		(nullptr),
-about			(nullptr),
-load_file		(nullptr)
+main_menu_bar	(new E_MainMenuBar()),
+toolbar			(new E_Toolbar()),
+configuration	(new E_Configuration()),
+hierarchy		(new E_Hierarchy()),
+inspector		(new E_Inspector()),
+console			(new E_Console()),
+project			(new E_Project()),
+viewport		(new E_Viewport()),
+resources		(new E_Resources()),
+timeline		(new E_Timeline()),
+imgui_demo		(new E_ImGuiDemo()),
+about			(new E_About()),
+load_file		(new E_LoadFile())
 {
-	main_menu_bar	= new E_MainMenuBar();
-	toolbar			= new E_Toolbar();
-	configuration	= new E_Configuration();
-	hierarchy		= new E_Hierarchy();
-	inspector		= new E_Inspector();
-	console			= new E_Console();
-	project			= new E_Project();
-	viewport		= new E_Viewport();
-	resources		= new E_Resources();
-	imgui_demo		= new E_ImGuiDemo();
-	about			= new E_About();
-	load_file		= new E_LoadFile();
-
 	AddEditorPanel(main_menu_bar);
 	AddEditorPanel(toolbar);
 	AddEditorPanel(configuration);
 	AddEditorPanel(hierarchy);
+	AddEditorPanel(resources);
 	AddEditorPanel(inspector);
+	AddEditorPanel(timeline);
 	AddEditorPanel(console);
 	AddEditorPanel(project);
 	AddEditorPanel(viewport);
-	AddEditorPanel(resources);
 	AddEditorPanel(imgui_demo);
 	AddEditorPanel(about);
 	AddEditorPanel(load_file);
@@ -91,7 +81,13 @@ load_file		(nullptr)
 
 M_Editor::~M_Editor()
 {
+	for (uint i = 0; i < editor_panels.size(); ++i)
+	{
+		editor_panels[i]->CleanUp();
+		RELEASE(editor_panels[i]);
+	}
 
+	editor_panels.clear();
 }
 
 bool M_Editor::Init(ParsonNode& config)
@@ -165,15 +161,7 @@ UPDATE_STATUS M_Editor::PostUpdate(float dt)
 }
 
 bool M_Editor::CleanUp()
-{
-	for (uint i = 0; i < editor_panels.size(); ++i)
-	{
-		editor_panels[i]->CleanUp();
-		RELEASE(editor_panels[i]);
-	}
-
-	editor_panels.clear();
-	
+{	
 	// ImGui CleanUp()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();

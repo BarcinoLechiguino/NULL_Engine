@@ -676,7 +676,7 @@ void M_Renderer3D::DeleteFromMeshRenderers(R_Mesh* r_mesh_to_delete)
 	{
 		if (mesh_renderers[i].c_mesh->GetMesh() == r_mesh_to_delete)
 		{
-			mesh_renderers[i].c_mesh->SetMesh(nullptr);
+			//mesh_renderers[i].c_mesh->SetMesh(nullptr);
 			mesh_renderers.erase(mesh_renderers.begin() + i);
 		}
 	}
