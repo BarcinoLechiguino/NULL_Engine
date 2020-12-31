@@ -1,6 +1,74 @@
 {
     "Game Objects": [
         {
+            "UID": 585497069,
+            "ParentUID": 867131432,
+            "Name": "MainScene",
+            "IsActive": true,
+            "IsStatic": false,
+            "IsSceneRoot": true,
+            "ShowBoundingBoxes": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 678698992,
+            "ParentUID": 585497069,
+            "Name": "SceneCamera",
+            "IsActive": true,
+            "IsStatic": false,
+            "IsSceneRoot": false,
+            "ShowBoundingBoxes": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        0,
+                        5,
+                        25
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 5,
+                    "MinFOV": 1,
+                    "MaxFOV": 120,
+                    "Culling": false,
+                    "OrthogonalView": false,
+                    "HideFrustum": false
+                }
+            ]
+        },
+        {
             "UID": 899910,
             "ParentUID": 1163210391,
             "Name": "City_building_008",
@@ -266,7 +334,7 @@
         },
         {
             "UID": 199181175,
-            "ParentUID": 604114331,
+            "ParentUID": 585497069,
             "Name": "Street environment_V01.FBX",
             "IsActive": true,
             "IsStatic": false,
@@ -429,36 +497,6 @@
                         "Path": "Library\/Textures\/1911448133.netex",
                         "File": "1911448133.netex"
                     }
-                }
-            ]
-        },
-        {
-            "UID": 604114331,
-            "ParentUID": 1956122931,
-            "Name": "MainScene",
-            "IsActive": true,
-            "IsStatic": false,
-            "IsSceneRoot": true,
-            "ShowBoundingBoxes": false,
-            "Components": [
-                {
-                    "Type": 1,
-                    "LocalPosition": [
-                        0,
-                        0,
-                        0
-                    ],
-                    "LocalRotation": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "LocalScale": [
-                        1,
-                        1,
-                        1
-                    ]
                 }
             ]
         },
@@ -1101,44 +1139,6 @@
                         "Path": "Library\/Textures\/1911448133.netex",
                         "File": "1911448133.netex"
                     }
-                }
-            ]
-        },
-        {
-            "UID": 1396137405,
-            "ParentUID": 604114331,
-            "Name": "SceneCamera",
-            "IsActive": true,
-            "IsStatic": false,
-            "IsSceneRoot": false,
-            "ShowBoundingBoxes": false,
-            "Components": [
-                {
-                    "Type": 1,
-                    "LocalPosition": [
-                        0,
-                        5,
-                        25
-                    ],
-                    "LocalRotation": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "LocalScale": [
-                        1,
-                        1,
-                        1
-                    ]
-                },
-                {
-                    "Type": 5,
-                    "MinFOV": 1,
-                    "MaxFOV": 120,
-                    "Culling": false,
-                    "OrthogonalView": false,
-                    "HideFrustum": false
                 }
             ]
         },

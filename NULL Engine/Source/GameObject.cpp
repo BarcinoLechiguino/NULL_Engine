@@ -16,6 +16,7 @@
 #include "C_Material.h"
 #include "C_Light.h"
 #include "C_Camera.h"
+#include "C_Animation.h"
 
 #include "GameObject.h"
 
@@ -28,6 +29,7 @@ name				("GameObject"),
 is_active			(true),
 is_static			(false),
 parent				(nullptr),
+transform			(nullptr),
 is_master_root		(false),
 is_scene_root		(false),
 to_delete			(false),
@@ -49,6 +51,7 @@ name				(name),
 is_active			(is_active),
 is_static			(is_static),
 parent				(nullptr),
+transform			(nullptr),
 is_master_root		(false),
 is_scene_root		(false),
 to_delete			(false),
@@ -516,50 +519,29 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
 	Component* component = nullptr;
 
-	bool check_for_duplicates = false;
+	if (type == COMPONENT_TYPE::TRANSFORM && GetComponent<C_Transform>() != nullptr)
+	{
+		LOG("[ERROR] Transform Component could not be added to %s! Error: No duplicates allowed!", name.c_str());
+		return nullptr;
+	}
+	if (type == COMPONENT_TYPE::MATERIAL && GetComponent<C_Material>() != nullptr)
+	{
+		LOG("[ERROR] Material Component could not be added to %s! Error: No duplicates allowed!", name.c_str());
+		return nullptr;
+	}
 
 	switch(type)
 	{
-	case COMPONENT_TYPE::TRANSFORM:
-		component = new C_Transform(this);
-		check_for_duplicates = true;
-		break;
-
-	case COMPONENT_TYPE::MESH:
-		component = new C_Mesh(this);
-		break;
-
-	case COMPONENT_TYPE::MATERIAL:
-		component = new C_Material(this);
-		check_for_duplicates = true;
-		break;
-
-	case COMPONENT_TYPE::LIGHT:
-		component = new C_Light(this);
-		break;
-
-	case COMPONENT_TYPE::CAMERA:
-		component = new C_Camera(this);
-		break;
+	case COMPONENT_TYPE::TRANSFORM:	{ component = new C_Transform(this); }	break;
+	case COMPONENT_TYPE::MESH:		{ component = new C_Mesh(this); }		break;
+	case COMPONENT_TYPE::MATERIAL:	{ component = new C_Material(this); }	break;
+	case COMPONENT_TYPE::LIGHT:		{ component = new C_Light(this); }		break;
+	case COMPONENT_TYPE::CAMERA:	{ component = new C_Camera(this); }		break;
+	case COMPONENT_TYPE::ANIMATION: { component = new C_Animation(this); }	break;
 	}
 
 	if (component != nullptr)
 	{
-		if (check_for_duplicates)
-		{
-			for (uint i = 0; i < components.size(); ++i)
-			{
-				if (type == components[i]->GetType())
-				{
-					LOG("[ERROR] %s Component could not be added to %s: No duplicates allowed!", component->GetNameFromType(), name.c_str());
-					
-					RELEASE(component);
-
-					return nullptr;
-				}
-			}
-		}
-
 		components.push_back(component);
 	}
 

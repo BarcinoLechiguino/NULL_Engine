@@ -12,6 +12,7 @@
 #include "C_Material.h"
 #include "C_Light.h"
 #include "C_Camera.h"
+#include "C_Animation.h"
 
 #include "E_Inspector.h"
 
@@ -150,6 +151,7 @@ void E_Inspector::DrawComponents(GameObject* selected_game_object)
 		case COMPONENT_TYPE::MATERIAL:	{ DrawMaterialComponent((C_Material*)component); }		break;
 		case COMPONENT_TYPE::LIGHT:		{ DrawLightComponent((C_Light*)component); }			break;
 		case COMPONENT_TYPE::CAMERA:	{ DrawCameraComponent((C_Camera*)component); }			break;
+		case COMPONENT_TYPE::ANIMATION:	{ DrawAnimationComponent((C_Animation*)component); }	break;
 		}
 
 		if (type == COMPONENT_TYPE::NONE)
@@ -493,9 +495,52 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 	}
 }
 
+void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
+{
+	bool show = true;
+	if (ImGui::CollapsingHeader("Animation", &show, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (c_animation != nullptr)
+		{
+			bool animation_is_active = c_animation->IsActive();
+			if (ImGui::Checkbox("Is Active", &animation_is_active))
+			{
+				c_animation->SetIsActive(animation_is_active);
+			}
+
+			ImGui::Separator();
+
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Animation Settings");
+
+			// Playback Speed
+
+
+			// Play Automatically
+
+
+			// Renderer Culling
+
+
+			// Play, Pause & Stop
+
+
+			// Select Animation
+
+		}
+		
+		if (!show)
+		{
+			component_to_delete				= c_animation;
+			show_delete_component_popup		= true;
+		}
+		
+		ImGui::Separator();
+	}
+}
+
 void E_Inspector::AddComponentCombo(GameObject* selected_game_object)
 {
-	ImGui::Combo("##", &component_type, "Add Component\0Transform\0Mesh\0Material\0Light\0Camera");
+	ImGui::Combo("##", &component_type, "Add Component\0Transform\0Mesh\0Material\0Light\0Camera\0Animation");
 
 	ImGui::SameLine();
 
