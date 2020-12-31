@@ -32,6 +32,11 @@ Color Color::GetRGB255()
 	return rgb255;
 }
 
+float* Color::C_Array()
+{
+	return &r;
+}
+
 void Color::Set(float r, float g, float b, float a)
 {
 	if (r > 1.0f || g > 1.0f || b > 1.0f || a > 1.0f)
@@ -199,5 +204,10 @@ bool Color::operator ==(const Color& color)
 Color Red		= Color(1.0f, 0.0f, 0.0f);
 Color Green		= Color(0.0f, 1.0f, 0.0f);
 Color Blue		= Color(0.0f, 0.0f, 1.0f);
+Color Cyan		= Color(0.0f, 1.0f, 1.0f);
+Color Magenta	= Color(1.0f, 0.0f, 1.0f);
+Color Yellow	= Color(1.0f, 1.0f, 0.0f);
+Color Orange	= Color(1.0f, 0.3f, 0.0f);
+Color Pink		= Color(1.0f, 0.7f, 0.7f);
 Color Black		= Color(0.0f, 0.0f, 0.0f);
 Color White		= Color(1.0f, 1.0f, 1.0f);

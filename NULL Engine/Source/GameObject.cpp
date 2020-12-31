@@ -254,13 +254,14 @@ float3* GameObject::GetAABBVertices() const
 	return aabb_vertices;
 }
 
-void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers)
+void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers, std::vector<SkeletonRenderer>& skeleton_rednerers)
 {
 	std::vector<C_Mesh*> c_meshes;
 	GetComponents<C_Mesh>(c_meshes);
 
-	C_Material* c_material	= GetComponent<C_Material>();
-	C_Camera* c_camera		= GetComponent<C_Camera>();
+	C_Material* c_material		= GetComponent<C_Material>();
+	C_Camera* c_camera			= GetComponent<C_Camera>();
+	C_Animation* c_animation	= GetComponent<C_Animation>();
 
 	for (uint i = 0; i < c_meshes.size(); ++i)
 	{
@@ -279,9 +280,17 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 	{
 		if (!c_camera->FrustumIsHidden())
 		{
-			Color frustum_color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-			cuboid_renderers.push_back(CuboidRenderer(c_camera->GetFrustumVertices(), frustum_color));
+			cuboid_renderers.push_back(CuboidRenderer(c_camera->GetFrustumVertices(), CUBOID_TYPE::FRUSTUM));
 		}
+	}
+
+	if (c_animation != nullptr)
+	{
+		/*if (c_animation->ShowSkeleton() || App->renderer->GetRenderSkeletons())
+		{
+			std::vector<LineSegment> bones = c_animation->GetBones();
+			skeleton_renderers.push_back(SkeletonRenderer(bones));
+		}*/
 	}
 
 	if (show_bounding_boxes || App->renderer->GetRenderBoundingBoxes())
@@ -289,11 +298,8 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 		obb.GetCornerPoints(obb_vertices);
 		aabb.GetCornerPoints(aabb_vertices);
 
-		Color obb_color		= Color(1.0f, 1.0f, 0.0f, 1.0f);
-		Color aabb_color	= Color(0.0f, 1.0f, 0.0f, 1.0f);
-
-		cuboid_renderers.push_back(CuboidRenderer(obb_vertices, obb_color));
-		cuboid_renderers.push_back(CuboidRenderer(aabb_vertices, aabb_color));
+		cuboid_renderers.push_back(CuboidRenderer(obb_vertices, CUBOID_TYPE::OBB));
+		cuboid_renderers.push_back(CuboidRenderer(aabb_vertices, CUBOID_TYPE::AABB));
 	}
 }
 

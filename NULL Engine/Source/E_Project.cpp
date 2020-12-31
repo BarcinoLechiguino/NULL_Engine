@@ -139,7 +139,7 @@ void E_Project::CheckFlags()
 
 void E_Project::OnResize()
 {
-	win_size = ImVec2(App->window->GetWidth(), App->window->GetHeight());
+	win_size = ImVec2((float)App->window->GetWidth(), (float)App->window->GetHeight());
 }
 
 void E_Project::GenerateDockspace(ImGuiIO& io) const

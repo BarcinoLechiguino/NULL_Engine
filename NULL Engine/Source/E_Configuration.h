@@ -46,6 +46,7 @@ private:
 
 	void VsyncMode						();								// Renderer menu: Will generate a checkbox that will enable/disable the Vsync mode.
 	void RendererFlags					();								// Renderer menu: Will generate the checkboxes that will modify the renderer flags.
+	void RendererSettings				();
 
 	void GenerateCameraPositionSlider	();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's position (XYZ).
 	void GenerateCameraRotationSlider	();								// Camera menu: Will generate a slider with 3 inputs that will modify the camera's rotation (XYZ).

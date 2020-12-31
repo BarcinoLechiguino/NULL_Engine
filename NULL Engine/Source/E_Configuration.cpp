@@ -171,9 +171,19 @@ bool E_Configuration::RendererMenu()
 		VsyncMode();
 
 		ImGui::Separator();
+		ImGui::Separator();
 
 		// --- RENDERER FLAGS
 		RendererFlags();
+
+		ImGui::Separator();
+		ImGui::Separator();
+
+		// --- RENDERER SETTINGS
+		RendererSettings();
+
+		ImGui::Separator();
+		ImGui::Separator();
 	}
 
 	return ret;
@@ -518,6 +528,8 @@ void E_Configuration::VsyncMode()
 void E_Configuration::RendererFlags()
 {
 	ImGui::Text("Renderer flags: ");
+
+	ImGui::Separator();
 	
 	// --- OPENGL FLAGS
 	bool depth_test					= App->renderer->GetGLFlag(RENDERER_FLAGS::DEPTH_TEST);
@@ -621,6 +633,170 @@ void E_Configuration::RendererFlags()
 	if (ImGui::Checkbox("Show Primitive Examples", &render_primitive_examples))
 	{
 		App->renderer->SetRenderPrimtiveExamples(render_primitive_examples);
+	}
+}
+
+void E_Configuration::RendererSettings()
+{
+	float min_line_width		= 0.1f;
+	float max_line_width		= 10.0f;
+
+	uint world_grid_size		= App->renderer->GetWorldGridSize();
+
+	Color world_grid_color		= App->renderer->GetWorldGridColor(); 
+	Color wireframe_color		= App->renderer->GetWireframeColor();
+	Color vertex_normals_color	= App->renderer->GetVertexNormalsColor();
+	Color face_normals_color	= App->renderer->GetFaceNormalsColor();
+
+	Color aabb_color			= App->renderer->GetAABBColor();
+	Color obb_color				= App->renderer->GetOBBColor();
+	Color frustum_color			= App->renderer->GetFrustumColor();
+	Color ray_color				= App->renderer->GetRayColor();
+	Color bone_color			= App->renderer->GetBoneColor();
+
+	float world_grid_line_width	= App->renderer->GetWorldGridLineWidth();
+	float wireframe_line_width	= App->renderer->GetWireframeLineWidth();
+	float vertex_normals_width	= App->renderer->GetVertexNormalsWidth();
+	float face_normals_width	= App->renderer->GetFaceNormalsWidth();
+
+	float aabb_edge_width		= App->renderer->GetAABBEdgeWidth();
+	float obb_edge_width		= App->renderer->GetOBBEdgeWidth();
+	float frustum_edge_width	= App->renderer->GetFrustumEdgeWidth();
+	float ray_width				= App->renderer->GetRayWidth();
+	float bone_width			= App->renderer->GetBoneWidth();
+	
+	ImGui::Text("Renderer Settings:");
+
+	ImGui::Separator();
+
+	if(ImGui::TreeNodeEx("World Grid"))
+	{
+		if (ImGui::ColorEdit4("W.G. Color", world_grid_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetWorldGridColor(world_grid_color);
+		}
+		if (ImGui::SliderInt("W.G. Size", (int*)&world_grid_size, 0, 420))
+		{
+			App->renderer->SetWorldGridSize(world_grid_size);
+		}
+		if (ImGui::SliderFloat("W.G. L. Width", &world_grid_line_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetWorldGridLineWidth(world_grid_line_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Wireframe"))
+	{
+		if (ImGui::ColorEdit4("WF. Color", wireframe_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetWireframeColor(wireframe_color);
+		}
+		if (ImGui::SliderFloat("WF. L. Width", &wireframe_line_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetWireframeLineWidth(wireframe_line_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Vertex Normals"))
+	{
+		if (ImGui::ColorEdit4("V.N. Color", vertex_normals_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetVertexNormalsColor(vertex_normals_color);
+		}
+		if (ImGui::SliderFloat("V.N. L. Width", &vertex_normals_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetVertexNormalsWidth(vertex_normals_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Face Normals"))
+	{
+		if (ImGui::ColorEdit4("F.N. Color", face_normals_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetFaceNormalsColor(face_normals_color);
+		}
+		if (ImGui::SliderFloat("F.N. L. Width", &face_normals_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetFaceNormalsWidth(face_normals_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("AABB"))
+	{
+		if (ImGui::ColorEdit4("AABB Color", aabb_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetAABBColor(aabb_color);
+		}
+		if (ImGui::SliderFloat("AABB E. Width", &aabb_edge_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetAABBEdgeWidth(aabb_edge_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("OBB"))
+	{
+		if (ImGui::ColorEdit4("OBB Color", obb_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetOBBColor(obb_color);
+		}
+		if (ImGui::SliderFloat("OBB E. Width", &obb_edge_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetOBBEdgeWidth(obb_edge_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Frustum"))
+	{
+		if (ImGui::ColorEdit4("Ftum Color", frustum_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetFrustumColor(frustum_color);
+		}
+		if (ImGui::SliderFloat("Ftum E. Width", &frustum_edge_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetFrustumEdgeWidth(frustum_edge_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Raycast"))
+	{
+		if (ImGui::ColorEdit4("Ray Color", ray_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetRayColor(ray_color);
+		}
+		if (ImGui::SliderFloat("Ray L. Width", &ray_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetRayWidth(ray_width);
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Skeleton"))
+	{
+		if (ImGui::ColorEdit4("Bone Color", bone_color.C_Array(), ImGuiColorEditFlags_None))
+		{
+			App->renderer->SetBoneColor(bone_color);
+		}
+		if (ImGui::SliderFloat("Bone L. Width", &bone_width, min_line_width, max_line_width, "%.3f", 1.0f))
+		{
+			App->renderer->SetBoneWidth(bone_width);
+		}
+
+		ImGui::TreePop();
 	}
 }
 

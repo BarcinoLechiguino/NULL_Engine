@@ -171,8 +171,8 @@ bool ImGui::BeginTimelineEx(const char* str_id, const float& max_value, const in
 {
 	// reset global variables
 	max_timeline_value = 0.f;
-	timeline_num_rows = timeline_display_start = timeline_display_end = 0.f;
-	timeline_display_index = -1.f;
+	timeline_num_rows = timeline_display_start = timeline_display_end = 0;
+	timeline_display_index = -1;
 	ptimeline_offset_and_scale = popt_offset_and_scale;
 
 	if (ptimeline_offset_and_scale) {

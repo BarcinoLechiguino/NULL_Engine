@@ -12,6 +12,7 @@ class C_Transform;
 
 struct MeshRenderer;
 struct CuboidRenderer;
+struct SkeletonRenderer;
 
 typedef unsigned __int32 uint32;
 
@@ -35,7 +36,8 @@ public:
 	void			UpdateBoundingBoxes					();
 	AABB			GetAABB								() const;
 	float3*			GetAABBVertices						() const;
-	void			GetRenderers						(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers); // TODO: Get them elsewhere. Scene maybe?
+	void			GetRenderers						(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers, 
+															std::vector<SkeletonRenderer>& skeleton_renderers); // TODO: Get them elsewhere. Scene maybe?
 
 	bool			SetParent							(GameObject* new_parent);
 

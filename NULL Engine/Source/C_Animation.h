@@ -4,7 +4,9 @@
 #include "Component.h"
 
 class ParsonNode;
+
 class GameObject;
+class R_Animation;
 
 class C_Animation : public Component
 {
@@ -20,8 +22,31 @@ public:
 
 	static inline COMPONENT_TYPE GetType() { return COMPONENT_TYPE::ANIMATION; }
 
-private:
+public:
+	bool	Play				();
+	bool	Pause				();
+	bool	Step				();
+	bool	Stop				();
 
+	float	GetPlaybackSpeed	();
+	void	SetPlaybackSpeed	();
+
+	float	GetAnimationTime	();
+	float	GetAnimationName	();
+	float	GetTicksPerSecond	();
+	float	GetDuration			();
+
+private:
+	std::vector<R_Animation*>	current_animations;
+	std::vector<R_Animation*>	animations;
+	
+	bool	play;
+	bool	pause;
+	bool	step;
+	bool	stop;
+	
+	float	playback_speed;
+	float	animation_time;
 };
 
 #endif // !__C_ANIMATION_H__

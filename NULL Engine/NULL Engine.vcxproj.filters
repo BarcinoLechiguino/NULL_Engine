@@ -139,6 +139,9 @@
     <Filter Include="Source\6_Containers\Animation">
       <UniqueIdentifier>{656967a7-41cb-4465-b88d-3ec673d9c499}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\6_Containers\Renderer3D">
+      <UniqueIdentifier>{3f6114a8-c940-4e3d-bb3a-e84527f322d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
