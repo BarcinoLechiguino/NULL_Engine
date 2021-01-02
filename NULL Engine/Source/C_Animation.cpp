@@ -8,30 +8,36 @@
 #include "R_Animation.h"
 
 #include "GameObject.h"
+#include "C_Transform.h"
 
 #include "C_Animation.h"
 
 C_Animation::C_Animation(GameObject* owner) : Component(owner, COMPONENT_TYPE::ANIMATION),
 current_animation	(nullptr),
 blending_animation	(nullptr),
-blend_frames		(0),
-play				(false),
-pause				(false),
-step				(false),
-stop				(true),
-animation_time		(0.0f),
-playback_speed		(1.0f),
-loop_animation		(false),
-play_on_start		(true),
-camera_culling		(true)
+current_root_bone	(nullptr)
 {
+	blend_frames		= 0;
 
+	play				= false;
+	pause				= false;
+	step				= false;
+	stop				= true;
+
+	playback_speed		= 1.0f;
+	animation_time		= 0.0f;
+
+	loop_animation		= false;
+	play_on_start		= true;
+	camera_culling		= true;
+	show_bones			= false;
 }
 
 C_Animation::~C_Animation()
 {
 	current_animation	= nullptr;
 	blending_animation	= nullptr;
+	current_root_bone	= nullptr;
 }
 
 bool C_Animation::Update()
@@ -110,7 +116,7 @@ void C_Animation::FindCurrentAnimationBones()
 	std::map<std::string, GameObject*> childs;
 	this->GetOwner()->GetAllChilds(childs);
 
-	for (uint i = 0; i < current_animation->channels.size(); ++i)
+ 	for (uint i = 0; i < current_animation->channels.size(); ++i)
 	{
 		std::map<std::string, GameObject*>::const_iterator item;
 
@@ -123,6 +129,62 @@ void C_Animation::FindCurrentAnimationBones()
 	}
 
 	childs.clear();
+
+	std::map<std::string, GameObject*>::const_iterator item;
+	for (item = current_bones.cbegin(); item != current_bones.cend(); ++item)
+	{
+		if (!item->second->parent->is_bone)
+		{
+			current_root_bone = item->second;
+			break;
+		}
+	}
+
+	UpdateDisplayBones();
+}
+
+void C_Animation::UpdateDisplayBones()
+{
+	display_bones.clear();
+	
+	if (current_root_bone != nullptr)
+	{
+		GenerateBoneSegments(current_root_bone);
+	}
+
+	return;
+}
+
+void C_Animation::GenerateBoneSegments(GameObject* bone)
+{
+	if (bone == nullptr)
+	{
+		LOG("[ERROR] Animation Component: Could not Generate Bone Segments! Error: Given GameObject* was nullptr.");
+		return;
+	}
+	if (bone->childs.empty())
+	{
+		return;
+	}
+	
+	C_Transform* bone_transform = bone->GetComponent<C_Transform>();
+
+	for (uint i = 0; i < bone->childs.size(); ++i)
+	{
+		LineSegment display_bone = { float3::zero, float3::zero };
+
+		display_bone.a = bone_transform->GetWorldPosition();
+		display_bone.b = bone->childs[i]->GetComponent<C_Transform>()->GetWorldPosition();
+		
+		//display_bone.a = bone_transform->GetLocalPosition();
+		//display_bone.b = bone->childs[i]->GetComponent<C_Transform>()->GetLocalPosition();
+
+		display_bones.push_back(display_bone);
+
+		GenerateBoneSegments(bone->childs[i]);
+	}
+
+	return;
 }
 
 void C_Animation::AddAnimation(R_Animation* r_animation)
@@ -137,7 +199,7 @@ void C_Animation::AddAnimation(R_Animation* r_animation)
 
 	if (current_animation == nullptr)
 	{
-		current_animation = r_animation;
+		SetCurrentAnimation(r_animation);
 	}
 }
 
@@ -240,12 +302,17 @@ void C_Animation::ClearBlendingAnimation()
 }
 
 // --- GET/SET METHODS
+std::vector<LineSegment> C_Animation::GetDisplayBones() const
+{
+	return display_bones;
+}
+
 float C_Animation::GetPlaybackSpeed() const
 {
 	return playback_speed;
 }
 
-bool C_Animation::GetAnimationLoop() const
+bool C_Animation::GetLoopAnimation() const
 {
 	return loop_animation;
 }
@@ -260,14 +327,19 @@ bool C_Animation::GetCameraCulling() const
 	return camera_culling;
 }
 
-float C_Animation::GetAnimationTime() const
+bool C_Animation::GetShowBones() const
 {
-	return animation_time;
+	return show_bones;
 }
 
 const char* C_Animation::GetAnimationName() const
 {
 	return ((current_animation == nullptr) ? "[NONE]" : current_animation->GetName());
+}
+
+float C_Animation::GetAnimationTime() const
+{
+	return animation_time;
 }
 
 float C_Animation::GetTicksPerSecond() const
@@ -285,9 +357,9 @@ void C_Animation::SetPlaybackSpeed(const float& playback_speed)
 	this->playback_speed = playback_speed;
 }
 
-void C_Animation::SetAnimationLoop(const bool& set_to)
+void C_Animation::SetLoopAnimation(const bool& set_to)
 {
-	animation_time = set_to;
+	loop_animation = set_to;
 }
 
 void C_Animation::SetPlayOnStart(const bool& set_to)
@@ -298,4 +370,9 @@ void C_Animation::SetPlayOnStart(const bool& set_to)
 void C_Animation::SetCameraCulling(const bool& set_to)
 {
 	camera_culling = set_to;
+}
+
+void C_Animation::SetShowBones(const bool& set_to)
+{
+	show_bones = set_to;
 }

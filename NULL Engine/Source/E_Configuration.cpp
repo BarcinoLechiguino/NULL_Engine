@@ -527,6 +527,8 @@ void E_Configuration::VsyncMode()
 
 void E_Configuration::RendererFlags()
 {
+	float col_dist = 200.0f;
+	
 	ImGui::Text("Renderer flags: ");
 
 	ImGui::Separator();
@@ -547,93 +549,36 @@ void E_Configuration::RendererFlags()
 	bool render_vertex_normals		= App->renderer->GetRenderVertexNormals();
 	bool render_face_normals		= App->renderer->GetRenderFaceNormals();
 	bool render_bounding_boxes		= App->renderer->GetRenderBoundingBoxes();
+	bool render_skeletons			= App->renderer->GetRenderSkeletons();
 	bool render_primitive_examples	= App->renderer->GetRenderPrimitiveExamples();
+	bool render_others				= false /*App->renderer->GetRenderOthers()*/;
 
 	// --- OPENGL FLAGS
-	if (ImGui::Checkbox("Depth Test", &depth_test))
-	{
-		App->renderer->SetGLFlag(RENDERER_FLAGS::DEPTH_TEST, depth_test);
-	}
+	if (ImGui::Checkbox("Depth Test", &depth_test))									{ App->renderer->SetGLFlag(RENDERER_FLAGS::DEPTH_TEST, depth_test); }			ImGui::SameLine(col_dist);
+	if (ImGui::Checkbox("Cull Face", &cull_face))									{ App->renderer->SetGLFlag(RENDERER_FLAGS::CULL_FACE, cull_face); }
 
-	ImGui::SameLine(175.0f);
+	if (ImGui::Checkbox("Lighting", &lighting))										{ App->renderer->SetGLFlag(RENDERER_FLAGS::LIGHTING, lighting); }				ImGui::SameLine(col_dist);
+	if (ImGui::Checkbox("Color Material", &color_material))							{ App->renderer->SetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL, color_material); }
 
-	if (ImGui::Checkbox("Cull Face", &cull_face))
-	{
-		App->renderer->SetGLFlag(RENDERER_FLAGS::CULL_FACE, cull_face);
-	}
+	if (ImGui::Checkbox("Texture 2D", &texture_2D))									{ App->renderer->SetGLFlag(RENDERER_FLAGS::TEXTURE_2D, texture_2D); }			ImGui::SameLine(col_dist);
+	if (ImGui::Checkbox("Alpha Test", &alpha_test))									{ App->renderer->SetGLFlag(RENDERER_FLAGS::ALPHA_TEST, alpha_test); }
 
-	if (ImGui::Checkbox("Lighting", &lighting))
-	{
-		App->renderer->SetGLFlag(RENDERER_FLAGS::LIGHTING, lighting);
-	}
-
-	ImGui::SameLine(175.0f);
-
-	if (ImGui::Checkbox("Color Material", &color_material))
-	{
-		App->renderer->SetGLFlag(RENDERER_FLAGS::COLOR_MATERIAL, color_material);
-	}
-
-	if (ImGui::Checkbox("Texture 2D", &texture_2D))
-	{
-		App->renderer->SetGLFlag(RENDERER_FLAGS::TEXTURE_2D, texture_2D);
-	}
-
-	ImGui::SameLine(175.0f);
-
-	if (ImGui::Checkbox("Alpha Test", &alpha_test))
-	{
-		App->renderer->SetGLFlag(RENDERER_FLAGS::ALPHA_TEST, alpha_test);
-	}
-
-	if (ImGui::Checkbox("Blend", &blend))
-	{
-		App->renderer->SetGLFlag(RENDERER_FLAGS::BLEND, blend);
-	}
-
-	ImGui::SameLine(175.0f);
+	if (ImGui::Checkbox("Blend", &blend))											{ App->renderer->SetGLFlag(RENDERER_FLAGS::BLEND, blend); }						ImGui::SameLine(col_dist);
 
 	// --- SHOW FLAGS
-	if (ImGui::Checkbox("Show World Grid", &render_world_grid))
-	{
-		App->renderer->SetRenderWorldGrid(render_world_grid);
-	}
+	if (ImGui::Checkbox("Show World Grid", &render_world_grid))						{ App->renderer->SetRenderWorldGrid(render_world_grid); }
 
-	if (ImGui::Checkbox("Show World Axis", &render_world_axis))
-	{
-		App->renderer->SetRenderWorldAxis(render_world_axis);
-	}
+	if (ImGui::Checkbox("Show World Axis", &render_world_axis))						{ App->renderer->SetRenderWorldAxis(render_world_axis); }						ImGui::SameLine(col_dist);
+	if (ImGui::Checkbox("Show Wireframes", &render_wireframes))						{ App->renderer->SetRenderWireframes(render_wireframes); }
 
-	ImGui::SameLine(175.0f);
+	if (ImGui::Checkbox("Show Vertex Normals", &render_vertex_normals))				{ App->renderer->SetRenderVertexNormals(render_vertex_normals); }				ImGui::SameLine(col_dist);
+	if (ImGui::Checkbox("Show Face Normals", &render_face_normals))					{ App->renderer->SetRenderFaceNormals(render_face_normals); }
 
-	if (ImGui::Checkbox("Show Wireframes", &render_wireframes))
-	{
-		App->renderer->SetRenderWireframes(render_wireframes);
-	}
+	if (ImGui::Checkbox("Show Bounding Boxes", &render_bounding_boxes))				{ App->renderer->SetRenderBoundingBoxes(render_bounding_boxes); }				ImGui::SameLine(col_dist);
+	if (ImGui::Checkbox("Show Skeletons", &render_skeletons))						{ App->renderer->SetRenderSkeletons(render_skeletons); }
 
-	if (ImGui::Checkbox("Show Vertex Normals", &render_vertex_normals))
-	{
-		App->renderer->SetRenderVertexNormals(render_vertex_normals);
-	}
-
-	ImGui::SameLine(175.0f);
-
-	if (ImGui::Checkbox("Show Face Normals", &render_face_normals))
-	{
-		App->renderer->SetRenderFaceNormals(render_face_normals);
-	}
-
-	if (ImGui::Checkbox("Show Bounding Boxes", &render_bounding_boxes))
-	{
-		App->renderer->SetRenderBoundingBoxes(render_bounding_boxes);
-	}
-
-	ImGui::SameLine(175.0f);
-
-	if (ImGui::Checkbox("Show Primitive Examples", &render_primitive_examples))
-	{
-		App->renderer->SetRenderPrimtiveExamples(render_primitive_examples);
-	}
+	if (ImGui::Checkbox("Show Primitive Examples", &render_primitive_examples))		{ App->renderer->SetRenderPrimtiveExamples(render_primitive_examples); }		ImGui::SameLine(col_dist);
+	if (ImGui::Checkbox("Show Others (WIP)", &render_others))						{ /*App->renderer->SetRenderOthers();*/ }
 }
 
 void E_Configuration::RendererSettings()

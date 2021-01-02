@@ -39,6 +39,8 @@ private:
 	bool			BlendAnimation				();
 
 	void			FindCurrentAnimationBones	();
+	void			UpdateDisplayBones			();
+	void			GenerateBoneSegments		(GameObject* bone);
 
 public:
 	void			AddAnimation				(R_Animation* r_animation);
@@ -59,20 +61,24 @@ public:																											// --- CURRENT/BLENDING ANIMATION METHODS
 	void			ClearBlendingAnimation		();
 
 public:																											// --- GET/SET METHODS
+	std::vector<LineSegment> GetDisplayBones	() const;
+	
 	float			GetPlaybackSpeed			() const;
-	bool			GetAnimationLoop			() const;
+	bool			GetLoopAnimation			() const;
 	bool			GetPlayOnStart				() const;
 	bool			GetCameraCulling			() const;
+	bool			GetShowBones				() const;
 
-	float			GetAnimationTime			() const;
 	const char*		GetAnimationName			() const;
+	float			GetAnimationTime			() const;
 	float			GetTicksPerSecond			() const;
 	float			GetDuration					() const;
 
 	void			SetPlaybackSpeed			(const float& playback_speed);
-	void			SetAnimationLoop			(const bool& set_to);
+	void			SetLoopAnimation			(const bool& set_to);
 	void			SetPlayOnStart				(const bool& set_to);
 	void			SetCameraCulling			(const bool& set_to);
+	void			SetShowBones				(const bool& set_to);
 
 private:
 	std::vector<R_Animation*>			animations;
@@ -82,6 +88,8 @@ private:
 	R_Animation*	current_animation;
 	R_Animation*	blending_animation;
 
+	GameObject*		current_root_bone;
+
 	uint			blend_frames;
 
 	bool			play;
@@ -89,12 +97,14 @@ private:
 	bool			step;
 	bool			stop;
 
-	float			animation_time;
-
 	float			playback_speed;
 	bool			loop_animation;
 	bool			play_on_start;
 	bool			camera_culling;
+	
+	bool			show_bones;
+	
+	float			animation_time;
 };
 
 #endif // !__C_ANIMATION_H__

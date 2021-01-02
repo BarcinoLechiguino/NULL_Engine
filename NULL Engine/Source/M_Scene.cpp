@@ -432,6 +432,7 @@ void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 		return;
 	}
 
+	GameObject* parent_root = nullptr;
 	std::map<uint32, GameObject*> tmp;
 
 	std::vector<ModelNode> m_nodes = r_model->model_nodes;
@@ -446,14 +447,14 @@ void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 
 		CreateComponentsFromModelNode(m_nodes[i], game_object);
 
-		if (m_nodes[i].parent_uid == 0 && !r_model->animations.empty())
+		if (m_nodes[i].parent_uid == 0)
 		{
-			CreateAnimationComponentFromModel(r_model, game_object);
+			parent_root = game_object;
 		}
 
 		tmp.emplace(game_object->GetUID(), game_object);
 	}
-
+	  
 	m_nodes.clear();
 
 	// Re-Parenting
@@ -476,6 +477,12 @@ void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 
 		item->second->GetComponent<C_Transform>()->Translate(float3::zero);						// Dirty way to refresh the transforms after the import is done. TMP Un-hardcode later.
 		game_objects.push_back(item->second);
+	}
+
+	if (parent_root != nullptr && !r_model->animations.empty())
+	{
+		CreateAnimationComponentFromModel(r_model, parent_root);								// Must be done last as the parent hierarchy needs to be in place.
+		parent_root = nullptr;
 	}
 
 	tmp.clear();

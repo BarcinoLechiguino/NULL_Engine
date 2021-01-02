@@ -255,7 +255,7 @@ float3* GameObject::GetAABBVertices() const
 	return aabb_vertices;
 }
 
-void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers, std::vector<SkeletonRenderer>& skeleton_rednerers)
+void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers, std::vector<SkeletonRenderer>& skeleton_renderers)
 {
 	std::vector<C_Mesh*> c_meshes;
 	GetComponents<C_Mesh>(c_meshes);
@@ -287,11 +287,10 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 
 	if (c_animation != nullptr)
 	{
-		/*if (c_animation->ShowSkeleton() || App->renderer->GetRenderSkeletons())
+		if (c_animation->GetShowBones() || App->renderer->GetRenderSkeletons())
 		{
-			std::vector<LineSegment> bones = c_animation->GetBones();
-			skeleton_renderers.push_back(SkeletonRenderer(bones));
-		}*/
+			skeleton_renderers.push_back(SkeletonRenderer(c_animation->GetDisplayBones()));
+		}
 	}
 
 	if (show_bounding_boxes || App->renderer->GetRenderBoundingBoxes())

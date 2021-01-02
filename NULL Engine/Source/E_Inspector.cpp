@@ -510,7 +510,7 @@ void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
 
 			ImGui::Separator();
 
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Animation Settings");
+			ImGui::TextColored(Cyan.C_Array(), "Animation Settings");
 
 			// Select Animation
 			std::vector<const char*> animations;
@@ -537,10 +537,10 @@ void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
 			}
 
 			// Loop
-			bool loop_animation = c_animation->GetAnimationLoop();
+			bool loop_animation = c_animation->GetLoopAnimation();
 			if (ImGui::Checkbox("Loop Animation", &loop_animation))
 			{
-				c_animation->SetAnimationLoop(loop_animation);
+				c_animation->SetLoopAnimation(loop_animation);
 			}
 
 			// Play Automatically
@@ -556,6 +556,27 @@ void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
 			{
 				c_animation->SetCameraCulling(camera_culling);
 			}
+
+			// Show Bones
+			bool show_bones = c_animation->GetShowBones();
+			if (ImGui::Checkbox("Show Bones", &show_bones))
+			{
+				c_animation->SetShowBones(show_bones);
+			}
+
+			ImGui::Separator();
+
+			ImGui::TextColored(Cyan.C_Array(), "Animation Stats");
+
+			const char* animation_name			= c_animation->GetAnimationName();
+			float animation_time				= c_animation->GetAnimationTime();
+			float animation_ticks_per_second	= c_animation->GetTicksPerSecond();
+			float animation_duration			= c_animation->GetDuration();
+
+			ImGui::Text("Name:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %s",		animation_name);
+			ImGui::Text("Time:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %.3f",	animation_time);
+			ImGui::Text("Ticks Per Second:");	ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), " %.3f",				animation_ticks_per_second);
+			ImGui::Text("Duration:");			ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "         %.3f",		animation_duration);
 		}
 		
 		if (!show)

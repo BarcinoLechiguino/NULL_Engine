@@ -179,5 +179,5 @@ bool E_Hierarchy::SelectedCanBeDeleted()
 		LOG("[WARNING] Herarchy: An Animation Bone GameObject cannot be deleted! Delete Animation Parent Game Object First.");
 	}
 
-	return (App->editor->SelectedIsSceneRoot() || App->editor->SelectedIsAnimationBone());
+	return (!App->editor->SelectedIsSceneRoot() && !App->editor->SelectedIsAnimationBone());
 }

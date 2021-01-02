@@ -217,6 +217,7 @@ bool M_Renderer3D::InitDebugVariables()
 	render_vertex_normals		= false;
 	render_face_normals			= false;
 	render_bounding_boxes		= false;
+	render_skeletons			= false;
 	render_primitive_examples	= false;
 
 	return ret;
@@ -698,7 +699,6 @@ void M_Renderer3D::RenderRays()
 void M_Renderer3D::RenderSkeletons()
 {
 	glDisable(GL_LIGHTING);
-	glBegin(GL_LINES);
 
 	for (uint i = 0; i < skeleton_renderers.size(); ++i)
 	{
@@ -707,7 +707,6 @@ void M_Renderer3D::RenderSkeletons()
 
 	skeleton_renderers.clear();
 
-	glEnd();
 	glEnable(GL_LIGHTING);
 }
 
@@ -1010,6 +1009,11 @@ bool M_Renderer3D::GetRenderBoundingBoxes() const
 	return render_bounding_boxes;
 }
 
+bool M_Renderer3D::GetRenderSkeletons() const
+{
+	return render_skeletons;
+}
+
 bool M_Renderer3D::GetRenderPrimitiveExamples() const
 {
 	return render_primitive_examples;
@@ -1112,18 +1116,12 @@ void M_Renderer3D::SetBoneWidth(const float& bone_width)
 
 void M_Renderer3D::SetRenderWorldGrid(const bool& set_to)
 {
-	if (set_to != render_world_grid)
-	{
-		render_world_grid = set_to;
-	}
+	render_world_grid = set_to;
 }
 
 void M_Renderer3D::SetRenderWorldAxis(const bool& set_to)
 {
-	if (set_to != render_world_axis)
-	{
-		render_world_axis = set_to;
-	}
+	render_world_axis = set_to;
 }
 
 void M_Renderer3D::SetRenderWireframes(const bool& set_to)
@@ -1153,34 +1151,27 @@ void M_Renderer3D::SetRenderWireframes(const bool& set_to)
 
 void M_Renderer3D::SetRenderVertexNormals(const bool& set_to)
 {
-	if (render_vertex_normals != set_to)
-	{
-		render_vertex_normals = set_to;
-	}
+	render_vertex_normals = set_to;
 }
 
 void M_Renderer3D::SetRenderFaceNormals(const bool& set_to)
 {
-	if (render_face_normals != set_to)
-	{
-		render_face_normals = set_to;
-	}
+	render_face_normals = set_to;
 }
 
 void M_Renderer3D::SetRenderBoundingBoxes(const bool& set_to)
 {
-	if (render_bounding_boxes != set_to)
-	{
-		render_bounding_boxes = set_to;
-	}
+	render_bounding_boxes = set_to;
+}
+
+void M_Renderer3D::SetRenderSkeletons(const bool& set_to)
+{
+	render_skeletons = set_to;
 }
 
 void M_Renderer3D::SetRenderPrimtiveExamples(const bool& set_to)
 {
-	if (set_to != render_primitive_examples)
-	{
-		render_primitive_examples = set_to;
-	}
+	render_primitive_examples = set_to;
 }
 
 // --- RENDERER STRUCTURES METHODS ---
@@ -1586,11 +1577,13 @@ bone_width	(App->renderer->GetBoneWidth())
 
 void SkeletonRenderer::Render()
 {
-	glColor4f(color.r, color.g, color.b, color.a);
-
 	GLfloat A[3]	= {};
 	GLfloat B[3]	= {};
 	uint bytes		= sizeof(float) * 3;
+
+	glColor4f(color.r, color.g, color.b, color.a);
+	glLineWidth(bone_width);
+	glBegin(GL_LINES);
 
 	for (uint i = 0; i < bones.size(); ++i)
 	{
@@ -1601,5 +1594,7 @@ void SkeletonRenderer::Render()
 		glVertex3fv(B);
 	}
 
+	glEnd();
+	glLineWidth(STANDARD_LINE_WIDTH);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }

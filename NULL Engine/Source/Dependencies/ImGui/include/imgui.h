@@ -236,7 +236,7 @@ struct ImVec4
 
     ImVec4()                                        { x = y = z = w = 0.0f; }
     ImVec4(float _x, float _y, float _z, float _w)  { x = _x; y = _y; z = _z; w = _w; }
-    ImVec4(float* v)                                { IM_ASSERT(v == NULL); x = v[0]; y = v[1]; z = v[2]; w = v[3]; }
+    ImVec4(float* v)                                { /*IM_ASSERT(v == NULL);*/ x = v[0]; y = v[1]; z = v[2]; w = v[3]; }
 
 #ifdef IM_VEC4_CLASS_EXTRA
     IM_VEC4_CLASS_EXTRA     // Define additional constructors and implicit cast operators in imconfig.h to convert back and forth between your math types and ImVec4.

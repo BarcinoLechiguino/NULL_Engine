@@ -215,6 +215,7 @@ public:																											// --- DEBUG GET/SET METHODS
 	bool			GetRenderVertexNormals		() const;														// 
 	bool			GetRenderFaceNormals		() const;														// 
 	bool			GetRenderBoundingBoxes		() const;														// 
+	bool			GetRenderSkeletons			() const;														// 
 	bool			GetRenderPrimitiveExamples	() const;														// 
 	
 	void			SetWorldGridSize			(const uint& world_grid_size);
@@ -247,6 +248,7 @@ public:																											// --- DEBUG GET/SET METHODS
 	void			SetRenderVertexNormals		(const bool& set_to);											// 
 	void			SetRenderFaceNormals		(const bool& set_to);											// 
 	void			SetRenderBoundingBoxes		(const bool& set_to);											// 
+	void			SetRenderSkeletons			(const bool& set_to);
 	void			SetRenderPrimtiveExamples	(const bool& set_to);											// 
 
 public:
@@ -302,6 +304,7 @@ private:																										// --- DEBUG VARIABLES ---		// TODO: CREATE A 
 	bool					render_vertex_normals;																// 
 	bool					render_face_normals;																// 
 	bool					render_bounding_boxes;																// 
+	bool					render_skeletons;																	//
 
 	bool					render_primitive_examples;															//
 };
