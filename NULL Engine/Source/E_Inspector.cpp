@@ -437,7 +437,7 @@ void E_Inspector::DrawCameraComponent(C_Camera* c_camera)
 			if (ImGui::Checkbox("Orthogonal", &camera_is_orthogonal))
 			{
 				c_camera->SetOrthogonalView(camera_is_orthogonal);
-			}
+			} 
 
 			bool frustum_is_hidden = c_camera->FrustumIsHidden();
 			if (ImGui::Checkbox("Hide Frustum", &frustum_is_hidden))
@@ -512,20 +512,50 @@ void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
 
 			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Animation Settings");
 
-			// Playback Speed
+			// Select Animation
+			std::vector<const char*> animations;
+			if (ImGui::BeginCombo("Select Animation", "TAKE ==!"))
+			{
 
+
+				ImGui::EndCombo();
+			}
+
+			// Play, Pause, Step & Stop
+			if (ImGui::Button("Play"))	{ c_animation->Play(); }	ImGui::SameLine();
+			if (ImGui::Button("Pause")) { c_animation->Pause(); }	ImGui::SameLine();
+			if (ImGui::Button("Step"))	{ c_animation->Step(); }	ImGui::SameLine();
+			if (ImGui::Button("Stop"))	{ c_animation->Stop(); }
+			
+			// Playback Speed
+			float playback_speed		= c_animation->GetPlaybackSpeed();
+			float min_playback_speed	= 0.1f;
+			float max_playback_speed	= 10.0f;
+			if (ImGui::SliderFloat("Playback Speed", &playback_speed, min_playback_speed, max_playback_speed, "%.3f", 1.0f))
+			{
+				c_animation->SetPlaybackSpeed(playback_speed);
+			}
+
+			// Loop
+			bool loop_animation = c_animation->GetAnimationLoop();
+			if (ImGui::Checkbox("Loop Animation", &loop_animation))
+			{
+				c_animation->SetAnimationLoop(loop_animation);
+			}
 
 			// Play Automatically
-
+			bool play_on_start = c_animation->GetPlayOnStart();
+			if (ImGui::Checkbox("Play On Start", &play_on_start))
+			{
+				c_animation->SetPlayOnStart(play_on_start);
+			}
 
 			// Renderer Culling
-
-
-			// Play, Pause & Stop
-
-
-			// Select Animation
-
+			bool camera_culling = c_animation->GetCameraCulling();
+			if (ImGui::Checkbox("Camera Culling", &camera_culling))
+			{
+				c_animation->SetCameraCulling(camera_culling);
+			}
 		}
 		
 		if (!show)

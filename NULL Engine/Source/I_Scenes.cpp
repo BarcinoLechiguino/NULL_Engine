@@ -330,11 +330,20 @@ uint Importer::Scenes::Save(const R_Model* r_model, char** buffer)
 
 	ParsonNode root_node			= ParsonNode();																						// --- GENERATING THE REQUIRED PARSON NODE AND ARRAY
 	ParsonArray model_nodes_array	= root_node.SetArray("ModelNodes");																	// -------------------------------------------------
+	ParsonArray animations_array	= root_node.SetArray("Animations");
 
 	for (uint i = 0; i < r_model->model_nodes.size(); ++i)																				// --- SAVING MODEL NODE DATA
 	{
 		ParsonNode model_node = model_nodes_array.SetNode(r_model->model_nodes[i].name.c_str());
 		r_model->model_nodes[i].Save(model_node);
+	}
+
+	std::map<uint32, std::string>::const_iterator item;
+	for (item = r_model->animations.cbegin(); item != r_model->animations.cend(); ++item)
+	{
+		ParsonNode animation_node = animations_array.SetNode(item->second.c_str());
+		animation_node.SetNumber("UID", (double)item->first);
+		animation_node.SetString("Name", item->second.c_str());
 	}
 
 	std::string path	= MODELS_PATH + std::to_string(r_model->GetUID()) + MODELS_EXTENSION;
@@ -369,8 +378,9 @@ bool Importer::Scenes::Load(const char* buffer, R_Model* r_model)
 		return false;
 	}
 
-	ParsonNode root_node = ParsonNode(buffer);
-	ParsonArray model_nodes_array = root_node.GetArray("ModelNodes");
+	ParsonNode root_node			= ParsonNode(buffer);
+	ParsonArray model_nodes_array	= root_node.GetArray("ModelNodes");
+	ParsonArray animations_array	= root_node.GetArray("Animations");
 	if (!root_node.NodeIsValid())
 	{
 		LOG("%s! Error: Could not get the Root Node from the passed buffer.", error_string.c_str());
@@ -378,8 +388,12 @@ bool Importer::Scenes::Load(const char* buffer, R_Model* r_model)
 	}
 	if (!model_nodes_array.ArrayIsValid())
 	{
-		LOG("%s! Error: Could not get the ModelNodes array from the Root Node.", error_string.c_str());
+		LOG("%s! Error: Could not get the ModelNodes Array from the Root Node.", error_string.c_str());
 		return false;
+	}
+	if (!animations_array.ArrayIsValid())
+	{
+		LOG("%s! Error: Could not get the Animations Array from the Root Node.", error_string.c_str());
 	}
 
 	for (uint i = 0; i < model_nodes_array.size; ++i)
@@ -395,6 +409,21 @@ bool Importer::Scenes::Load(const char* buffer, R_Model* r_model)
 		model_node.Load(parson_node);
 
 		r_model->model_nodes.push_back(model_node);
+	}
+
+	for (uint i = 0; i < animations_array.size; ++i)
+	{
+		ParsonNode animations_node = animations_array.GetNode(i);
+		if (!animations_node.NodeIsValid())
+		{
+			LOG("%s! Error: Could not parse Node %s from Animations Array.", error_string.c_str());
+			return false;
+		}
+
+		uint32 animation_uid		= (uint32)animations_node.GetNumber("UID");
+		std::string animation_name	= animations_node.GetString("Name");
+
+		r_model->animations.emplace(animation_uid, animation_name);
 	}
 
 	LOG("[STATUS] Importer: Successfully loaded Model { %s } from Library! UID: %lu", r_model->GetAssetsFile(), r_model->GetUID());

@@ -487,6 +487,11 @@ bool M_Editor::SelectedIsSceneRoot() const
 	return (App->scene->GetSelectedGameObject() == App->scene->GetSceneRoot());
 }
 
+bool M_Editor::SelectedIsAnimationBone() const
+{
+	return App->scene->GetSelectedGameObject()->is_bone;
+}
+
 void M_Editor::GetEngineIconsThroughEditor(Icons& engine_icons)
 {
 	engine_icons = App->renderer->GetEngineIcons();

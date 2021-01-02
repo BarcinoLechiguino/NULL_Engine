@@ -93,6 +93,7 @@ public:																							// --- Panel/Window Methods. Acts as an interface 
 	void			SetSelectedGameObjectThroughEditor	(GameObject* game_object);				// Hierarchy & Inspector: Will set the scene's selected GameObject with the passed one.
 	void			DeleteSelectedGameObject			();										// Hierarchy & Inspector: Will call the Module Scene's delete selected GameObject method.
 	bool			SelectedIsSceneRoot					() const;								// Hierarchy & Inspector: Will check whether or not the selected GameObject is the scene root.
+	bool			SelectedIsAnimationBone				() const;								// Hierarchy & Inspector: Will check whether or not the selected GameObject is an anim. bone.
 	void			CreateGameObject					(const char* name, GameObject* parent);	// Hierarchy & Inspector: Will call the Module Scene's create GameObject method.
 	C_Camera*		GetCurrentCameraThroughEditor		() const;								// Hierarchy & Inspector: 
 	void			SetCurrentCameraThroughEditor		(C_Camera* game_object);				// Hierarchy & Inspector:  

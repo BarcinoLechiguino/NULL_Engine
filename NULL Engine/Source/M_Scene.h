@@ -35,20 +35,21 @@ public:
 	bool			LoadConfiguration	(ParsonNode& root) override;
 
 public:																														// --- GAME OBJECTS METHODS ---
-	bool			SaveScene								(const char* scene_name = nullptr) const;						// If no name is given the scene_root node's name will be used.
-	bool			LoadScene								(const char* path);												// 
+	bool			SaveScene							(const char* scene_name = nullptr) const;							// If no name is given the scene_root node's name will be used.
+	bool			LoadScene							(const char* path);													// 
 
-	void			LoadResourceIntoScene					(Resource* resource);
+	void			LoadResourceIntoScene				(Resource* resource);
 
-	std::vector<GameObject*>* GetGameObjects				();
+	std::vector<GameObject*>* GetGameObjects			();
 	
-	GameObject*		CreateGameObject						(const char* name = nullptr, GameObject* parent = nullptr);		// 
-	void			DeleteGameObject						(GameObject* game_object, uint index = -1);						// 
+	GameObject*		CreateGameObject					(const char* name = nullptr, GameObject* parent = nullptr);			// 
+	void			DeleteGameObject					(GameObject* game_object, uint index = -1);							// 
 	
-	void			GenerateGameObjectsFromModel			(const uint32& model_UID);										//
-	bool			ApplyTextureToSelectedGameObject		(const uint32& texture_UID);									//
+	void			GenerateGameObjectsFromModel		(const uint32& model_UID);											//
+	bool			ApplyTextureToSelectedGameObject	(const uint32& texture_UID);										//
 
-	void			CreateComponentsFromModelNode			(const ModelNode& model_node, GameObject* game_object);
+	void			CreateComponentsFromModelNode		(const ModelNode& model_node, GameObject* game_object);
+	void			CreateAnimationComponentFromModel	(const R_Model* r_model, GameObject* game_object);
 
 public:																														// --- MASTER ROOT & SCENE ROOT METHODS ---
 	void			CreateMasterRoot					();																	// 

@@ -266,7 +266,7 @@
         },
         {
             "UID": 199181175,
-            "ParentUID": 1904504414,
+            "ParentUID": 1561586188,
             "Name": "Street environment_V01.FBX",
             "IsActive": true,
             "IsStatic": false,
@@ -541,51 +541,13 @@
             ]
         },
         {
-            "UID": 838545692,
-            "ParentUID": 1904504414,
-            "Name": "SceneCamera",
-            "IsActive": true,
-            "IsStatic": false,
-            "IsSceneRoot": false,
-            "ShowBoundingBoxes": false,
-            "Components": [
-                {
-                    "Type": 1,
-                    "LocalPosition": [
-                        0,
-                        5,
-                        25
-                    ],
-                    "LocalRotation": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "LocalScale": [
-                        1,
-                        1,
-                        1
-                    ]
-                },
-                {
-                    "Type": 5,
-                    "MinFOV": 1,
-                    "MaxFOV": 120,
-                    "Culling": false,
-                    "OrthogonalView": false,
-                    "HideFrustum": false
-                }
-            ]
-        },
-        {
             "UID": 882198915,
             "ParentUID": 1163210391,
             "Name": "Plane001",
             "IsActive": true,
             "IsStatic": false,
             "IsSceneRoot": false,
-            "ShowBoundingBoxes": false,
+            "ShowBoundingBoxes": true,
             "Components": [
                 {
                     "Type": 1,
@@ -1167,6 +1129,36 @@
             ]
         },
         {
+            "UID": 1561586188,
+            "ParentUID": 135308381,
+            "Name": "MainScene",
+            "IsActive": true,
+            "IsStatic": false,
+            "IsSceneRoot": true,
+            "ShowBoundingBoxes": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        {
             "UID": 1562221168,
             "ParentUID": 1163210391,
             "Name": "City_building_010",
@@ -1217,6 +1209,44 @@
                         "Path": "Library\/Textures\/387029689.netex",
                         "File": "387029689.netex"
                     }
+                }
+            ]
+        },
+        {
+            "UID": 1571231505,
+            "ParentUID": 1561586188,
+            "Name": "SceneCamera",
+            "IsActive": true,
+            "IsStatic": false,
+            "IsSceneRoot": false,
+            "ShowBoundingBoxes": false,
+            "Components": [
+                {
+                    "Type": 1,
+                    "LocalPosition": [
+                        0,
+                        5,
+                        25
+                    ],
+                    "LocalRotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "LocalScale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 5,
+                    "MinFOV": 1,
+                    "MaxFOV": 120,
+                    "Culling": false,
+                    "OrthogonalView": false,
+                    "HideFrustum": false
                 }
             ]
         },
@@ -1625,36 +1655,6 @@
                         "Path": "Library\/Textures\/1285159411.netex",
                         "File": "1285159411.netex"
                     }
-                }
-            ]
-        },
-        {
-            "UID": 1904504414,
-            "ParentUID": 409129543,
-            "Name": "MainScene",
-            "IsActive": true,
-            "IsStatic": false,
-            "IsSceneRoot": true,
-            "ShowBoundingBoxes": false,
-            "Components": [
-                {
-                    "Type": 1,
-                    "LocalPosition": [
-                        0,
-                        0,
-                        0
-                    ],
-                    "LocalRotation": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "LocalScale": [
-                        1,
-                        1,
-                        1
-                    ]
                 }
             ]
         },

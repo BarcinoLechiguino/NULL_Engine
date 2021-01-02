@@ -139,23 +139,19 @@ void E_Hierarchy::HierarchyToolsPopup()
 	ImGui::OpenPopup("Hierarchy Tools");
 	if (ImGui::BeginPopup("Hierarchy Tools"))
 	{
-		if (ImGui::MenuItem("Delete Selected"))
-		{
-			if (!App->editor->SelectedIsSceneRoot())
-			{
-				App->editor->DeleteSelectedGameObject();
-				open_hierarchy_tools_popup = false;
-			}
-			else
-			{
-				LOG("[WARNING] The Scene's Root Object cannot be deleted!");
-			}
-		}
-
 		if (ImGui::MenuItem("Create Empty Child GameObject"))
 		{
 			App->editor->CreateGameObject("Empty Child", App->editor->GetSelectedGameObjectThroughEditor());
 			open_hierarchy_tools_popup = false;
+		}
+		
+		if (ImGui::MenuItem("Delete Selected"))
+		{
+			if (SelectedCanBeDeleted())
+			{
+				App->editor->DeleteSelectedGameObject();
+				open_hierarchy_tools_popup = false;
+			}
 		}
 
 		ImGui::EndPopup();
@@ -170,4 +166,18 @@ void E_Hierarchy::HierarchyToolsPopup()
 bool E_Hierarchy::NodeIsRootObject(GameObject* node)
 {
 	return node == App->editor->GetSceneRootThroughEditor();
+}
+
+bool E_Hierarchy::SelectedCanBeDeleted()
+{
+	if (App->editor->SelectedIsSceneRoot())
+	{
+		LOG("[WARNING] Hierarchy: The Scene's Root Object cannot be deleted!");
+	}
+	if (App->editor->SelectedIsAnimationBone())
+	{
+		LOG("[WARNING] Herarchy: An Animation Bone GameObject cannot be deleted! Delete Animation Parent Game Object First.");
+	}
+
+	return (App->editor->SelectedIsSceneRoot() || App->editor->SelectedIsAnimationBone());
 }

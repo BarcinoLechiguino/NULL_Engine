@@ -22,6 +22,8 @@ private:
 
 	bool NodeIsRootObject				(GameObject* node);
 
+	bool SelectedCanBeDeleted			();
+
 private:
 	ImGuiTreeNodeFlags	default_flags;												// Will define the base configuration of the tree nodes.
 	GameObject*			dragged_game_object;										// Used for the dragging and dropping of game objects withing the hierarchy.

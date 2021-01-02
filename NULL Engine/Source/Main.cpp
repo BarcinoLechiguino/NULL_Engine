@@ -26,8 +26,8 @@ int main(int argc, char ** argv)
 {
 	LOG("Starting game '%s'...", TITLE);
 
-	int main_return = EXIT_FAILURE;
-	MAIN_STATUS state = MAIN_STATUS::CREATION;
+	int main_return		= EXIT_FAILURE;
+	MAIN_STATUS state	= MAIN_STATUS::CREATION;
 
 	while (state != MAIN_STATUS::EXIT)
 	{
@@ -38,14 +38,14 @@ int main(int argc, char ** argv)
 		case MAIN_STATUS::CREATION:
 
 			LOG("-------------- Application Creation --------------");
-			App = new Application();
-			state = MAIN_STATUS::START;
+			App		= new Application();
+			state	= MAIN_STATUS::START;
 			break;
 
 		case MAIN_STATUS::START:
 
 			LOG("-------------- Application Init --------------");
-			if (App->Init() == false)
+			if (!App->Init())
 			{
 				LOG("Application Init exits with ERROR");
 				state = MAIN_STATUS::EXIT;
@@ -78,7 +78,7 @@ int main(int argc, char ** argv)
 		case MAIN_STATUS::FINISH:
 
 			LOG("-------------- Application CleanUp --------------");
-			if (App->CleanUp() == false)
+			if (!App->CleanUp())
 			{
 				LOG("Application CleanUp exits with ERROR");
 			}

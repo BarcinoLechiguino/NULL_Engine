@@ -29,6 +29,7 @@
 #include "C_Mesh.h"
 #include "C_Material.h"
 #include "C_Camera.h"
+#include "C_Animation.h"
 
 #include "M_Scene.h"
 
@@ -445,6 +446,11 @@ void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 
 		CreateComponentsFromModelNode(m_nodes[i], game_object);
 
+		if (m_nodes[i].parent_uid == 0 && !r_model->animations.empty())
+		{
+			CreateAnimationComponentFromModel(r_model, game_object);
+		}
+
 		tmp.emplace(game_object->GetUID(), game_object);
 	}
 
@@ -471,8 +477,6 @@ void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 		item->second->GetComponent<C_Transform>()->Translate(float3::zero);						// Dirty way to refresh the transforms after the import is done. TMP Un-hardcode later.
 		game_objects.push_back(item->second);
 	}
-
-
 
 	tmp.clear();
 }
@@ -525,6 +529,38 @@ void M_Scene::CreateComponentsFromModelNode(const ModelNode& model_node, GameObj
 			c_material->SetTexture(r_texture);
 		}
 	}
+}
+
+void M_Scene::CreateAnimationComponentFromModel(const R_Model* r_model, GameObject* game_object)
+{
+	if (r_model == nullptr)
+	{
+		LOG("[ERROR] Scene: Could not Create Animation Component From Model! Error: Given R_Model* was nullptr.");
+		return;
+	}
+	if (game_object == nullptr)
+	{
+		LOG("[ERROR] Scene: Could not Create Animation Component From Model! Error: Given GameObject* was nullptr.");
+		return;
+	}
+	if (r_model->animations.empty())
+	{
+		LOG("[ERROR] Scene: Could not Create Animation Component From Model! Error: Given R_Model* had no animations.");
+		return;
+	}
+
+	C_Animation* c_animation = (C_Animation*)game_object->CreateComponent(COMPONENT_TYPE::ANIMATION);
+	std::map<uint32, std::string>::const_iterator item;
+	for (item = r_model->animations.cbegin(); item != r_model->animations.cend(); ++item)
+	{
+		R_Animation* r_animation = (R_Animation*)App->resource_manager->RequestResource(item->first);
+		if (r_animation != nullptr)
+		{
+			c_animation->AddAnimation(r_animation);
+		}
+	}
+
+	// DELETE ON EMPTY ANIMATIONS?
 }
 
 std::vector<GameObject*>* M_Scene::GetGameObjects()

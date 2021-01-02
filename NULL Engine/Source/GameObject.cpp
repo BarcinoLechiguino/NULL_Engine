@@ -32,6 +32,7 @@ parent				(nullptr),
 transform			(nullptr),
 is_master_root		(false),
 is_scene_root		(false),
+is_bone				(false),
 to_delete			(false),
 show_bounding_boxes	(false)
 {
@@ -303,6 +304,7 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 	}
 }
 
+// --- PARENT/CHILDS METHODS
 bool GameObject::SetParent(GameObject* new_parent)
 {
 	bool success = true;
@@ -442,6 +444,72 @@ bool GameObject::DeleteChild(GameObject* child)
 bool GameObject::HasChilds() const
 {
 	return !childs.empty();
+}
+
+void GameObject::GetAllChilds(std::vector<GameObject*>& childs)
+{
+	if (this->childs.empty())
+	{
+		LOG("[WARNING] Game Object: GameObject { %s } did not have any childs!");
+		return;
+	}
+	
+	for (uint i = 0; i < this->childs.size(); ++i)
+	{
+		childs.push_back(this->childs[i]);
+		this->childs[i]->GetAllChilds(childs);
+	}
+}
+
+void GameObject::GetAllChilds(std::map<std::string, GameObject*>& childs)
+{
+	if (this->childs.empty())
+	{
+		LOG("[WARNING] Game Object: GameObject { %s } did not have any childs!");
+		return;
+	}
+
+	for (uint i = 0; i < this->childs.size(); ++i)
+	{
+		childs.emplace(this->childs[i]->GetName(), this->childs[i]);
+		this->childs[i]->GetAllChilds(childs);
+	}
+}
+
+GameObject* GameObject::FindChild(const char* child_name)
+{	
+	if (child_name == nullptr)
+	{
+		LOG("[ERROR] Game Object: Could not Find Child in GameObject { %s }! Error: Argument const char* string was nullptr.");
+		return nullptr;
+	}
+	
+	/*std::vector<GameObject*> childs;
+	GetAllChilds(childs);
+	for (uint i = 0; i < childs.size(); ++i)
+	{
+		if (strcmp(childs[i]->GetName(), child_name) == 0)
+		{
+			return childs[i];
+		}
+	}*/
+
+	GameObject* child = nullptr;
+	for (uint i = 0; i < childs.size(); ++i)
+	{
+		if (strcmp(childs[i]->GetName(), child_name) == 0)
+		{
+			return childs[i];
+		}
+
+		child = childs[i]->FindChild(child_name);
+		if (child != nullptr)
+		{
+			return child;
+		}
+	}
+
+	return nullptr;
 }
 
 // --- GAME OBJECT GETTERS AND SETTERS ---

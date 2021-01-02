@@ -1,8 +1,9 @@
 #ifndef __GAME_OBJECT_H__
 #define __GAME_OBJECT_H__
 
-#include <vector>
 #include <string>
+#include <vector>
+#include <map>
 
 #include "MathGeoBoundingBox.h"
 #include "Component.h"
@@ -39,12 +40,17 @@ public:
 	void			GetRenderers						(std::vector<MeshRenderer>& mesh_renderers, std::vector<CuboidRenderer>& cuboid_renderers, 
 															std::vector<SkeletonRenderer>& skeleton_renderers); // TODO: Get them elsewhere. Scene maybe?
 
+public:																									// --- PARENT/CHILDS METHODS
 	bool			SetParent							(GameObject* new_parent);
 
 	bool			AddChild							(GameObject* child);							// Adds the given child to this GO's childs. Also dels. it from prev. parent's childs.
 	bool			NewChildIsOwnParent					(GameObject* child);							// Rets. true if passed child is being added to one of it's children or ch. of chs.
 	bool			DeleteChild							(GameObject* child);							// Deletes the given child from childs. Returns false upon not finding the child.
 	bool			HasChilds							() const;
+
+	void			GetAllChilds						(std::vector<GameObject*>& childs);	
+	void			GetAllChilds						(std::map<std::string, GameObject*>& childs);	
+	GameObject*		FindChild							(const char* child_name);
 
 public:																									// --- GAME OBJECT GETTERS AND SETTERS
 	uint32			GetUID								() const;										//
@@ -131,6 +137,7 @@ public:
 
 	bool						is_master_root;												//
 	bool						is_scene_root;												// Will be set to true if this GameObject is M_Scene's scene root object.
+	bool						is_bone;
 	bool						to_delete;													// Will determine whether or not the GO should be deleted. See M_Scene's DeleteGameObject().
 
 	OBB							obb;
