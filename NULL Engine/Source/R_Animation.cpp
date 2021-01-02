@@ -60,12 +60,12 @@ const char* R_Animation::GetName() const
 	return name.c_str();
 }
 
-double R_Animation::GetDuration() const
+double R_Animation::GetCurrentDuration() const
 {
 	return duration;
 }
 
-double R_Animation::GetTicksPerSecond() const
+double R_Animation::GetCurrentTicksPerSecond() const
 {
 	return ticks_per_second;
 }

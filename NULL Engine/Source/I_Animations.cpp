@@ -103,8 +103,8 @@ uint Importer::Animations::Save(const R_Animation* r_animation, char** buffer)
 
 	double header_data[HEADER_SIZE] = {
 		(double)strlen(r_animation->GetName()),
-		r_animation->GetDuration(),
-		r_animation->GetTicksPerSecond(),
+		r_animation->GetCurrentDuration(),
+		r_animation->GetCurrentTicksPerSecond(),
 		(double)r_animation->channels.size(),
 		(double)channels_data_size
 	};

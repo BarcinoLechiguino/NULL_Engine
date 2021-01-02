@@ -15,6 +15,7 @@
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Channel.cpp" />
     <ClCompile Include="Source\C_Animation.cpp" />
+    <ClCompile Include="Source\EasingFunctions.cpp" />
     <ClCompile Include="Source\E_Resources.cpp" />
     <ClCompile Include="Source\E_Timeline.cpp" />
     <ClCompile Include="Source\Hourglass.cpp" />
@@ -94,6 +95,7 @@
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\HardwareInfo.cpp" />
     <ClCompile Include="Source\Icons.cpp" />
+    <ClCompile Include="Source\ImGuiCustom.cpp" />
     <ClCompile Include="Source\Importer.cpp" />
     <ClCompile Include="Source\ImportSettings.cpp" />
     <ClCompile Include="Source\I_Animations.cpp" />
@@ -142,6 +144,7 @@
     <ClInclude Include="Source\Assimp.h" />
     <ClInclude Include="Source\Channel.h" />
     <ClInclude Include="Source\C_Animation.h" />
+    <ClInclude Include="Source\EasingFunctions.h" />
     <ClInclude Include="Source\E_Resources.h" />
     <ClInclude Include="Source\E_Timeline.h" />
     <ClInclude Include="Source\Hourglass.h" />
@@ -278,6 +281,7 @@
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\HardwareInfo.h" />
     <ClInclude Include="Source\Icons.h" />
+    <ClInclude Include="Source\ImGuiCustom.h" />
     <ClInclude Include="Source\Importer.h" />
     <ClInclude Include="Source\ImportSettings.h" />
     <ClInclude Include="Source\I_Animations.h" />

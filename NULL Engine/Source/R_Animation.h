@@ -23,8 +23,8 @@ public:
 
 public:
 	const char* GetName				() const;
-	double		GetDuration			() const;
-	double		GetTicksPerSecond	() const;
+	double		GetCurrentDuration			() const;
+	double		GetCurrentTicksPerSecond	() const;
 
 	void		SetName				(const char* name);
 	void		SetDuration			(const double& duration);

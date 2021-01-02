@@ -570,8 +570,8 @@ void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
 
 			const char* animation_name			= c_animation->GetAnimationName();
 			float animation_time				= c_animation->GetAnimationTime();
-			float animation_ticks_per_second	= c_animation->GetTicksPerSecond();
-			float animation_duration			= c_animation->GetDuration();
+			float animation_ticks_per_second	= c_animation->GetCurrentTicksPerSecond();
+			float animation_duration			= c_animation->GetCurrentDuration();
 
 			ImGui::Text("Name:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %s",		animation_name);
 			ImGui::Text("Time:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %.3f",	animation_time);

@@ -71,8 +71,8 @@ public:																											// --- GET/SET METHODS
 
 	const char*		GetAnimationName			() const;
 	float			GetAnimationTime			() const;
-	float			GetTicksPerSecond			() const;
-	float			GetDuration					() const;
+	float			GetCurrentTicksPerSecond	() const;
+	float			GetCurrentDuration			() const;
 
 	void			SetPlaybackSpeed			(const float& playback_speed);
 	void			SetLoopAnimation			(const bool& set_to);
@@ -97,14 +97,16 @@ private:
 	bool			step;
 	bool			stop;
 
+	float			animation_time;
+	float			animation_frame;
+	uint			animation_tick;
+
 	float			playback_speed;
 	bool			loop_animation;
 	bool			play_on_start;
 	bool			camera_culling;
 	
 	bool			show_bones;
-	
-	float			animation_time;
 };
 
 #endif // !__C_ANIMATION_H__
