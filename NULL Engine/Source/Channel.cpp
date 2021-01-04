@@ -24,68 +24,92 @@ bool Channel::HasKeyframes(KEYFRAME_TYPE type) const
 
 bool Channel::HasPositionKeyframes() const
 {
-	return !(position_keyframes.size() == 1 && position_keyframes.begin()->first == -1);
+	return HasKeyframes(KEYFRAME_TYPE::POSITION);
 }
 
 bool Channel::HasRotationKeyframes() const
 {
-	return !(rotation_keyframes.size() == 1 && rotation_keyframes.begin()->first == -1);
+	return HasKeyframes(KEYFRAME_TYPE::ROTATION);
 }
 
 bool Channel::HasScaleKeyframes() const
 {
-	return !(scale_keyframes.size() == 1 && scale_keyframes.begin()->first == -1);
+	return HasKeyframes(KEYFRAME_TYPE::SCALE);
 }
 
-PositionKeyframe Channel::GetPrevPositionKeyframe(double current_keyframe) const
+PositionKeyframe Channel::GetPositionKeyframe(const double& current_keyframe) const
 {
 	PositionKeyframe item	= position_keyframes.find(current_keyframe);
+	item					= (item == position_keyframes.end()) ? --item : item;
+
+	return item;
+}
+
+RotationKeyframe Channel::GetRotationKeyframe(const double& current_keyframe) const
+{
+	RotationKeyframe item	= rotation_keyframes.find(current_keyframe);
+	item					= (item == rotation_keyframes.end()) ? --item : item;
+
+	return item;
+}
+
+ScaleKeyframe Channel::GetScaleKeyframe(const double& current_keyframe) const
+{
+	ScaleKeyframe item	= scale_keyframes.find(current_keyframe);
+	item				= (item == scale_keyframes.end()) ? --item : item;
+
+	return item;
+}
+
+PositionKeyframe Channel::GetPrevPositionKeyframe(const double& current_keyframe) const
+{
+	PositionKeyframe item	= GetPositionKeyframe(current_keyframe);
 	item					= (item != position_keyframes.begin()) ? --item : item;
 
 	return item;
 }
 
-RotationKeyframe Channel::GetPrevRotationKeyframe(double current_keyframe) const
+RotationKeyframe Channel::GetPrevRotationKeyframe(const double& current_keyframe) const
 {
-	RotationKeyframe item	= rotation_keyframes.find(current_keyframe);
+	RotationKeyframe item	= GetRotationKeyframe(current_keyframe);
 	item					= (item != rotation_keyframes.begin()) ? --item : item;
 
 	return item;
 }
 
-ScaleKeyframe Channel::GetPrevScaleKeyframe(double current_keyframe) const
+ScaleKeyframe Channel::GetPrevScaleKeyframe(const double& current_keyframe) const
 {
-	ScaleKeyframe item	= scale_keyframes.find(current_keyframe);
+	ScaleKeyframe item	= GetScaleKeyframe(current_keyframe);
 	item				= (item != scale_keyframes.begin()) ? --item : item;
 
 	return item;
 }
 
-PositionKeyframe Channel::GetNextPositionKeyframe(double current_keyframe) const
+PositionKeyframe Channel::GetNextPositionKeyframe(const double& current_keyframe) const
 {
-	PositionKeyframe item	= position_keyframes.find(current_keyframe);
+	PositionKeyframe item	= GetPositionKeyframe(current_keyframe);
 	item					= (item != position_keyframes.end()) ? ++item : item;
 
 	return item;
 }
 
-RotationKeyframe Channel::GetNextRotationKeyframe(double current_keyframe) const
+RotationKeyframe Channel::GetNextRotationKeyframe(const double& current_keyframe) const
 {
-	RotationKeyframe item	= rotation_keyframes.find(current_keyframe);
+	RotationKeyframe item	= GetRotationKeyframe(current_keyframe);
 	item					= (item != rotation_keyframes.end()) ? ++item : item;
 
 	return item;
 }
 
-ScaleKeyframe Channel::GetNextScaleKeyframe(double current_keyframe) const
+ScaleKeyframe Channel::GetNextScaleKeyframe(const double& current_keyframe) const
 {
-	ScaleKeyframe item	= scale_keyframes.find(current_keyframe);
+	ScaleKeyframe item	= GetScaleKeyframe(current_keyframe);
 	item				= (item != scale_keyframes.end()) ? ++item : item;
 
 	return item;
 }
 
-PositionKeyframe Channel::GetClosestPrevPositionKeyframe(double current_keyframe) const
+PositionKeyframe Channel::GetClosestPrevPositionKeyframe(const double& current_keyframe) const
 {
 	PositionKeyframe item	= position_keyframes.lower_bound(current_keyframe);
 	item					= (item != position_keyframes.begin()) ? --item : item;
@@ -93,7 +117,7 @@ PositionKeyframe Channel::GetClosestPrevPositionKeyframe(double current_keyframe
 	return item;
 }
 
-RotationKeyframe Channel::GetClosestPrevRotationKeyframe(double current_keyframe) const
+RotationKeyframe Channel::GetClosestPrevRotationKeyframe(const double& current_keyframe) const
 {
 	RotationKeyframe item	= rotation_keyframes.lower_bound(current_keyframe);
 	item					= (item != rotation_keyframes.begin()) ? --item : item;
@@ -101,7 +125,7 @@ RotationKeyframe Channel::GetClosestPrevRotationKeyframe(double current_keyframe
 	return item;
 }
 
-ScaleKeyframe Channel::GetClosestPrevScaleKeyframe(double current_keyframe) const
+ScaleKeyframe Channel::GetClosestPrevScaleKeyframe(const double& current_keyframe) const
 {
 	ScaleKeyframe item	= scale_keyframes.lower_bound(current_keyframe);
 	item				= (item != scale_keyframes.begin()) ? --item : item;
@@ -109,7 +133,7 @@ ScaleKeyframe Channel::GetClosestPrevScaleKeyframe(double current_keyframe) cons
 	return item;
 }
 
-PositionKeyframe Channel::GetClosestNextPositionKeyframe(double current_keyframe) const
+PositionKeyframe Channel::GetClosestNextPositionKeyframe(const double& current_keyframe) const
 {
 	PositionKeyframe item	= position_keyframes.upper_bound(current_keyframe);
 	item					= (item != position_keyframes.end()) ? item : --item;
@@ -117,7 +141,7 @@ PositionKeyframe Channel::GetClosestNextPositionKeyframe(double current_keyframe
 	return item;
 }
 
-RotationKeyframe Channel::GetClosestNextRotationKeyframe(double current_keyframe) const
+RotationKeyframe Channel::GetClosestNextRotationKeyframe(const double& current_keyframe) const
 {
 	RotationKeyframe item	= rotation_keyframes.upper_bound(current_keyframe);
 	item					= (item != rotation_keyframes.end()) ? item : --item;
@@ -125,7 +149,7 @@ RotationKeyframe Channel::GetClosestNextRotationKeyframe(double current_keyframe
 	return item;
 }
 
-ScaleKeyframe Channel::GetClosestNextScaleKeyframe(double current_keyframe) const
+ScaleKeyframe Channel::GetClosestNextScaleKeyframe(const double& current_keyframe) const
 {
 	ScaleKeyframe item	= scale_keyframes.upper_bound(current_keyframe);
 	item				= (item != scale_keyframes.end()) ? item : --item;

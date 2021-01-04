@@ -537,9 +537,6 @@
     <ClCompile Include="Source\CurveEditor.cpp">
       <Filter>Source\7_Tools\ImGuiCustom\CustomWidgets</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Keyframe.cpp">
-      <Filter>Source\6_Containers\Animation</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -1137,6 +1134,12 @@
       <Filter>Source\7_Tools\ImGuiCustom\CustomWidgets</Filter>
     </ClInclude>
     <ClInclude Include="Source\Keyframe.h">
+      <Filter>Source\6_Containers\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AnimationClip.h">
+      <Filter>Source\6_Containers\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AnimatorClip.h">
       <Filter>Source\6_Containers\Animation</Filter>
     </ClInclude>
   </ItemGroup>

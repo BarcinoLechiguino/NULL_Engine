@@ -105,7 +105,6 @@
     <ClCompile Include="Source\I_Scenes.cpp" />
     <ClCompile Include="Source\I_Textures.cpp" />
     <ClCompile Include="Source\JSONParser.cpp" />
-    <ClCompile Include="Source\Keyframe.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\MaterialSettings.cpp" />
     <ClCompile Include="Source\MeshSettings.cpp" />
@@ -142,7 +141,9 @@
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\AnimationClip.h" />
     <ClInclude Include="Source\AnimationSettings.h" />
+    <ClInclude Include="Source\AnimatorClip.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
     <ClInclude Include="Source\Channel.h" />

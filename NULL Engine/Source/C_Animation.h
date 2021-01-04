@@ -52,23 +52,6 @@ public:
 
 	static inline COMPONENT_TYPE GetType() { return COMPONENT_TYPE::ANIMATION; }
 
-private:
-	bool				StepAnimation				();
-	bool				BlendAnimation				();
-
-	void				FindCurrentAnimationBones	();
-	void				UpdateDisplayBones			();
-	void				GenerateBoneSegments		(const GameObject* bone);
-
-	void				SortBoneLinksByHierarchy	(const std::vector<BoneLink>& bone_links, const GameObject* root_bone, std::vector<BoneLink>& sorted);
-
-	const Transform		GetPoseToPoseTransform		(const double& current_keyframe, const Channel& current_channel);
-
-	const Transform		GetInterpolatedTransform	(const double& current_keyframe, const Channel& current_channel, const Transform& original_transform);
-	const float3		GetInterpolatedPosition		(const double& current_keyframe, const Channel& current_channel, const float3& original_position);
-	const Quat			GetInterpolatedRotation		(const double& current_keyframe, const Channel& current_channel, const Quat& original_rotation);
-	const float3		GetInterpolatedScale		(const double& current_keyframe, const Channel& current_channel, const float3& original_scale);
-
 public:
 	bool				StepToPrevKeyframe			();
 	bool				StepToNextKeyframe			();
@@ -115,9 +98,29 @@ public:																														// --- GET/SET METHODS
 	void				SetShowBones				(const bool& set_to);
 
 private:
-	std::vector<R_Animation*>			animations;
-	std::vector<LineSegment>			display_bones;
-	std::vector<BoneLink>				current_bones;
+	bool				StepAnimation				();
+	bool				BlendAnimation				();
+
+	const Transform		GetInterpolatedTransform	(const double& current_keyframe, const Channel& current_channel, const Transform& original_transform) const;
+	const float3		GetInterpolatedPosition		(const double& current_keyframe, const Channel& current_channel, const float3& original_position) const;
+	const Quat			GetInterpolatedRotation		(const double& current_keyframe, const Channel& current_channel, const Quat& original_rotation) const;
+	const float3		GetInterpolatedScale		(const double& current_keyframe, const Channel& current_channel, const float3& original_scale) const;
+
+	const Transform		GetPoseToPoseTransform		(const uint& current_tick, const Channel& current_channel, const Transform& original_transform) const;
+	const float3		GetPoseToPosePosition		(const uint& current_tick, const Channel& current_channel, const float3& original_position) const;
+	const Quat			GetPoseToPoseRotation		(const uint& current_tick, const Channel& current_channel, const Quat& original_rotation) const;
+	const float3		GetPoseToPoseScale			(const uint& current_tick, const Channel& current_channel, const float3& original_scale) const;
+
+	void				FindCurrentAnimationBones	();
+	void				UpdateDisplayBones			();
+	void				GenerateBoneSegments		(const GameObject* bone);
+
+	void				SortBoneLinksByHierarchy	(const std::vector<BoneLink>& bone_links, const GameObject* root_bone, std::vector<BoneLink>& sorted);
+
+private:
+	std::vector<R_Animation*>	animations;
+	std::vector<LineSegment>	display_bones;
+	std::vector<BoneLink>		current_bones;
 
 	R_Animation*	current_animation;
 	R_Animation*	blending_animation;
@@ -131,6 +134,7 @@ private:
 	bool			step;
 	bool			stop;
 
+private:																													// --- GET/SET VARIABLES	
 	float			animation_time;
 	float			animation_frame;
 	uint			animation_tick;

@@ -140,11 +140,10 @@ bool C_Animation::StepAnimation()
 		}
 		else
 		{
-			// Pose To Pose Transform
 			if (animation_tick != prev_tick)
 			{
-				const Transform& interpolated_transform = GetInterpolatedTransform(animation_tick, current_bones[i].channel, original_transform);
-				c_transform->ImportTransform(interpolated_transform);
+				const Transform& pose_to_pose_transform = GetPoseToPoseTransform(animation_tick, current_bones[i].channel, original_transform);
+				c_transform->ImportTransform(pose_to_pose_transform);
 			}
 		}
 	}
@@ -173,6 +172,102 @@ bool C_Animation::BlendAnimation()
 
 
 	return ret;
+}
+
+const Transform C_Animation::GetInterpolatedTransform(const double& current_keyframe, const Channel& channel, const Transform& original_transform) const
+{
+	float3	interpolated_position	= GetInterpolatedPosition(current_keyframe, channel, original_transform.position);
+	Quat	interpolated_rotation	= GetInterpolatedRotation(current_keyframe, channel, original_transform.rotation);
+	float3	interpolated_scale		= GetInterpolatedScale(current_keyframe, channel, original_transform.scale);
+
+	return Transform(interpolated_position, interpolated_rotation, interpolated_scale);
+}
+
+const float3 C_Animation::GetInterpolatedPosition(const double& current_keyframe, const Channel& channel, const float3& original_position) const
+{
+	if (!channel.HasPositionKeyframes())
+	{
+		return original_position;
+	}
+
+	PositionKeyframe prev_keyframe = channel.GetClosestPrevPositionKeyframe(current_keyframe);
+	PositionKeyframe next_keyframe = channel.GetClosestNextPositionKeyframe(current_keyframe);
+
+	float rate = current_keyframe / next_keyframe->first;
+	float3 ret = (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Lerp(next_keyframe->second, rate);
+
+	return ret;
+}
+
+const Quat C_Animation::GetInterpolatedRotation(const double& current_keyframe, const Channel& channel, const Quat& original_rotation) const
+{
+	if (!channel.HasRotationKeyframes())
+	{
+		return original_rotation;
+	}
+
+	RotationKeyframe prev_keyframe = channel.GetClosestPrevRotationKeyframe(current_keyframe);
+	RotationKeyframe next_keyframe = channel.GetClosestNextRotationKeyframe(current_keyframe);
+
+	float rate = current_keyframe / next_keyframe->first;
+	Quat ret = (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Slerp(next_keyframe->second, rate);
+
+	return ret;
+}
+
+const float3 C_Animation::GetInterpolatedScale(const double& current_keyframe, const Channel& channel, const float3& original_scale) const
+{
+	if (!channel.HasScaleKeyframes())
+	{
+		return original_scale;
+	}
+
+	ScaleKeyframe prev_keyframe = channel.GetClosestPrevScaleKeyframe(current_keyframe);
+	ScaleKeyframe next_keyframe = channel.GetClosestNextScaleKeyframe(current_keyframe);
+
+	float rate = current_keyframe / next_keyframe->first;
+	float3 ret = (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Lerp(next_keyframe->second, rate);
+
+	return ret;
+}
+
+const Transform C_Animation::GetPoseToPoseTransform(const uint& current_tick, const Channel& channel, const Transform& original_transform) const
+{
+	const float3& position	= GetPoseToPosePosition(current_tick, channel, original_transform.position);
+	const Quat& rotation	= GetPoseToPoseRotation(current_tick, channel, original_transform.rotation);
+	const float3& scale		= GetPoseToPoseScale(current_tick, channel, original_transform.scale);
+	
+	return Transform(position, rotation, scale);
+}
+
+const float3 C_Animation::GetPoseToPosePosition(const uint& current_tick, const Channel& channel, const float3& original_position) const
+{
+	if (!channel.HasPositionKeyframes()) 
+	{ 
+		return original_position; 
+	}
+
+	return channel.GetPositionKeyframe(current_tick)->second;
+}
+
+const Quat C_Animation::GetPoseToPoseRotation(const uint& current_tick, const Channel& channel, const Quat& original_rotation) const
+{
+	if (!channel.HasRotationKeyframes())
+	{
+		return original_rotation;
+	}
+
+	return channel.GetRotationKeyframe(current_tick)->second;
+}
+
+const float3 C_Animation::GetPoseToPoseScale(const uint& current_tick, const Channel& channel, const float3& original_scale) const
+{
+	if (!channel.HasScaleKeyframes())
+	{
+		return original_scale;
+	}
+
+	return channel.GetScaleKeyframe(current_tick)->second;
 }
 
 void C_Animation::FindCurrentAnimationBones()
@@ -287,63 +382,6 @@ void C_Animation::SortBoneLinksByHierarchy(const std::vector<BoneLink>& bone_lin
 	{
 		SortBoneLinksByHierarchy(bone_links, root_bone->childs[i], sorted);
 	}
-}
-
-const Transform C_Animation::GetInterpolatedTransform(const double& current_keyframe, const Channel& channel, const Transform& original_transform)
-{
-	float3	interpolated_position	= GetInterpolatedPosition(current_keyframe, channel, original_transform.position);
-	Quat	interpolated_rotation	= GetInterpolatedRotation(current_keyframe, channel, original_transform.rotation);
-	float3	interpolated_scale		= GetInterpolatedScale(current_keyframe, channel, original_transform.scale);
-
-	return Transform(interpolated_position, interpolated_rotation, interpolated_scale);
-}
-
-const float3 C_Animation::GetInterpolatedPosition(const double& current_keyframe, const Channel& channel, const float3& original_position)
-{
-	if (!channel.HasPositionKeyframes())
-	{
-		return original_position;
-	}
-	
-	PositionKeyframe prev_keyframe = channel.GetClosestPrevPositionKeyframe(current_keyframe);
-	PositionKeyframe next_keyframe = channel.GetClosestNextPositionKeyframe(current_keyframe);
-
-	float rate = (current_keyframe - prev_keyframe->first) / (next_keyframe->first - prev_keyframe->first);
-	float3 ret = (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Lerp(next_keyframe->second, rate);
-	
-	return ret;
-}
-
-const Quat C_Animation::GetInterpolatedRotation(const double& current_keyframe, const Channel& channel, const Quat& original_rotation)
-{
-	if (!channel.HasRotationKeyframes())
-	{
-		return original_rotation;
-	}
-	
-	RotationKeyframe prev_keyframe = channel.GetClosestPrevRotationKeyframe(current_keyframe);
-	RotationKeyframe next_keyframe = channel.GetClosestNextRotationKeyframe(current_keyframe);
-
-	float rate	= current_keyframe / next_keyframe->first;
-	Quat ret	= (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Slerp(next_keyframe->second, rate);
-
-	return ret;
-}
-
-const float3 C_Animation::GetInterpolatedScale(const double& current_keyframe, const Channel& channel, const float3& original_scale)
-{
-	if (!channel.HasScaleKeyframes())
-	{
-		return original_scale;
-	}
-	
-	ScaleKeyframe prev_keyframe = channel.GetClosestPrevScaleKeyframe(current_keyframe);
-	ScaleKeyframe next_keyframe = channel.GetClosestNextScaleKeyframe(current_keyframe);
-
-	float rate = current_keyframe / next_keyframe->first;
-	float3 ret = (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Lerp(next_keyframe->second, rate);
-	
-	return ret;
 }
 
 bool C_Animation::StepToPrevKeyframe()
