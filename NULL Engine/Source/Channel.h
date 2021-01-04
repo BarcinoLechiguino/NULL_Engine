@@ -6,46 +6,48 @@
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/Quat.h"
 
-template <typename T>
-struct Keyframe
-{
-	Keyframe();
-	Keyframe(double time, T value);
+typedef std::map<double, float3>::const_iterator	PositionKeyframe;												// Typedefs declared in order to improve code readability,
+typedef std::map<double, Quat>::const_iterator		RotationKeyframe;												// PositionKeyframe and ScaleKeyframe are technically the same.
+typedef std::map<double, float3>::const_iterator	ScaleKeyframe;													// However, they have been separated for differentiation.
 
-	double time;
-	T value;
+enum class KEYFRAME_TYPE
+{
+	POSITION,
+	ROTATION,
+	SCALE
 };
 
-struct Channel																						// Channels are the "Bones" of the animation. However, for distinction between this
-{																									// "Bones" and the Mesh's bones they have been re-named to Channels.
+struct Channel																										// Channels are the "Bones" of the animation. For distinction between this
+{																													// "Bones" and the Mesh's bones they have been re-named to Channels.
 	Channel();
 	Channel(const char* name);
 
-	bool HasPositionKeyframes() const;																// --- There will be no keyframes when:
-	bool HasRotationKeyframes() const;																// Size == 1	(Initial Position. Always needed regardless)
-	bool HasScaleKeyframes() const;																	// Time == -1	(Time cannot be negative, thus -1 is used as "non-valid" identifier)
+	bool HasKeyframes				(KEYFRAME_TYPE type) const;
+	bool HasPositionKeyframes		() const;																		// --- There will be no keyframes when:
+	bool HasRotationKeyframes		() const;																		// Size == 1	(Initial Position. Always needed regardless)
+	bool HasScaleKeyframes			() const;																		// Time == -1	(Time cannot be negative, -1 used as "non-valid" ID)
 
-	const Keyframe<float3>	GetPrevPositionKeyframe(const double& current_keyframe) const;
-	const Keyframe<Quat>	GetPrevRotationKeyframe(const double& current_keyframe) const;
-	const Keyframe<float3>	GetPrevScaleKeyframe(const double& current_keyframe) const;
+	PositionKeyframe	GetPrevPositionKeyframe			(double current_keyframe) const;							// --- Returns the Keyframe immediately before the given.
+	RotationKeyframe	GetPrevRotationKeyframe			(double current_keyframe) const;							// Ex: current_keyframe = 5 --> return keyframe 4;
+	ScaleKeyframe		GetPrevScaleKeyframe			(double current_keyframe) const;							// ------------------------------------------------------
+	
+	PositionKeyframe	GetNextPositionKeyframe			(double current_keyframe) const;							// --- Returns the Keyframe immediately after the given.
+	RotationKeyframe	GetNextRotationKeyframe			(double current_keyframe) const;							// Ex: current_keyframe = 5 --> return keyframe 6;
+	ScaleKeyframe		GetNextScaleKeyframe			(double current_keyframe) const;							// -----------------------------------------------------
 
-	const Keyframe<float3>	GetNextPositionKeyframe(const double& current_keyframe) const;
-	const Keyframe<Quat>	GetNextRotationKeyframe(const double& current_keyframe) const;
-	const Keyframe<float3>	GetNextScaleKeyframe(const double& current_keyframe) const;
+	PositionKeyframe	GetClosestPrevPositionKeyframe	(double current_keyframe) const;							// --- Returns the Keyframe immediately closest before the given.
+	RotationKeyframe	GetClosestPrevRotationKeyframe	(double current_keyframe) const;							// Ex: current_keyframe = 5.5f --> return keyframe 5;
+	ScaleKeyframe		GetClosestPrevScaleKeyframe		(double current_keyframe) const;							// --------------------------------------------------------------
 
-	std::map<double, float3>::const_iterator	GetPrevPositionKeyframe(double current_keyframe);	// 
-	std::map<double, Quat>::const_iterator		GetPrevRotationKeyframe(double current_keyframe);	// 
-	std::map<double, float3>::const_iterator	GetPrevScaleKeyframe(double current_keyframe);		// 
+	PositionKeyframe	GetClosestNextPositionKeyframe	(double current_keyframe) const;							// --- Returns the Keyframe immediately closest after the given.
+	RotationKeyframe	GetClosestNextRotationKeyframe	(double current_keyframe) const;							// Ex: current_keyframe = 5.5f --> return keyframe 6;
+	ScaleKeyframe		GetClosestNextScaleKeyframe		(double current_keyframe) const;							// -------------------------------------------------------------
 
-	std::map<double, float3>::const_iterator	GetNextPositionKeyframe(double current_keyframe);	// 
-	std::map<double, Quat>::const_iterator		GetNextRotationKeyframe(double current_keyframe);	// 
-	std::map<double, float3>::const_iterator	GetNextScaleKeyframe(double current_keyframe);		// 
+	std::map<double, float3>	position_keyframes;																	// Position-related keyframes.
+	std::map<double, Quat>		rotation_keyframes;																	// Rotation-related keyframes.
+	std::map<double, float3>	scale_keyframes;																	// Scale-related keyframes.
 
-	std::map<double, float3>	position_keyframes;													// Position-related keyframes.
-	std::map<double, Quat>		rotation_keyframes;													// Rotation-related keyframes.
-	std::map<double, float3>	scale_keyframes;													// Scale-related keyframes.
-
-	std::string					name;																// Name of the Channel/Bone
+	std::string					name;																				// Name of the Channel/Bone
 };
 
 #endif // !__CHANNEL_H__

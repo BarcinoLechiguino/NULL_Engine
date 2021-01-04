@@ -475,6 +475,21 @@ void GameObject::GetAllChilds(std::map<std::string, GameObject*>& childs)
 	}
 }
 
+void GameObject::GetAllChilds(std::unordered_map<std::string, GameObject*>& childs)
+{
+	if (this->childs.empty())
+	{
+		LOG("[WARNING] Game Object: GameObject { %s } did not have any childs!");
+		return;
+	}
+
+	for (uint i = 0; i < this->childs.size(); ++i)
+	{
+		childs.emplace(this->childs[i]->GetName(), this->childs[i]);
+		this->childs[i]->GetAllChilds(childs);
+	}
+}
+
 GameObject* GameObject::FindChild(const char* child_name)
 {	
 	if (child_name == nullptr)

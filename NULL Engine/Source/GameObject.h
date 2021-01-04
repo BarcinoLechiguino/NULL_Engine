@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 #include "MathGeoBoundingBox.h"
 #include "Component.h"
@@ -49,7 +50,8 @@ public:																									// --- PARENT/CHILDS METHODS
 	bool			HasChilds							() const;
 
 	void			GetAllChilds						(std::vector<GameObject*>& childs);	
-	void			GetAllChilds						(std::map<std::string, GameObject*>& childs);	
+	void			GetAllChilds						(std::map<std::string, GameObject*>& childs);
+	void			GetAllChilds						(std::unordered_map<std::string, GameObject*>& childs);
 	GameObject*		FindChild							(const char* child_name);
 
 public:																									// --- GAME OBJECT GETTERS AND SETTERS

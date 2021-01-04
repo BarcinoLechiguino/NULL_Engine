@@ -68,7 +68,7 @@ void Importer::Animations::Utilities::GetRotationKeys(const aiNodeAnim* ai_chann
 		aiQuatKey rk	= ai_channel->mRotationKeys[i];
 
 		double time		= rk.mTime;
-		Quat rotation	= Quat(rk.mValue.x, rk.mValue.y, rk.mValue.x, rk.mValue.x);
+		Quat rotation	= Quat(rk.mValue.x, rk.mValue.y, rk.mValue.z, rk.mValue.w);
 
 		r_channel.rotation_keyframes.emplace(time, rotation);
 	}

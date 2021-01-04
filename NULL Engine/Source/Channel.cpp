@@ -1,16 +1,25 @@
 #include "Channel.h"
 
-template struct Keyframe<float3>;
-template struct Keyframe<Quat>;
-
 Channel::Channel()
 {
-
+	name = "[NONE]";
 }
 
 Channel::Channel(const char* name)
 {
 	this->name = (name != nullptr) ? name : "[NONE]";
+}
+
+bool Channel::HasKeyframes(KEYFRAME_TYPE type) const
+{
+	switch (type)
+	{
+	case KEYFRAME_TYPE::POSITION:	{ return !(position_keyframes.size() == 1 && position_keyframes.begin()->first == -1); }	break;
+	case KEYFRAME_TYPE::ROTATION:	{ return !(rotation_keyframes.size() == 1 && rotation_keyframes.begin()->first == -1); }	break;
+	case KEYFRAME_TYPE::SCALE:		{ return !(scale_keyframes.size() == 1 && scale_keyframes.begin()->first == -1); }			break;
+	}
+
+	return false;
 }
 
 bool Channel::HasPositionKeyframes() const
@@ -28,118 +37,98 @@ bool Channel::HasScaleKeyframes() const
 	return !(scale_keyframes.size() == 1 && scale_keyframes.begin()->first == -1);
 }
 
-const Keyframe<float3> Channel::GetPrevPositionKeyframe(const double& current_keyframe) const
+PositionKeyframe Channel::GetPrevPositionKeyframe(double current_keyframe) const
 {
-	std::map<double, float3>::const_iterator item = position_keyframes.find(current_keyframe);
-	item = (item != position_keyframes.begin()) ? --item : item;
-
-	return Keyframe<float3>(item->first, item->second);
-}
-
-const Keyframe<Quat> Channel::GetPrevRotationKeyframe(const double& current_keyframe) const
-{
-	std::map<double, Quat>::const_iterator item = rotation_keyframes.find(current_keyframe);
-	item = (item != rotation_keyframes.begin()) ? --item : item;
-
-	return Keyframe<Quat>(item->first, item->second);
-}
-
-const Keyframe<float3> Channel::GetPrevScaleKeyframe(const double& current_keyframe) const
-{
-	std::map<double, float3>::const_iterator item = scale_keyframes.find(current_keyframe);
-	item = (item != scale_keyframes.begin()) ? --item : item;
-
-	return Keyframe<float3>(item->first, item->second);
-}
-
-const Keyframe<float3> Channel::GetNextPositionKeyframe(const double& current_keyframe) const
-{
-	std::map<double, float3>::const_iterator item = position_keyframes.find(current_keyframe);
-	item = (item != position_keyframes.begin()) ? ++item : item;
-
-	return Keyframe<float3>(item->first, item->second);
-}
-
-const Keyframe<Quat> Channel::GetNextRotationKeyframe(const double& current_keyframe) const
-{
-	std::map<double, Quat>::const_iterator item = rotation_keyframes.find(current_keyframe);
-	item = (item != rotation_keyframes.begin()) ? ++item : item;
-
-	return Keyframe<Quat>(item->first, item->second);
-}
-
-const Keyframe<float3> Channel::GetNextScaleKeyframe(const double& current_keyframe) const
-{
-	std::map<double, float3>::const_iterator item = scale_keyframes.find(current_keyframe);
-	item = (item != scale_keyframes.begin()) ? ++item : item;
-
-	return Keyframe<float3>(item->first, item->second);
-}
-
-std::map<double, float3>::const_iterator Channel::GetPrevPositionKeyframe(double current_keyframe)
-{
-	std::map<double, float3>::const_iterator item = position_keyframes.find(current_keyframe);
-
-	item = (item != position_keyframes.begin()) ? --item : item;
-	//item = (item != position_keyframes.begin()) ? --item : position_keyframes.begin();
+	PositionKeyframe item	= position_keyframes.find(current_keyframe);
+	item					= (item != position_keyframes.begin()) ? --item : item;
 
 	return item;
 }
 
-std::map<double, Quat>::const_iterator Channel::GetPrevRotationKeyframe(double current_keyframe)
+RotationKeyframe Channel::GetPrevRotationKeyframe(double current_keyframe) const
 {
-	std::map<double, Quat>::const_iterator item = rotation_keyframes.find(current_keyframe);
-
-	item = (item != rotation_keyframes.begin()) ? --item : item;
+	RotationKeyframe item	= rotation_keyframes.find(current_keyframe);
+	item					= (item != rotation_keyframes.begin()) ? --item : item;
 
 	return item;
 }
 
-std::map<double, float3>::const_iterator Channel::GetPrevScaleKeyframe(double current_keyframe)
+ScaleKeyframe Channel::GetPrevScaleKeyframe(double current_keyframe) const
 {
-	std::map<double, float3>::const_iterator item = scale_keyframes.find(current_keyframe);
-
-	item = (item != scale_keyframes.begin()) ? --item : item;
+	ScaleKeyframe item	= scale_keyframes.find(current_keyframe);
+	item				= (item != scale_keyframes.begin()) ? --item : item;
 
 	return item;
 }
 
-std::map<double, float3>::const_iterator Channel::GetNextPositionKeyframe(double current_keyframe)
+PositionKeyframe Channel::GetNextPositionKeyframe(double current_keyframe) const
 {
-	std::map<double, float3>::const_iterator item = position_keyframes.find(current_keyframe);
-
-	item = (item != position_keyframes.end()) ? ++item : item;
+	PositionKeyframe item	= position_keyframes.find(current_keyframe);
+	item					= (item != position_keyframes.end()) ? ++item : item;
 
 	return item;
 }
 
-std::map<double, Quat>::const_iterator Channel::GetNextRotationKeyframe(double current_keyframe)
+RotationKeyframe Channel::GetNextRotationKeyframe(double current_keyframe) const
 {
-	std::map<double, Quat>::const_iterator item = rotation_keyframes.find(current_keyframe);
-
-	item = (item != rotation_keyframes.end()) ? ++item : item;
+	RotationKeyframe item	= rotation_keyframes.find(current_keyframe);
+	item					= (item != rotation_keyframes.end()) ? ++item : item;
 
 	return item;
 }
 
-std::map<double, float3>::const_iterator Channel::GetNextScaleKeyframe(double current_keyframe)
+ScaleKeyframe Channel::GetNextScaleKeyframe(double current_keyframe) const
 {
-	std::map<double, float3>::const_iterator item = scale_keyframes.find(current_keyframe);
-
-	item = (item != scale_keyframes.end()) ? ++item : item;
+	ScaleKeyframe item	= scale_keyframes.find(current_keyframe);
+	item				= (item != scale_keyframes.end()) ? ++item : item;
 
 	return item;
 }
 
-// --- KEYFRAME METHODS
-template <typename T>
-Keyframe<T>::Keyframe() : time(-1.0f)
+PositionKeyframe Channel::GetClosestPrevPositionKeyframe(double current_keyframe) const
 {
+	PositionKeyframe item	= position_keyframes.lower_bound(current_keyframe);
+	item					= (item != position_keyframes.begin()) ? --item : item;
 
+	return item;
 }
 
-template <typename T>
-Keyframe<T>::Keyframe(double time, T value) : time(time), value(value)
+RotationKeyframe Channel::GetClosestPrevRotationKeyframe(double current_keyframe) const
 {
+	RotationKeyframe item	= rotation_keyframes.lower_bound(current_keyframe);
+	item					= (item != rotation_keyframes.begin()) ? --item : item;
+	
+	return item;
+}
 
+ScaleKeyframe Channel::GetClosestPrevScaleKeyframe(double current_keyframe) const
+{
+	ScaleKeyframe item	= scale_keyframes.lower_bound(current_keyframe);
+	item				= (item != scale_keyframes.begin()) ? --item : item;
+
+	return item;
+}
+
+PositionKeyframe Channel::GetClosestNextPositionKeyframe(double current_keyframe) const
+{
+	PositionKeyframe item	= position_keyframes.upper_bound(current_keyframe);
+	item					= (item != position_keyframes.end()) ? item : --item;
+
+	return item;
+}
+
+RotationKeyframe Channel::GetClosestNextRotationKeyframe(double current_keyframe) const
+{
+	RotationKeyframe item	= rotation_keyframes.upper_bound(current_keyframe);
+	item					= (item != rotation_keyframes.end()) ? item : --item;
+
+	return item;
+}
+
+ScaleKeyframe Channel::GetClosestNextScaleKeyframe(double current_keyframe) const
+{
+	ScaleKeyframe item	= scale_keyframes.upper_bound(current_keyframe);
+	item				= (item != scale_keyframes.end()) ? item : --item;
+
+	return item;
 }

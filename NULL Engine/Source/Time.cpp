@@ -50,6 +50,21 @@ void Time::Real::DelayUntilFrameCap(uint frame_cap)
 	}
 }
 
+void Time::Real::StartPerfTimer()
+{
+	perf_timer.Start();
+}
+
+void Time::Real::StopPerfTimer()
+{
+	perf_timer.Stop();
+}
+
+float Time::Real::PeekPerfTimer()
+{
+	return perf_timer.ReadMs();
+}
+
 Hourglass Time::Real::GetClock()
 {
 	return clock;

@@ -363,7 +363,7 @@ bool E_Configuration::ImGuiEditorsMenu()
 
 		if (ImGui::TreeNodeEx("[CUSTOM] Theme Generator"))
 		{
-			ImGui::ThemeGenerator(true);
+			ImGui::ThemeGenerator(false);
 			ImGui::TreePop();
 		}
 	}

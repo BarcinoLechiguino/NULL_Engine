@@ -536,6 +536,13 @@ void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
 				c_animation->SetPlaybackSpeed(playback_speed);
 			}
 
+			// Interpolate
+			bool interpolate = c_animation->GetInterpolate();
+			if (ImGui::Checkbox("Interpolate", &interpolate))
+			{
+				c_animation->SetInterpolate(interpolate);
+			}
+
 			// Loop
 			bool loop_animation = c_animation->GetLoopAnimation();
 			if (ImGui::Checkbox("Loop Animation", &loop_animation))
@@ -566,15 +573,26 @@ void E_Inspector::DrawAnimationComponent(C_Animation* c_animation)
 
 			ImGui::Separator();
 
+			ImGui::TextColored(Cyan.C_Array(), "Debug Controls");
+
+			if (ImGui::Button("Previous Keyframe"))		{ c_animation->StepToPrevKeyframe(); }	ImGui::SameLine();
+			if (ImGui::Button("Next Keyframe"))			{ c_animation->StepToNextKeyframe(); }
+
+			if (ImGui::Button("Refresh Bone Display"))	{ c_animation->RefreshBoneDisplay(); }
+
+			ImGui::Separator();
+
 			ImGui::TextColored(Cyan.C_Array(), "Animation Stats");
 
 			const char* animation_name			= c_animation->GetAnimationName();
 			float animation_time				= c_animation->GetAnimationTime();
+			uint animation_ticks				= c_animation->GetAnimationTicks();
 			float animation_ticks_per_second	= c_animation->GetCurrentTicksPerSecond();
 			float animation_duration			= c_animation->GetCurrentDuration();
 
 			ImGui::Text("Name:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %s",		animation_name);
 			ImGui::Text("Time:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %.3f",	animation_time);
+			ImGui::Text("Ticks: ");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "		   %u",			animation_ticks);
 			ImGui::Text("Ticks Per Second:");	ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), " %.3f",				animation_ticks_per_second);
 			ImGui::Text("Duration:");			ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "         %.3f",		animation_duration);
 		}

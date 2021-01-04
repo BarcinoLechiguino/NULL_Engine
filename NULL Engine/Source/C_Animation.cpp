@@ -1,6 +1,9 @@
 #include "MathGeoLib/include/Geometry/LineSegment.h"
 
+#include "Profiler.h"
+
 #include "Time.h"
+#include "EasingFunctions.h"
 
 #include "Channel.h"
 
@@ -13,6 +16,10 @@
 #include "C_Transform.h"
 
 #include "C_Animation.h"
+
+typedef std::map<double, float3>::const_iterator	PositionKeyframe;
+typedef std::map<double, Quat>::const_iterator		RotationKeyframe;
+typedef std::map<double, float3>::const_iterator	ScaleKeyframe;
 
 C_Animation::C_Animation(GameObject* owner) : Component(owner, COMPONENT_TYPE::ANIMATION),
 current_animation	(nullptr),
@@ -28,8 +35,10 @@ current_root_bone	(nullptr)
 
 	animation_time		= 0.0f;
 	animation_frame		= 0.0f;
+	animation_tick		= 0;
 
 	playback_speed		= 1.0f;
+	interpolate			= true;
 	loop_animation		= false;
 	play_on_start		= true;
 	camera_culling		= true;
@@ -45,11 +54,17 @@ C_Animation::~C_Animation()
 
 bool C_Animation::Update()
 {
+	BROFILER_CATEGORY("Animation Component Update", Profiler::Color::DarkSlateBlue);
+	
 	bool ret = true;
 
 	if (play || step)
 	{
-		StepAnimation();
+		if (current_animation != nullptr)
+		{
+			StepAnimation();
+		}
+
 		step = false;
 	}
 
@@ -95,8 +110,11 @@ bool C_Animation::StepAnimation()
 {
 	bool ret = true;
 
-	animation_time += Time::Real::GetDT();
-	animation_frame = animation_time / GetCurrentTicksPerSecond();
+	animation_time += Time::Real::GetDT() * playback_speed;
+	animation_frame = animation_time * GetCurrentTicksPerSecond();
+
+	uint prev_tick = animation_tick;
+	animation_tick = (uint)floor(animation_frame);
 
 	if (blending_animation != nullptr)
 	{
@@ -104,7 +122,46 @@ bool C_Animation::StepAnimation()
 		return ret;
 	}
 
-	
+	for (uint i = 0; i < current_bones.size(); ++i)
+	{
+		C_Transform* c_transform = current_bones[i].game_object->GetComponent<C_Transform>();
+		if (c_transform == nullptr)
+		{
+			LOG("[WARNING] Animation Component: GameObject { %s } did not have a Transform Component!", current_bones[i].game_object->GetName());
+			continue;
+		}
+
+		const Transform& original_transform = Transform(c_transform->GetLocalTransform());
+		
+		if (interpolate)
+		{
+			const Transform& interpolated_transform = GetInterpolatedTransform(animation_frame, current_bones[i].channel, original_transform);
+			c_transform->ImportTransform(interpolated_transform);
+		}
+		else
+		{
+			// Pose To Pose Transform
+			if (animation_tick != prev_tick)
+			{
+				const Transform& interpolated_transform = GetInterpolatedTransform(animation_tick, current_bones[i].channel, original_transform);
+				c_transform->ImportTransform(interpolated_transform);
+			}
+		}
+	}
+
+	UpdateDisplayBones();
+
+	if (animation_time > (GetCurrentDuration() / GetCurrentTicksPerSecond()))
+	{
+		animation_time		= 0.0f;
+		animation_frame		= 0.0f;
+		animation_tick		= 0;
+
+		if (!loop_animation)
+		{
+			Stop();
+		}
+	}
 
 	return ret;
 }
@@ -132,26 +189,25 @@ void C_Animation::FindCurrentAnimationBones()
 	std::map<std::string, GameObject*> childs;
 	this->GetOwner()->GetAllChilds(childs);
 
+	std::map<std::string, GameObject*>::const_iterator go_item;
  	for (uint i = 0; i < current_animation->channels.size(); ++i)
 	{
-		std::map<std::string, GameObject*>::const_iterator item;
-
-		item = childs.find(current_animation->channels[i].name);
-		if (item != childs.end())
+		go_item = childs.find(current_animation->channels[i].name);
+		if (go_item != childs.end())
 		{
-			item->second->is_bone = true;
-			current_bones.emplace(item->first, item->second);
+			go_item->second->is_bone = true;
+			current_bones.push_back(BoneLink(current_animation->channels[i], go_item->second));
 		}
 	}
 
 	childs.clear();
 
-	std::map<std::string, GameObject*>::const_iterator item;
+	std::vector<BoneLink>::const_iterator item;
 	for (item = current_bones.cbegin(); item != current_bones.cend(); ++item)
 	{
-		if (!item->second->parent->is_bone)
+		if (!item->game_object->parent->is_bone)
 		{
-			current_root_bone = item->second;
+			current_root_bone = item->game_object;
 			break;
 		}
 	}
@@ -171,7 +227,7 @@ void C_Animation::UpdateDisplayBones()
 	return;
 }
 
-void C_Animation::GenerateBoneSegments(GameObject* bone)
+void C_Animation::GenerateBoneSegments(const GameObject* bone)
 {
 	if (bone == nullptr)
 	{
@@ -196,6 +252,155 @@ void C_Animation::GenerateBoneSegments(GameObject* bone)
 
 		GenerateBoneSegments(bone->childs[i]);
 	}
+}
+
+void C_Animation::SortBoneLinksByHierarchy(const std::vector<BoneLink>& bone_links, const GameObject* root_bone, std::vector<BoneLink>& sorted)
+{
+	if (root_bone == nullptr)
+	{
+		return;
+	}
+	
+	if (root_bone == current_root_bone)
+	{
+		for (uint j = 0; j < bone_links.size(); ++j)
+		{
+			if (bone_links[j].channel.name == root_bone->GetName())
+			{
+				sorted.push_back(bone_links[j]);
+			}
+		}
+	}
+
+	for (uint i = 0; i < root_bone->childs.size(); ++i)
+	{
+		for (uint j = 0; j < bone_links.size(); ++j)
+		{
+			if (bone_links[j].channel.name == root_bone->childs[i]->GetName())
+			{
+				sorted.push_back(bone_links[j]);
+			}
+		}
+	}
+
+	for (uint i = 0; i < root_bone->childs.size(); ++i)
+	{
+		SortBoneLinksByHierarchy(bone_links, root_bone->childs[i], sorted);
+	}
+}
+
+const Transform C_Animation::GetInterpolatedTransform(const double& current_keyframe, const Channel& channel, const Transform& original_transform)
+{
+	float3	interpolated_position	= GetInterpolatedPosition(current_keyframe, channel, original_transform.position);
+	Quat	interpolated_rotation	= GetInterpolatedRotation(current_keyframe, channel, original_transform.rotation);
+	float3	interpolated_scale		= GetInterpolatedScale(current_keyframe, channel, original_transform.scale);
+
+	return Transform(interpolated_position, interpolated_rotation, interpolated_scale);
+}
+
+const float3 C_Animation::GetInterpolatedPosition(const double& current_keyframe, const Channel& channel, const float3& original_position)
+{
+	if (!channel.HasPositionKeyframes())
+	{
+		return original_position;
+	}
+	
+	PositionKeyframe prev_keyframe = channel.GetClosestPrevPositionKeyframe(current_keyframe);
+	PositionKeyframe next_keyframe = channel.GetClosestNextPositionKeyframe(current_keyframe);
+
+	float rate = (current_keyframe - prev_keyframe->first) / (next_keyframe->first - prev_keyframe->first);
+	float3 ret = (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Lerp(next_keyframe->second, rate);
+	
+	return ret;
+}
+
+const Quat C_Animation::GetInterpolatedRotation(const double& current_keyframe, const Channel& channel, const Quat& original_rotation)
+{
+	if (!channel.HasRotationKeyframes())
+	{
+		return original_rotation;
+	}
+	
+	RotationKeyframe prev_keyframe = channel.GetClosestPrevRotationKeyframe(current_keyframe);
+	RotationKeyframe next_keyframe = channel.GetClosestNextRotationKeyframe(current_keyframe);
+
+	float rate	= current_keyframe / next_keyframe->first;
+	Quat ret	= (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Slerp(next_keyframe->second, rate);
+
+	return ret;
+}
+
+const float3 C_Animation::GetInterpolatedScale(const double& current_keyframe, const Channel& channel, const float3& original_scale)
+{
+	if (!channel.HasScaleKeyframes())
+	{
+		return original_scale;
+	}
+	
+	ScaleKeyframe prev_keyframe = channel.GetClosestPrevScaleKeyframe(current_keyframe);
+	ScaleKeyframe next_keyframe = channel.GetClosestNextScaleKeyframe(current_keyframe);
+
+	float rate = current_keyframe / next_keyframe->first;
+	float3 ret = (prev_keyframe == next_keyframe) ? prev_keyframe->second : prev_keyframe->second.Lerp(next_keyframe->second, rate);
+	
+	return ret;
+}
+
+bool C_Animation::StepToPrevKeyframe()
+{
+	if (play)
+	{
+		return false;
+	}
+	
+	if (animation_tick != 0)
+	{
+		--animation_tick;
+	}
+
+	for (uint i = 0; i < current_bones.size(); ++i)
+	{
+		const Transform& transform				= Transform(current_bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
+		const Transform& interpolated_transform = GetInterpolatedTransform((double)animation_tick, current_bones[i].channel, transform);
+
+		current_bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
+	}
+
+	UpdateDisplayBones();
+
+	return true;
+}
+
+bool C_Animation::StepToNextKeyframe()
+{
+	if (play)
+	{
+		return false;
+	}
+	
+	if ((double)animation_tick < GetCurrentDuration())
+	{
+		++animation_tick;
+	}
+	
+	for (uint i = 0; i < current_bones.size(); ++i)
+	{
+		const Transform& transform				= Transform(current_bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
+		const Transform& interpolated_transform = GetInterpolatedTransform((double)animation_tick, current_bones[i].channel, transform);
+
+		current_bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
+	}
+
+	UpdateDisplayBones();
+
+	return false;
+}
+
+bool C_Animation::RefreshBoneDisplay()
+{
+	UpdateDisplayBones();
+
+	return true;
 }
 
 void C_Animation::AddAnimation(R_Animation* r_animation)
@@ -262,6 +467,10 @@ bool C_Animation::Stop()
 	play	= false;
 	pause	= false;
 	step	= false;
+
+	animation_time	= 0.0f;
+	animation_frame	= 0.0f;
+	animation_tick	= 0;
 	
 	return stop;
 }
@@ -324,6 +533,11 @@ float C_Animation::GetPlaybackSpeed() const
 	return playback_speed;
 }
 
+bool C_Animation::GetInterpolate() const
+{
+	return interpolate;
+}
+
 bool C_Animation::GetLoopAnimation() const
 {
 	return loop_animation;
@@ -354,6 +568,11 @@ float C_Animation::GetAnimationTime() const
 	return animation_time;
 }
 
+uint C_Animation::GetAnimationTicks() const
+{
+	return animation_tick;
+}
+
 float C_Animation::GetCurrentTicksPerSecond() const
 {
 	return ((current_animation == nullptr) ? 0.0f : current_animation->GetCurrentTicksPerSecond());
@@ -367,6 +586,11 @@ float C_Animation::GetCurrentDuration() const
 void C_Animation::SetPlaybackSpeed(const float& playback_speed)
 {
 	this->playback_speed = playback_speed;
+}
+
+void C_Animation::SetInterpolate(const bool& set_to)
+{
+	interpolate = set_to;
 }
 
 void C_Animation::SetLoopAnimation(const bool& set_to)
@@ -387,4 +611,19 @@ void C_Animation::SetCameraCulling(const bool& set_to)
 void C_Animation::SetShowBones(const bool& set_to)
 {
 	show_bones = set_to;
+}
+
+// --- BONE LINK METHODS
+BoneLink::BoneLink() : 
+channel(Channel()),
+game_object(nullptr)
+{
+
+}
+
+BoneLink::BoneLink(const Channel& channel, GameObject* game_object) : 
+channel(channel),
+game_object(game_object)
+{
+
 }
