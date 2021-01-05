@@ -16,6 +16,7 @@
 #include "C_Material.h"
 #include "C_Light.h"
 #include "C_Camera.h"
+#include "C_Animator.h"
 #include "C_Animation.h"
 
 #include "GameObject.h"
@@ -176,6 +177,8 @@ bool GameObject::LoadState(ParsonNode& root)
 			case COMPONENT_TYPE::MATERIAL:	{ component = new C_Material(this); }	break;
 			case COMPONENT_TYPE::LIGHT:		{ component = new C_Light(this); }		break;
 			case COMPONENT_TYPE::CAMERA:	{ component = new C_Camera(this); }		break;
+			case COMPONENT_TYPE::ANIMATOR:	{ component = new C_Animator(this); }	break;
+			case COMPONENT_TYPE::ANIMATION: { component = new C_Animation(this); }	break;
 			}
 
 			if (component != nullptr)
@@ -262,7 +265,7 @@ void GameObject::GetRenderers(std::vector<MeshRenderer>& mesh_renderers, std::ve
 
 	C_Material* c_material		= GetComponent<C_Material>();
 	C_Camera* c_camera			= GetComponent<C_Camera>();
-	C_Animation* c_animation	= GetComponent<C_Animation>();
+	C_Animator* c_animation	= GetComponent<C_Animator>();
 
 	for (uint i = 0; i < c_meshes.size(); ++i)
 	{
@@ -625,6 +628,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::MATERIAL:	{ component = new C_Material(this); }	break;
 	case COMPONENT_TYPE::LIGHT:		{ component = new C_Light(this); }		break;
 	case COMPONENT_TYPE::CAMERA:	{ component = new C_Camera(this); }		break;
+	case COMPONENT_TYPE::ANIMATOR:	{ component = new C_Animator(this); }	break;
 	case COMPONENT_TYPE::ANIMATION: { component = new C_Animation(this); }	break;
 	}
 

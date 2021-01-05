@@ -29,7 +29,7 @@
 #include "C_Mesh.h"
 #include "C_Material.h"
 #include "C_Camera.h"
-#include "C_Animation.h"
+#include "C_Animator.h"
 
 #include "M_Scene.h"
 
@@ -556,7 +556,7 @@ void M_Scene::CreateAnimationComponentFromModel(const R_Model* r_model, GameObje
 		return;
 	}
 
-	C_Animation* c_animation = (C_Animation*)game_object->CreateComponent(COMPONENT_TYPE::ANIMATION);
+	C_Animator* c_animation = (C_Animator*)game_object->CreateComponent(COMPONENT_TYPE::ANIMATOR);
 	std::map<uint32, std::string>::const_iterator item;
 	for (item = r_model->animations.cbegin(); item != r_model->animations.cend(); ++item)
 	{

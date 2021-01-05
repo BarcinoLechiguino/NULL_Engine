@@ -51,6 +51,8 @@ const char* Component::GetNameFromType() const
 	case COMPONENT_TYPE::MATERIAL:		{ return "Material"; }		break;
 	case COMPONENT_TYPE::LIGHT:			{ return "Light"; }			break;
 	case COMPONENT_TYPE::CAMERA:		{ return "Camera"; }		break;
+	case COMPONENT_TYPE::ANIMATOR:		{ return "Animator"; }		break;
+	case COMPONENT_TYPE::ANIMATION:		{ return "Animation"; }		break;
 	}
 
 	return "NONE";
@@ -75,11 +77,6 @@ void Component::SetIsActive(const bool& set_to)
 {
 	is_active = set_to;
 }
-
-//COMPONENT_TYPE Component::GetType() const
-//{
-//	return type;
-//}
 
 GameObject* Component::GetOwner() const
 {

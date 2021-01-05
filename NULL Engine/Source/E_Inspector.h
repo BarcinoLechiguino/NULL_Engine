@@ -10,6 +10,7 @@ class C_Mesh;
 class C_Material;
 class C_Light;
 class C_Camera;
+class C_Animator;
 class C_Animation;
 
 class Resource;
@@ -37,6 +38,7 @@ private:
 	void DrawMaterialComponent			(C_Material* c_material);
 	void DrawLightComponent				(C_Light* c_light);
 	void DrawCameraComponent			(C_Camera* c_camera);
+	void DrawAnimatorComponent			(C_Animator* c_animator);
 	void DrawAnimationComponent			(C_Animation* c_animation);
 
 	void AddComponentCombo				(GameObject* selected_game_object);					// 
