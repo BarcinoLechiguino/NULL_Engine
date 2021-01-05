@@ -9,10 +9,10 @@ typedef unsigned int uint;
 
 struct AnimatorClip
 {
-	AnimatorClip() : root(nullptr), name("[NONE]"), start(0), end(0) {}
-	AnimatorClip(const R_Animation* root, const std::string& name, const uint& start, const uint& end) : root(root), name(name), start(start), end(end) {}
+	AnimatorClip() : animation(nullptr), name("[NONE]"), start(0), end(0) {}
+	AnimatorClip(const R_Animation* animation, const std::string& name, const uint& start, const uint& end) : animation(animation), name(name), start(start), end(end) {}
 
-	const R_Animation*	root;
+	const R_Animation*	animation;
 	std::string			name;
 	uint				start;
 	uint				end;

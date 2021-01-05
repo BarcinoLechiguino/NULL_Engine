@@ -8,6 +8,7 @@
 #include "MathGeoTransform.h"
 
 #include "Channel.h"
+#include "AnimatorClip.h"
 
 #include "Component.h"
 
@@ -22,6 +23,7 @@ class GameObject;
 class R_Animation;
 
 typedef unsigned int uint;
+typedef unsigned __int32 uint32;
 
 struct BoneLink
 {
@@ -32,13 +34,19 @@ struct BoneLink
 	GameObject* game_object;
 };
 
+struct AnimationBones
+{
+	std::string name;
+	std::vector<BoneLink> bones;
+};
+
 enum class INTERPOLATION_TYPE																								// WIP IDEA
 {
 	LINEAL,
 	CUSTOM
 };
 
-class C_Animator : public Component
+class C_Animator : public Component																							// In charge of managing Skeletal Animation
 {
 public:
 	C_Animator(GameObject* owner);
@@ -118,15 +126,22 @@ private:
 	void				SortBoneLinksByHierarchy	(const std::vector<BoneLink>& bone_links, const GameObject* root_bone, std::vector<BoneLink>& sorted);
 
 private:
-	std::vector<R_Animation*>	animations;
-	std::vector<LineSegment>	display_bones;
-	std::vector<BoneLink>		current_bones;
+	std::vector<R_Animation*>					animations;																	// Animation Resources. Contain bone information (transforms...).
+	std::map<uint32, std::vector<BoneLink>>		animation_bones;
+	std::map<std::string, AnimatorClip>			clips;																		// Segments of animations. "Idle", "Walk", "Attack"...
+	std::vector<BoneLink>				bones;																				// Multiple animations will have the same bones.
+
+	std::vector<LineSegment>	display_bones;																				// Line Segments between GO bones. For debug purposes.
+
+	AnimatorClip*	current_clip;
+	AnimatorClip*	blending_clip;
 
 	R_Animation*	current_animation;
 	R_Animation*	blending_animation;
 
 	GameObject*		current_root_bone;
 
+private:																													// --- FUNCTIONALITY VARIABLES
 	uint			blend_frames;
 
 	bool			play;
@@ -134,11 +149,11 @@ private:
 	bool			step;
 	bool			stop;
 
-private:																													// --- GET/SET VARIABLES	
 	float			animation_time;
 	float			animation_frame;
 	uint			animation_tick;
 
+private:																													// --- GET/SET VARIABLES	
 	float			playback_speed;
 	bool			interpolate;
 	bool			loop_animation;

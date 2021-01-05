@@ -24,6 +24,8 @@ typedef std::map<double, float3>::const_iterator	ScaleKeyframe;
 C_Animator::C_Animator(GameObject* owner) : Component(owner, COMPONENT_TYPE::ANIMATOR),
 current_animation	(nullptr),
 blending_animation	(nullptr),
+current_clip		(nullptr),
+blending_clip		(nullptr),
 current_root_bone	(nullptr)
 {
 	blend_frames		= 0;
@@ -82,7 +84,7 @@ bool C_Animator::CleanUp()
 
 	animations.clear();
 	display_bones.clear();
-	current_bones.clear();
+	bones.clear();
 
 	return ret;
 }
@@ -122,12 +124,12 @@ bool C_Animator::StepAnimation()
 		return ret;
 	}
 
-	for (uint i = 0; i < current_bones.size(); ++i)
+	for (uint i = 0; i < bones.size(); ++i)
 	{
-		C_Transform* c_transform = current_bones[i].game_object->GetComponent<C_Transform>();
+		C_Transform* c_transform = bones[i].game_object->GetComponent<C_Transform>();
 		if (c_transform == nullptr)
 		{
-			LOG("[WARNING] Animation Component: GameObject { %s } did not have a Transform Component!", current_bones[i].game_object->GetName());
+			LOG("[WARNING] Animation Component: GameObject { %s } did not have a Transform Component!", bones[i].game_object->GetName());
 			continue;
 		}
 
@@ -135,14 +137,14 @@ bool C_Animator::StepAnimation()
 		
 		if (interpolate)
 		{
-			const Transform& interpolated_transform = GetInterpolatedTransform(animation_frame, current_bones[i].channel, original_transform);
+			const Transform& interpolated_transform = GetInterpolatedTransform(animation_frame, bones[i].channel, original_transform);
 			c_transform->ImportTransform(interpolated_transform);
 		}
 		else
 		{
 			if (animation_tick != prev_tick)
 			{
-				const Transform& pose_to_pose_transform = GetPoseToPoseTransform(animation_tick, current_bones[i].channel, original_transform);
+				const Transform& pose_to_pose_transform = GetPoseToPoseTransform(animation_tick, bones[i].channel, original_transform);
 				c_transform->ImportTransform(pose_to_pose_transform);
 			}
 		}
@@ -291,14 +293,14 @@ void C_Animator::FindCurrentAnimationBones()
 		if (go_item != childs.end())
 		{
 			go_item->second->is_bone = true;
-			current_bones.push_back(BoneLink(current_animation->channels[i], go_item->second));
+			bones.push_back(BoneLink(current_animation->channels[i], go_item->second));
 		}
 	}
 
 	childs.clear();
 
 	std::vector<BoneLink>::const_iterator item;
-	for (item = current_bones.cbegin(); item != current_bones.cend(); ++item)
+	for (item = bones.cbegin(); item != bones.cend(); ++item)
 	{
 		if (!item->game_object->parent->is_bone)
 		{
@@ -396,12 +398,12 @@ bool C_Animator::StepToPrevKeyframe()
 		--animation_tick;
 	}
 
-	for (uint i = 0; i < current_bones.size(); ++i)
+	for (uint i = 0; i < bones.size(); ++i)
 	{
-		const Transform& transform				= Transform(current_bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
-		const Transform& interpolated_transform = GetInterpolatedTransform((double)animation_tick, current_bones[i].channel, transform);
+		const Transform& transform				= Transform(bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
+		const Transform& interpolated_transform = GetInterpolatedTransform((double)animation_tick, bones[i].channel, transform);
 
-		current_bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
+		bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
 	}
 
 	UpdateDisplayBones();
@@ -421,12 +423,12 @@ bool C_Animator::StepToNextKeyframe()
 		++animation_tick;
 	}
 	
-	for (uint i = 0; i < current_bones.size(); ++i)
+	for (uint i = 0; i < bones.size(); ++i)
 	{
-		const Transform& transform				= Transform(current_bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
-		const Transform& interpolated_transform = GetInterpolatedTransform((double)animation_tick, current_bones[i].channel, transform);
+		const Transform& transform				= Transform(bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
+		const Transform& interpolated_transform = GetInterpolatedTransform((double)animation_tick, bones[i].channel, transform);
 
-		current_bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
+		bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
 	}
 
 	UpdateDisplayBones();
