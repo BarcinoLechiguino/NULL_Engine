@@ -522,54 +522,137 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)
 			bool camera_culling					= c_animator->GetCameraCulling();
 			bool show_bones						= c_animator->GetShowBones();
 
-			const char* animation_name			= c_animator->GetAnimationName();
-			float animation_time				= c_animator->GetAnimationTime();
-			uint animation_ticks				= c_animator->GetAnimationTicks();
-			float animation_ticks_per_second	= c_animator->GetCurrentTicksPerSecond();
-			float animation_duration			= c_animator->GetCurrentDuration();
+			// -- CURRENT CLIP VARIABLES
+			const char* animation_name			= c_animator->GetCurrentClipAnimationName();
+			float animation_ticks_per_second	= c_animator->GetCurrentClipAnimationTicksPerSecond();
+			float animation_duration			= c_animator->GetCurrentClipAnimationDuration();
 
-			// --- ANIMATOR SETTINGS
-			ImGui::TextColored(Cyan.C_Array(), "Animation Settings");
+			const char* clip_name				= c_animator->GetCurrentClipName();
+			uint clip_start						= c_animator->GetCurrentClipStart();
+			uint clip_end						= c_animator->GetCurrentClipEnd();
+			float clip_duration					= c_animator->GetCurrentClipDuration();
 
-			if (ImGui::BeginCombo("Select Animation", "TAKE ==!"))
-			{
+			float clip_time						= c_animator->GetCurrentClipTime();
+			float clip_frame					= c_animator->GetCurrentClipFrame();
+			uint clip_ticks						= c_animator->GetCurrentClipTick();
 
-
-				ImGui::EndCombo();
-			}
-
-			if (ImGui::Button("Play"))									{ c_animator->Play(); }	ImGui::SameLine();
-			if (ImGui::Button("Pause"))									{ c_animator->Pause(); }	ImGui::SameLine();
-			if (ImGui::Button("Step"))									{ c_animator->Step(); }	ImGui::SameLine();
-			if (ImGui::Button("Stop"))									{ c_animator->Stop(); }
+			int start							= 0;
+			int end								= (int)animation_duration;
 			
-			if (ImGui::SliderFloat("Playback Speed", &speed, min_speed, max_speed, "%.3f", 0))	{ c_animator->SetPlaybackSpeed(speed); }
+			if (ImGui::BeginTabBar("AnimatorTabBar", ImGuiTabBarFlags_None))
+			{
+				if (ImGui::BeginTabItem("Settings & Controls"))
+				{
+					// --- ANIMATOR SETTINGS
+					ImGui::TextColored(Cyan.C_Array(), "Animation Settings");
 
-			if (ImGui::Checkbox("Interpolate", &interpolate))			{ c_animator->SetInterpolate(interpolate); }
-			if (ImGui::Checkbox("Loop Animation", &loop_animation))		{ c_animator->SetLoopAnimation(loop_animation); }
-			if (ImGui::Checkbox("Play On Start", &play_on_start))		{ c_animator->SetPlayOnStart(play_on_start); }
-			if (ImGui::Checkbox("Camera Culling", &camera_culling))		{ c_animator->SetCameraCulling(camera_culling); }
-			if (ImGui::Checkbox("Show Bones", &show_bones))				{ c_animator->SetShowBones(show_bones); }
+					if (ImGui::BeginCombo("Select Clip", "Idle"))
+					{
 
-			ImGui::Separator();
 
-			// --- ANIMATOR DEBUG CONTROLS
-			ImGui::TextColored(Cyan.C_Array(), "Debug Controls");
+						ImGui::EndCombo();
+					}
 
-			if (ImGui::Button("Previous Keyframe"))						{ c_animator->StepToPrevKeyframe(); }	ImGui::SameLine(150.0f);
-			if (ImGui::Button("Next Keyframe"))							{ c_animator->StepToNextKeyframe(); }
-			if (ImGui::Button("Refresh Bone Display"))					{ c_animator->RefreshBoneDisplay(); }
+					if (ImGui::Button("Play")) { c_animator->Play(); }		ImGui::SameLine();
+					if (ImGui::Button("Pause")) { c_animator->Pause(); }	ImGui::SameLine();
+					if (ImGui::Button("Step")) { c_animator->Step(); }		ImGui::SameLine();
+					if (ImGui::Button("Stop")) { c_animator->Stop(); }
 
-			ImGui::Separator();
+					if (ImGui::SliderFloat("Playback Speed", &speed, min_speed, max_speed, "%.3f", 0)) { c_animator->SetPlaybackSpeed(speed); }
 
-			// --- ANIMATOR STATS
-			ImGui::TextColored(Cyan.C_Array(), "Animation Stats");
+					if (ImGui::Checkbox("Interpolate", &interpolate)) { c_animator->SetInterpolate(interpolate); }
+					if (ImGui::Checkbox("Loop Animation", &loop_animation)) { c_animator->SetLoopAnimation(loop_animation); }
+					if (ImGui::Checkbox("Play On Start", &play_on_start)) { c_animator->SetPlayOnStart(play_on_start); }
+					if (ImGui::Checkbox("Camera Culling", &camera_culling)) { c_animator->SetCameraCulling(camera_culling); }
+					if (ImGui::Checkbox("Show Bones", &show_bones)) { c_animator->SetShowBones(show_bones); }
 
-			ImGui::Text("Name:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %s",		animation_name);
-			ImGui::Text("Time:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %.3f",	animation_time);
-			ImGui::Text("Ticks: ");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "		   %u",			animation_ticks);
-			ImGui::Text("Ticks Per Second:");	ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), " %.3f",				animation_ticks_per_second);
-			ImGui::Text("Duration:");			ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "         %.3f",		animation_duration);
+					ImGui::Separator();
+
+					// --- ANIMATOR STATS
+					ImGui::TextColored(Cyan.C_Array(), "Animation Stats");
+
+					ImGui::Text("Name:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %s",		animation_name);
+					ImGui::Text("Ticks Per Second:");	ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), " %.3f",				animation_ticks_per_second);
+					ImGui::Text("Duration:");			ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "         %.3f",		animation_duration);
+
+					ImGui::Separator();
+
+					ImGui::TextColored(Cyan.C_Array(), "Clip Stats");
+
+					ImGui::Text("Name:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %s",		clip_name);
+					ImGui::Text("Time:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %.3f",	clip_time);
+					ImGui::Text("Frame:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "            %.3f",	clip_frame);
+					ImGui::Text("Tick:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "		     %u",		clip_ticks);
+					ImGui::Text("Range:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "            %u - %u", clip_start, clip_end);
+					ImGui::Text("Duration:");			ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "         %.3f",		clip_duration);
+
+					ImGui::Separator();
+
+					// --- ANIMATOR DEBUG CONTROLS
+					ImGui::TextColored(Cyan.C_Array(), "Debug Controls");
+
+					if (ImGui::Button("Previous Keyframe")) { c_animator->StepToPrevKeyframe(); }	ImGui::SameLine(150.0f);
+					if (ImGui::Button("Next Keyframe")) { c_animator->StepToNextKeyframe(); }
+					if (ImGui::Button("Refresh Bone Display")) { c_animator->RefreshBoneDisplay(); }
+
+					ImGui::EndTabItem();
+				}
+				
+				if (ImGui::BeginTabItem("Clip Manager"))
+				{
+					ImGui::TextColored(Cyan.C_Array(), "Create Clip");
+
+					if (ImGui::BeginCombo("Select Animation", "TAKE ==!"))
+					{
+
+
+						ImGui::EndCombo();
+					}
+
+					static char buffer[64];
+					strcpy_s(buffer, "Enter Clip Name");
+					if (ImGui::InputText("Clip Name", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						//selected_game_object->SetName(buffer);
+					}
+
+					if (ImGui::SliderInt("Clip Start", &start, 0, 120))		{}
+					if (ImGui::SliderInt("Clip End", &end, 0, 120))			{}
+
+					static bool clip_exists = false;
+					if (ImGui::Button("Create"))							{ clip_exists = !clip_exists; }
+					if (clip_exists)
+					{
+						ImGui::SameLine();
+						ImGui::TextColored(Red.C_Array(), "A clip with the same name already exists!");
+					}
+
+					ImGui::Separator();
+
+					ImGui::TextColored(Cyan.C_Array(), "Existing Clips");
+
+					for (uint i = 0; i < 10; ++i)
+					{	
+						if (ImGui::TreeNodeEx("Clip Name", ImGuiTreeNodeFlags_Bullet))
+						{
+							ImGui::TreePop();
+						}
+
+						/*if (ImGui::IsItemHovered())
+						{
+							ImGui::OpenPopup("ClipPopUp");
+							if (ImGui::BeginPopup("Clip Info"))
+							{
+								ImGui::EndPopup();
+							}
+						}*/
+					}
+
+					ImGui::EndTabItem();
+				}
+
+				ImGui::EndTabBar();
+			}
 		}
 		
 		if (!show)

@@ -103,14 +103,14 @@ uint Importer::Animations::Save(const R_Animation* r_animation, char** buffer)
 
 	double header_data[HEADER_SIZE] = {
 		(double)strlen(r_animation->GetName()),
-		r_animation->GetCurrentDuration(),
-		r_animation->GetCurrentTicksPerSecond(),
+		r_animation->GetDuration(),
+		r_animation->GetTicksPerSecond(),
 		(double)r_animation->channels.size(),
 		(double)channels_data_size
 	};
 
 	uint header_data_size	= sizeof(header_data) /*+ sizeof(double)*/;
-	uint name_data_size		= header_data[0] * sizeof(char);
+	uint name_data_size		= (uint)header_data[0] * sizeof(char);
 	size					= header_data_size + name_data_size + channels_data_size;
 	if (size == 0)
 	{
@@ -198,7 +198,7 @@ bool Importer::Animations::Load(const char* buffer, R_Animation* r_animation)
 	r_animation->SetTicksPerSecond(header_data[2]);
 
 	// --- CHANNELS DATA ---
-	r_animation->channels.resize(header_data[3]);
+	r_animation->channels.resize((uint)header_data[3]);
 	for (uint i = 0; i < r_animation->channels.size(); ++i)
 	{
 		std::string channel_name = "";
