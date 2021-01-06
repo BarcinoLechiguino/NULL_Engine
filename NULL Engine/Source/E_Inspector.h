@@ -48,7 +48,7 @@ private:
 	void DisplayTextureData				(C_Material* c_material);							// Will display the texture's width, height, depth...
 	void TextureDisplay					(C_Material* c_material);							// Will display the texture as an image through Dear ImGui.
 
-	private:
+private:
 	void DrawImportSettings				(Resource* selected_resource);
 
 	void DrawModelImportSettings		(ModelSettings model_settings);

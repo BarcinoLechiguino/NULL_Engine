@@ -46,6 +46,9 @@ private:
 
 	bool					scene_focused;
 	bool					game_focused;
+
+private:
+	bool					want_text_input;
 };
 
 #endif // !__E_VIEWPORT_H__

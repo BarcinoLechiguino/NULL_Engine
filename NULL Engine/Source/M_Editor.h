@@ -73,6 +73,9 @@ public:
 	bool			EditorIsBeingHovered				() const;								// Will check whether or not any of the editor panels is being hovered.
 	bool			RenderEditorPanels					() const;								// Will call ImGui::Render() to render all the panels on the screen.
 	bool			InitializeImGui						() const;								// Creates an ImGui Context and sets an initial configuration for it.
+	
+public:
+	//bool			GetIOWantTextInput					() const;
 
 public:																							// --- Panel/Window Methods. Acts as an interface between other modules and the panels.
 	bool			GetShowWorldGrid					() const;								// Will return true if the World Grid is being currently shown.

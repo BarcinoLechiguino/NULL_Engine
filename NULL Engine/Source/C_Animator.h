@@ -62,7 +62,7 @@ public:
 
 public:
 	void				AddAnimation				(R_Animation* r_animation);
-	void				AddClip						(const AnimatorClip& clip);
+	bool				AddClip						(const AnimatorClip& clip);
 	void				PlayClip					(std::string clip_name, uint blend_frames);
 	
 	bool				Play						();
@@ -78,15 +78,21 @@ public:																														// --- DEBUG METHODS
 public:																														// --- CURRENT/BLENDING ANIMATION METHODS
 	AnimatorClip*		GetCurrentClip				() const;
 	AnimatorClip*		GetBlendingClip				() const;
-	
+
 	void				SetCurrentClip				(AnimatorClip* clip);
 	void				SetBlendingClip				(AnimatorClip* clip, uint blend_frames);
+
+	void				SetCurrentClipByIndex		(const uint& index);
+	void				SetBlendingClipByIndex		(const uint& index, const uint& blend_frames);
 
 	void				ClearCurrentClip			();
 	void				ClearBlendingClip			();
 
 public:																														// --- GET/SET METHODS
 	std::vector<LineSegment> GetDisplayBones		() const;
+	R_Animation*		GetAnimationByIndex			(const uint& index) const;
+	std::string			GetAnimationNamesAsString	() const;
+	std::string			GetClipNamesAsString		() const;
 
 	float				GetCurrentClipTime			() const;
 	float				GetCurrentClipFrame			() const;

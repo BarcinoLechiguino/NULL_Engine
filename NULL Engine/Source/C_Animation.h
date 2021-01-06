@@ -8,8 +8,8 @@
 #include "Component.h"
 
 class ParsonNode;
-class AnimationClip;
 class GameObject;
+struct AnimationClip;
 
 class C_Animation : public Component
 {

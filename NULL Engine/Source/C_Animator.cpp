@@ -492,12 +492,17 @@ void C_Animator::AddAnimation(R_Animation* r_animation)
 	}
 }
 
-void C_Animator::AddClip(const AnimatorClip& clip)
+bool C_Animator::AddClip(const AnimatorClip& clip)
 {
+	if (clip.animation == nullptr)
+	{
+		LOG("[ERROR] Animator Component: Could not Add Clip { %s }! Error: Clip's R_Animation* was nullptr.", clip.name.c_str());
+		return false;
+	}
 	if (clips.find(clip.name) != clips.end())
 	{
 		LOG("[ERROR] Animator Component: Could not Add Clip { %s }! Error: A clip with the same name already exists.", clip.name.c_str());
-		return;
+		return false;
 	}
 	
 	clips.emplace(clip.name, clip);
@@ -506,6 +511,8 @@ void C_Animator::AddClip(const AnimatorClip& clip)
 	{
 		current_clip = (AnimatorClip*)&clip;
 	}
+
+	return true;
 }
 
 bool C_Animator::Play()
@@ -681,6 +688,22 @@ void C_Animator::SetBlendingClip(AnimatorClip* clip, uint blend_frames)
 	this->blend_frames	= blend_frames;
 }
 
+void C_Animator::SetCurrentClipByIndex(const uint& index)
+{
+	if (index >= clips.size())
+	{
+		LOG("[ERROR] Animator Component: Could not Set Current Clip By Index! Error: Given Index was out of bounds.");
+		return;
+	}
+
+	// Cannot be accessed by index, only by name (key).
+}
+
+void C_Animator::SetBlendingClipByIndex(const uint& index, const uint& blend_frames)
+{
+
+}
+
 void C_Animator::ClearCurrentClip()
 {
 	current_clip = nullptr;
@@ -696,6 +719,43 @@ void C_Animator::ClearBlendingClip()
 std::vector<LineSegment> C_Animator::GetDisplayBones() const
 {
 	return display_bones;
+}
+
+R_Animation* C_Animator::GetAnimationByIndex(const uint& index) const
+{
+	if (index >= animations.size())
+	{
+		LOG("[ERROR] Animator Component: Could not get Animation by Index! Error: Given index was out of bounds.");
+		return nullptr;
+	}
+
+	return animations[index];
+}
+
+std::string C_Animator::GetAnimationNamesAsString() const
+{
+	std::string animation_names = "";
+
+	for (auto animation = animations.cbegin(); animation != animations.cend(); ++animation)
+	{
+		animation_names += (*animation)->GetName();
+		animation_names += '\0';
+	}
+
+	return animation_names;
+}
+
+std::string C_Animator::GetClipNamesAsString() const
+{
+	std::string clip_names = "";
+	
+	for (auto clip = clips.cbegin(); clip != clips.cend(); ++clip)
+	{
+		clip_names += clip->first.c_str();
+		clip_names += '\0';
+	}
+
+	return clip_names;
 }
 
 float C_Animator::GetCurrentClipTime() const
