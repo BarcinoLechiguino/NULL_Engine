@@ -540,6 +540,9 @@
     <ClCompile Include="Source\C_Animation.cpp">
       <Filter>Source\5_GameObjects\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Source\AnimatorClip.cpp">
+      <Filter>Source\6_Containers\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">

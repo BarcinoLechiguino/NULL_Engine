@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\AnimationSettings.cpp" />
+    <ClCompile Include="Source\AnimatorClip.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Channel.cpp" />
     <ClCompile Include="Source\CurveEditor.cpp" />

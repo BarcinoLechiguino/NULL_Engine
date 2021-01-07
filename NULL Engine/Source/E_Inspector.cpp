@@ -1,6 +1,7 @@
 #include "MathGeoTransform.h"
 
 #include "Color.h"
+#include "AnimatorClip.h"
 
 #include "Time.h"
 
@@ -527,18 +528,21 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 			bool show_bones						= c_animator->GetShowBones();
 
 			// -- CURRENT CLIP VARIABLES
-			const char* animation_name			= c_animator->GetCurrentClipAnimationName();
-			float animation_ticks_per_second	= c_animator->GetCurrentClipAnimationTicksPerSecond();
-			float animation_duration			= c_animator->GetCurrentClipAnimationDuration();
+			AnimatorClip* current_clip			= c_animator->GetCurrentClip();
 
-			const char* current_clip_name		= c_animator->GetCurrentClipName();
-			uint current_clip_start				= c_animator->GetCurrentClipStart();
-			uint current_clip_end				= c_animator->GetCurrentClipEnd();
-			float current_clip_duration			= c_animator->GetCurrentClipDuration();
+			const char* animation_name			= current_clip->GetAnimationName();
+			float animation_ticks_per_second	= current_clip->GetAnimationTicksPerSecond();
+			float animation_duration			= current_clip->GetAnimationDuration();
 
-			float clip_time						= c_animator->GetCurrentClipTime();
-			float clip_frame					= c_animator->GetCurrentClipFrame();
-			uint clip_ticks						= c_animator->GetCurrentClipTick();
+			const char* current_clip_name		= current_clip->GetName();
+			uint current_clip_start				= current_clip->GetStart();
+			uint current_clip_end				= current_clip->GetEnd();
+			float current_clip_duration			= current_clip->GetDuration();
+			bool current_clip_loop				= current_clip->IsLooped();
+
+			float clip_time						= current_clip->GetClipTime();
+			float clip_frame					= current_clip->GetClipFrame();
+			uint clip_ticks						= current_clip->GetClipTick();
 
 			// --- NEW CLIP VARIABLES
 			static int selected_animation		= 0;
@@ -551,6 +555,7 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 			static int new_clip_end				= (int)animation_duration;
 			int new_clip_min					= 0;
 			int new_clip_max					= (int)animation_duration;
+			static bool loop					= false;
 
 			static bool success					= false;																			// --- TODO: Transform into non-static variables later.
 			static bool text_timer_running		= false;																			//
@@ -566,6 +571,7 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 
 					if (ImGui::Combo("Select Clip", &selected_clip, clip_names.c_str()))
 					{
+						char selected_name = clip_names[selected_clip];
 						c_animator->SetCurrentClipByIndex((uint)selected_clip);
 					}
 
@@ -601,6 +607,7 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 					ImGui::Text("Tick:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "		     %u",		clip_ticks);
 					ImGui::Text("Range:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "            %u - %u", current_clip_start, current_clip_end);
 					ImGui::Text("Duration:");			ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "         %.3f",		current_clip_duration);
+					ImGui::Text("Loop:");				ImGui::SameLine();	ImGui::TextColored(Yellow.C_Array(), "             %s",		(current_clip_loop) ? "True" : "False");
 
 					ImGui::Separator();
 
@@ -620,7 +627,7 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 					ImGui::Separator();
 					
 					ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-					ImGui::BeginChild("Clip Manager Child", ImVec2(0.0f, 145.0f), true);
+					ImGui::BeginChild("Clip Manager Child", ImVec2(0.0f, 170.0f), true);
 
 					ImGui::TextColored(Cyan.C_Array(), "Create Clip");
 
@@ -628,10 +635,13 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 					ImGui::InputText("Clip Name", new_clip_name, IM_ARRAYSIZE(new_clip_name), input_txt_flags);
 					ImGui::SliderInt("Clip Start", &new_clip_start, new_clip_min, new_clip_max);
 					ImGui::SliderInt("Clip End", &new_clip_end, new_clip_min, new_clip_max);
+					ImGui::Checkbox("Loop Clip", &loop);
+
+					if (new_clip_start > new_clip_end) { new_clip_end = new_clip_start; };
 
 					if (ImGui::Button("Create")) 
 					{ 
-						success = c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex((uint)selected_animation), new_clip_name, new_clip_start, new_clip_end)); 
+						success = c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex((uint)selected_animation), new_clip_name, new_clip_start, new_clip_end, loop));
 						text_timer_running = true;
 					}
 
@@ -642,6 +652,11 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 						if (success)
 						{
 							ImGui::TextColored(Green.C_Array(), "Successfully Created Clip { %s }", new_clip_name);
+
+							strcpy_s(new_clip_name, 128, "Enter Clip Name");																// --- Re-setting the New Clip Parameters
+							new_clip_start	= 0;																							// 
+							new_clip_end	= (int)animation_duration;																		// 
+							loop			= false;																						// --------------------------------------
 						}
 						else
 						{

@@ -33,10 +33,6 @@ current_root_bone	(nullptr)
 	step				= false;
 	stop				= true;
 
-	clip_time			= 0.0f;
-	clip_frame			= 0.0f;
-	clip_tick			= 0;
-
 	playback_speed		= 1.0f;
 	interpolate			= true;
 	loop_animation		= false;
@@ -115,14 +111,20 @@ bool C_Animator::StepAnimation()
 {
 	bool ret = true;
 
-	clip_time		+= Time::Real::GetDT() * playback_speed;
-	clip_frame		= clip_time * GetCurrentClipAnimationTicksPerSecond();
-
-	uint prev_tick	= clip_tick;
-	clip_tick		= (uint)floor(clip_frame);
-
-	float animation_frame	= GetCurrentClipStart() + clip_frame;
-	uint animation_tick		= GetCurrentClipStart() + clip_tick;
+	uint prev_tick = current_clip->GetClipTick();
+	
+	bool success = current_clip->StepClip(Time::Real::GetDT() * playback_speed);
+	if (!success)
+	{
+		prev_tick = current_clip->GetClipTick();																							// Getting the clip tick after Clip Clear.
+		
+		if (!current_clip->IsLooped())
+		{
+			Stop();
+			//ResetDisplayBones();
+			return false;
+		}
+	}
 
 	for (auto bone = current_bones.cbegin(); bone != current_bones.cend(); ++bone)
 	{
@@ -137,14 +139,14 @@ bool C_Animator::StepAnimation()
 		
 		if (interpolate)
 		{
-			const Transform& interpolated_transform = GetInterpolatedTransform(animation_frame, bone->channel, original_transform);
+			const Transform& interpolated_transform = GetInterpolatedTransform(current_clip->GetAnimationFrame(), bone->channel, original_transform);
 			c_transform->ImportTransform(interpolated_transform);
 		}
 		else
 		{
-			if (clip_tick != prev_tick)
+			if (current_clip->GetClipTick() != prev_tick)
 			{
-				const Transform& pose_to_pose_transform = GetPoseToPoseTransform(animation_tick, bone->channel, original_transform);
+				const Transform& pose_to_pose_transform = GetPoseToPoseTransform(current_clip->GetAnimationTick(), bone->channel, original_transform);
 				c_transform->ImportTransform(pose_to_pose_transform);
 			}
 		}
@@ -157,18 +159,6 @@ bool C_Animator::StepAnimation()
 	}
 
 	UpdateDisplayBones();
-
-	if (clip_time > GetCurrentClipDurationInSec())
-	{
-		clip_time		= 0.0f;
-		clip_frame		= 0.0f;
-		clip_tick		= 0;
-
-		if (!loop_animation)
-		{
-			Stop();
-		}
-	}
 
 	return ret;
 }
@@ -427,7 +417,7 @@ bool C_Animator::GenerateDefaultClip(const R_Animation* r_animation, AnimatorCli
 	}
 	
 	std::string default_name	= r_animation->GetName() + std::string(" Default");
-	default_clip				= AnimatorClip(r_animation, default_name, 0, (uint)r_animation->GetDuration());
+	default_clip				= AnimatorClip(r_animation, default_name, 0, (uint)r_animation->GetDuration(), false);
 
 	return true;
 }
@@ -483,29 +473,29 @@ void C_Animator::AddAnimation(R_Animation* r_animation)
 	bool success = GenerateDefaultClip(r_animation, default_clip);
 	if (success)
 	{
-		clips.emplace(default_clip.name, default_clip);
+		clips.emplace(default_clip.GetName(), default_clip);
 
 		if (current_clip == nullptr)
 		{
-			SetCurrentClip(&clips.find(default_clip.name)->second);
+			SetCurrentClip(&clips.find(default_clip.GetName())->second);
 		}
 	}
 }
 
 bool C_Animator::AddClip(const AnimatorClip& clip)
 {
-	if (clip.animation == nullptr)
+	if (clip.GetAnimation() == nullptr)
 	{
-		LOG("[ERROR] Animator Component: Could not Add Clip { %s }! Error: Clip's R_Animation* was nullptr.", clip.name.c_str());
+		LOG("[ERROR] Animator Component: Could not Add Clip { %s }! Error: Clip's R_Animation* was nullptr.", clip.GetName());
 		return false;
 	}
-	if (clips.find(clip.name) != clips.end())
+	if (clips.find(clip.GetName()) != clips.end())
 	{
-		LOG("[ERROR] Animator Component: Could not Add Clip { %s }! Error: A clip with the same name already exists.", clip.name.c_str());
+		LOG("[ERROR] Animator Component: Could not Add Clip { %s }! Error: A clip with the same name already exists.", clip.GetName());
 		return false;
 	}
 	
-	clips.emplace(clip.name, clip);
+	clips.emplace(clip.GetName(), clip);
 
 	if (current_clip == nullptr)
 	{
@@ -563,11 +553,9 @@ bool C_Animator::Stop()
 	play	= false;
 	pause	= false;
 	step	= false;
-
-	clip_time	= 0.0f;
-	clip_frame	= 0.0f;
-	clip_tick	= 0;
 	
+	current_clip->ClearClip();
+
 	return stop;
 }
 
@@ -576,18 +564,21 @@ bool C_Animator::StepToPrevKeyframe()
 {
 	if (play)
 	{
+		LOG("[ERROR] Animator Component: Could not Step Animation to Prev Keyframe! Error: Cannot step an animation that is being currently Played.");
 		return false;
 	}
-	
-	if (clip_tick != 0)
+	if (current_clip == nullptr)
 	{
-		--clip_tick;
+		LOG("[ERROR] Animator Component: Could not Step Animation to Prev Keyframe! Error: Current Clip (AnimatorClip*) was nullptr.");
+		return false;
 	}
+
+	current_clip->StepClipToPrevKeyframe();
 
 	for (uint i = 0; i < current_bones.size(); ++i)
 	{
 		const Transform& transform				= Transform(current_bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
-		const Transform& interpolated_transform = GetInterpolatedTransform((double)clip_tick, current_bones[i].channel, transform);
+		const Transform& interpolated_transform = GetInterpolatedTransform((double)current_clip->GetClipTick(), current_bones[i].channel, transform);
 
 		current_bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
 	}
@@ -601,18 +592,21 @@ bool C_Animator::StepToNextKeyframe()
 {
 	if (play)
 	{
+		LOG("[ERROR] Animator Component: Could not Step Animation to Next Keyframe! Error: Cannot step an animation that is being currently Played.");
+		return false;
+	}
+	if (current_clip == nullptr)
+	{
+		LOG("[ERROR] Animator Component: Could not Step Animation to Next Keyframe! Error: Current Clip (AnimatorClip*) was nullptr.");
 		return false;
 	}
 	
-	if ((double)clip_tick < GetCurrentClipAnimationDuration())
-	{
-		++clip_tick;
-	}
-	
+	current_clip->StepClipToNextKeyframe();
+
 	for (uint i = 0; i < current_bones.size(); ++i)
 	{
 		const Transform& transform				= Transform(current_bones[i].game_object->GetComponent<C_Transform>()->GetLocalTransform());
-		const Transform& interpolated_transform = GetInterpolatedTransform((double)clip_tick, current_bones[i].channel, transform);
+		const Transform& interpolated_transform = GetInterpolatedTransform((double)current_clip->GetClipTick(), current_bones[i].channel, transform);
 
 		current_bones[i].game_object->GetComponent<C_Transform>()->ImportTransform(interpolated_transform);
 	}
@@ -649,36 +643,38 @@ void C_Animator::SetCurrentClip(AnimatorClip* clip)
 		LOG("%s! Error: Given AnimatorClip* was nullptr.", error_string.c_str());
 		return;
 	}
-	if (clips.find(clip->name) == clips.end())
+	if (clips.find(clip->GetName()) == clips.end())
 	{
 		LOG("%s! Error: Could not find the given AnimatorClip* in the clips map.", error_string.c_str());
 		return;
 	}
-	if (animation_bones.find(clip->animation->GetUID()) == animation_bones.end())
+	if (animation_bones.find(clip->GetAnimation()->GetUID()) == animation_bones.end())
 	{
 		LOG("%s! Error: Could not find the Bones of the Clip's animation (R_Animation*).");
 		return;
 	}
 
 	current_clip	= clip;
-	current_bones	= animation_bones.find(clip->animation->GetUID())->second;
+	current_bones	= animation_bones.find(clip->GetAnimation()->GetUID())->second;
+
+	current_clip->ClearClip();
 }
 
 void C_Animator::SetBlendingClip(AnimatorClip* clip, uint blend_frames)
 {
-	std::string error_string = "[ERROR] Animator Component: Could not Set Blending Clip to { " + std::string(this->GetOwner()->GetName()) + " }'s Animator Component";
+	std::string error_string = "[ERROR] Animator Component: Could not Set Blending Clip in { " + std::string(this->GetOwner()->GetName()) + " }'s Animator Component";
 
 	if (clip == nullptr)
 	{
 		LOG("%s! Error: Given AnimatorClip* was nullptr.", error_string.c_str());
 		return;
 	}
-	if (clips.find(clip->name) == clips.end())
+	if (clips.find(clip->GetName()) == clips.end())
 	{
 		LOG("%s! Error: Could not find the given AnimatorClip* in the clips map.", error_string.c_str());
 		return;
 	}
-	if (animation_bones.find(clip->animation->GetUID()) != animation_bones.end())
+	if (animation_bones.find(clip->GetAnimation()->GetUID()) != animation_bones.end())
 	{
 		LOG("%s! Error: Could not find the Bones of the Clip's animation (R_Animation*).");
 		return;
@@ -696,7 +692,31 @@ void C_Animator::SetCurrentClipByIndex(const uint& index)
 		return;
 	}
 
-	// Cannot be accessed by index, only by name (key).
+	std::string error_string = "[ERROR] Animator Component: Could not Set Current Clip in { " + std::string(this->GetOwner()->GetName()) + " }'s Animator Component";
+
+	uint i = 0;
+	for (auto item = clips.cbegin(); item != clips.cend(); ++item)
+	{
+		if (i == index)																										// Dirty way of finding items in a map by index.
+		{
+			const AnimatorClip& clip = item->second;
+
+			if (animation_bones.find(clip.GetAnimation()->GetUID()) == animation_bones.end())
+			{
+				LOG("%s! Error: Could not find the Bones of the Clip's animation (R_Animation*).");
+				return;
+			}
+
+			current_clip	= (AnimatorClip*)&clip;
+			current_bones	= animation_bones.find(clip.GetAnimation()->GetUID())->second;
+
+			current_clip->ClearClip();
+
+			return;
+		}
+
+		++i;
+	}
 }
 
 void C_Animator::SetBlendingClipByIndex(const uint& index, const uint& blend_frames)
@@ -756,61 +776,6 @@ std::string C_Animator::GetClipNamesAsString() const
 	}
 
 	return clip_names;
-}
-
-float C_Animator::GetCurrentClipTime() const
-{
-	return clip_time;
-}
-
-float C_Animator::GetCurrentClipFrame() const
-{
-	return clip_frame;
-}
-
-uint C_Animator::GetCurrentClipTick() const
-{
-	return clip_tick;
-}
-
-const char* C_Animator::GetCurrentClipAnimationName() const
-{
-	return ((current_clip == nullptr) ? "[NONE]" : current_clip->animation->GetName());
-}
-
-float C_Animator::GetCurrentClipAnimationTicksPerSecond() const
-{
-	return ((current_clip == nullptr) ? 0.0f : (float)current_clip->animation->GetTicksPerSecond());
-}
-
-float C_Animator::GetCurrentClipAnimationDuration() const
-{
-	return ((current_clip == nullptr) ? 0.0f : (float)current_clip->animation->GetDuration());
-}
-
-const char* C_Animator::GetCurrentClipName() const
-{
-	return ((current_clip == nullptr) ? "[NONE]" : current_clip->name.c_str());
-}
-
-uint C_Animator::GetCurrentClipStart() const
-{
-	return ((current_clip == nullptr) ? 0 : current_clip->start);
-}
-
-uint C_Animator::GetCurrentClipEnd() const
-{
-	return ((current_clip == nullptr) ? 0 : current_clip->end);
-}
-
-float C_Animator::GetCurrentClipDuration() const
-{
-	return ((current_clip == nullptr) ? 0.0f : (GetCurrentClipEnd() - GetCurrentClipStart()));
-}
-
-float C_Animator::GetCurrentClipDurationInSec() const
-{
-	return ((current_clip == nullptr) ? 0.0f : (GetCurrentClipDuration() / GetCurrentClipAnimationTicksPerSecond()));
 }
 
 float C_Animator::GetPlaybackSpeed() const
