@@ -1400,6 +1400,12 @@ Resource* M_ResourceManager::AllocateResource(const uint32& UID, const char* ass
 		return nullptr;
 	}
 
+	auto item = resources.find(UID);
+	if (item != resources.end())
+	{
+		return item->second;
+	}
+
 	char* buffer				= nullptr;
 	const char* library_path	= library.find(UID)->second.c_str();
 	uint read					= App->file_system->Load(library_path, &buffer);

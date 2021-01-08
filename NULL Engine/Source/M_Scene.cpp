@@ -38,6 +38,7 @@
 M_Scene::M_Scene(bool is_active) : Module("SceneManager", is_active),
 master_root				(nullptr),
 scene_root				(nullptr),
+animation_root			(nullptr),
 selected_game_object	(nullptr),
 culling_camera			(nullptr)
 {
@@ -75,8 +76,12 @@ bool M_Scene::Start()
 
 	CreateSceneCamera("SceneCamera");
 
-	uint32 model_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
-	GenerateGameObjectsFromModel(model_uid);
+	uint32 street_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
+	GenerateGameObjectsFromModel(street_uid);
+
+	uint32 animation_uid = App->resource_manager->LoadFromLibrary(DEFAULT_ANIMATION);
+	GenerateGameObjectsFromModel(animation_uid /*, float3(0.1f, 0.1f, 0.1f)*/);
+
 	//LoadResourceIntoScene(model_uid);
 	SaveScene();																					// Autosave just right after loading the scene.
 
@@ -89,6 +94,34 @@ UPDATE_STATUS M_Scene::Update(float dt)
 	if (App->debug == true)
 	{
 		HandleDebugInput();
+	}
+
+	if (animation_root != nullptr)
+	{
+		C_Animator* root_animator = animation_root->GetComponent<C_Animator>();
+		if (root_animator != nullptr)
+		{
+			if (App->play)
+			{
+				if (!root_animator->GetCurrentClip()->playing)
+				{
+					root_animator->PlayClip("Idle", 8);
+				}
+
+				if (App->input->GetKey(SDL_SCANCODE_KP_1) == KEY_STATE::KEY_DOWN)
+				{
+					root_animator->PlayClip("Running", 8);
+				}
+				if (App->input->GetKey(SDL_SCANCODE_KP_1) == KEY_STATE::KEY_UP)
+				{
+					root_animator->PlayClip("Idle", 8);
+				}
+				if (App->input->GetKey(SDL_SCANCODE_KP_2) == KEY_STATE::KEY_DOWN)
+				{
+					root_animator->PlayClip("Attack", 8);
+				}
+			}
+		}
 	}
 
 	std::vector<MeshRenderer>		mesh_renderers;
@@ -158,14 +191,6 @@ bool M_Scene::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	
-	std::map<GameObject*, R_Model*>::const_iterator item;
-	for (item = models.begin(); item != models.end(); ++item)
-	{
-		App->resource_manager->FreeResource(item->second->GetUID());
-	}
-
-	models.clear();
-
 	for (uint i = 0; i < game_objects.size(); ++i)
 	{
 		game_objects[i]->CleanUp();
@@ -175,6 +200,7 @@ bool M_Scene::CleanUp()
 	game_objects.clear();
 
 	scene_root				= nullptr;
+	animation_root			= nullptr;
 	culling_camera			= nullptr;
 	selected_game_object	= nullptr;
 
@@ -287,6 +313,11 @@ bool M_Scene::LoadScene(const char* path)
 			{
 				scene_root = game_object;
 				scene_root->SetParent(master_root);
+			}
+
+			if (game_object->GetComponent<C_Animator>() != nullptr)
+			{
+				animation_root = game_object;
 			}
 
 			C_Camera* c_camera = game_object->GetComponent<C_Camera>();
@@ -422,7 +453,7 @@ void M_Scene::DeleteGameObject(GameObject* game_object, uint index)
 	LOG("[ERROR] Could not find game object %s in game_objects vector!", game_object->GetName());
 }
 
-void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
+void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID, const float3& scale)
 {
 	R_Model* r_model = (R_Model*)App->resource_manager->RequestResource(model_UID);
 
@@ -479,9 +510,18 @@ void M_Scene::GenerateGameObjectsFromModel(const uint32& model_UID)
 		game_objects.push_back(item->second);
 	}
 
-	if (parent_root != nullptr && !r_model->animations.empty())
+	if (parent_root != nullptr)
 	{
-		CreateAnimationComponentFromModel(r_model, parent_root);								// Must be done last as the parent hierarchy needs to be in place.
+		if (scale.x != 0.0f)																	// Dirty way of detecting that the scale is valid.
+		{
+			parent_root->GetComponent<C_Transform>()->SetLocalScale(scale);
+		}
+
+		if (!r_model->animations.empty())
+		{
+			CreateAnimationComponentFromModel(r_model, parent_root);							// Must be done last as the parent hierarchy needs to be in place.
+		}
+
 		parent_root = nullptr;
 	}
 
@@ -556,6 +596,8 @@ void M_Scene::CreateAnimationComponentFromModel(const R_Model* r_model, GameObje
 		return;
 	}
 
+	animation_root = game_object;
+
 	C_Animator* c_animation = (C_Animator*)game_object->CreateComponent(COMPONENT_TYPE::ANIMATOR);
 	std::map<uint32, std::string>::const_iterator item;
 	for (item = r_model->animations.cbegin(); item != r_model->animations.cend(); ++item)
@@ -566,8 +608,6 @@ void M_Scene::CreateAnimationComponentFromModel(const R_Model* r_model, GameObje
 			c_animation->AddAnimation(r_animation);
 		}
 	}
-
-	// DELETE ON EMPTY ANIMATIONS?
 }
 
 std::vector<GameObject*>* M_Scene::GetGameObjects()

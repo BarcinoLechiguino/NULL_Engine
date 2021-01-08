@@ -7,6 +7,11 @@
 #include "MathGeoLib/include/Geometry/Triangle.h"
 #include "Module.h"
 
+namespace math
+{
+	class float3;
+}
+
 class ParsonNode;
 class Primitive;
 class Resource;
@@ -45,7 +50,7 @@ public:																														// --- GAME OBJECTS METHODS ---
 	GameObject*		CreateGameObject					(const char* name = nullptr, GameObject* parent = nullptr);			// 
 	void			DeleteGameObject					(GameObject* game_object, uint index = -1);							// 
 	
-	void			GenerateGameObjectsFromModel		(const uint32& model_UID);											//
+	void			GenerateGameObjectsFromModel		(const uint32& model_UID, const float3& scale = float3::zero);		//
 	bool			ApplyTextureToSelectedGameObject	(const uint32& texture_UID);										//
 
 	void			CreateComponentsFromModelNode		(const ModelNode& model_node, GameObject* game_object);
@@ -82,13 +87,10 @@ private:
 
 private:
 	std::vector<GameObject*>	game_objects;																				// 
-	
-	//std::vector<R_Model*>		models;
-	std::map<GameObject*, R_Model*> models;																					// TMP Until a better solution is found.
-	//std::map<R_Model*, std::vector<GameObject*>> models;																	// TMP Until a better solution is found.
 
 	GameObject*					master_root;																				// Root of everything. Parent of all scenes.
 	GameObject*					scene_root;																					// Root of the current scene.
+	GameObject*					animation_root;																				// TMP Just for the 3rd Assignment Delivery
 	GameObject*					selected_game_object;																		// Represents the game object that's currently being selected.
 
 	C_Camera*					culling_camera;																				// Culling Camera

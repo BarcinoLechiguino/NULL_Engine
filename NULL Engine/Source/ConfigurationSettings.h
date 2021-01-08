@@ -23,6 +23,7 @@
 #define ORGANIZATION			"Angel Gonzalez // UPC - CITM - TTC"
 
 #define DEFAULT_SCENE			"Assets/Models/street/Street environment_V01.FBX"
+#define DEFAULT_ANIMATION		"Assets/Models/Skeleton_Model/aniTest.fbx"
 
 #define ANIMATION_ICON_PATH		"Engine/Icons/animation_icon.png"
 #define FILE_ICON_PATH			"Engine/Icons/file_icon.png"

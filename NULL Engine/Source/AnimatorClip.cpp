@@ -1,3 +1,8 @@
+#include "JSONParser.h"
+
+#include "Application.h"
+#include "M_ResourceManager.h"
+
 #include "R_Animation.h"
 
 #include "AnimatorClip.h"
@@ -12,7 +17,8 @@ duration_in_seconds	(0.0f),
 loop				(false),
 time				(0.0f),
 frame				(0.0f),
-tick				(0)
+tick				(0),
+playing				(false)
 {
 
 }
@@ -25,7 +31,8 @@ end			(end),
 loop		(loop),
 time		(0.0f),
 frame		(0.0f),
-tick		(0)
+tick		(0),
+playing		(false)
 {
 	duration				= (float)(end - start);
 	duration_in_seconds		= (animation != nullptr) ? (duration / animation->GetTicksPerSecond()) : 0.0f;
@@ -56,6 +63,40 @@ void AnimatorClip::ClearClip()
 	time	= 0.0f;
 	frame	= 0.0f;
 	tick	= 0;
+}
+
+bool AnimatorClip::SaveState(ParsonNode& root) const
+{
+	bool ret = true;
+	
+	root.SetNumber("AnimationUID", (double)animation->GetUID());
+
+	root.SetString("Name", name.c_str());
+	root.SetNumber("Start", (double)start);
+	root.SetNumber("End", (double)end);
+	root.SetNumber("Duration", (double)duration);
+	root.SetNumber("DurationInSeconds", (double)duration_in_seconds);
+
+	root.SetBool("Loop", loop);
+
+	return ret;
+}
+
+bool AnimatorClip::LoadState(const ParsonNode& root)
+{
+	bool ret = true;
+	
+	animation				= (R_Animation*)App->resource_manager->RequestResource((uint32)root.GetNumber("AnimationUID"));
+
+	name					= root.GetString("Name");
+	start					= (uint)root.GetNumber("Start");
+	end						= (uint)root.GetNumber("End");
+	duration				= (float)root.GetNumber("Duration");
+	duration_in_seconds		= (float)root.GetNumber("DurationInSeconds");
+
+	loop					= root.GetBool("Loop");
+	
+	return ret;
 }
 
 // --- CLIP DEBUG METHODS

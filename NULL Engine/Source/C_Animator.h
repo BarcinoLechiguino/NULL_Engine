@@ -63,7 +63,7 @@ public:
 public:
 	void				AddAnimation				(R_Animation* r_animation);
 	bool				AddClip						(const AnimatorClip& clip);
-	void				PlayClip					(std::string clip_name, uint blend_frames);
+	void				PlayClip					(const std::string& clip_name, const uint& blend_frames);
 	
 	bool				Play						();
 	bool				Pause						();
@@ -112,6 +112,8 @@ private:																													// --- INTERNAL METHODS
 	bool				StepAnimation				();
 	bool				BlendAnimation				();
 
+	void				ResetBones					();
+
 	const Transform		GetInterpolatedTransform	(const double& current_keyframe, const Channel& current_channel, const Transform& original_transform) const;
 	const float3		GetInterpolatedPosition		(const double& current_keyframe, const Channel& current_channel, const float3& original_position) const;
 	const Quat			GetInterpolatedRotation		(const double& current_keyframe, const Channel& current_channel, const Quat& original_rotation) const;
@@ -143,6 +145,8 @@ private:
 	std::vector<BoneLink>							blending_bones;
 
 	std::vector<LineSegment>						display_bones;															// Line Segments between GO bones. For debug purposes.
+
+	std::vector<R_Animation*>						animations_to_add;														// TODO: Change this to something cleaner later.
 
 	AnimatorClip*									current_clip;
 	AnimatorClip*									blending_clip;

@@ -530,6 +530,11 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 			// -- CURRENT CLIP VARIABLES
 			AnimatorClip* current_clip			= c_animator->GetCurrentClip();
 
+			if (current_clip == nullptr)
+			{
+				current_clip = &AnimatorClip();
+			}
+
 			const char* animation_name			= current_clip->GetAnimationName();
 			float animation_ticks_per_second	= current_clip->GetAnimationTicksPerSecond();
 			float animation_duration			= current_clip->GetAnimationDuration();
@@ -641,8 +646,16 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 
 					if (ImGui::Button("Create")) 
 					{ 
-						success = c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex((uint)selected_animation), new_clip_name, new_clip_start, new_clip_end, loop));
-						text_timer_running = true;
+						if (!App->play)
+						{
+							success = c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex((uint)selected_animation), new_clip_name, new_clip_start, new_clip_end, loop));
+							text_timer_running = true;
+						}
+						else
+						{
+							ImGui::SameLine();
+							ImGui::TextColored(Red.C_Array(), "Cannot Create Clips While in Game Mode!");
+						}
 					}
 
 					if (text_timer_running)
@@ -651,7 +664,8 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 						
 						if (success)
 						{
-							ImGui::TextColored(Green.C_Array(), "Successfully Created Clip { %s }", new_clip_name);
+							static std::string new_clip_name_str = new_clip_name;
+							ImGui::TextColored(Green.C_Array(), "Successfully Created Clip { %s }", new_clip_name_str.c_str());
 
 							strcpy_s(new_clip_name, 128, "Enter Clip Name");																// --- Re-setting the New Clip Parameters
 							new_clip_start	= 0;																							// 

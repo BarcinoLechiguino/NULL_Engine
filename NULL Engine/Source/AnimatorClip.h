@@ -3,6 +3,7 @@
 
 #include <string>
 
+class ParsonNode;
 class R_Animation;
 
 typedef unsigned int uint;
@@ -15,6 +16,9 @@ public:
 
 	bool StepClip	(const float& dt);
 	void ClearClip	();
+
+	bool SaveState(ParsonNode& root) const;
+	bool LoadState(const ParsonNode& root);
 
 public:																																// --- CLIP DEBUG METHODS
 	void				StepClipToPrevKeyframe		();
@@ -42,6 +46,9 @@ public:																																// --- GENERAL CLIP DATA GET METHODS
 	uint				GetEnd						() const;
 	float				GetDuration					() const;
 	float				GetDurationInSeconds		() const;
+
+public:
+	bool				playing;
 
 private:
 	const R_Animation*	animation;
