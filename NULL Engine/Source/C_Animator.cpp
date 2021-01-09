@@ -489,7 +489,8 @@ const float3 C_Animator::GetBlendedPosition(const double& blending_keyframe, con
 
 	float3 position			= GetInterpolatedPosition(blending_keyframe, blending_channel, original_position);
 
-	float blend_rate		= (float)(blending_keyframe / (double)(blending_clip->GetStart() + blend_frames));
+	double blend_frame		= blending_keyframe - blending_clip->GetStart();
+	float blend_rate		= (float)(blend_frame / blend_frames);
 	float3 blended_position	= original_position.Lerp(position, blend_rate);
 	
 	return blended_position;
@@ -504,7 +505,8 @@ const Quat C_Animator::GetBlendedRotation(const double& blending_keyframe, const
 
 	Quat rotation			= GetInterpolatedRotation(blending_keyframe, blending_channel, original_rotation);
 
-	float blend_rate		= (float)(blending_keyframe / (double)(blending_clip->GetStart() + blend_frames));
+	double blend_frame		= blending_keyframe - blending_clip->GetStart();
+	float blend_rate		= (float)(blend_frame / blend_frames);
 	Quat blended_rotation	= original_rotation.Slerp(rotation, blend_rate);
 
 	return blended_rotation;
@@ -519,7 +521,8 @@ const float3 C_Animator::GetBlendedScale(const double& blending_keyframe, const 
 
 	float3 scale			= GetInterpolatedScale(blending_keyframe, blending_channel, original_scale);
 
-	float blend_rate		= (float)(blending_keyframe / (double)(blending_clip->GetStart() + blend_frames));
+	double blend_frame		= blending_keyframe - blending_clip->GetStart();
+	float blend_rate		= (float)(blend_frame / blend_frames);
 	float3 blended_scale	= original_scale.Lerp(scale, blend_rate);
 
 	return blended_scale;
@@ -803,6 +806,11 @@ bool C_Animator::Play()
 
 	current_clip->playing = true;
 
+	if (BlendingClipExists()) 
+	{ 
+		blending_clip->playing = true; 
+	};
+
 	return play;
 }
 
@@ -846,6 +854,12 @@ bool C_Animator::Stop()
 	
 	current_clip->playing = false;
 	current_clip->ClearClip();
+
+	if (BlendingClipExists())
+	{
+		blending_clip->playing = false;
+		blending_clip->ClearClip();
+	}
 
 	return stop;
 }

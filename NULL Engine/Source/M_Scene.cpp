@@ -113,11 +113,6 @@ UPDATE_STATUS M_Scene::Update(float dt)
 		{
 			if (App->play)
 			{
-				if (!root_animator->GetCurrentClip()->playing)
-				{
-					//root_animator->PlayClip("Idle", 8);
-				}
-
 				if (App->input->GetKey(SDL_SCANCODE_KP_1) == KEY_STATE::KEY_DOWN)
 				{
 					root_animator->PlayClip("Running", 8);
@@ -129,6 +124,11 @@ UPDATE_STATUS M_Scene::Update(float dt)
 				if (App->input->GetKey(SDL_SCANCODE_KP_2) == KEY_STATE::KEY_DOWN)
 				{
 					root_animator->PlayClip("Attack", 8);
+				}
+
+				if (!root_animator->GetCurrentClip()->playing)
+				{
+					root_animator->PlayClip("Idle", 8);
 				}
 			}
 		}
