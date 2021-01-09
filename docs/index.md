@@ -30,8 +30,8 @@ NULL Engine has been coded from scratch in C and C++ along with the following li
 ## The Developer: Ángel González
 
 * Photo
-* Github: (https://github.com/BarcinoLechiguino)
-* LinkedIn: (https://www.linkedin.com/in/angel-gonzalez-jimenez/)
+* Github: [Click Here](<https://github.com/BarcinoLechiguino>)
+* LinkedIn: [Click Here](<https://www.linkedin.com/in/angel-gonzalez-jimenez/>)
 
 ---
 
@@ -53,7 +53,7 @@ The File Importer, as mentioned above, is separated in two sub-systems:
 
   * This sub-system is specially important as loading data from custom file formats is several magnitudes faster than importing it from asset files.
 
-  
+---
 
 ### Game Objects & Components
 
@@ -62,16 +62,12 @@ Game Objects are entities structured after the Entity Component Structure (ECS).
 Game Objects can be assigned the following components:
 
 * **Transform:** Allows to edit a GameObject's Position, Rotation & Scale.
-
 * **Mesh:** Allows to assign a 3D Mesh to a GameObject. The mesh will be later rendered on-screen.
-
 * **Material:** Allows to assign a base color as well as textures to a GameObject's mesh.
-
 * **Camera:** Allows to assign a Frustum representing a Camera to a GameObject as well as to customize the Camera's base values (FOV, Frustum Culling...).
-
 * **Animator:** Allows to assign Animations to a Mesh as well as generate clips with any of the aforementioned animations as the base.
 
-  
+---
 
 ### Resource Manager
 
@@ -83,7 +79,7 @@ This system generates .meta files for each Asset File with references to the res
 
 Last but not least, the Resource Manager keeps constantly in check that no resource that is already loaded in memory is loaded again. 
 
-
+---
 
 ### Engine GUI
 
@@ -122,7 +118,7 @@ To import any animation the following process needs to be followed:
 
 **Disclaimer:** This process can be applied to importing ANY file.
 
-
+---
 
 ### Managing Animations Through the Editor
 
@@ -159,35 +155,35 @@ This component is composed by:
 
   * The Clip Manager also shows all the Clips that exist within the Animator Component.
 
-
+---
 
 ### Executing Animations
 
 **Editor Controls**
 
-As mentioned above in the Settings & Controls sub-section, clips can be reproduced by clicking the "Play" Button that can be found in the Animator Component's Settings & Controls Tab.
+As mentioned above in the Settings & Controls sub-section, clip execution controls can be found in the Animator Component's Settings & Controls Tab.
 
-To Pause the animation just press the "Pause" button while the animation is Playing.
+* Select the Clip that will be executed and:
+  * To Play the animation, just press the "Play" button.
+  * To Pause the animation, just press the "Pause" button while the animation is Playing.
+  * To Step the animation, just press the "Step" button while the animation is Paused.
+  * To Stop the animation, just press the "Stop" button while the animation is Playing or Paused.
 
-To Step the animation, just press the "Step" button while the animation is Paused.
-
-To Stop the animation, just press the "Stop" button while the animation is Playing or Paused.
-
-
+  ---
 
 **In-Game Controls**
 
 If an appropiate trigger has been set in code, then just enter Game Mode by pressing the "Play" button at the top left corner of the Application's window and trigger the animation to happen.
 
-Ex: `if (pressed_key == KP_2) { PlayClip("Attack"); }`
+* Ex: `if (pressed_key == KP_2) { PlayClip("Attack"); }`
 
-
+  ---
 
 ### Animator Component & Creating Clips Demonstration
 
 * Editor Functionality GIF
 
-  
+  ---
 
 ### In-Game Triggers Demonstration
 
