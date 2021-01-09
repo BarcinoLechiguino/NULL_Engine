@@ -1,6 +1,6 @@
 ---
 
-{ Latest Release: https://github.com/BarcinoLechiguino/NULL_Engine/tags }
+Latest Release: (https://github.com/BarcinoLechiguino/NULL_Engine/tags)
 
 ---
 
@@ -30,8 +30,8 @@ NULL Engine has been coded from scratch in C and C++ along with the following li
 ## The Developer: Ángel González
 
 * Photo
-* Github: https://github.com/BarcinoLechiguino
-* LinkedIn: https://www.linkedin.com/in/angel-gonzalez-jimenez/
+* Github: (https://github.com/BarcinoLechiguino)
+* LinkedIn: (https://www.linkedin.com/in/angel-gonzalez-jimenez/)
 
 ---
 
