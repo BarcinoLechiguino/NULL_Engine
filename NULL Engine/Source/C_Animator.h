@@ -93,9 +93,10 @@ public:																														// --- CURRENT/BLENDING ANIMATION METHODS
 
 public:																														// --- GET/SET METHODS
 	std::vector<LineSegment> GetDisplayBones		() const;
-	R_Animation*		GetAnimationByIndex			(const uint& index) const;
-	std::string			GetAnimationNamesAsString	() const;
+	std::vector<std::string> GetClipNamesAsVector	() const;
 	std::string			GetClipNamesAsString		() const;
+	std::string			GetAnimationNamesAsString	() const;
+	R_Animation*		GetAnimationByIndex			(const uint& index) const;
 
 	float				GetPlaybackSpeed			() const;
 	bool				GetInterpolate				() const;

@@ -1,3 +1,6 @@
+#include <vector>
+#include <string>
+
 #include "MathGeoTransform.h"
 
 #include "Color.h"
@@ -515,7 +518,7 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 
 			// --- ANIMATOR VARIABLES
 			static int selected_clip			= 0;
-			std::string clip_names				= c_animator->GetClipNamesAsString();
+			std::string clip_names_string		= c_animator->GetClipNamesAsString();
 
 			float speed							= c_animator->GetPlaybackSpeed();
 			float min_speed						= 0.1f;
@@ -567,6 +570,10 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 			static float text_timer				= 0.0f;																				//
 			static float text_duration			= 2.5f;																				// ----------------------------------------------------
 			
+			// --- EXISTING CLIPS VARIABLES
+			std::vector<std::string> clip_names = c_animator->GetClipNamesAsVector();
+
+			// --- DISPLAY
 			if (ImGui::BeginTabBar("AnimatorTabBar", ImGuiTabBarFlags_None))
 			{
 				if (ImGui::BeginTabItem("Settings & Controls"))
@@ -574,9 +581,9 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 					// --- ANIMATOR SETTINGS
 					ImGui::TextColored(Cyan.C_Array(), "Animation Settings");
 
-					if (ImGui::Combo("Select Clip", &selected_clip, clip_names.c_str()))
+					if (ImGui::Combo("Select Clip", &selected_clip, clip_names_string.c_str()))
 					{
-						char selected_name = clip_names[selected_clip];
+						char selected_name = clip_names_string[selected_clip];
 						c_animator->SetCurrentClipByIndex((uint)selected_clip);
 					}
 
@@ -693,9 +700,9 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 
 					ImGui::TextColored(Cyan.C_Array(), "Existing Clips");
 
-					for (uint i = 0; i < 10; ++i)
+					for (uint i = 0; i < clip_names.size(); ++i)
 					{	
-						if (ImGui::TreeNodeEx("Clip Name", ImGuiTreeNodeFlags_Bullet))
+						if (ImGui::TreeNodeEx(clip_names[i].c_str(), ImGuiTreeNodeFlags_Bullet))
 						{
 							ImGui::TreePop();
 						}

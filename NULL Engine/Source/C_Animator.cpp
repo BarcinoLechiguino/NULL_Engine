@@ -1075,15 +1075,29 @@ std::vector<LineSegment> C_Animator::GetDisplayBones() const
 	return display_bones;
 }
 
-R_Animation* C_Animator::GetAnimationByIndex(const uint& index) const
+std::vector<std::string> C_Animator::GetClipNamesAsVector() const
 {
-	if (index >= animations.size())
+	std::vector<std::string> clip_names;
+
+	for (auto clip = clips.cbegin(); clip != clips.cend(); ++clip)
 	{
-		LOG("[ERROR] Animator Component: Could not get Animation by Index! Error: Given index was out of bounds.");
-		return nullptr;
+		clip_names.push_back(clip->first);
 	}
 
-	return animations[index];
+	return clip_names;
+}
+
+std::string C_Animator::GetClipNamesAsString() const
+{
+	std::string clip_names = "";
+
+	for (auto clip = clips.cbegin(); clip != clips.cend(); ++clip)
+	{
+		clip_names += clip->first.c_str();
+		clip_names += '\0';
+	}
+
+	return clip_names;
 }
 
 std::string C_Animator::GetAnimationNamesAsString() const
@@ -1099,17 +1113,15 @@ std::string C_Animator::GetAnimationNamesAsString() const
 	return animation_names;
 }
 
-std::string C_Animator::GetClipNamesAsString() const
+R_Animation* C_Animator::GetAnimationByIndex(const uint& index) const
 {
-	std::string clip_names = "";
-	
-	for (auto clip = clips.cbegin(); clip != clips.cend(); ++clip)
+	if (index >= animations.size())
 	{
-		clip_names += clip->first.c_str();
-		clip_names += '\0';
+		LOG("[ERROR] Animator Component: Could not get Animation by Index! Error: Given index was out of bounds.");
+		return nullptr;
 	}
 
-	return clip_names;
+	return animations[index];
 }
 
 float C_Animator::GetPlaybackSpeed() const

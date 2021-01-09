@@ -1,8 +1,8 @@
 {
     "Game Objects": [
         {
-            "UID": 1238473524,
-            "ParentUID": 1238522428,
+            "UID": 1977881413,
+            "ParentUID": 2107248097,
             "Name": "MainScene",
             "IsActive": true,
             "IsStatic": false,
@@ -31,8 +31,8 @@
             ]
         },
         {
-            "UID": 852533567,
-            "ParentUID": 1238473524,
+            "UID": 1702340649,
+            "ParentUID": 1977881413,
             "Name": "SceneCamera",
             "IsActive": true,
             "IsStatic": false,
@@ -796,7 +796,7 @@
         },
         {
             "UID": 707376400,
-            "ParentUID": 1238473524,
+            "ParentUID": 1977881413,
             "Name": "Street environment_V01.FBX",
             "IsActive": true,
             "IsStatic": false,
@@ -1898,7 +1898,7 @@
         },
         {
             "UID": 44199262,
-            "ParentUID": 1238473524,
+            "ParentUID": 1977881413,
             "Name": "aniTest.fbx",
             "IsActive": true,
             "IsStatic": false,
