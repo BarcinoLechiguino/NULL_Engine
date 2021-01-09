@@ -85,6 +85,9 @@ public:																														// --- CURRENT/BLENDING ANIMATION METHODS
 	void				SetCurrentClipByIndex		(const uint& index);
 	void				SetBlendingClipByIndex		(const uint& index, const uint& blend_frames);
 
+	bool				CurrentClipExists			() const;
+	bool				BlendingClipExists			() const;
+
 	void				ClearCurrentClip			();
 	void				ClearBlendingClip			();
 
@@ -110,19 +113,29 @@ public:																														// --- GET/SET METHODS
 
 private:																													// --- INTERNAL METHODS
 	bool				StepAnimation				();
+	bool				StepClips					();
 	bool				BlendAnimation				();
+	bool				ValidateCurrentClip			();
 
+	void				SwitchBlendingToCurrent		();
 	void				ResetBones					();
 
-	const Transform		GetInterpolatedTransform	(const double& current_keyframe, const Channel& current_channel, const Transform& original_transform) const;
-	const float3		GetInterpolatedPosition		(const double& current_keyframe, const Channel& current_channel, const float3& original_position) const;
-	const Quat			GetInterpolatedRotation		(const double& current_keyframe, const Channel& current_channel, const Quat& original_rotation) const;
-	const float3		GetInterpolatedScale		(const double& current_keyframe, const Channel& current_channel, const float3& original_scale) const;
+	void				AddAnimationsToAdd			();
 
-	const Transform		GetPoseToPoseTransform		(const uint& current_tick, const Channel& current_channel, const Transform& original_transform) const;
-	const float3		GetPoseToPosePosition		(const uint& current_tick, const Channel& current_channel, const float3& original_position) const;
-	const Quat			GetPoseToPoseRotation		(const uint& current_tick, const Channel& current_channel, const Quat& original_rotation) const;
-	const float3		GetPoseToPoseScale			(const uint& current_tick, const Channel& current_channel, const float3& original_scale) const;
+	Transform			GetInterpolatedTransform	(const double& keyframe, const Channel& channel, const Transform& original_transform) const;
+	const float3		GetInterpolatedPosition		(const double& keyframe, const Channel& channel, const float3& original_position) const;
+	const Quat			GetInterpolatedRotation		(const double& keyframe, const Channel& channel, const Quat& original_rotation) const;
+	const float3		GetInterpolatedScale		(const double& keyframe, const Channel& channel, const float3& original_scale) const;
+
+	Transform			GetPoseToPoseTransform		(const uint& tick, const Channel& channel, const Transform& original_transform) const;
+	const float3		GetPoseToPosePosition		(const uint& tick, const Channel& channel, const float3& original_position) const;
+	const Quat			GetPoseToPoseRotation		(const uint& tick, const Channel& channel, const Quat& original_rotation) const;
+	const float3		GetPoseToPoseScale			(const uint& tick, const Channel& channel, const float3& original_scale) const;
+
+	Transform			GetBlendedTransform			(const double& blending_keyframe, const Channel& blending_channel, const Transform& original_transform) const;
+	const float3		GetBlendedPosition			(const double& blending_keyframe, const Channel& blending_channel, const float3& original_position) const;
+	const Quat			GetBlendedRotation			(const double& blending_keyframe, const Channel& blending_channel, const Quat& original_rotation) const;
+	const float3		GetBlendedScale				(const double& blending_keyframe, const Channel& blending_channel, const float3& original_scale) const;
 
 	void				FindAnimationBones			(const R_Animation* r_animation);
 	bool				FindBoneLinks				(const R_Animation* r_animation, std::vector<BoneLink>& links);

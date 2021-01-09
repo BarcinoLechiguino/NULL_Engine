@@ -18,6 +18,7 @@ loop				(false),
 time				(0.0f),
 frame				(0.0f),
 tick				(0),
+in_new_tick			(false),
 playing				(false)
 {
 
@@ -32,6 +33,7 @@ loop		(loop),
 time		(0.0f),
 frame		(0.0f),
 tick		(0),
+in_new_tick	(false),
 playing		(false)
 {
 	duration				= (float)(end - start);
@@ -45,9 +47,13 @@ bool AnimatorClip::StepClip(const float& dt)
 		return false;
 	}
 
+	uint prev_tick = tick;
+
 	time	+= dt;
 	frame	= time * animation->GetTicksPerSecond();
 	tick	= (uint)floor(frame);
+
+	in_new_tick = (tick != prev_tick);
 
 	if (time > duration_in_seconds)
 	{

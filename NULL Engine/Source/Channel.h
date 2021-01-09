@@ -27,25 +27,25 @@ struct Channel																										// Channels are the "Bones" of the anima
 	bool HasRotationKeyframes		() const;																		// Size == 1	(Initial Position. Always needed regardless)
 	bool HasScaleKeyframes			() const;																		// Time == -1	(Time cannot be negative, -1 used as "non-valid" ID)
 
-	PositionKeyframe	GetPositionKeyframe				(const double& current_keyframe) const;
-	RotationKeyframe	GetRotationKeyframe				(const double& current_keyframe) const;
-	ScaleKeyframe		GetScaleKeyframe				(const double& current_keyframe) const;	
+	PositionKeyframe	GetPositionKeyframe				(const double& keyframe) const;
+	RotationKeyframe	GetRotationKeyframe				(const double& keyframe) const;
+	ScaleKeyframe		GetScaleKeyframe				(const double& keyframe) const;	
 
-	PositionKeyframe	GetPrevPositionKeyframe			(const double& current_keyframe) const;						// --- Returns the Keyframe immediately before the given.
-	RotationKeyframe	GetPrevRotationKeyframe			(const double& current_keyframe) const;						// Ex: current_keyframe = 5 --> return keyframe 4;
-	ScaleKeyframe		GetPrevScaleKeyframe			(const double& current_keyframe) const;						// ------------------------------------------------------	
+	PositionKeyframe	GetPrevPositionKeyframe			(const double& keyframe) const;								// --- Returns the Keyframe immediately before the given.
+	RotationKeyframe	GetPrevRotationKeyframe			(const double& keyframe) const;								// Ex: current_keyframe = 5 --> return keyframe 4;
+	ScaleKeyframe		GetPrevScaleKeyframe			(const double& keyframe) const;								// ------------------------------------------------------	
 
-	PositionKeyframe	GetNextPositionKeyframe			(const double& current_keyframe) const;						// --- Returns the Keyframe immediately after the given.
-	RotationKeyframe	GetNextRotationKeyframe			(const double& current_keyframe) const;						// Ex: current_keyframe = 5 --> return keyframe 6;
-	ScaleKeyframe		GetNextScaleKeyframe			(const double& current_keyframe) const;						// -----------------------------------------------------
+	PositionKeyframe	GetNextPositionKeyframe			(const double& keyframe) const;								// --- Returns the Keyframe immediately after the given.
+	RotationKeyframe	GetNextRotationKeyframe			(const double& keyframe) const;								// Ex: current_keyframe = 5 --> return keyframe 6;
+	ScaleKeyframe		GetNextScaleKeyframe			(const double& keyframe) const;								// -----------------------------------------------------
 
-	PositionKeyframe	GetClosestPrevPositionKeyframe	(const double& current_keyframe) const;						// --- Returns the Keyframe immediately closest before the given.
-	RotationKeyframe	GetClosestPrevRotationKeyframe	(const double& current_keyframe) const;						// Ex: current_keyframe = 5.5f --> return keyframe 5;
-	ScaleKeyframe		GetClosestPrevScaleKeyframe		(const double& current_keyframe) const;						// --------------------------------------------------------------
+	PositionKeyframe	GetClosestPrevPositionKeyframe	(const double& keyframe) const;								// --- Returns the Keyframe immediately closest before the given.
+	RotationKeyframe	GetClosestPrevRotationKeyframe	(const double& keyframe) const;								// Ex: current_keyframe = 5.5f --> return keyframe 5;
+	ScaleKeyframe		GetClosestPrevScaleKeyframe		(const double& keyframe) const;								// --------------------------------------------------------------
 
-	PositionKeyframe	GetClosestNextPositionKeyframe	(const double& current_keyframe) const;						// --- Returns the Keyframe immediately closest after the given.
-	RotationKeyframe	GetClosestNextRotationKeyframe	(const double& current_keyframe) const;						// Ex: current_keyframe = 5.5f --> return keyframe 6;
-	ScaleKeyframe		GetClosestNextScaleKeyframe		(const double& current_keyframe) const;						// -------------------------------------------------------------
+	PositionKeyframe	GetClosestNextPositionKeyframe	(const double& keyframe) const;								// --- Returns the Keyframe immediately closest after the given.
+	RotationKeyframe	GetClosestNextRotationKeyframe	(const double& keyframe) const;								// Ex: current_keyframe = 5.5f --> return keyframe 6;
+	ScaleKeyframe		GetClosestNextScaleKeyframe		(const double& keyframe) const;								// -------------------------------------------------------------
 
 	std::map<double, float3>	position_keyframes;																	// Position-related keyframes.
 	std::map<double, Quat>		rotation_keyframes;																	// Rotation-related keyframes.

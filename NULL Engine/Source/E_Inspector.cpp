@@ -585,7 +585,7 @@ void E_Inspector::DrawAnimatorComponent(C_Animator* c_animator)								// TODO: 
 					if (ImGui::Button("Step"))									{ c_animator->Step(); }		ImGui::SameLine();
 					if (ImGui::Button("Stop"))									{ c_animator->Stop(); }
 
-					if (ImGui::SliderFloat("Playback Speed", &speed, min_speed, max_speed, "%.3f", 0)) { c_animator->SetPlaybackSpeed(speed); }
+					if (ImGui::SliderFloat("Playback Speed", &speed, min_speed, max_speed, "X %.3f", 0)) { c_animator->SetPlaybackSpeed(speed); }
 
 					if (ImGui::Checkbox("Interpolate", &interpolate))			{ c_animator->SetInterpolate(interpolate); }
 					if (ImGui::Checkbox("Loop Animation", &loop_animation))		{ c_animator->SetLoopAnimation(loop_animation); }

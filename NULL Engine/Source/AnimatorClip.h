@@ -47,10 +47,11 @@ public:																																// --- GENERAL CLIP DATA GET METHODS
 	float				GetDuration					() const;
 	float				GetDurationInSeconds		() const;
 
-public:
+public:																																// --- TMP VARIABLES THAT MIGHT CHANGE LATER ON
+	bool				in_new_tick;																								// Tells when a new keyframe/tick/frame has been reached.
 	bool				playing;
 
-private:
+private:																															// --- CLIP VARIABLES
 	const R_Animation*	animation;
 	std::string			name;
 	uint				start;
@@ -58,10 +59,12 @@ private:
 	float				duration;
 	float				duration_in_seconds;
 
-	bool				loop;
 	float				time;
 	float				frame;
 	uint				tick;
+
+	bool				loop;
+	bool				interruptible;
 };
 
 #endif // !__ANIMATOR_CLIP_H__

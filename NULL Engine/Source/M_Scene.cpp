@@ -83,7 +83,17 @@ bool M_Scene::Start()
 	GenerateGameObjectsFromModel(animation_uid /*, float3(0.1f, 0.1f, 0.1f)*/);
 
 	//LoadResourceIntoScene(model_uid);
-	SaveScene();																					// Autosave just right after loading the scene.
+
+	/*LoadScene("Assets/Scenes/MainScene.json");
+	C_Animator* c_animator = animation_root->GetComponent<C_Animator>();
+	if (c_animator != nullptr)
+	{
+		c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex(0), "Idle", 0, 46, true));
+		c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex(0), "Running", 47, 70, true));
+		c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex(0), "Attack", 71, 119, true));
+	}*/
+	
+	SaveScene("SceneAutosave");																					// Autosave just right after loading the scene.
 
 	return ret;
 }
@@ -105,7 +115,7 @@ UPDATE_STATUS M_Scene::Update(float dt)
 			{
 				if (!root_animator->GetCurrentClip()->playing)
 				{
-					root_animator->PlayClip("Idle", 8);
+					//root_animator->PlayClip("Idle", 8);
 				}
 
 				if (App->input->GetKey(SDL_SCANCODE_KP_1) == KEY_STATE::KEY_DOWN)
