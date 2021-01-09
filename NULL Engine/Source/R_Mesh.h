@@ -3,6 +3,7 @@
 
 #include "MathGeoBoundingBox.h"
 #include "MathGeoLib/include/Math/float2.h"
+#include "MathGeoLib/include/Math/float4x4.h"
 
 #include "Resource.h"
 #include "MeshSettings.h"
@@ -16,6 +17,19 @@ struct Vertex
 	float3 position;
 	float3 normals;
 	float2 tex_coords;
+};
+
+struct VertexWeight
+{
+	uint	vertex_id;
+	float	weight;
+};
+
+struct Bone
+{
+	std::string					name;
+	float4x4					offset_matrix;
+	std::vector<VertexWeight>	weights;
 };
 
 class R_Mesh : public Resource
@@ -36,17 +50,19 @@ public:
 	void SetAABB();
 
 public:
-	//std::vector<Vertex>			vertices;
+	//std::vector<Vertex>		vertices;
 	std::vector<float>			vertices;
 	std::vector<float>			normals;
 	std::vector<float>			tex_coords;
 	std::vector<uint>			indices;
 
+	std::vector<Bone>			bones;
+
 	// Buffer data
-	uint						VBO;					// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.
-	uint						NBO;					// Normals Buffer Object.	-->		Will store all the buffer data of the normals of the mesh.
-	uint						TBO;					// Tex Coord Buffer Object. -->		Will store all the buffer data of the tex coords of the mesh.
-	uint						IBO;					// Index Buffer Object.		--> 	Will store all the buffer data of the indices of the mesh.
+	uint						VBO;												// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.
+	uint						NBO;												// Normals Buffer Object.	-->		Will store all the buffer data of the normals of the mesh.
+	uint						TBO;												// Tex Coord Buffer Object. -->		Will store all the buffer data of the tex coords of the mesh.
+	uint						IBO;												// Index Buffer Object.		--> 	Will store all the buffer data of the indices of the mesh.
 
 	bool						draw_vertex_normals;
 	bool						draw_face_normals;

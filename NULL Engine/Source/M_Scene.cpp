@@ -81,18 +81,8 @@ bool M_Scene::Start()
 
 	uint32 animation_uid = App->resource_manager->LoadFromLibrary(DEFAULT_ANIMATION);
 	GenerateGameObjectsFromModel(animation_uid /*, float3(0.1f, 0.1f, 0.1f)*/);
-
-	//LoadResourceIntoScene(model_uid);
-
-	/*LoadScene("Assets/Scenes/MainScene.json");
-	C_Animator* c_animator = animation_root->GetComponent<C_Animator>();
-	if (c_animator != nullptr)
-	{
-		c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex(0), "Idle", 0, 46, true));
-		c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex(0), "Running", 47, 70, true));
-		c_animator->AddClip(AnimatorClip(c_animator->GetAnimationByIndex(0), "Attack", 71, 119, true));
-	}*/
 	
+	//LoadScene("Assets/Scenes/MainScene.json");
 	SaveScene("SceneAutosave");																					// Autosave just right after loading the scene.
 
 	return ret;
