@@ -2,7 +2,7 @@
 
 ---
 
-Download Latest Release: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine/tags>)
+Download Latest Release: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine/releases/tag/v0.75>)
 
 ---
 
@@ -272,7 +272,7 @@ If an appropiate trigger has been set in code, then just enter Game Mode by pres
 ## Links
 
 * Repository: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine>) 
-* Latest Release: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine/tags>)
+* Latest Release: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine/releases/tag/v0.75>)
 
 ---
 

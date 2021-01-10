@@ -56,6 +56,7 @@ parent				(nullptr),
 transform			(nullptr),
 is_master_root		(false),
 is_scene_root		(false),
+is_bone				(false),
 to_delete			(false),
 show_bounding_boxes	(false)
 {
