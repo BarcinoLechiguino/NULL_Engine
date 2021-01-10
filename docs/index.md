@@ -193,6 +193,8 @@ If an appropiate trigger has been set in code, then just enter Game Mode by pres
 ![Clip Manager GIF](<Gifs/ClipManager.gif>)
   ---
 
+---
+
 ### In-Game Triggers Demonstration
 
 ![In-Game Triggers GIF](<Gifs/AnimationTriggers.gif>)
