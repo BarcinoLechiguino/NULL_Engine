@@ -2,7 +2,7 @@
 
 ---
 
-Latest Release: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine/tags>)
+Download Latest Release: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine/tags>)
 
 ---
 
@@ -62,9 +62,13 @@ Game Objects are entities structured after the Entity Component Structure (ECS).
 Game Objects can be assigned the following components:
 
 * **Transform:** Allows to edit a GameObject's Position, Rotation & Scale.
+
 * **Mesh:** Allows to assign a 3D Mesh to a GameObject. The mesh will be later rendered on-screen.
+
 * **Material:** Allows to assign a base color as well as textures to a GameObject's mesh.
+
 * **Camera:** Allows to assign a Frustum representing a Camera to a GameObject as well as to customize the Camera's base values (FOV, Frustum Culling...).
+
 * **Animator:** Allows to assign Animations to a Mesh as well as generate clips with any of the aforementioned animations as the base.
 
 ---
@@ -261,8 +265,8 @@ If an appropiate trigger has been set in code, then just enter Game Mode by pres
 
 ## Links
 
-* Repository: https://github.com/BarcinoLechiguino/NULL_Engine 
-* Latest Release: https://github.com/BarcinoLechiguino/NULL_Engine/tags
+* Repository: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine>) 
+* Latest Release: [Click Here](<https://github.com/BarcinoLechiguino/NULL_Engine/tags>)
 
 ---
 
