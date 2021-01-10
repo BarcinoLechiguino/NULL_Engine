@@ -29,7 +29,8 @@ NULL Engine has been coded from scratch in C and C++ along with the following li
 
 ## The Developer: Ángel González
 
-* Photo
+* ![The Developer: Ángel González](<Images/MyMugshot.png>)
+
 * Github: [Click Here](<https://github.com/BarcinoLechiguino>)
 * LinkedIn: [Click Here](<https://www.linkedin.com/in/angel-gonzalez-jimenez/>)
 
@@ -185,13 +186,16 @@ If an appropiate trigger has been set in code, then just enter Game Mode by pres
 
 ### Animator Component & Creating Clips Demonstration
 
-* Editor Functionality GIF
+* **Animator Component:**
+![Animator Component GIF](<Gifs/AnimatorComponent.gif>)
 
+* **Clip Manager:**
+![Clip Manager GIF](<Gifs/ClipManager.gif>)
   ---
 
 ### In-Game Triggers Demonstration
 
-* In-Game Functionality GIF
+![In-Game Triggers GIF](<Gifs/AnimationTriggers.gif>)
 
 ---
 
@@ -199,7 +203,7 @@ If an appropiate trigger has been set in code, then just enter Game Mode by pres
 
 ## Authoring Scenes with NULL Engine
 
-* Speed-Up Engine Features Showcase Video
+* Engine Showcase: [Click Here](<https://www.youtube.com/watch?v=lFkq9amrakY&feature=youtu.be>)
 
 ---
 
