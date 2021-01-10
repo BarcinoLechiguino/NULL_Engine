@@ -136,9 +136,6 @@
     <Filter Include="Source\6_Containers\Icons">
       <UniqueIdentifier>{cbf7300c-306a-40d9-a473-8f4ce3303b95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\6_Containers\Animation">
-      <UniqueIdentifier>{656967a7-41cb-4465-b88d-3ec673d9c499}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\6_Containers\Renderer3D">
       <UniqueIdentifier>{3f6114a8-c940-4e3d-bb3a-e84527f322d0}</UniqueIdentifier>
     </Filter>
@@ -150,6 +147,12 @@
     </Filter>
     <Filter Include="Source\7_Tools\ImGuiCustom\CustomWidgets">
       <UniqueIdentifier>{44b6df73-6ff7-4399-b385-b268ab542394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\6_Containers\Animator">
+      <UniqueIdentifier>{656967a7-41cb-4465-b88d-3ec673d9c499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\6_Containers\Animation">
+      <UniqueIdentifier>{29e2c196-174d-4b25-be5b-98a268ce9867}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -517,7 +520,7 @@
       <Filter>Source\6_Containers\Icons</Filter>
     </ClCompile>
     <ClCompile Include="Source\Channel.cpp">
-      <Filter>Source\6_Containers\Animation</Filter>
+      <Filter>Source\6_Containers\Animator</Filter>
     </ClCompile>
     <ClCompile Include="Source\E_Timeline.cpp">
       <Filter>Source\2_Editor\Panels</Filter>
@@ -541,7 +544,7 @@
       <Filter>Source\5_GameObjects\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\AnimatorClip.cpp">
-      <Filter>Source\6_Containers\Animation</Filter>
+      <Filter>Source\6_Containers\Animator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1116,7 +1119,7 @@
       <Filter>Source\6_Containers\Icons</Filter>
     </ClInclude>
     <ClInclude Include="Source\Channel.h">
-      <Filter>Source\6_Containers\Animation</Filter>
+      <Filter>Source\6_Containers\Animator</Filter>
     </ClInclude>
     <ClInclude Include="Source\E_Timeline.h">
       <Filter>Source\2_Editor\Panels</Filter>
@@ -1137,19 +1140,22 @@
       <Filter>Source\7_Tools\ImGuiCustom\CustomWidgets</Filter>
     </ClInclude>
     <ClInclude Include="Source\Keyframe.h">
-      <Filter>Source\6_Containers\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\AnimationClip.h">
-      <Filter>Source\6_Containers\Animation</Filter>
+      <Filter>Source\6_Containers\Animator</Filter>
     </ClInclude>
     <ClInclude Include="Source\AnimatorClip.h">
-      <Filter>Source\6_Containers\Animation</Filter>
+      <Filter>Source\6_Containers\Animator</Filter>
     </ClInclude>
     <ClInclude Include="Source\C_Animator.h">
       <Filter>Source\5_GameObjects\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\C_Animation.h">
       <Filter>Source\5_GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AnimationClip.h">
+      <Filter>Source\6_Containers\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Bone.h">
+      <Filter>Source\6_Containers\Animator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,7 +20,7 @@ IBO					(0), 																								// -------------------------
 draw_vertex_normals	(false), 
 draw_face_normals	(false)
 {
-
+	
 }
 
 R_Mesh::~R_Mesh()
@@ -45,6 +45,8 @@ bool R_Mesh::CleanUp()
 	normals.clear();
 	tex_coords.clear();
 	indices.clear();
+
+	bones.clear();
 
 	return true;
 }
@@ -100,6 +102,26 @@ void R_Mesh::LoadBuffers()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);																// Binds IBO with the GL_ARRAY_BUFFER biding point (target):
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);		// Inits the data stored inside IBO and specifies how the data will be accessed.
 	}
+}
+
+void R_Mesh::SwapBonesToVertexArray()
+{
+	for (auto bone = bones.cbegin(); bone != bones.cend(); ++bone)
+	{
+
+	}
+	
+	// Bone Weights
+	//bone_weights.push_back(BoneWeight(bone_id, weight));
+
+	// Bone offsets
+	//bone_offsets.push_back(offset_matrix);
+
+	// Bone Mapping
+	//bone_mapping.emplace(bone_name, bone_id);
+	
+	// Bone transforms
+
 }
 
 AABB R_Mesh::GetAABB() const

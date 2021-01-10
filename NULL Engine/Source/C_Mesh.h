@@ -24,7 +24,7 @@ public:
 	bool SaveState	(ParsonNode& root) const override;
 	bool LoadState	(ParsonNode& root) override;
 
-	static inline COMPONENT_TYPE GetType() { return COMPONENT_TYPE::MESH; }			// This is needed to be able to use templeates for functions such as GetComponent<>();
+	static inline COMPONENT_TYPE GetType() { return COMPONENT_TYPE::MESH; }			// This is needed to be able to use templates for functions such as GetComponent<>();
 
 public:
 	R_Mesh*			GetMesh					() const;								// Returns the R_Mesh* variable of the component. If there is no mesh the default value will be nullptr.
@@ -34,7 +34,7 @@ public:
 	const char*		GetMeshFile				() const;
 	void			SetMeshPath				(const char* path);
 
-	void			GetMeshData				(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices);
+	void			GetMeshData				(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices, uint& num_bones);
 
 	bool			GetDrawVertexNormals	() const;
 	bool			GetDrawFaceNormals		() const;

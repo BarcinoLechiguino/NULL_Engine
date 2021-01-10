@@ -49,7 +49,8 @@ bool M_Camera3D::Init(ParsonNode& root)
 	//Position.y = root.GetNumber("Y");
 	//Position.z = root.GetNumber("Z");
 	
-	master_camera->GetComponent<C_Transform>()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
+	//master_camera->GetComponent<C_Transform>()->SetLocalPosition(float3(60.0f, 40.0f, 60.0f));
+	master_camera->GetComponent<C_Transform>()->SetLocalPosition(float3(6.5f, 4.0f, 7.0f));
 	LookAt(reference);
 	//current_camera->UpdateFrustumTransform();
 

@@ -53,7 +53,13 @@ It has been coded from scratch in C and C++ along with the following libraries:
 * Mouse Picking through Raycasting.
 * Editor Gizmos that allow to manipulation of the selected GameObject.
 
+**As of 10/01/2021:**
 
+* Resource Manager (meta files, reference counting...).
+* Animation Importing (Import, Save & Load).
+* Clip Managing (Creation and Execution).
+* Animation Interpolation.
+* Animation Blending.
 
 ****
 
@@ -93,7 +99,7 @@ It has been coded from scratch in C and C++ along with the following libraries:
 
   ---
 
-* **Project Panel:** Placed at the bottom of the window. It shows all the assets inside the "Assets/" folder. This feature will be developed further when the Resource Manager is implemented.
+* **Project Panel:** Placed at the bottom of the window. It shows all the assets inside the "Assets/" folder. It allows to load into scene any file displayed in the panel just by dragging and dropping it onto the Scene Panel.
 
 * ---
 
@@ -186,7 +192,7 @@ No previous installation is required to use the engine, just download the latest
 
 MIT License
 
-Copyright (c) 2020 [Angel Gonzalez T.]
+Copyright (c) 2021 [Angel Gonzalez T.]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

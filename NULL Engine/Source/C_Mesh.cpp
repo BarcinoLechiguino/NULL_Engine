@@ -130,7 +130,7 @@ void C_Mesh::SetMeshPath(const char* path)
 	}
 }
 
-void C_Mesh::GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices)
+void C_Mesh::GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_coords, uint& num_indices, uint& num_bones)
 {
 	if (r_mesh != nullptr)
 	{
@@ -138,6 +138,8 @@ void C_Mesh::GetMeshData(uint& num_vertices, uint& num_normals, uint& num_tex_co
 		num_normals		= r_mesh->normals.size();
 		num_tex_coords	= r_mesh->tex_coords.size();
 		num_indices		= r_mesh->indices.size();
+
+		num_bones		= r_mesh->bones.size();
 	}
 }
 
@@ -203,4 +205,5 @@ bool C_Mesh::GetShowBoundingBox() const
 void C_Mesh::SetShowBoundingBox(const bool& set_to)
 {
 	show_bounding_box = set_to;
+	this->GetOwner()->show_bounding_boxes = set_to;
 }

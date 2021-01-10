@@ -76,13 +76,13 @@ bool M_Scene::Start()
 
 	CreateSceneCamera("SceneCamera");
 
-	uint32 street_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
-	GenerateGameObjectsFromModel(street_uid);
+	//uint32 street_uid = App->resource_manager->LoadFromLibrary(DEFAULT_SCENE);
+	//GenerateGameObjectsFromModel(street_uid);
 
-	uint32 animation_uid = App->resource_manager->LoadFromLibrary(DEFAULT_ANIMATION);
-	GenerateGameObjectsFromModel(animation_uid /*, float3(0.1f, 0.1f, 0.1f)*/);
+	//uint32 animation_uid = App->resource_manager->LoadFromLibrary(DEFAULT_ANIMATION);
+	//GenerateGameObjectsFromModel(animation_uid , float3(0.05f, 0.05f, 0.05f));
 	
-	//LoadScene("Assets/Scenes/MainScene.json");
+	LoadScene("Assets/Scenes/MainScene.json");
 	SaveScene("SceneAutosave");																					// Autosave just right after loading the scene.
 
 	return ret;
@@ -116,7 +116,7 @@ UPDATE_STATUS M_Scene::Update(float dt)
 					root_animator->PlayClip("Attack", 8);
 				}
 
-				if (!root_animator->GetCurrentClip()->playing)
+				if (!root_animator->GetCurrentClip()->playing || !root_animator->CurrentClipExists())
 				{
 					root_animator->PlayClip("Idle", 8);
 				}

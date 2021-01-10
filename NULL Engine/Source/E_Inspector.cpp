@@ -253,54 +253,41 @@ void E_Inspector::DrawMeshComponent(C_Mesh* c_mesh)
 			ImGui::Separator();
 
 			// --- FILE PATH ---
-			ImGui::Text("File:");		ImGui::SameLine(); ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", c_mesh->GetMeshFile());
+			ImGui::Text("File:");	ImGui::SameLine(); ImGui::TextColored(Green.C_Array(), "%s", c_mesh->GetMeshFile());
 
 			ImGui::Separator();
 
 			// --- MESH DATA ---
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Mesh Data:");
-			
-			uint num_vertices	= 0;
-			uint num_normals	= 0;
-			uint num_tex_coords = 0;
-			uint num_indices	= 0;
+			ImGui::TextColored(Cyan.C_Array(), "Mesh Data:");
 
-			c_mesh->GetMeshData(num_vertices, num_normals, num_tex_coords, num_indices);
+			uint num_vertices		= 0;
+			uint num_normals		= 0;
+			uint num_tex_coords		= 0;
+			uint num_indices		= 0;
+			uint num_bones			= 0;
 
-			ImGui::Text("Vertices:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "  %u", num_vertices);
-			ImGui::Text("Normals:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "   %u", num_normals);
-			ImGui::Text("Tex Coords:"); ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%u", num_tex_coords);
-			ImGui::Text("Indices:");	ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "   %u", num_indices);
+			c_mesh->GetMeshData(num_vertices, num_normals, num_tex_coords, num_indices, num_bones);
+
+			ImGui::Text("Vertices:");		ImGui::SameLine();		ImGui::TextColored(Yellow.C_Array(), "  %u", num_vertices);
+			ImGui::Text("Normals:");		ImGui::SameLine();		ImGui::TextColored(Yellow.C_Array(), "   %u", num_normals);
+			ImGui::Text("Tex Coords:");		ImGui::SameLine();		ImGui::TextColored(Yellow.C_Array(), "%u", num_tex_coords);
+			ImGui::Text("Indices:");		ImGui::SameLine();		ImGui::TextColored(Yellow.C_Array(), "   %u", num_indices);
+			ImGui::Text("Bones: ");			ImGui::SameLine();		ImGui::TextColored(Yellow.C_Array(), "    %u",	num_bones);
 
 			ImGui::Separator();
 
 			// --- DRAW MODE ---
-			ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "Draw Mode:");
+			ImGui::TextColored(Cyan.C_Array(), "Draw Mode:");
 
-			bool show_wireframe = c_mesh->GetShowWireframe();
-			if (ImGui::Checkbox("Show Wireframe", &show_wireframe))
-			{
-				c_mesh->SetShowWireframe(show_wireframe);
-			}
+			bool show_wireframe		= c_mesh->GetShowWireframe();
+			bool show_bounding_box	= c_mesh->GetShowBoundingBox();
+			bool draw_vert_normals	= c_mesh->GetDrawVertexNormals();
+			bool draw_face_normals	= c_mesh->GetDrawFaceNormals();
 
-			bool show_bounding_box = c_mesh->GetShowBoundingBox();
-			if (ImGui::Checkbox("Show Bounding Box", &show_bounding_box))
-			{
-				c_mesh->SetShowBoundingBox(show_bounding_box);
-				c_mesh->GetOwner()->show_bounding_boxes = show_bounding_box;
-			}
-
-			bool draw_vert_normals = c_mesh->GetDrawVertexNormals();
-			if (ImGui::Checkbox("Draw Vertex Normals", &draw_vert_normals))
-			{
-				c_mesh->SetDrawVertexNormals(draw_vert_normals);
-			}
-
-			bool draw_face_normals = c_mesh->GetDrawFaceNormals();
-			if (ImGui::Checkbox("Draw Face Normals", &draw_face_normals))
-			{
-				c_mesh->SetDrawFaceNormals(draw_face_normals);
-			}
+			if (ImGui::Checkbox("Show Wireframe", &show_wireframe))				{ c_mesh->SetShowWireframe(show_wireframe); }
+			if (ImGui::Checkbox("Show Bounding Box", &show_bounding_box))		{ c_mesh->SetShowBoundingBox(show_bounding_box); }
+			if (ImGui::Checkbox("Draw Vertex Normals", &draw_vert_normals))		{ c_mesh->SetDrawVertexNormals(draw_vert_normals); }
+			if (ImGui::Checkbox("Draw Face Normals", &draw_face_normals))		{ c_mesh->SetDrawFaceNormals(draw_face_normals); }
 		}
 		else
 		{

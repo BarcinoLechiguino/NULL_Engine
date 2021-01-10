@@ -5,31 +5,23 @@
 #include "MathGeoLib/include/Math/float2.h"
 #include "MathGeoLib/include/Math/float4x4.h"
 
+#include "Bone.h"
+
 #include "Resource.h"
 #include "MeshSettings.h"
 
 class ParsonNode;
 
-typedef unsigned __int32 uint;
+struct Bone;
+struct BoneWeight;
+
+typedef unsigned int uint;
 
 struct Vertex
 {
 	float3 position;
 	float3 normals;
 	float2 tex_coords;
-};
-
-struct VertexWeight
-{
-	uint	vertex_id;
-	float	weight;
-};
-
-struct Bone
-{
-	std::string					name;
-	float4x4					offset_matrix;
-	std::vector<VertexWeight>	weights;
 };
 
 class R_Mesh : public Resource
@@ -45,6 +37,7 @@ public:
 
 public:
 	void LoadBuffers();
+	void SwapBonesToVertexArray();
 
 	AABB GetAABB() const;
 	void SetAABB();
@@ -57,6 +50,12 @@ public:
 	std::vector<uint>			indices;
 
 	std::vector<Bone>			bones;
+	std::vector<BoneWeight>		bone_weights;
+	std::vector<float4x4>		bone_offsets;
+	std::map<std::string, uint> bone_mapping;
+	//std::multimap<uint, BoneWeight>	bone_weights;
+
+	std::vector<float4x4>		bone_transforms;
 
 	// Buffer data
 	uint						VBO;												// Vertex Buffer Object.	-->		Will store all the buffer data of the vertices of the mesh.

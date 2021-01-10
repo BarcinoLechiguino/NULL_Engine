@@ -133,8 +133,8 @@ uint Importer::Animations::Save(const R_Animation* r_animation, char** buffer)
 	cursor += bytes;
 
 	// --- CHANNELS DATA
-	uint vec_key_data_size	= sizeof(double) + (sizeof(float) * 3);
-	uint quat_key_data_size = sizeof(double) + (sizeof(float) * 4);
+	//uint vec_key_data_size	= sizeof(double) + (sizeof(float) * 3);
+	//uint quat_key_data_size = sizeof(double) + (sizeof(float) * 4);
 
 	for (uint i = 0; i < r_animation->channels.size(); ++i)
 	{
@@ -230,7 +230,7 @@ uint Importer::Animations::Utilities::GetChannelsDataSize(const R_Animation* r_a
 	uint quat_key_size	= sizeof(double) + (sizeof(float) * 4);																// Quat is composed by 4 floats.
 	for (uint i = 0; i < r_animation->channels.size(); ++i)
 	{
-		Channel r_channel = r_animation->channels[i];
+		const Channel& r_channel = r_animation->channels[i];
 		uint channel_size = 0;
 
 		channel_size += sizeof(uint) * 4;																					// Length of the name and sizes of the keys maps.

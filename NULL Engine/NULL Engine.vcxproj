@@ -148,6 +148,7 @@
     <ClInclude Include="Source\AnimatorClip.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Assimp.h" />
+    <ClInclude Include="Source\Bone.h" />
     <ClInclude Include="Source\Channel.h" />
     <ClInclude Include="Source\CurveEditor.h" />
     <ClInclude Include="Source\C_Animation.h" />
