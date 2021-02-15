@@ -38,10 +38,10 @@ namespace Importer
 
 		namespace Utilities
 		{
-			void GetVertices			(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);					// Gets the data for the meshes' vertex positions.
-			void GetNormals				(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);					// Gets the data for the meshes' vertex normals.
-			void GetTexCoords			(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);					// Gets the data for the meshes' vertex tex coords.
-			void GetIndices				(const aiMesh* ai_mesh, R_Mesh* r_mesh, uint size);					// Gets the data for the meshes' indices.
+			void GetVertices			(const aiMesh* ai_mesh, R_Mesh* r_mesh);							// Gets the data for the meshes' vertex positions.
+			void GetNormals				(const aiMesh* ai_mesh, R_Mesh* r_mesh);							// Gets the data for the meshes' vertex normals.
+			void GetTexCoords			(const aiMesh* ai_mesh, R_Mesh* r_mesh);							// Gets the data for the meshes' vertex tex coords.
+			void GetIndices				(const aiMesh* ai_mesh, R_Mesh* r_mesh);							// Gets the data for the meshes' indices.
 
 			void GetBones				(const aiMesh* ai_mesh, R_Mesh* r_mesh);							// Gets the data for the mesh's bones.
 			void GetOffsetMatrix		(const aiBone* ai_bone, float4x4& offset_matrix);					// Gets the offset matrix of the given bone.
