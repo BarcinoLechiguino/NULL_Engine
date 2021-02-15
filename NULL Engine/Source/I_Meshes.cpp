@@ -58,6 +58,7 @@ void Importer::Meshes::Import(const aiMesh* ai_mesh, R_Mesh* r_mesh)
 	Utilities::GetTexCoords(ai_mesh, r_mesh, tex_coords_size);										// Gets the tex coords data stored in the given ai_mesh.
 	Utilities::GetIndices(ai_mesh, r_mesh, indices_size);											// Gets the indices data stored in the given ai_mesh.
 
+	//std::vector<Bone> bones;
 	Utilities::GetBones(ai_mesh, r_mesh);
 	r_mesh->SwapBonesToVertexArray();
 
@@ -73,7 +74,7 @@ void Importer::Meshes::Utilities::GetVertices(const aiMesh* ai_mesh, R_Mesh* r_m
 		return;
 	}
 
-	memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * size);						// &r_mesh->vertices[0] gets a pointer to the beginning of the vector.
+	memcpy(&r_mesh->vertices[0], ai_mesh->mVertices, sizeof(float) * size);							// &r_mesh->vertices[0] gets a pointer to the beginning of the vector.
 
 	LOG("[STATUS] Imported %u position vertices!", size);
 }
