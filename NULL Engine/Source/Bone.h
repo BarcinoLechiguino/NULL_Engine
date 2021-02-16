@@ -3,12 +3,15 @@
 
 #include "MathGeoLib/include/Math/float4x4.h"
 
+#define INVALID_VERTEX_ID 4294967295																// TMP
+#define INVALID_BONE_ID 4294967295																	// TMP
+
 typedef unsigned int uint;
 
 struct VertexWeight
 {
-	VertexWeight() : vertex_id(0), weight(0.0f) {}
-	VertexWeight(const uint& vertex_id, const float& weight) : vertex_id(vertex_id), weight(weight) {}
+	VertexWeight() : vertex_id(INVALID_VERTEX_ID), weight(0.0f) {}
+	VertexWeight(uint vertex_id, float weight) : vertex_id(vertex_id), weight(weight) {}
 
 	uint	vertex_id;
 	float	weight;
@@ -16,8 +19,8 @@ struct VertexWeight
 
 struct BoneWeight
 {
-	BoneWeight() : bone_id(0), weight(0.0f) {}
-	BoneWeight(const uint& bone_id, const float& weight) : bone_id(bone_id), weight(weight) {}
+	BoneWeight() : bone_id(INVALID_BONE_ID), weight(0.0f) {}
+	BoneWeight(uint bone_id, float weight) : bone_id(bone_id), weight(weight) {}
 
 	uint bone_id;
 	float weight;
