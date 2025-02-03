@@ -75,6 +75,11 @@ bool AnimatorClip::SaveState(ParsonNode& root) const
 {
 	bool ret = true;
 	
+	if (animation == nullptr)
+	{
+		return true;
+	}
+
 	root.SetNumber("AnimationUID", (double)animation->GetUID());
 
 	root.SetString("Name", name.c_str());

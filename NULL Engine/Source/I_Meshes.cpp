@@ -331,9 +331,12 @@ uint Importer::Meshes::Save(const R_Mesh* r_mesh, char** buffer)
 	memcpy_s(cursor, size, &r_mesh->normals[0], bytes);
 	cursor += bytes;
 
-	bytes = r_mesh->tex_coords.size() * sizeof(float);
-	memcpy_s(cursor, size, &r_mesh->tex_coords[0], bytes);
-	cursor += bytes;
+	if (r_mesh->tex_coords.size() != 0) // It could be the case that a model has no texture coordinates. Without this check that would crash the program.
+	{
+		bytes = r_mesh->tex_coords.size() * sizeof(float);
+		memcpy_s(cursor, size, &r_mesh->tex_coords[0], bytes); 
+		cursor += bytes;
+	}
 
 	bytes = r_mesh->indices.size() * sizeof(uint);
 	memcpy_s(cursor, size, &r_mesh->indices[0], bytes);
